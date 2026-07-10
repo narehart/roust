@@ -156,6 +156,11 @@ def path_tokens(rel: str) -> set[str]:
 
 # ---------------------------------------------------------------- NL/comment extraction
 
+_PY_DEF_RE = re.compile(r"^\s*(?:class|def)\s+(\w+)", re.M)
+_GO_DEF_RE = re.compile(r"^func\s+(?:\([^)]*\)\s*)?(\w+)", re.M)
+_RS_DEF_RE = re.compile(r"^\s*(?:pub\s+)?fn\s+(\w+)|^\s*(?:pub\s+)?struct\s+(\w+)", re.M)
+_JS_DEF_RE = re.compile(r"^\s*(?:export\s+)?(?:function|class)\s+(\w+)", re.M)
+
 _PY_DOCSTRING_RE = re.compile(r'"""(.*?)"""|\'\'\'(.*?)\'\'\'', re.S)
 _PY_COMMENT_RE = re.compile(r"#(.*)$", re.M)
 _C_BLOCK_COMMENT_RE = re.compile(r"/\*(.*?)\*/", re.S)
@@ -198,6 +203,7 @@ class Corpus:
         self.use_comments = use_comments
         self.com_tf: dict[str, Counter[str]] = {}
         self.com_df: Counter[str] = Counter()
+        self.def_index: dict[str, list[str]] = defaultdict(list)
         for p in sorted(repo_path.rglob("*")):
             if not p.is_file() or p.suffix not in CODE_EXTENSIONS:
                 continue
@@ -233,6 +239,25 @@ class Corpus:
                     self.com_tf[rel] = ctf
                     for term in ctf:
                         self.com_df[term] += 1
+            if impl_prior(rel) == 1.0:
+                if rel.endswith(".py"):
+                    def_re = _PY_DEF_RE
+                elif rel.endswith(".go"):
+                    def_re = _GO_DEF_RE
+                elif rel.endswith(".rs"):
+                    def_re = _RS_DEF_RE
+                elif rel.endswith((".js", ".ts", ".jsx", ".tsx")):
+                    def_re = _JS_DEF_RE
+                else:
+                    def_re = None
+                if def_re is not None:
+                    syms: set[str] = set()
+                    for m in def_re.finditer(text):
+                        for g in m.groups():
+                            if g:
+                                syms.add(g)
+                    for sym in syms:
+                        self.def_index[sym].append(rel)
         self.n_docs = len(self.files)
         self.avg_len = (sum(self.doclen.values()) / self.n_docs) if self.n_docs else 1.0
         self.n_com_docs = len(self.com_tf)
@@ -335,6 +360,52 @@ class Corpus:
         if use_prior:
             return {rel: s * impl_prior(rel) for rel, s in scores.items()}
         return dict(scores)
+
+
+# ---------------------------------------------------------------- definition-symbol anchors
+
+_ANCHOR_IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]{3,}")
+_CODE_SPAN_RE = re.compile(r"```.*?```|`[^`\n]+`", re.S)
+
+
+def extract_symbol_anchors(question: str, corpus: Corpus) -> list[tuple[str, float]]:
+    """Definition-symbol anchor channel: an identifier that appears verbatim in
+    the issue text AND is defined (class/def/func/struct/fn) by only a handful
+    of files in the repo is strong file-identity evidence -- 25/56 measured
+    File@10 failures had a gold file defining a symbol named verbatim in the
+    issue. A repo-wide rarity gate (<=3 defining files) is essential: generic
+    names like __init__/write/value are defined everywhere and would be pure
+    noise. Candidates are matched against the RAW (unstemmed, uncased) question
+    text since identifier casing is itself part of the identity signal."""
+    code_spans = [(m.start(), m.end()) for m in _CODE_SPAN_RE.finditer(question)]
+
+    def in_code(pos: int) -> bool:
+        return any(a <= pos < b for a, b in code_spans)
+
+    occurrences: dict[str, list[int]] = defaultdict(list)
+    order: list[str] = []
+    for m in _ANCHOR_IDENT_RE.finditer(question):
+        s = m.group(0)
+        if s not in occurrences:
+            order.append(s)
+        occurrences[s].append(m.start())
+
+    best: dict[str, float] = {}
+    def_counts: dict[str, int] = {}
+    for s in order:
+        if s.lower() in _STOP:
+            continue
+        files = corpus.def_index.get(s)
+        if not files or len(files) > 3:
+            continue
+        strength = 2.0 if any(in_code(p) for p in occurrences[s]) else 1.0
+        if s != s.lower() or "_" in s:
+            strength += 0.5
+        for f in files:
+            if strength > best.get(f, -1.0):
+                best[f] = strength
+                def_counts[f] = len(files)
+    return sorted(best.items(), key=lambda kv: (kv[1], -def_counts[kv[0]]), reverse=True)
 
 
 # ---------------------------------------------------------------- import graph
@@ -491,6 +562,65 @@ def _normalize(scores: dict[str, float]) -> dict[str, float]:
     return {k: v / mx for k, v in scores.items()} if mx > 0 else scores
 
 
+def _apply_anchor_promotions(
+    out: list[str], anchors: list[tuple[str, float]] | None
+) -> tuple[list[str], list[tuple[str, float, str, str]]]:
+    """Split anchor promotion into two independent tiers by strength, since a
+    300-instance ablation showed the gains come from high-strength (>=2.0,
+    backticked-identifier) anchors while the losses come from weak (1.0)
+    anchors displacing rank 8-10 files:
+
+    - "head" tier (strength >= 2.0, cap 2): promoted into `out` at position 7
+      exactly as before -- files not present anywhere are inserted there;
+      files already present but ranked below position 10 are moved up. Files
+      already in the top 10 are left untouched.
+    - "tail" tier (strength < 2.0, cap 2): never touches the top-10 at all.
+      A file absent from `out` entirely is inserted at position 12 (or
+      appended if `out` is shorter than that); a file present anywhere
+      (including below position 10) is left exactly where it is.
+
+    Position 0-6 (the body ranking's top-7) is never reordered by either
+    tier: head promotions are either wholly new or drawn from position >=10,
+    and tail promotions never touch anything above position 10."""
+    if not anchors:
+        return out, []
+    promotions: list[tuple[str, float, str, str]] = []  # (file, strength, "insert"|"move", "head"|"tail")
+
+    head_files: list[str] = []
+    to_remove: set[str] = set()
+    for f, strength in anchors:
+        if strength < 2.0 or len(head_files) >= 2 or f in head_files:
+            continue
+        if f in out:
+            idx = out.index(f)
+            if idx >= 10:
+                head_files.append(f)
+                to_remove.add(f)
+                promotions.append((f, strength, "move", "head"))
+        else:
+            head_files.append(f)
+            promotions.append((f, strength, "insert", "head"))
+    if head_files:
+        remaining = [f for f in out if f not in to_remove]
+        out = remaining[:7] + head_files + remaining[7:]
+
+    tail_files: list[str] = []
+    for f, strength in anchors:
+        if strength >= 2.0 or len(tail_files) >= 2 or f in tail_files or f in head_files:
+            continue
+        if f not in out:
+            tail_files.append(f)
+            promotions.append((f, strength, "insert", "tail"))
+        # else: present anywhere in `out` (top-10 or not) -- leave untouched.
+    for f in tail_files:
+        pos = min(12, len(out))
+        out = out[:pos] + [f] + out[pos:]
+
+    if not head_files and not tail_files:
+        return out, []
+    return out, promotions
+
+
 def select_files(
     corpus: Corpus,
     terms: list[str],
@@ -501,6 +631,7 @@ def select_files(
     floor_ratio: float = 0.05,
     cochange: dict[str, dict[str, int]] | None = None,
     cochange_strong: int = 5,
+    anchors: list[tuple[str, float]] | None = None,
 ) -> tuple[list[str], dict[str, float]]:
     """Return candidate files: top BM25F picks, optionally UNIONed with the top
     graph-diffusion additions. The union is monotone: diffusion can only add
@@ -522,6 +653,7 @@ def select_files(
     (see the msg_bm25 top-up below), never influence lex_picks or displace/
     reorder anything the body ranking already chose.
     """
+    global LAST_EXPLAIN
     bm = corpus.bm25(terms)
     if not bm:
         return [], {}
@@ -534,7 +666,9 @@ def select_files(
     # scale that pack_regions' gain/cap math is calibrated against intact.
     scores = dict(bm_n)
     if not use_ppr:
-        return lex_picks, scores
+        lex_out, promotions = _apply_anchor_promotions(lex_picks, anchors)
+        LAST_EXPLAIN = {"lex_picks": lex_picks, "anchor_promotions": promotions}
+        return lex_out, scores
 
     # --- structural expansion: cluster hypothesis + pseudo-relevance feedback.
     # Every observed recall failure is a 1-hop neighbor (same package or direct
@@ -664,7 +798,11 @@ def select_files(
                     msg_additions.append(f)
         additions.extend(msg_additions)
 
-    global LAST_EXPLAIN
+    out = lex_picks + additions
+    for f in additions:
+        scores[f] = max(scores.get(f, 0.0), 0.3 + 0.5 * fb_n.get(f, 0.0))
+    out, anchor_promotions = _apply_anchor_promotions(out, anchors)
+
     LAST_EXPLAIN = {
         "seeds": sources,
         "lex_picks": lex_picks,
@@ -672,10 +810,8 @@ def select_files(
         "additions": additions,
         "cochange_additions": [c for c in additions if c in cochange_origin],
         "msg_additions": msg_additions,
+        "anchor_promotions": anchor_promotions,
     }
-    out = lex_picks + additions
-    for f in additions:
-        scores[f] = max(scores.get(f, 0.0), 0.3 + 0.5 * fb_n.get(f, 0.0))
     return out, scores
 
 

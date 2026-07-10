@@ -8,13 +8,19 @@ swebench_driver.py's lanes recall (lanes2's unconditional vendor-exclusion /
 pack-safety fixes can shift corpus file counts and packed token counts, but
 not recall on non-vendor gold files -- see lanes2.py's module docstring).
 
+--anchors turns on the definition-symbol anchor channel (lanes2.
+extract_symbol_anchors): identifiers named verbatim in the issue text that
+are rarely-defined (<=3 defining files) in the repo get promoted into
+select_files()'s output at position 7, per lanes2._apply_anchor_promotions.
+This never changes the body ranking's top-7.
+
 For each instance: checkout repo@base_commit, run the pipeline with the RAW
 problem statement as the query (anchor preservation; no helper keywords), and
 score file-level recall of the gold-patch-edited files plus packed tokens.
 
 Writes one JSON line per instance (resume-safe: already-done instances skipped).
 
-Usage:  uv run python swebench_driver2.py [--limit N] [--history] [--comments]
+Usage:  uv run python swebench_driver2.py [--limit N] [--history] [--comments] [--anchors]
                                            [--instances-file PATH | --sample N] --out results.jsonl
 """
 
@@ -112,7 +118,9 @@ def _list_current_files(repo_path: Path) -> set[str]:
     return files
 
 
-def run_instance(inst: dict, repo_path: Path, use_history: bool, use_comments: bool) -> dict:
+def run_instance(
+    inst: dict, repo_path: Path, use_history: bool, use_comments: bool, use_anchors: bool = False
+) -> dict:
     t0 = time.perf_counter()
 
     # IMPORTANT correctness detail: history must be mined AT THE INSTANCE'S
@@ -134,8 +142,11 @@ def run_instance(inst: dict, repo_path: Path, use_history: bool, use_comments: b
     corpus = L.Corpus(repo_path, history_msgs=history_msgs, use_comments=use_comments)
     build_ms = (time.perf_counter() - t0) * 1000
     terms = L.query_terms(inst["problem_statement"], [])
+    anchors: list[tuple[str, float]] | None = None
+    if use_anchors:
+        anchors = L.extract_symbol_anchors(inst["problem_statement"], corpus)
     t1 = time.perf_counter()
-    files, scores = L.select_files(corpus, terms, use_ppr=True, cochange=cochange)
+    files, scores = L.select_files(corpus, terms, use_ppr=True, cochange=cochange, anchors=anchors)
     spans, bundle = L.pack_regions(corpus, files, terms, scores, 8192, count_tokens)
     query_ms = (time.perf_counter() - t1) * 1000
     packed_files = [f for f in files if f in spans]
@@ -144,6 +155,7 @@ def run_instance(inst: dict, repo_path: Path, use_history: bool, use_comments: b
     present = [g for g in gold if g in fset]
     recall = len(present) / len(gold) if gold else 1.0
     cochange_additions = list(L.LAST_EXPLAIN.get("cochange_additions", []))
+    anchor_promotions = list(L.LAST_EXPLAIN.get("anchor_promotions", []))
     return {
         "instance_id": inst["instance_id"],
         "repo": inst["repo"],
@@ -160,8 +172,9 @@ def run_instance(inst: dict, repo_path: Path, use_history: bool, use_comments: b
         "build_ms": round(build_ms),
         "query_ms": round(query_ms),
         "mine_ms": round(mine_ms),
-        "signals": {"history": use_history, "comments": use_comments},
+        "signals": {"history": use_history, "comments": use_comments, "anchors": use_anchors},
         "cochange_additions": cochange_additions,
+        "anchor_promotions": anchor_promotions,
         "meta_available": bool(meta),  # mined but not yet used for scoring
     }
 
@@ -173,6 +186,9 @@ def main() -> None:
                      help="mine git history at each checkout; pass commit-message field + co-change edges")
     ap.add_argument("--comments", action="store_true",
                      help="extract comment/docstring NL field (use_comments=True)")
+    ap.add_argument("--anchors", action="store_true",
+                     help="promote definition-symbol anchor files (identifiers named verbatim "
+                          "in the issue that are rarely-defined in the repo) into the top ranks")
     ap.add_argument("--instances-file", default=None,
                      help="newline-separated instance_ids to run only those")
     ap.add_argument("--sample", type=int, default=0,
@@ -204,14 +220,14 @@ def main() -> None:
         instances = instances[: args.limit]
     todo = [i for i in instances if i["instance_id"] not in done]
     print(f"{len(instances)} instances, {len(done)} done, {len(todo)} to run "
-          f"(history={args.history} comments={args.comments})", flush=True)
+          f"(history={args.history} comments={args.comments} anchors={args.anchors})", flush=True)
 
     with out_path.open("a") as fh:
         for k, inst in enumerate(todo, 1):
             try:
                 repo = repo_clone(inst["repo"])
                 checkout(repo, inst["base_commit"])
-                res = run_instance(inst, repo, args.history, args.comments)
+                res = run_instance(inst, repo, args.history, args.comments, args.anchors)
             except Exception as exc:
                 res = {"instance_id": inst["instance_id"], "repo": inst["repo"],
                        "error": str(exc)[:300]}

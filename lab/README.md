@@ -86,6 +86,8 @@ Ablation (File@k = all gold files within top-k of the ranked list):
 | + comments field (REJECTED) | .357 | .670 | .773 | .867 | 8,453 |
 | + history via RRF fusion (REJECTED) | .337 | .643 | .757 | .890 | 8,457 |
 | **+ history as monotone additions (final)** | **.463** | **.737** | **.813** | **.910** | **8,492** |
+| + def-symbol anchors, flat promotion (superseded) | .463 | .737 | .823 | .917 | 8,515 |
+| **+ def-symbol anchors, tiered (FROZEN CONFIG)** | **.463** | **.737** | **.827** | **.920** | **8,515** |
 
 Final: 91.0% of instances get every gold file, ~8.5k-token bundle, 530ms query.
 Verified SOTA context (SweRank, arXiv:2505.07849): trained embedders reach
@@ -98,6 +100,17 @@ the ranking head craters @1 (.463 -> .337); co-change test-bridges are impossibl
 by construction on repos with 1:1 test:impl coupling (django). The recurring
 design law, twice observed: auxiliary channels must be MONOTONE — they may add
 candidates, never reorder the lexical head.
+
+Anchor campaign (2026-07-11, evidence-first): file-name anchors measured DEAD
+(+2.4pp ceiling — BM25F path field already consumes them); code-block 5-gram
+fingerprinting measured DEAD (0/56); definition-symbol anchors measured ALIVE
+(25/56 failures have a gold file defining a symbol the issue names). Built with
+a rarity gate (symbol defined in ≤3 impl files) and tiered head rights: only
+backtick-quoted anchors (strength ≥2.0) may enter the top-10 (cap 2, insert at
+rank 8, top-7 sovereign); weaker anchors append at rank 12+. @10 .813→.827,
+@all .910→.920, zero @all losses, top-7 invariant 300/300. Config FROZEN after
+this change: Lite has served as dev set through five iterations; SWE-bench
+Verified is reserved as the untouched held-out test.
 
 ## Run it
 
