@@ -72,6 +72,25 @@ whack-a-mole between tasks; per-seed quotas starve globally-strong candidates.
 - GrepRAG (2025): optimized grep-style pipelines beat indexed RAG under equal
   budgets with ~35× latency advantage — supporting the no-embedding design.
 
+## SWE-bench Lite file localization (2026-07-11)
+
+Frozen pipeline, query = raw issue text (no keywords, no LLM, no embeddings),
+gold = files edited by the merged fix. All 300 instances, zero errors:
+
+- **All-gold-files-present: 267/300 = 0.890** (mean file recall 0.890)
+- Mean bundle 10,041 tokens, ~26 files; query 530ms on an index built in 2.1s
+- Per repo: seaborn/flask/requests/xarray 1.00, matplotlib & scikit-learn 0.96,
+  django 0.89 (102/114), pytest 0.88, sympy 0.84, astropy/pylint 0.83, sphinx 0.81
+
+Published context (see research findings): BM25 achieves all-files retrieval on
+~40% of instances at 27k tokens; GPT-4-based Agentless file localization ≈69%
+(74% with RepoGraph); agentic explorers ≈0.65 HitFile on the harder SWE-Explore.
+Caveat for comparisons: our bundle holds ~26 files — File@5/File@10 numbers from
+the ranked list (results_swebench/lite_ranked.jsonl) are the k-matched figures.
+Recurring miss pattern: fixes in lexically-distant infrastructure files (e.g.
+django/db/migrations/serializer.py for issues describing migration *output*) —
+the deep semantic gap that no lexical+structural method closes without an LLM.
+
 ## Run it
 
 ```bash
