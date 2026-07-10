@@ -1,0 +1,411 @@
+{
+  "task_id": "fastapi_routing",
+  "repo": "tiangolo/fastapi",
+  "question": "When FastAPI receives a URL like /items/42, how does it pick the endpoint function and convert the 42 into a typed argument?",
+  "results": [
+    {
+      "task_id": "fastapi_routing",
+      "strategy": "bm25_ppr",
+      "tokens_total": 125361,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "fastapi/routing.py",
+        "fastapi/applications.py",
+        "fastapi/params.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "fastapi/applications.py",
+        "fastapi/security/api_key.py",
+        "fastapi/routing.py",
+        "fastapi/openapi/docs.py",
+        "fastapi/security/open_id_connect_url.py",
+        "fastapi/encoders.py",
+        "fastapi/dependencies/utils.py",
+        "fastapi/datastructures.py",
+        "fastapi/exceptions.py",
+        "fastapi/security/oauth2.py",
+        "fastapi/security/http.py",
+        "fastapi/param_functions.py",
+        "fastapi/openapi/models.py",
+        "fastapi/openapi/utils.py",
+        "fastapi/params.py",
+        "fastapi/security/__init__.py",
+        "fastapi/dependencies/models.py",
+        "fastapi/openapi/constants.py",
+        "fastapi/utils.py",
+        "fastapi/background.py",
+        "fastapi/_compat.py",
+        "fastapi/responses.py",
+        "fastapi/security/utils.py",
+        "fastapi/security/base.py",
+        "fastapi/__init__.py",
+        "fastapi/types.py"
+      ],
+      "wall_time_ms": 113.16312500275671,
+      "cold_start_ms": 440.95241697505116
+    },
+    {
+      "task_id": "fastapi_routing",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8411,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "fastapi/routing.py",
+        "fastapi/applications.py",
+        "fastapi/params.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "fastapi/applications.py",
+        "fastapi/security/api_key.py",
+        "fastapi/routing.py",
+        "fastapi/openapi/docs.py",
+        "fastapi/security/open_id_connect_url.py",
+        "fastapi/encoders.py",
+        "fastapi/dependencies/utils.py",
+        "fastapi/datastructures.py",
+        "fastapi/exceptions.py",
+        "fastapi/security/oauth2.py",
+        "fastapi/security/http.py",
+        "fastapi/param_functions.py",
+        "fastapi/openapi/models.py",
+        "fastapi/openapi/utils.py",
+        "fastapi/params.py",
+        "fastapi/security/__init__.py",
+        "fastapi/dependencies/models.py",
+        "fastapi/openapi/constants.py",
+        "fastapi/utils.py",
+        "fastapi/background.py",
+        "fastapi/_compat.py",
+        "fastapi/responses.py",
+        "fastapi/security/utils.py",
+        "fastapi/security/base.py",
+        "fastapi/__init__.py",
+        "fastapi/types.py"
+      ],
+      "wall_time_ms": 208.0022500595078,
+      "cold_start_ms": 440.95241697505116,
+      "regions": {
+        "fastapi/applications.py": [
+          [
+            1,
+            25
+          ],
+          [
+            1,
+            47
+          ]
+        ],
+        "fastapi/security/api_key.py": [
+          [
+            1,
+            10
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            15,
+            113
+          ],
+          [
+            114,
+            208
+          ],
+          [
+            209,
+            301
+          ]
+        ],
+        "fastapi/routing.py": [
+          [
+            1,
+            78
+          ],
+          [
+            204,
+            216
+          ],
+          [
+            360,
+            387
+          ],
+          [
+            388,
+            427
+          ]
+        ],
+        "fastapi/openapi/docs.py": [
+          [
+            1,
+            25
+          ]
+        ],
+        "fastapi/security/open_id_connect_url.py": [
+          [
+            1,
+            10
+          ]
+        ],
+        "fastapi/encoders.py": [
+          [
+            1,
+            24
+          ],
+          [
+            1,
+            30
+          ]
+        ],
+        "fastapi/dependencies/utils.py": [
+          [
+            231,
+            246
+          ],
+          [
+            247,
+            253
+          ],
+          [
+            254,
+            264
+          ],
+          [
+            265,
+            316
+          ],
+          [
+            342,
+            347
+          ]
+        ],
+        "fastapi/datastructures.py": [
+          [
+            1,
+            29
+          ],
+          [
+            197,
+            204
+          ]
+        ],
+        "fastapi/exceptions.py": [
+          [
+            1,
+            8
+          ],
+          [
+            68,
+            142
+          ],
+          [
+            143,
+            148
+          ]
+        ],
+        "fastapi/security/oauth2.py": [
+          [
+            1,
+            15
+          ]
+        ],
+        "fastapi/security/http.py": [
+          [
+            1,
+            15
+          ],
+          [
+            16,
+            28
+          ],
+          [
+            29,
+            68
+          ]
+        ],
+        "fastapi/param_functions.py": [
+          [
+            1,
+            10
+          ],
+          [
+            2220,
+            2279
+          ]
+        ],
+        "fastapi/openapi/models.py": [
+          [
+            68,
+            73
+          ],
+          [
+            74,
+            79
+          ],
+          [
+            96,
+            101
+          ],
+          [
+            119,
+            123
+          ],
+          [
+            216,
+            230
+          ],
+          [
+            268,
+            272
+          ],
+          [
+            331,
+            337
+          ],
+          [
+            343,
+            348
+          ],
+          [
+            349,
+            354
+          ],
+          [
+            365,
+            369
+          ],
+          [
+            370,
+            373
+          ],
+          [
+            374,
+            377
+          ],
+          [
+            378,
+            381
+          ],
+          [
+            382,
+            386
+          ],
+          [
+            399,
+            408
+          ],
+          [
+            429,
+            445
+          ]
+        ],
+        "fastapi/openapi/utils.py": [
+          [
+            186,
+            200
+          ],
+          [
+            201,
+            206
+          ]
+        ],
+        "fastapi/params.py": [
+          [
+            1,
+            17
+          ]
+        ],
+        "fastapi/security/__init__.py": [
+          [
+            1,
+            11
+          ]
+        ],
+        "fastapi/dependencies/models.py": [
+          [
+            1,
+            7
+          ]
+        ],
+        "fastapi/openapi/constants.py": [
+          [
+            1,
+            3
+          ]
+        ],
+        "fastapi/utils.py": [
+          [
+            179,
+            186
+          ],
+          [
+            205,
+            220
+          ]
+        ],
+        "fastapi/background.py": [
+          [
+            1,
+            8
+          ]
+        ],
+        "fastapi/_compat.py": [
+          [
+            540,
+            545
+          ]
+        ],
+        "fastapi/responses.py": [
+          [
+            23,
+            35
+          ],
+          [
+            36,
+            48
+          ]
+        ],
+        "fastapi/security/utils.py": [
+          [
+            1,
+            3
+          ]
+        ],
+        "fastapi/security/base.py": [
+          [
+            1,
+            3
+          ]
+        ],
+        "fastapi/__init__.py": [
+          [
+            1,
+            18
+          ]
+        ],
+        "fastapi/types.py": [
+          [
+            1,
+            10
+          ]
+        ]
+      }
+    }
+  ]
+}

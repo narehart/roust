@@ -1,0 +1,645 @@
+{
+  "task_id": "pytest_fixtures",
+  "repo": "pytest-dev/pytest",
+  "question": "How does pytest find fixtures and inject them into test function arguments?",
+  "results": [
+    {
+      "task_id": "pytest_fixtures",
+      "strategy": "bm25_ppr",
+      "tokens_total": 181342,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.07692307692307693,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/_pytest/fixtures.py",
+        "src/_pytest/python.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/_pytest/fixtures.py",
+        "src/_pytest/doctest.py",
+        "src/_pytest/compat.py",
+        "src/_pytest/python.py",
+        "src/_pytest/nodes.py",
+        "src/_pytest/deprecated.py",
+        "src/_pytest/pytester.py",
+        "src/_pytest/mark/structures.py",
+        "src/_pytest/assertion/rewrite.py",
+        "src/_pytest/config/__init__.py",
+        "src/_pytest/_io/terminalwriter.py",
+        "src/_pytest/warning_types.py",
+        "src/_pytest/hookspec.py",
+        "src/_pytest/monkeypatch.py",
+        "src/_pytest/main.py",
+        "src/_pytest/cacheprovider.py",
+        "src/_pytest/python_api.py",
+        "src/_pytest/pathlib.py",
+        "src/_pytest/terminal.py",
+        "src/_pytest/unittest.py",
+        "src/_pytest/_argcomplete.py",
+        "src/_pytest/tmpdir.py",
+        "src/_pytest/runner.py",
+        "src/_pytest/logging.py",
+        "src/_pytest/capture.py",
+        "src/_pytest/junitxml.py"
+      ],
+      "wall_time_ms": 108.17841708194464,
+      "cold_start_ms": 407.9024170059711
+    },
+    {
+      "task_id": "pytest_fixtures",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8499,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.07692307692307693,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/_pytest/fixtures.py",
+        "src/_pytest/python.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/_pytest/fixtures.py",
+        "src/_pytest/doctest.py",
+        "src/_pytest/compat.py",
+        "src/_pytest/python.py",
+        "src/_pytest/nodes.py",
+        "src/_pytest/deprecated.py",
+        "src/_pytest/pytester.py",
+        "src/_pytest/mark/structures.py",
+        "src/_pytest/assertion/rewrite.py",
+        "src/_pytest/config/__init__.py",
+        "src/_pytest/_io/terminalwriter.py",
+        "src/_pytest/warning_types.py",
+        "src/_pytest/hookspec.py",
+        "src/_pytest/monkeypatch.py",
+        "src/_pytest/main.py",
+        "src/_pytest/cacheprovider.py",
+        "src/_pytest/python_api.py",
+        "src/_pytest/pathlib.py",
+        "src/_pytest/terminal.py",
+        "src/_pytest/unittest.py",
+        "src/_pytest/_argcomplete.py",
+        "src/_pytest/tmpdir.py",
+        "src/_pytest/runner.py",
+        "src/_pytest/logging.py",
+        "src/_pytest/capture.py",
+        "src/_pytest/junitxml.py"
+      ],
+      "wall_time_ms": 244.9777500005439,
+      "cold_start_ms": 407.9024170059711,
+      "regions": {
+        "src/_pytest/fixtures.py": [
+          [
+            116,
+            120
+          ],
+          [
+            121,
+            124
+          ],
+          [
+            125,
+            136
+          ],
+          [
+            172,
+            182
+          ],
+          [
+            1129,
+            1152
+          ],
+          [
+            1153,
+            1177
+          ],
+          [
+            1220,
+            1230
+          ],
+          [
+            1232,
+            1242
+          ],
+          [
+            1318,
+            1343
+          ],
+          [
+            1344,
+            1344
+          ],
+          [
+            1345,
+            1358
+          ],
+          [
+            1359,
+            1384
+          ],
+          [
+            1385,
+            1394
+          ],
+          [
+            1395,
+            1413
+          ],
+          [
+            1414,
+            1419
+          ],
+          [
+            1796,
+            1804
+          ],
+          [
+            1805,
+            1813
+          ],
+          [
+            1867,
+            1872
+          ]
+        ],
+        "src/_pytest/doctest.py": [
+          [
+            120,
+            125
+          ],
+          [
+            148,
+            154
+          ],
+          [
+            172,
+            177
+          ],
+          [
+            231,
+            250
+          ],
+          [
+            451,
+            460
+          ],
+          [
+            461,
+            469
+          ],
+          [
+            740,
+            740
+          ],
+          [
+            741,
+            755
+          ]
+        ],
+        "src/_pytest/compat.py": [
+          [
+            190,
+            212
+          ],
+          [
+            214,
+            224
+          ],
+          [
+            273,
+            289
+          ]
+        ],
+        "src/_pytest/python.py": [
+          [
+            113,
+            117
+          ],
+          [
+            118,
+            137
+          ],
+          [
+            206,
+            209
+          ],
+          [
+            708,
+            719
+          ],
+          [
+            1082,
+            1089
+          ],
+          [
+            1449,
+            1480
+          ],
+          [
+            1672,
+            1679
+          ]
+        ],
+        "src/_pytest/nodes.py": [
+          [
+            624,
+            630
+          ],
+          [
+            631,
+            648
+          ]
+        ],
+        "src/_pytest/deprecated.py": [
+          [
+            89,
+            91
+          ]
+        ],
+        "src/_pytest/pytester.py": [
+          [
+            108,
+            120
+          ],
+          [
+            197,
+            197
+          ],
+          [
+            198,
+            204
+          ],
+          [
+            205,
+            214
+          ],
+          [
+            459,
+            459
+          ],
+          [
+            466,
+            466
+          ],
+          [
+            467,
+            475
+          ],
+          [
+            476,
+            476
+          ],
+          [
+            477,
+            492
+          ],
+          [
+            493,
+            493
+          ],
+          [
+            502,
+            502
+          ],
+          [
+            503,
+            516
+          ]
+        ],
+        "src/_pytest/mark/structures.py": [
+          [
+            1,
+            29
+          ]
+        ],
+        "src/_pytest/assertion/rewrite.py": [
+          [
+            1,
+            28
+          ]
+        ],
+        "src/_pytest/config/__init__.py": [
+          [
+            92,
+            113
+          ],
+          [
+            128,
+            138
+          ],
+          [
+            307,
+            317
+          ]
+        ],
+        "src/_pytest/_io/terminalwriter.py": [
+          [
+            51,
+            68
+          ]
+        ],
+        "src/_pytest/warning_types.py": [
+          [
+            13,
+            18
+          ],
+          [
+            20,
+            25
+          ],
+          [
+            27,
+            32
+          ],
+          [
+            34,
+            39
+          ],
+          [
+            41,
+            46
+          ],
+          [
+            47,
+            52
+          ],
+          [
+            53,
+            58
+          ],
+          [
+            59,
+            64
+          ],
+          [
+            81,
+            91
+          ],
+          [
+            93,
+            101
+          ],
+          [
+            115,
+            126
+          ]
+        ],
+        "src/_pytest/hookspec.py": [
+          [
+            293,
+            304
+          ],
+          [
+            430,
+            443
+          ],
+          [
+            569,
+            585
+          ],
+          [
+            586,
+            600
+          ],
+          [
+            732,
+            750
+          ],
+          [
+            751,
+            766
+          ],
+          [
+            826,
+            843
+          ],
+          [
+            845,
+            866
+          ],
+          [
+            896,
+            921
+          ],
+          [
+            922,
+            934
+          ],
+          [
+            935,
+            950
+          ],
+          [
+            951,
+            967
+          ],
+          [
+            1258,
+            1271
+          ]
+        ],
+        "src/_pytest/monkeypatch.py": [
+          [
+            30,
+            30
+          ]
+        ],
+        "src/_pytest/main.py": [
+          [
+            329,
+            332
+          ],
+          [
+            333,
+            345
+          ],
+          [
+            346,
+            349
+          ],
+          [
+            429,
+            434
+          ],
+          [
+            468,
+            473
+          ],
+          [
+            474,
+            477
+          ],
+          [
+            999,
+            1006
+          ]
+        ],
+        "src/_pytest/cacheprovider.py": [
+          [
+            540,
+            547
+          ],
+          [
+            549,
+            554
+          ],
+          [
+            555,
+            555
+          ],
+          [
+            556,
+            570
+          ]
+        ],
+        "src/_pytest/python_api.py": [
+          [
+            794,
+            801
+          ]
+        ],
+        "src/_pytest/pathlib.py": [
+          [
+            173,
+            180
+          ],
+          [
+            192,
+            196
+          ]
+        ],
+        "src/_pytest/terminal.py": [
+          [
+            316,
+            316
+          ]
+        ],
+        "src/_pytest/unittest.py": [
+          [
+            1,
+            29
+          ]
+        ],
+        "src/_pytest/_argcomplete.py": [
+          [
+            1,
+            20
+          ]
+        ],
+        "src/_pytest/tmpdir.py": [
+          [
+            225,
+            239
+          ],
+          [
+            240,
+            240
+          ],
+          [
+            241,
+            246
+          ],
+          [
+            247,
+            254
+          ],
+          [
+            255,
+            255
+          ],
+          [
+            307,
+            314
+          ]
+        ],
+        "src/_pytest/runner.py": [
+          [
+            102,
+            105
+          ],
+          [
+            106,
+            109
+          ],
+          [
+            146,
+            157
+          ],
+          [
+            158,
+            162
+          ],
+          [
+            187,
+            192
+          ],
+          [
+            367,
+            370
+          ]
+        ],
+        "src/_pytest/logging.py": [
+          [
+            597,
+            597
+          ],
+          [
+            639,
+            642
+          ],
+          [
+            877,
+            884
+          ]
+        ],
+        "src/_pytest/capture.py": [
+          [
+            977,
+            977
+          ],
+          [
+            1005,
+            1005
+          ],
+          [
+            1033,
+            1033
+          ],
+          [
+            1061,
+            1061
+          ]
+        ],
+        "src/_pytest/junitxml.py": [
+          [
+            279,
+            279
+          ],
+          [
+            302,
+            302
+          ],
+          [
+            340,
+            340
+          ],
+          [
+            443,
+            449
+          ]
+        ]
+      }
+    }
+  ]
+}

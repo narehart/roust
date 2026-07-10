@@ -1,0 +1,471 @@
+{
+  "task_id": "django_orm_queries",
+  "repo": "django/django",
+  "question": "Follow the path from filtering model objects in Django to the actual statement sent to the database engine.",
+  "results": [
+    {
+      "task_id": "django_orm_queries",
+      "strategy": "bm25_ppr",
+      "tokens_total": 214471,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "django/db/models/sql/query.py",
+        "django/db/models/sql/compiler.py",
+        "django/db/models/query.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "django/db/backends/base/operations.py",
+        "django/db/models/query.py",
+        "django/db/models/fields/reverse_related.py",
+        "django/db/models/sql/compiler.py",
+        "django/db/backends/base/features.py",
+        "django/db/backends/base/creation.py",
+        "django/conf/global_settings.py",
+        "django/db/models/sql/datastructures.py",
+        "django/db/backends/postgresql/features.py",
+        "django/core/exceptions.py",
+        "django/db/backends/oracle/operations.py",
+        "django/db/models/fields/related_descriptors.py",
+        "django/db/models/fields/related.py",
+        "django/db/models/sql/query.py",
+        "django/db/backends/sqlite3/features.py",
+        "django/db/backends/oracle/creation.py",
+        "django/db/models/sql/subqueries.py",
+        "django/db/models/fields/__init__.py",
+        "django/db/backends/mysql/operations.py",
+        "django/db/backends/sqlite3/operations.py",
+        "django/db/models/query_utils.py",
+        "django/db/models/base.py",
+        "django/db/models/deletion.py",
+        "django/db/backends/base/schema.py",
+        "django/db/models/expressions.py",
+        "django/db/backends/postgresql/operations.py"
+      ],
+      "wall_time_ms": 344.90295802243054,
+      "cold_start_ms": 2717.6890420960262
+    },
+    {
+      "task_id": "django_orm_queries",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8397,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "django/db/models/sql/query.py",
+        "django/db/models/sql/compiler.py",
+        "django/db/models/query.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "django/db/backends/base/operations.py",
+        "django/db/models/query.py",
+        "django/db/models/fields/reverse_related.py",
+        "django/db/models/sql/compiler.py",
+        "django/db/backends/base/features.py",
+        "django/db/backends/base/creation.py",
+        "django/conf/global_settings.py",
+        "django/db/models/sql/datastructures.py",
+        "django/db/backends/postgresql/features.py",
+        "django/core/exceptions.py",
+        "django/db/backends/oracle/operations.py",
+        "django/db/models/fields/related_descriptors.py",
+        "django/db/models/fields/related.py",
+        "django/db/models/sql/query.py",
+        "django/db/backends/sqlite3/features.py",
+        "django/db/backends/oracle/creation.py",
+        "django/db/models/sql/subqueries.py",
+        "django/db/models/fields/__init__.py",
+        "django/db/backends/mysql/operations.py",
+        "django/db/backends/sqlite3/operations.py",
+        "django/db/models/query_utils.py",
+        "django/db/models/base.py",
+        "django/db/models/deletion.py",
+        "django/db/backends/base/schema.py",
+        "django/db/models/expressions.py",
+        "django/db/backends/postgresql/operations.py"
+      ],
+      "wall_time_ms": 509.2038749717176,
+      "cold_start_ms": 2717.6890420960262,
+      "regions": {
+        "django/db/backends/base/operations.py": [
+          [
+            1,
+            17
+          ]
+        ],
+        "django/db/models/query.py": [
+          [
+            1,
+            45
+          ],
+          [
+            2267,
+            2278
+          ],
+          [
+            2433,
+            2439
+          ]
+        ],
+        "django/db/models/fields/reverse_related.py": [
+          [
+            1,
+            22
+          ],
+          [
+            260,
+            321
+          ]
+        ],
+        "django/db/models/sql/compiler.py": [
+          [
+            1,
+            22
+          ],
+          [
+            1,
+            29
+          ]
+        ],
+        "django/db/backends/base/features.py": [
+          [
+            1,
+            4
+          ]
+        ],
+        "django/db/backends/base/creation.py": [
+          [
+            1,
+            16
+          ]
+        ],
+        "django/conf/global_settings.py": [
+          [
+            1,
+            8
+          ]
+        ],
+        "django/db/models/sql/datastructures.py": [
+          [
+            1,
+            12
+          ],
+          [
+            13,
+            25
+          ]
+        ],
+        "django/db/backends/postgresql/features.py": [
+          [
+            1,
+            8
+          ]
+        ],
+        "django/core/exceptions.py": [
+          [
+            1,
+            9
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            16,
+            21
+          ],
+          [
+            22,
+            27
+          ],
+          [
+            28,
+            33
+          ],
+          [
+            62,
+            70
+          ],
+          [
+            71,
+            79
+          ],
+          [
+            119,
+            124
+          ],
+          [
+            125,
+            133
+          ],
+          [
+            240,
+            245
+          ],
+          [
+            246,
+            251
+          ]
+        ],
+        "django/db/backends/oracle/operations.py": [
+          [
+            1,
+            20
+          ]
+        ],
+        "django/db/models/fields/related_descriptors.py": [
+          [
+            1,
+            19
+          ]
+        ],
+        "django/db/models/fields/related.py": [
+          [
+            1,
+            25
+          ],
+          [
+            1,
+            44
+          ],
+          [
+            1210,
+            1259
+          ]
+        ],
+        "django/db/models/sql/query.py": [
+          [
+            1,
+            20
+          ],
+          [
+            1,
+            58
+          ],
+          [
+            69,
+            79
+          ],
+          [
+            80,
+            92
+          ],
+          [
+            93,
+            128
+          ],
+          [
+            129,
+            142
+          ]
+        ],
+        "django/db/backends/sqlite3/features.py": [
+          [
+            1,
+            10
+          ]
+        ],
+        "django/db/backends/oracle/creation.py": [
+          [
+            1,
+            11
+          ]
+        ],
+        "django/db/models/sql/subqueries.py": [
+          [
+            1,
+            11
+          ],
+          [
+            164,
+            174
+          ]
+        ],
+        "django/db/models/fields/__init__.py": [
+          [
+            88,
+            103
+          ],
+          [
+            88,
+            107
+          ],
+          [
+            2832,
+            2863
+          ]
+        ],
+        "django/db/backends/mysql/operations.py": [
+          [
+            1,
+            12
+          ]
+        ],
+        "django/db/backends/sqlite3/operations.py": [
+          [
+            1,
+            19
+          ]
+        ],
+        "django/db/models/query_utils.py": [
+          [
+            1,
+            24
+          ],
+          [
+            1,
+            31
+          ],
+          [
+            237,
+            252
+          ],
+          [
+            407,
+            435
+          ]
+        ],
+        "django/db/models/base.py": [
+          [
+            1,
+            57
+          ],
+          [
+            69,
+            86
+          ],
+          [
+            439,
+            446
+          ],
+          [
+            447,
+            458
+          ],
+          [
+            2440,
+            2448
+          ],
+          [
+            2449,
+            2455
+          ],
+          [
+            2456,
+            2473
+          ],
+          [
+            2474,
+            2484
+          ]
+        ],
+        "django/db/models/deletion.py": [
+          [
+            1,
+            9
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            16,
+            21
+          ],
+          [
+            22,
+            33
+          ],
+          [
+            34,
+            46
+          ],
+          [
+            47,
+            51
+          ],
+          [
+            52,
+            68
+          ]
+        ],
+        "django/db/backends/base/schema.py": [
+          [
+            1,
+            23
+          ],
+          [
+            24,
+            39
+          ],
+          [
+            40,
+            52
+          ],
+          [
+            53,
+            75
+          ]
+        ],
+        "django/db/models/expressions.py": [
+          [
+            1,
+            21
+          ],
+          [
+            22,
+            37
+          ],
+          [
+            868,
+            868
+          ],
+          [
+            1023,
+            1023
+          ],
+          [
+            1128,
+            1128
+          ],
+          [
+            1415,
+            1415
+          ],
+          [
+            1503,
+            1503
+          ],
+          [
+            1583,
+            1583
+          ],
+          [
+            1766,
+            1766
+          ]
+        ],
+        "django/db/backends/postgresql/operations.py": [
+          [
+            1,
+            18
+          ]
+        ]
+      }
+    }
+  ]
+}

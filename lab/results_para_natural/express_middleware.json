@@ -1,0 +1,199 @@
+{
+  "task_id": "express_middleware",
+  "repo": "expressjs/express",
+  "question": "How does express run each middleware in order, and what does calling next() actually do?",
+  "results": [
+    {
+      "task_id": "express_middleware",
+      "strategy": "bm25_ppr",
+      "tokens_total": 26091,
+      "tool_calls": 1,
+      "files_accessed": 14,
+      "recall": 1.0,
+      "precision": 0.21428571428571427,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/router/index.js",
+        "lib/router/route.js",
+        "lib/router/layer.js"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/router/index.js",
+        "lib/middleware/init.js",
+        "lib/application.js",
+        "lib/router/route.js",
+        "lib/response.js",
+        "lib/express.js",
+        "lib/middleware/query.js",
+        "examples/view-locals/index.js",
+        "lib/request.js",
+        "test/Route.js",
+        "lib/router/layer.js",
+        "lib/view.js",
+        "lib/utils.js",
+        "index.js"
+      ],
+      "wall_time_ms": 14.289624989032745,
+      "cold_start_ms": 90.12083406560123
+    },
+    {
+      "task_id": "express_middleware",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8262,
+      "tool_calls": 1,
+      "files_accessed": 14,
+      "recall": 1.0,
+      "precision": 0.21428571428571427,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/router/index.js",
+        "lib/router/route.js",
+        "lib/router/layer.js"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/router/index.js",
+        "lib/middleware/init.js",
+        "lib/application.js",
+        "lib/router/route.js",
+        "lib/response.js",
+        "lib/express.js",
+        "lib/middleware/query.js",
+        "examples/view-locals/index.js",
+        "lib/request.js",
+        "test/Route.js",
+        "lib/router/layer.js",
+        "lib/view.js",
+        "lib/utils.js",
+        "index.js"
+      ],
+      "wall_time_ms": 31.403540982864797,
+      "cold_start_ms": 90.12083406560123,
+      "regions": {
+        "lib/router/index.js": [
+          [
+            1,
+            50
+          ],
+          [
+            621,
+            673
+          ]
+        ],
+        "lib/middleware/init.js": [
+          [
+            1,
+            43
+          ]
+        ],
+        "lib/application.js": [
+          [
+            456,
+            509
+          ],
+          [
+            456,
+            661
+          ]
+        ],
+        "lib/router/route.js": [
+          [
+            1,
+            46
+          ],
+          [
+            89,
+            144
+          ],
+          [
+            89,
+            230
+          ]
+        ],
+        "lib/response.js": [
+          [
+            1,
+            111
+          ],
+          [
+            252,
+            294
+          ]
+        ],
+        "lib/express.js": [
+          [
+            1,
+            60
+          ],
+          [
+            1,
+            116
+          ]
+        ],
+        "lib/middleware/query.js": [
+          [
+            1,
+            47
+          ]
+        ],
+        "examples/view-locals/index.js": [
+          [
+            1,
+            57
+          ],
+          [
+            1,
+            155
+          ]
+        ],
+        "lib/request.js": [
+          [
+            1,
+            47
+          ],
+          [
+            269,
+            329
+          ]
+        ],
+        "test/Route.js": [
+          [
+            1,
+            52
+          ]
+        ],
+        "lib/router/layer.js": [
+          [
+            1,
+            58
+          ]
+        ],
+        "lib/view.js": [
+          [
+            1,
+            59
+          ]
+        ],
+        "lib/utils.js": [
+          [
+            1,
+            48
+          ]
+        ],
+        "index.js": [
+          [
+            1,
+            11
+          ]
+        ]
+      }
+    }
+  ]
+}

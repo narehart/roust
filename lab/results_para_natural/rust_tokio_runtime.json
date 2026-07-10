@@ -1,0 +1,295 @@
+{
+  "task_id": "rust_tokio_runtime",
+  "repo": "tokio-rs/tokio",
+  "question": "How does tokio's runtime schedule and poll async tasks across worker threads?",
+  "results": [
+    {
+      "task_id": "rust_tokio_runtime",
+      "strategy": "bm25_ppr",
+      "tokens_total": 83936,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "tokio/src/runtime/scheduler/current_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker.rs"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+        "tokio/src/runtime/scheduler/current_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker/taskdump.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker/taskdump.rs",
+        "tokio/src/runtime/runtime.rs",
+        "tokio/src/runtime/scheduler/multi_thread/stats.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/stats.rs",
+        "tokio/src/runtime/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/queue.rs",
+        "tokio/src/runtime/scheduler/multi_thread/queue.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/idle.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/idle.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/handle.rs",
+        "tokio/src/runtime/builder.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker/metrics.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker/metrics.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/counters.rs",
+        "tokio/src/runtime/scheduler/multi_thread/handle.rs",
+        "tokio/src/runtime/config.rs",
+        "tokio/src/runtime/scheduler/multi_thread/park.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/park.rs",
+        "tokio/src/runtime/handle.rs",
+        "tokio/src/runtime/task/mod.rs"
+      ],
+      "wall_time_ms": 144.9168750550598,
+      "cold_start_ms": 715.5794589780271
+    },
+    {
+      "task_id": "rust_tokio_runtime",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8190,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "tokio/src/runtime/scheduler/current_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker.rs"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+        "tokio/src/runtime/scheduler/current_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker/taskdump.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker/taskdump.rs",
+        "tokio/src/runtime/runtime.rs",
+        "tokio/src/runtime/scheduler/multi_thread/stats.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/stats.rs",
+        "tokio/src/runtime/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/queue.rs",
+        "tokio/src/runtime/scheduler/multi_thread/queue.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/idle.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/idle.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/handle.rs",
+        "tokio/src/runtime/builder.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker/metrics.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker/metrics.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/counters.rs",
+        "tokio/src/runtime/scheduler/multi_thread/handle.rs",
+        "tokio/src/runtime/config.rs",
+        "tokio/src/runtime/scheduler/multi_thread/park.rs",
+        "tokio/src/runtime/scheduler/multi_thread_alt/park.rs",
+        "tokio/src/runtime/handle.rs",
+        "tokio/src/runtime/task/mod.rs"
+      ],
+      "wall_time_ms": 204.5252500101924,
+      "cold_start_ms": 715.5794589780271,
+      "regions": {
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker.rs": [
+          [
+            1,
+            20
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/worker.rs": [
+          [
+            1,
+            21
+          ]
+        ],
+        "tokio/src/runtime/scheduler/current_thread/mod.rs": [
+          [
+            1,
+            23
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker/taskdump.rs": [
+          [
+            1,
+            23
+          ],
+          [
+            1,
+            79
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/worker/taskdump.rs": [
+          [
+            1,
+            23
+          ],
+          [
+            1,
+            79
+          ]
+        ],
+        "tokio/src/runtime/runtime.rs": [
+          [
+            1,
+            19
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/stats.rs": [
+          [
+            1,
+            18
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/stats.rs": [
+          [
+            1,
+            20
+          ]
+        ],
+        "tokio/src/runtime/mod.rs": [
+          [
+            1,
+            17
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/queue.rs": [
+          [
+            1,
+            20
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/queue.rs": [
+          [
+            1,
+            20
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/mod.rs": [
+          [
+            1,
+            29
+          ],
+          [
+            1,
+            91
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/mod.rs": [
+          [
+            1,
+            28
+          ],
+          [
+            1,
+            103
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/idle.rs": [
+          [
+            1,
+            21
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/idle.rs": [
+          [
+            1,
+            21
+          ],
+          [
+            391,
+            423
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/handle.rs": [
+          [
+            1,
+            25
+          ],
+          [
+            1,
+            85
+          ]
+        ],
+        "tokio/src/runtime/builder.rs": [
+          [
+            1,
+            19
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/worker/metrics.rs": [
+          [
+            1,
+            11
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/worker/metrics.rs": [
+          [
+            1,
+            15
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/counters.rs": [
+          [
+            1,
+            15
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/handle.rs": [
+          [
+            1,
+            25
+          ],
+          [
+            1,
+            83
+          ]
+        ],
+        "tokio/src/runtime/config.rs": [
+          [
+            1,
+            18
+          ],
+          [
+            1,
+            49
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread/park.rs": [
+          [
+            1,
+            23
+          ]
+        ],
+        "tokio/src/runtime/scheduler/multi_thread_alt/park.rs": [
+          [
+            1,
+            24
+          ]
+        ],
+        "tokio/src/runtime/handle.rs": [
+          [
+            1,
+            17
+          ]
+        ],
+        "tokio/src/runtime/task/mod.rs": [
+          [
+            1,
+            19
+          ]
+        ]
+      }
+    }
+  ]
+}

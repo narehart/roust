@@ -1,0 +1,254 @@
+{
+  "task_id": "go_gin_middleware",
+  "repo": "gin-gonic/gin",
+  "question": "How does gin implement middleware chaining and abort handling?",
+  "results": [
+    {
+      "task_id": "go_gin_middleware",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8214,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "gin.go",
+        "context.go",
+        "routergroup.go"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "context.go",
+        "gin.go",
+        "routergroup.go",
+        "auth.go",
+        "tree.go",
+        "logger.go",
+        "recovery.go",
+        "debug.go",
+        "ginS/gins.go",
+        "middleware_test.go",
+        "utils.go",
+        "internal/bytesconv/bytesconv_1.20.go",
+        "binding/binding_nomsgpack.go",
+        "binding/binding.go",
+        "render/msgpack.go",
+        "errors.go",
+        "render/render.go",
+        "response_writer.go",
+        "render/html.go",
+        "path.go",
+        "binding/form_mapping.go",
+        "mode.go",
+        "doc.go",
+        "fs.go",
+        "binding/msgpack.go",
+        "binding/json.go"
+      ],
+      "wall_time_ms": 743.1357919704169,
+      "cold_start_ms": 93.12333294656128,
+      "regions": {
+        "context.go": [
+          [
+            1,
+            27
+          ]
+        ],
+        "gin.go": [
+          [
+            1,
+            21
+          ]
+        ],
+        "routergroup.go": [
+          [
+            1,
+            22
+          ]
+        ],
+        "auth.go": [
+          [
+            1,
+            21
+          ],
+          [
+            1,
+            116
+          ]
+        ],
+        "tree.go": [
+          [
+            1,
+            28
+          ],
+          [
+            1,
+            44
+          ]
+        ],
+        "logger.go": [
+          [
+            1,
+            27
+          ]
+        ],
+        "recovery.go": [
+          [
+            1,
+            21
+          ],
+          [
+            1,
+            152
+          ]
+        ],
+        "debug.go": [
+          [
+            1,
+            24
+          ],
+          [
+            1,
+            111
+          ]
+        ],
+        "ginS/gins.go": [
+          [
+            1,
+            20
+          ]
+        ],
+        "middleware_test.go": [
+          [
+            1,
+            24
+          ]
+        ],
+        "utils.go": [
+          [
+            1,
+            26
+          ],
+          [
+            1,
+            77
+          ]
+        ],
+        "internal/bytesconv/bytesconv_1.20.go": [
+          [
+            1,
+            18
+          ],
+          [
+            1,
+            23
+          ]
+        ],
+        "binding/binding_nomsgpack.go": [
+          [
+            1,
+            19
+          ]
+        ],
+        "binding/binding.go": [
+          [
+            1,
+            18
+          ]
+        ],
+        "render/msgpack.go": [
+          [
+            1,
+            22
+          ],
+          [
+            1,
+            43
+          ]
+        ],
+        "errors.go": [
+          [
+            1,
+            23
+          ]
+        ],
+        "render/render.go": [
+          [
+            1,
+            18
+          ]
+        ],
+        "response_writer.go": [
+          [
+            1,
+            30
+          ],
+          [
+            1,
+            35
+          ]
+        ],
+        "render/html.go": [
+          [
+            1,
+            25
+          ]
+        ],
+        "path.go": [
+          [
+            1,
+            17
+          ]
+        ],
+        "binding/form_mapping.go": [
+          [
+            1,
+            22
+          ]
+        ],
+        "mode.go": [
+          [
+            1,
+            25
+          ]
+        ],
+        "doc.go": [
+          [
+            1,
+            6
+          ]
+        ],
+        "fs.go": [
+          [
+            1,
+            24
+          ],
+          [
+            1,
+            45
+          ]
+        ],
+        "binding/msgpack.go": [
+          [
+            2,
+            28
+          ],
+          [
+            2,
+            37
+          ]
+        ],
+        "binding/json.go": [
+          [
+            1,
+            21
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,621 @@
+{
+  "task_id": "sqlalchemy_sessions",
+  "repo": "sqlalchemy/sqlalchemy",
+  "question": "SQLAlchemy batches your object modifications and writes them to the database at commit time. What component records the changes and orders the writes?",
+  "results": [
+    {
+      "task_id": "sqlalchemy_sessions",
+      "strategy": "bm25_ppr",
+      "tokens_total": 488209,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 0.6666666666666666,
+      "precision": 0.07692307692307693,
+      "required_file_recall": 0.6666666666666666,
+      "missed_required_file_rate": 0.3333333333333333,
+      "missed_required_task_rate": 1.0,
+      "all_required_files_present": false,
+      "required_files_present": [
+        "lib/sqlalchemy/orm/session.py",
+        "lib/sqlalchemy/orm/persistence.py"
+      ],
+      "required_files_missing": [
+        "lib/sqlalchemy/orm/unitofwork.py"
+      ],
+      "result_files": [
+        "lib/sqlalchemy/dialects/postgresql/asyncpg.py",
+        "lib/sqlalchemy/orm/events.py",
+        "lib/sqlalchemy/ext/orderinglist.py",
+        "lib/sqlalchemy/orm/scoping.py",
+        "lib/sqlalchemy/dialects/postgresql/base.py",
+        "lib/sqlalchemy/orm/session.py",
+        "lib/sqlalchemy/engine/url.py",
+        "lib/sqlalchemy/engine/create.py",
+        "lib/sqlalchemy/orm/_orm_constructors.py",
+        "lib/sqlalchemy/dialects/mssql/base.py",
+        "lib/sqlalchemy/orm/state_changes.py",
+        "lib/sqlalchemy/sql/sqltypes.py",
+        "lib/sqlalchemy/orm/collections.py",
+        "lib/sqlalchemy/engine/interfaces.py",
+        "lib/sqlalchemy/dialects/postgresql/psycopg2.py",
+        "lib/sqlalchemy/ext/compiler.py",
+        "lib/sqlalchemy/sql/compiler.py",
+        "lib/sqlalchemy/ext/asyncio/session.py",
+        "lib/sqlalchemy/orm/mapper.py",
+        "lib/sqlalchemy/engine/base.py",
+        "lib/sqlalchemy/engine/default.py",
+        "lib/sqlalchemy/orm/persistence.py",
+        "lib/sqlalchemy/ext/asyncio/scoping.py",
+        "lib/sqlalchemy/sql/util.py",
+        "lib/sqlalchemy/orm/query.py",
+        "lib/sqlalchemy/exc.py"
+      ],
+      "wall_time_ms": 450.08075004443526,
+      "cold_start_ms": 2338.572790962644
+    },
+    {
+      "task_id": "sqlalchemy_sessions",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8465,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 0.6666666666666666,
+      "precision": 0.07692307692307693,
+      "required_file_recall": 0.6666666666666666,
+      "missed_required_file_rate": 0.3333333333333333,
+      "missed_required_task_rate": 1.0,
+      "all_required_files_present": false,
+      "required_files_present": [
+        "lib/sqlalchemy/orm/session.py",
+        "lib/sqlalchemy/orm/persistence.py"
+      ],
+      "required_files_missing": [
+        "lib/sqlalchemy/orm/unitofwork.py"
+      ],
+      "result_files": [
+        "lib/sqlalchemy/dialects/postgresql/asyncpg.py",
+        "lib/sqlalchemy/orm/events.py",
+        "lib/sqlalchemy/ext/orderinglist.py",
+        "lib/sqlalchemy/orm/scoping.py",
+        "lib/sqlalchemy/dialects/postgresql/base.py",
+        "lib/sqlalchemy/orm/session.py",
+        "lib/sqlalchemy/engine/url.py",
+        "lib/sqlalchemy/engine/create.py",
+        "lib/sqlalchemy/orm/_orm_constructors.py",
+        "lib/sqlalchemy/dialects/mssql/base.py",
+        "lib/sqlalchemy/orm/state_changes.py",
+        "lib/sqlalchemy/sql/sqltypes.py",
+        "lib/sqlalchemy/orm/collections.py",
+        "lib/sqlalchemy/engine/interfaces.py",
+        "lib/sqlalchemy/dialects/postgresql/psycopg2.py",
+        "lib/sqlalchemy/ext/compiler.py",
+        "lib/sqlalchemy/sql/compiler.py",
+        "lib/sqlalchemy/ext/asyncio/session.py",
+        "lib/sqlalchemy/orm/mapper.py",
+        "lib/sqlalchemy/engine/base.py",
+        "lib/sqlalchemy/engine/default.py",
+        "lib/sqlalchemy/orm/persistence.py",
+        "lib/sqlalchemy/ext/asyncio/scoping.py",
+        "lib/sqlalchemy/sql/util.py",
+        "lib/sqlalchemy/orm/query.py",
+        "lib/sqlalchemy/exc.py"
+      ],
+      "wall_time_ms": 824.9494159827009,
+      "cold_start_ms": 2338.572790962644,
+      "regions": {
+        "lib/sqlalchemy/dialects/postgresql/asyncpg.py": [
+          [
+            213,
+            216
+          ],
+          [
+            221,
+            224
+          ],
+          [
+            233,
+            236
+          ],
+          [
+            237,
+            240
+          ],
+          [
+            241,
+            244
+          ],
+          [
+            257,
+            260
+          ],
+          [
+            261,
+            264
+          ],
+          [
+            275,
+            278
+          ],
+          [
+            279,
+            284
+          ],
+          [
+            285,
+            290
+          ],
+          [
+            338,
+            342
+          ],
+          [
+            351,
+            354
+          ]
+        ],
+        "lib/sqlalchemy/orm/events.py": [
+          [
+            191,
+            202
+          ]
+        ],
+        "lib/sqlalchemy/ext/orderinglist.py": [
+          [
+            141,
+            162
+          ],
+          [
+            141,
+            187
+          ],
+          [
+            406,
+            416
+          ]
+        ],
+        "lib/sqlalchemy/orm/scoping.py": [
+          [
+            1,
+            20
+          ],
+          [
+            81,
+            96
+          ]
+        ],
+        "lib/sqlalchemy/dialects/postgresql/base.py": [
+          [
+            2715,
+            2738
+          ],
+          [
+            2715,
+            2742
+          ]
+        ],
+        "lib/sqlalchemy/orm/session.py": [
+          [
+            173,
+            193
+          ],
+          [
+            251,
+            265
+          ],
+          [
+            5163,
+            5180
+          ]
+        ],
+        "lib/sqlalchemy/engine/url.py": [
+          [
+            1,
+            45
+          ],
+          [
+            853,
+            873
+          ]
+        ],
+        "lib/sqlalchemy/engine/create.py": [
+          [
+            1,
+            24
+          ]
+        ],
+        "lib/sqlalchemy/orm/_orm_constructors.py": [
+          [
+            81,
+            87
+          ],
+          [
+            2046,
+            2063
+          ]
+        ],
+        "lib/sqlalchemy/dialects/mssql/base.py": [
+          [
+            1185,
+            1195
+          ],
+          [
+            1211,
+            1220
+          ],
+          [
+            1295,
+            1298
+          ],
+          [
+            1299,
+            1309
+          ],
+          [
+            1310,
+            1313
+          ],
+          [
+            1314,
+            1317
+          ],
+          [
+            1318,
+            1325
+          ],
+          [
+            1326,
+            1333
+          ],
+          [
+            1347,
+            1350
+          ],
+          [
+            1351,
+            1354
+          ],
+          [
+            1403,
+            1426
+          ],
+          [
+            1474,
+            1477
+          ],
+          [
+            1502,
+            1505
+          ],
+          [
+            1506,
+            1509
+          ]
+        ],
+        "lib/sqlalchemy/orm/state_changes.py": [
+          [
+            1,
+            32
+          ],
+          [
+            33,
+            36
+          ],
+          [
+            37,
+            42
+          ]
+        ],
+        "lib/sqlalchemy/sql/sqltypes.py": [
+          [
+            259,
+            270
+          ],
+          [
+            3208,
+            3219
+          ],
+          [
+            3220,
+            3231
+          ],
+          [
+            3232,
+            3245
+          ],
+          [
+            3246,
+            3259
+          ],
+          [
+            3260,
+            3271
+          ],
+          [
+            3272,
+            3283
+          ],
+          [
+            3284,
+            3298
+          ],
+          [
+            3299,
+            3310
+          ],
+          [
+            3311,
+            3322
+          ],
+          [
+            3323,
+            3351
+          ],
+          [
+            3352,
+            3357
+          ],
+          [
+            3358,
+            3363
+          ],
+          [
+            3364,
+            3369
+          ],
+          [
+            3370,
+            3375
+          ],
+          [
+            3385,
+            3390
+          ],
+          [
+            3391,
+            3396
+          ],
+          [
+            3397,
+            3402
+          ],
+          [
+            3403,
+            3408
+          ],
+          [
+            3409,
+            3414
+          ],
+          [
+            3415,
+            3420
+          ],
+          [
+            3421,
+            3426
+          ],
+          [
+            3427,
+            3432
+          ],
+          [
+            3500,
+            3516
+          ]
+        ],
+        "lib/sqlalchemy/orm/collections.py": [
+          [
+            1370,
+            1375
+          ]
+        ],
+        "lib/sqlalchemy/engine/interfaces.py": [
+          [
+            109,
+            131
+          ],
+          [
+            132,
+            144
+          ],
+          [
+            346,
+            403
+          ],
+          [
+            3173,
+            3187
+          ]
+        ],
+        "lib/sqlalchemy/dialects/postgresql/psycopg2.py": [
+          [
+            556,
+            559
+          ],
+          [
+            560,
+            563
+          ],
+          [
+            564,
+            587
+          ],
+          [
+            592,
+            602
+          ]
+        ],
+        "lib/sqlalchemy/ext/compiler.py": [
+          [
+            1,
+            19
+          ]
+        ],
+        "lib/sqlalchemy/sql/compiler.py": [
+          [
+            7299,
+            7302
+          ]
+        ],
+        "lib/sqlalchemy/ext/asyncio/session.py": [
+          [
+            1881,
+            1901
+          ]
+        ],
+        "lib/sqlalchemy/orm/mapper.py": [
+          [
+            4221,
+            4221
+          ],
+          [
+            4274,
+            4274
+          ],
+          [
+            4308,
+            4337
+          ]
+        ],
+        "lib/sqlalchemy/engine/base.py": [
+          [
+            1,
+            21
+          ]
+        ],
+        "lib/sqlalchemy/engine/default.py": [
+          [
+            1165,
+            1188
+          ]
+        ],
+        "lib/sqlalchemy/orm/persistence.py": [
+          [
+            1,
+            26
+          ],
+          [
+            1765,
+            1782
+          ]
+        ],
+        "lib/sqlalchemy/ext/asyncio/scoping.py": [
+          [
+            1,
+            21
+          ]
+        ],
+        "lib/sqlalchemy/sql/util.py": [
+          [
+            430,
+            446
+          ]
+        ],
+        "lib/sqlalchemy/orm/query.py": [
+          [
+            1,
+            19
+          ]
+        ],
+        "lib/sqlalchemy/exc.py": [
+          [
+            118,
+            125
+          ],
+          [
+            135,
+            148
+          ],
+          [
+            149,
+            153
+          ],
+          [
+            216,
+            219
+          ],
+          [
+            250,
+            253
+          ],
+          [
+            254,
+            268
+          ],
+          [
+            287,
+            290
+          ],
+          [
+            291,
+            298
+          ],
+          [
+            299,
+            307
+          ],
+          [
+            308,
+            312
+          ],
+          [
+            322,
+            326
+          ],
+          [
+            331,
+            342
+          ],
+          [
+            343,
+            353
+          ],
+          [
+            422,
+            425
+          ],
+          [
+            726,
+            731
+          ],
+          [
+            732,
+            737
+          ],
+          [
+            738,
+            743
+          ],
+          [
+            744,
+            749
+          ],
+          [
+            750,
+            755
+          ],
+          [
+            756,
+            761
+          ],
+          [
+            762,
+            770
+          ],
+          [
+            787,
+            808
+          ],
+          [
+            817,
+            826
+          ],
+          [
+            827,
+            830
+          ]
+        ]
+      }
+    }
+  ]
+}

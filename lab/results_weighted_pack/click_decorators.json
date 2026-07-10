@@ -1,0 +1,292 @@
+{
+  "task_id": "click_decorators",
+  "repo": "pallets/click",
+  "question": "How does click implement command decorators and parameter decoration?",
+  "results": [
+    {
+      "task_id": "click_decorators",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8371,
+      "tool_calls": 1,
+      "files_accessed": 16,
+      "recall": 1.0,
+      "precision": 0.1875,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/click/decorators.py",
+        "src/click/core.py",
+        "src/click/types.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/click/core.py",
+        "src/click/decorators.py",
+        "src/click/parser.py",
+        "src/click/__init__.py",
+        "src/click/types.py",
+        "src/click/shell_completion.py",
+        "src/click/utils.py",
+        "src/click/exceptions.py",
+        "src/click/termui.py",
+        "src/click/formatting.py",
+        "src/click/testing.py",
+        "src/click/globals.py",
+        "src/click/_compat.py",
+        "src/click/_termui_impl.py",
+        "src/click/_winconsole.py",
+        "src/click/_textwrap.py"
+      ],
+      "wall_time_ms": 95.03658395260572,
+      "cold_start_ms": 86.46637492347509,
+      "regions": {
+        "src/click/core.py": [
+          [
+            1,
+            49
+          ],
+          [
+            50,
+            68
+          ],
+          [
+            98,
+            115
+          ],
+          [
+            116,
+            142
+          ],
+          [
+            143,
+            168
+          ],
+          [
+            2974,
+            3047
+          ]
+        ],
+        "src/click/decorators.py": [
+          [
+            1,
+            26
+          ],
+          [
+            27,
+            37
+          ],
+          [
+            99,
+            135
+          ],
+          [
+            137,
+            141
+          ],
+          [
+            143,
+            150
+          ],
+          [
+            152,
+            160
+          ],
+          [
+            162,
+            166
+          ],
+          [
+            167,
+            252
+          ],
+          [
+            254,
+            258
+          ],
+          [
+            260,
+            267
+          ],
+          [
+            269,
+            277
+          ],
+          [
+            279,
+            283
+          ],
+          [
+            284,
+            304
+          ],
+          [
+            305,
+            314
+          ],
+          [
+            315,
+            342
+          ],
+          [
+            343,
+            370
+          ],
+          [
+            371,
+            394
+          ],
+          [
+            395,
+            411
+          ],
+          [
+            525,
+            553
+          ],
+          [
+            554,
+            562
+          ]
+        ],
+        "src/click/parser.py": [
+          [
+            1,
+            41
+          ],
+          [
+            1,
+            50
+          ],
+          [
+            247,
+            254
+          ]
+        ],
+        "src/click/__init__.py": [
+          [
+            1,
+            33
+          ]
+        ],
+        "src/click/types.py": [
+          [
+            1,
+            23
+          ],
+          [
+            157,
+            164
+          ],
+          [
+            189,
+            200
+          ],
+          [
+            405,
+            422
+          ]
+        ],
+        "src/click/shell_completion.py": [
+          [
+            1,
+            16
+          ],
+          [
+            444,
+            468
+          ],
+          [
+            469,
+            477
+          ],
+          [
+            478,
+            501
+          ]
+        ],
+        "src/click/utils.py": [
+          [
+            575,
+            616
+          ]
+        ],
+        "src/click/exceptions.py": [
+          [
+            1,
+            15
+          ],
+          [
+            239,
+            255
+          ],
+          [
+            256,
+            264
+          ],
+          [
+            282,
+            285
+          ]
+        ],
+        "src/click/termui.py": [
+          [
+            1,
+            49
+          ],
+          [
+            56,
+            71
+          ],
+          [
+            591,
+            602
+          ]
+        ],
+        "src/click/formatting.py": [
+          [
+            283,
+            301
+          ]
+        ],
+        "src/click/testing.py": [
+          [
+            1,
+            20
+          ]
+        ],
+        "src/click/globals.py": [
+          [
+            17,
+            19
+          ]
+        ],
+        "src/click/_compat.py": [
+          [
+            205,
+            213
+          ]
+        ],
+        "src/click/_termui_impl.py": [
+          [
+            1,
+            38
+          ]
+        ],
+        "src/click/_winconsole.py": [
+          [
+            263,
+            279
+          ]
+        ],
+        "src/click/_textwrap.py": [
+          [
+            1,
+            5
+          ]
+        ]
+      }
+    }
+  ]
+}

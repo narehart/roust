@@ -1,0 +1,151 @@
+{
+  "task_id": "express_middleware",
+  "repo": "expressjs/express",
+  "question": "How does express implement the middleware chain and next() function?",
+  "results": [
+    {
+      "task_id": "express_middleware",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8095,
+      "tool_calls": 1,
+      "files_accessed": 13,
+      "recall": 1.0,
+      "precision": 0.23076923076923078,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/router/index.js",
+        "lib/router/route.js",
+        "lib/router/layer.js"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/router/route.js",
+        "lib/router/layer.js",
+        "lib/router/index.js",
+        "lib/application.js",
+        "lib/middleware/init.js",
+        "lib/response.js",
+        "lib/express.js",
+        "examples/route-middleware/index.js",
+        "lib/middleware/query.js",
+        "test/Route.js",
+        "lib/view.js",
+        "lib/utils.js",
+        "lib/request.js"
+      ],
+      "wall_time_ms": 28.297291020862758,
+      "cold_start_ms": 93.53775007184595,
+      "regions": {
+        "lib/router/route.js": [
+          [
+            1,
+            106
+          ],
+          [
+            1,
+            230
+          ]
+        ],
+        "lib/router/layer.js": [
+          [
+            1,
+            98
+          ],
+          [
+            1,
+            140
+          ]
+        ],
+        "lib/router/index.js": [
+          [
+            1,
+            84
+          ],
+          [
+            621,
+            673
+          ]
+        ],
+        "lib/application.js": [
+          [
+            1,
+            89
+          ],
+          [
+            99,
+            155
+          ],
+          [
+            435,
+            551
+          ]
+        ],
+        "lib/middleware/init.js": [
+          [
+            1,
+            43
+          ]
+        ],
+        "lib/response.js": [
+          [
+            368,
+            401
+          ]
+        ],
+        "lib/express.js": [
+          [
+            1,
+            51
+          ],
+          [
+            1,
+            116
+          ]
+        ],
+        "examples/route-middleware/index.js": [
+          [
+            1,
+            31
+          ]
+        ],
+        "lib/middleware/query.js": [
+          [
+            1,
+            42
+          ],
+          [
+            1,
+            47
+          ]
+        ],
+        "test/Route.js": [
+          [
+            1,
+            34
+          ]
+        ],
+        "lib/view.js": [
+          [
+            1,
+            59
+          ]
+        ],
+        "lib/utils.js": [
+          [
+            1,
+            48
+          ]
+        ],
+        "lib/request.js": [
+          [
+            1,
+            47
+          ]
+        ]
+      }
+    }
+  ]
+}

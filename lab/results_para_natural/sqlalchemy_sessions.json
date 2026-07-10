@@ -1,0 +1,447 @@
+{
+  "task_id": "sqlalchemy_sessions",
+  "repo": "sqlalchemy/sqlalchemy",
+  "question": "How does the SQLAlchemy Session track object changes and flush them as a unit of work?",
+  "results": [
+    {
+      "task_id": "sqlalchemy_sessions",
+      "strategy": "bm25_ppr",
+      "tokens_total": 378352,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/sqlalchemy/orm/session.py",
+        "lib/sqlalchemy/orm/unitofwork.py",
+        "lib/sqlalchemy/orm/persistence.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/sqlalchemy/orm/_orm_constructors.py",
+        "lib/sqlalchemy/orm/session.py",
+        "lib/sqlalchemy/orm/state.py",
+        "lib/sqlalchemy/orm/unitofwork.py",
+        "lib/sqlalchemy/dialects/sqlite/pysqlite.py",
+        "lib/sqlalchemy/orm/events.py",
+        "lib/sqlalchemy/orm/persistence.py",
+        "lib/sqlalchemy/ext/asyncio/session.py",
+        "lib/sqlalchemy/ext/mutable.py",
+        "lib/sqlalchemy/ext/indexable.py",
+        "lib/sqlalchemy/orm/state_changes.py",
+        "lib/sqlalchemy/orm/mapper.py",
+        "lib/sqlalchemy/orm/loading.py",
+        "lib/sqlalchemy/orm/attributes.py",
+        "lib/sqlalchemy/exc.py",
+        "lib/sqlalchemy/orm/scoping.py",
+        "lib/sqlalchemy/ext/asyncio/scoping.py",
+        "lib/sqlalchemy/util/topological.py",
+        "lib/sqlalchemy/dialects/sqlite/base.py",
+        "lib/sqlalchemy/event/base.py",
+        "lib/sqlalchemy/orm/relationships.py",
+        "lib/sqlalchemy/orm/decl_api.py",
+        "lib/sqlalchemy/orm/writeonly.py",
+        "lib/sqlalchemy/orm/strategies.py",
+        "lib/sqlalchemy/orm/interfaces.py",
+        "lib/sqlalchemy/orm/query.py"
+      ],
+      "wall_time_ms": 432.338000042364,
+      "cold_start_ms": 2353.527541970834
+    },
+    {
+      "task_id": "sqlalchemy_sessions",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8386,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/sqlalchemy/orm/session.py",
+        "lib/sqlalchemy/orm/unitofwork.py",
+        "lib/sqlalchemy/orm/persistence.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/sqlalchemy/orm/_orm_constructors.py",
+        "lib/sqlalchemy/orm/session.py",
+        "lib/sqlalchemy/orm/state.py",
+        "lib/sqlalchemy/orm/unitofwork.py",
+        "lib/sqlalchemy/dialects/sqlite/pysqlite.py",
+        "lib/sqlalchemy/orm/events.py",
+        "lib/sqlalchemy/orm/persistence.py",
+        "lib/sqlalchemy/ext/asyncio/session.py",
+        "lib/sqlalchemy/ext/mutable.py",
+        "lib/sqlalchemy/ext/indexable.py",
+        "lib/sqlalchemy/orm/state_changes.py",
+        "lib/sqlalchemy/orm/mapper.py",
+        "lib/sqlalchemy/orm/loading.py",
+        "lib/sqlalchemy/orm/attributes.py",
+        "lib/sqlalchemy/exc.py",
+        "lib/sqlalchemy/orm/scoping.py",
+        "lib/sqlalchemy/ext/asyncio/scoping.py",
+        "lib/sqlalchemy/util/topological.py",
+        "lib/sqlalchemy/dialects/sqlite/base.py",
+        "lib/sqlalchemy/event/base.py",
+        "lib/sqlalchemy/orm/relationships.py",
+        "lib/sqlalchemy/orm/decl_api.py",
+        "lib/sqlalchemy/orm/writeonly.py",
+        "lib/sqlalchemy/orm/strategies.py",
+        "lib/sqlalchemy/orm/interfaces.py",
+        "lib/sqlalchemy/orm/query.py"
+      ],
+      "wall_time_ms": 732.7894999179989,
+      "cold_start_ms": 2353.527541970834,
+      "regions": {
+        "lib/sqlalchemy/orm/_orm_constructors.py": [
+          [
+            81,
+            87
+          ],
+          [
+            2046,
+            2072
+          ],
+          [
+            2222,
+            2256
+          ]
+        ],
+        "lib/sqlalchemy/orm/session.py": [
+          [
+            173,
+            193
+          ],
+          [
+            194,
+            200
+          ],
+          [
+            251,
+            265
+          ],
+          [
+            821,
+            844
+          ],
+          [
+            1449,
+            1454
+          ],
+          [
+            5163,
+            5180
+          ],
+          [
+            5285,
+            5301
+          ]
+        ],
+        "lib/sqlalchemy/orm/state.py": [
+          [
+            1011,
+            1032
+          ]
+        ],
+        "lib/sqlalchemy/orm/unitofwork.py": [
+          [
+            1,
+            27
+          ],
+          [
+            1,
+            42
+          ],
+          [
+            554,
+            569
+          ]
+        ],
+        "lib/sqlalchemy/dialects/sqlite/pysqlite.py": [
+          [
+            739,
+            756
+          ]
+        ],
+        "lib/sqlalchemy/orm/events.py": [
+          [
+            191,
+            202
+          ],
+          [
+            1552,
+            1570
+          ]
+        ],
+        "lib/sqlalchemy/orm/persistence.py": [
+          [
+            1,
+            26
+          ],
+          [
+            1,
+            39
+          ],
+          [
+            1739,
+            1764
+          ]
+        ],
+        "lib/sqlalchemy/ext/asyncio/session.py": [
+          [
+            178,
+            206
+          ],
+          [
+            1910,
+            1922
+          ],
+          [
+            1923,
+            1936
+          ]
+        ],
+        "lib/sqlalchemy/ext/mutable.py": [
+          [
+            725,
+            747
+          ],
+          [
+            725,
+            749
+          ]
+        ],
+        "lib/sqlalchemy/ext/indexable.py": [
+          [
+            1,
+            22
+          ]
+        ],
+        "lib/sqlalchemy/orm/state_changes.py": [
+          [
+            1,
+            32
+          ],
+          [
+            33,
+            36
+          ],
+          [
+            37,
+            42
+          ]
+        ],
+        "lib/sqlalchemy/orm/mapper.py": [
+          [
+            4221,
+            4221
+          ],
+          [
+            4274,
+            4274
+          ]
+        ],
+        "lib/sqlalchemy/orm/loading.py": [
+          [
+            299,
+            299
+          ],
+          [
+            364,
+            364
+          ],
+          [
+            449,
+            486
+          ]
+        ],
+        "lib/sqlalchemy/orm/attributes.py": [
+          [
+            2514,
+            2553
+          ],
+          [
+            2729,
+            2762
+          ],
+          [
+            2763,
+            2776
+          ],
+          [
+            2777,
+            2790
+          ],
+          [
+            2791,
+            2813
+          ],
+          [
+            2814,
+            2835
+          ]
+        ],
+        "lib/sqlalchemy/exc.py": [
+          [
+            118,
+            125
+          ],
+          [
+            135,
+            148
+          ],
+          [
+            216,
+            219
+          ],
+          [
+            250,
+            253
+          ],
+          [
+            254,
+            268
+          ],
+          [
+            287,
+            290
+          ],
+          [
+            291,
+            298
+          ],
+          [
+            299,
+            307
+          ],
+          [
+            308,
+            312
+          ],
+          [
+            322,
+            326
+          ],
+          [
+            331,
+            342
+          ],
+          [
+            343,
+            353
+          ],
+          [
+            410,
+            413
+          ],
+          [
+            422,
+            425
+          ],
+          [
+            771,
+            779
+          ],
+          [
+            787,
+            808
+          ],
+          [
+            817,
+            826
+          ]
+        ],
+        "lib/sqlalchemy/orm/scoping.py": [
+          [
+            81,
+            96
+          ]
+        ],
+        "lib/sqlalchemy/ext/asyncio/scoping.py": [
+          [
+            66,
+            96
+          ]
+        ],
+        "lib/sqlalchemy/util/topological.py": [
+          [
+            1,
+            28
+          ]
+        ],
+        "lib/sqlalchemy/dialects/sqlite/base.py": [
+          [
+            1157,
+            1176
+          ]
+        ],
+        "lib/sqlalchemy/event/base.py": [
+          [
+            1,
+            24
+          ]
+        ],
+        "lib/sqlalchemy/orm/relationships.py": [
+          [
+            3445,
+            3465
+          ]
+        ],
+        "lib/sqlalchemy/orm/decl_api.py": [
+          [
+            480,
+            502
+          ]
+        ],
+        "lib/sqlalchemy/orm/writeonly.py": [
+          [
+            1,
+            26
+          ]
+        ],
+        "lib/sqlalchemy/orm/strategies.py": [
+          [
+            620,
+            629
+          ],
+          [
+            675,
+            675
+          ]
+        ],
+        "lib/sqlalchemy/orm/interfaces.py": [
+          [
+            115,
+            121
+          ],
+          [
+            139,
+            148
+          ],
+          [
+            1322,
+            1344
+          ],
+          [
+            1345,
+            1354
+          ]
+        ],
+        "lib/sqlalchemy/orm/query.py": [
+          [
+            1,
+            19
+          ]
+        ]
+      }
+    }
+  ]
+}

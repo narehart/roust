@@ -1,0 +1,187 @@
+{
+  "task_id": "express_error_handling",
+  "repo": "expressjs/express",
+  "question": "In express, a failure inside one handler ends up in the four-argument handler at the end of the stack. How is that failure propagated and dispatched?",
+  "results": [
+    {
+      "task_id": "express_error_handling",
+      "strategy": "bm25_ppr",
+      "tokens_total": 29820,
+      "tool_calls": 1,
+      "files_accessed": 14,
+      "recall": 1.0,
+      "precision": 0.21428571428571427,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/router/layer.js",
+        "lib/router/index.js",
+        "lib/application.js"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/router/route.js",
+        "lib/router/index.js",
+        "lib/application.js",
+        "lib/response.js",
+        "lib/router/layer.js",
+        "test/Route.js",
+        "lib/request.js",
+        "test/Router.js",
+        "lib/express.js",
+        "examples/error/index.js",
+        "lib/view.js",
+        "lib/utils.js",
+        "lib/middleware/init.js",
+        "lib/middleware/query.js"
+      ],
+      "wall_time_ms": 14.688625000417233,
+      "cold_start_ms": 88.18391698878258
+    },
+    {
+      "task_id": "express_error_handling",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8146,
+      "tool_calls": 1,
+      "files_accessed": 14,
+      "recall": 1.0,
+      "precision": 0.21428571428571427,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/router/layer.js",
+        "lib/router/index.js",
+        "lib/application.js"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/router/route.js",
+        "lib/router/index.js",
+        "lib/application.js",
+        "lib/response.js",
+        "lib/router/layer.js",
+        "test/Route.js",
+        "lib/request.js",
+        "test/Router.js",
+        "lib/express.js",
+        "examples/error/index.js",
+        "lib/view.js",
+        "lib/utils.js",
+        "lib/middleware/init.js",
+        "lib/middleware/query.js"
+      ],
+      "wall_time_ms": 34.20612495392561,
+      "cold_start_ms": 88.18391698878258,
+      "regions": {
+        "lib/router/route.js": [
+          [
+            1,
+            60
+          ],
+          [
+            1,
+            230
+          ]
+        ],
+        "lib/router/index.js": [
+          [
+            602,
+            655
+          ],
+          [
+            602,
+            673
+          ]
+        ],
+        "lib/application.js": [
+          [
+            1,
+            390
+          ],
+          [
+            461,
+            513
+          ]
+        ],
+        "lib/response.js": [
+          [
+            1,
+            47
+          ]
+        ],
+        "lib/router/layer.js": [
+          [
+            1,
+            59
+          ]
+        ],
+        "test/Route.js": [
+          [
+            1,
+            52
+          ]
+        ],
+        "lib/request.js": [
+          [
+            1,
+            45
+          ]
+        ],
+        "test/Router.js": [
+          [
+            1,
+            43
+          ]
+        ],
+        "lib/express.js": [
+          [
+            1,
+            60
+          ]
+        ],
+        "examples/error/index.js": [
+          [
+            1,
+            48
+          ],
+          [
+            1,
+            53
+          ]
+        ],
+        "lib/view.js": [
+          [
+            1,
+            58
+          ]
+        ],
+        "lib/utils.js": [
+          [
+            1,
+            50
+          ],
+          [
+            251,
+            303
+          ]
+        ],
+        "lib/middleware/init.js": [
+          [
+            1,
+            43
+          ]
+        ],
+        "lib/middleware/query.js": [
+          [
+            1,
+            42
+          ]
+        ]
+      }
+    }
+  ]
+}

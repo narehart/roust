@@ -558,14 +558,24 @@ def pack_regions(
     covered: set[str] = set()
 
     # pass 1: best region per file (recall guarantee for the selected set).
-    # Every file gets representation, but capped so the total stays in budget:
-    # per-file allowance = budget / (2 * n_files), floor 120 tokens.
-    per_file_cap = max(120, budget_tokens // (2 * max(len(files), 1)))
+    # Every file gets representation. Allowances are evidence-proportional:
+    # a floor of 120 tokens each, with half the budget's remainder distributed
+    # by file score, so top-evidence files get deep regions instead of every
+    # file getting an equally thin slice.
+    n_files = max(len(files), 1)
+    floor_tok = 120
+    spare = max(0, budget_tokens // 2 - floor_tok * n_files)
+    total_score = sum(scores.get(f, 0.0) for f in files) or 1.0
+    caps = {
+        f: floor_tok + int(spare * scores.get(f, 0.0) / total_score)
+        for f in files
+    }
     for rel in files:
         cands = [c for c in candidates if c["file"] == rel]
         if not cands:
             continue
         best = max(cands, key=lambda c: c["gain"] / max(c["tok"], 1))
+        per_file_cap = caps[rel]
         if best["tok"] > per_file_cap:
             a, b = best["span"]
             seg_lines = corpus.text[rel].splitlines()[a - 1: b]

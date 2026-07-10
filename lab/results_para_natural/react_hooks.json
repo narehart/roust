@@ -1,0 +1,287 @@
+{
+  "task_id": "react_hooks",
+  "repo": "facebook/react",
+  "question": "How does React implement useState and useEffect state across renders?",
+  "results": [
+    {
+      "task_id": "react_hooks",
+      "strategy": "bm25_ppr",
+      "tokens_total": 65938,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 0.5,
+      "precision": 0.038461538461538464,
+      "required_file_recall": 0.5,
+      "missed_required_file_rate": 0.5,
+      "missed_required_task_rate": 1.0,
+      "all_required_files_present": false,
+      "required_files_present": [
+        "packages/react/src/ReactHooks.js"
+      ],
+      "required_files_missing": [
+        "packages/react-reconciler/src/ReactFiberHooks.js"
+      ],
+      "result_files": [
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoSetStateInPassiveEffects.ts",
+        "packages/use-sync-external-store/src/useSyncExternalStoreShimClient.js",
+        "packages/react/src/ReactHooks.js",
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferFunctionEffects.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoSetStateInRender.ts",
+        "packages/react-devtools-shell/src/app/EditableProps/index.js",
+        "packages/react-reconciler/src/ReactFiberCommitEffects.js",
+        "packages/react-devtools-shared/src/devtools/views/Components/NativeStyleEditor/context.js",
+        "packages/react-dom-bindings/src/shared/ReactDOMFormActions.js",
+        "packages/react-devtools-shell/src/app/InspectableElements/CustomHooks.js",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateMemoizedEffectDependencies.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateLocalsNotReassignedAfterRender.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferReferenceEffects.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoRefAccesInRender.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Entrypoint/Pipeline.ts",
+        "packages/use-sync-external-store/src/useSyncExternalStoreShim.js",
+        "packages/react/src/ReactClient.js",
+        "compiler/packages/babel-plugin-react-compiler/src/HIR/visitors.ts",
+        "packages/react-devtools-shell/src/app/index.js",
+        "packages/use-sync-external-store/src/useSyncExternalStoreWithSelector.js",
+        "compiler/packages/babel-plugin-react-compiler/src/Utils/Result.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferMutableContextVariables.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/AnalyseFunctions.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidatePreservedManualMemoization.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateHooksUsage.ts",
+        "packages/react/index.fb.js"
+      ],
+      "wall_time_ms": 252.37212504725903,
+      "cold_start_ms": 2641.7800829513
+    },
+    {
+      "task_id": "react_hooks",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8393,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 0.5,
+      "precision": 0.038461538461538464,
+      "required_file_recall": 0.5,
+      "missed_required_file_rate": 0.5,
+      "missed_required_task_rate": 1.0,
+      "all_required_files_present": false,
+      "required_files_present": [
+        "packages/react/src/ReactHooks.js"
+      ],
+      "required_files_missing": [
+        "packages/react-reconciler/src/ReactFiberHooks.js"
+      ],
+      "result_files": [
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoSetStateInPassiveEffects.ts",
+        "packages/use-sync-external-store/src/useSyncExternalStoreShimClient.js",
+        "packages/react/src/ReactHooks.js",
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferFunctionEffects.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoSetStateInRender.ts",
+        "packages/react-devtools-shell/src/app/EditableProps/index.js",
+        "packages/react-reconciler/src/ReactFiberCommitEffects.js",
+        "packages/react-devtools-shared/src/devtools/views/Components/NativeStyleEditor/context.js",
+        "packages/react-dom-bindings/src/shared/ReactDOMFormActions.js",
+        "packages/react-devtools-shell/src/app/InspectableElements/CustomHooks.js",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateMemoizedEffectDependencies.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateLocalsNotReassignedAfterRender.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferReferenceEffects.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoRefAccesInRender.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Entrypoint/Pipeline.ts",
+        "packages/use-sync-external-store/src/useSyncExternalStoreShim.js",
+        "packages/react/src/ReactClient.js",
+        "compiler/packages/babel-plugin-react-compiler/src/HIR/visitors.ts",
+        "packages/react-devtools-shell/src/app/index.js",
+        "packages/use-sync-external-store/src/useSyncExternalStoreWithSelector.js",
+        "compiler/packages/babel-plugin-react-compiler/src/Utils/Result.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferMutableContextVariables.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/AnalyseFunctions.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidatePreservedManualMemoization.ts",
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateHooksUsage.ts",
+        "packages/react/index.fb.js"
+      ],
+      "wall_time_ms": 281.28333401400596,
+      "cold_start_ms": 2641.7800829513,
+      "regions": {
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoSetStateInPassiveEffects.ts": [
+          [
+            1,
+            25
+          ]
+        ],
+        "packages/use-sync-external-store/src/useSyncExternalStoreShimClient.js": [
+          [
+            1,
+            17
+          ],
+          [
+            1,
+            149
+          ]
+        ],
+        "packages/react/src/ReactHooks.js": [
+          [
+            1,
+            21
+          ],
+          [
+            1,
+            165
+          ],
+          [
+            191,
+            250
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferFunctionEffects.ts": [
+          [
+            1,
+            21
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoSetStateInRender.ts": [
+          [
+            1,
+            22
+          ]
+        ],
+        "packages/react-devtools-shell/src/app/EditableProps/index.js": [
+          [
+            1,
+            23
+          ]
+        ],
+        "packages/react-reconciler/src/ReactFiberCommitEffects.js": [
+          [
+            1,
+            23
+          ]
+        ],
+        "packages/react-devtools-shared/src/devtools/views/Components/NativeStyleEditor/context.js": [
+          [
+            1,
+            23
+          ]
+        ],
+        "packages/react-dom-bindings/src/shared/ReactDOMFormActions.js": [
+          [
+            1,
+            20
+          ],
+          [
+            1,
+            95
+          ]
+        ],
+        "packages/react-devtools-shell/src/app/InspectableElements/CustomHooks.js": [
+          [
+            1,
+            26
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateMemoizedEffectDependencies.ts": [
+          [
+            1,
+            21
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateLocalsNotReassignedAfterRender.ts": [
+          [
+            1,
+            22
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferReferenceEffects.ts": [
+          [
+            789,
+            812
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateNoRefAccesInRender.ts": [
+          [
+            547,
+            569
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Entrypoint/Pipeline.ts": [
+          [
+            184,
+            207
+          ]
+        ],
+        "packages/use-sync-external-store/src/useSyncExternalStoreShim.js": [
+          [
+            1,
+            18
+          ],
+          [
+            1,
+            21
+          ]
+        ],
+        "packages/react/src/ReactClient.js": [
+          [
+            1,
+            25
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/HIR/visitors.ts": [
+          [
+            1,
+            29
+          ]
+        ],
+        "packages/react-devtools-shell/src/app/index.js": [
+          [
+            1,
+            23
+          ]
+        ],
+        "packages/use-sync-external-store/src/useSyncExternalStoreWithSelector.js": [
+          [
+            1,
+            20
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Utils/Result.ts": [
+          [
+            137,
+            162
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/InferMutableContextVariables.ts": [
+          [
+            1,
+            19
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Inference/AnalyseFunctions.ts": [
+          [
+            1,
+            22
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidatePreservedManualMemoization.ts": [
+          [
+            1,
+            23
+          ]
+        ],
+        "compiler/packages/babel-plugin-react-compiler/src/Validation/ValidateHooksUsage.ts": [
+          [
+            260,
+            280
+          ]
+        ],
+        "packages/react/index.fb.js": [
+          [
+            1,
+            29
+          ],
+          [
+            1,
+            69
+          ]
+        ]
+      }
+    }
+  ]
+}

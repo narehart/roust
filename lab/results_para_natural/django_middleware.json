@@ -1,0 +1,543 @@
+{
+  "task_id": "django_middleware",
+  "repo": "django/django",
+  "question": "Where in Django does an incoming request pass through the configured middleware before reaching the view, and how is the response path handled?",
+  "results": [
+    {
+      "task_id": "django_middleware",
+      "strategy": "bm25_ppr",
+      "tokens_total": 36773,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "django/core/handlers/base.py",
+        "django/core/handlers/wsgi.py",
+        "django/middleware/common.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "django/middleware/csrf.py",
+        "django/contrib/auth/middleware.py",
+        "django/contrib/redirects/middleware.py",
+        "django/core/handlers/base.py",
+        "django/core/handlers/wsgi.py",
+        "django/views/generic/base.py",
+        "django/views/defaults.py",
+        "django/contrib/admindocs/middleware.py",
+        "django/contrib/staticfiles/handlers.py",
+        "django/views/csrf.py",
+        "django/middleware/common.py",
+        "django/contrib/auth/views.py",
+        "django/middleware/locale.py",
+        "django/middleware/security.py",
+        "django/middleware/cache.py",
+        "django/views/decorators/csrf.py",
+        "django/contrib/auth/__init__.py",
+        "django/core/exceptions.py",
+        "django/core/handlers/asgi.py",
+        "django/core/servers/basehttp.py",
+        "django/contrib/redirects/models.py",
+        "django/views/generic/edit.py",
+        "django/contrib/auth/decorators.py",
+        "django/contrib/auth/mixins.py",
+        "django/contrib/auth/backends.py",
+        "django/middleware/http.py"
+      ],
+      "wall_time_ms": 304.8959580482915,
+      "cold_start_ms": 2700.866583036259
+    },
+    {
+      "task_id": "django_middleware",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8439,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "django/core/handlers/base.py",
+        "django/core/handlers/wsgi.py",
+        "django/middleware/common.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "django/middleware/csrf.py",
+        "django/contrib/auth/middleware.py",
+        "django/contrib/redirects/middleware.py",
+        "django/core/handlers/base.py",
+        "django/core/handlers/wsgi.py",
+        "django/views/generic/base.py",
+        "django/views/defaults.py",
+        "django/contrib/admindocs/middleware.py",
+        "django/contrib/staticfiles/handlers.py",
+        "django/views/csrf.py",
+        "django/middleware/common.py",
+        "django/contrib/auth/views.py",
+        "django/middleware/locale.py",
+        "django/middleware/security.py",
+        "django/middleware/cache.py",
+        "django/views/decorators/csrf.py",
+        "django/contrib/auth/__init__.py",
+        "django/core/exceptions.py",
+        "django/core/handlers/asgi.py",
+        "django/core/servers/basehttp.py",
+        "django/contrib/redirects/models.py",
+        "django/views/generic/edit.py",
+        "django/contrib/auth/decorators.py",
+        "django/contrib/auth/mixins.py",
+        "django/contrib/auth/backends.py",
+        "django/middleware/http.py"
+      ],
+      "wall_time_ms": 335.9039999777451,
+      "cold_start_ms": 2700.866583036259,
+      "regions": {
+        "django/middleware/csrf.py": [
+          [
+            1,
+            49
+          ],
+          [
+            50,
+            54
+          ],
+          [
+            84,
+            95
+          ],
+          [
+            96,
+            116
+          ],
+          [
+            117,
+            124
+          ],
+          [
+            160,
+            164
+          ]
+        ],
+        "django/contrib/auth/middleware.py": [
+          [
+            1,
+            14
+          ],
+          [
+            15,
+            20
+          ],
+          [
+            21,
+            26
+          ],
+          [
+            27,
+            40
+          ],
+          [
+            41,
+            90
+          ],
+          [
+            180,
+            191
+          ]
+        ],
+        "django/contrib/redirects/middleware.py": [
+          [
+            1,
+            9
+          ],
+          [
+            10,
+            50
+          ]
+        ],
+        "django/core/handlers/base.py": [
+          [
+            1,
+            19
+          ],
+          [
+            368,
+            373
+          ]
+        ],
+        "django/core/handlers/wsgi.py": [
+          [
+            1,
+            14
+          ],
+          [
+            147,
+            153
+          ],
+          [
+            154,
+            186
+          ],
+          [
+            187,
+            199
+          ]
+        ],
+        "django/views/generic/base.py": [
+          [
+            1,
+            20
+          ],
+          [
+            21,
+            35
+          ],
+          [
+            182,
+            219
+          ],
+          [
+            220,
+            229
+          ]
+        ],
+        "django/views/defaults.py": [
+          [
+            1,
+            33
+          ],
+          [
+            83,
+            101
+          ],
+          [
+            103,
+            124
+          ],
+          [
+            126,
+            150
+          ]
+        ],
+        "django/contrib/admindocs/middleware.py": [
+          [
+            1,
+            8
+          ],
+          [
+            9,
+            33
+          ]
+        ],
+        "django/contrib/staticfiles/handlers.py": [
+          [
+            1,
+            14
+          ],
+          [
+            67,
+            83
+          ],
+          [
+            84,
+            115
+          ]
+        ],
+        "django/views/csrf.py": [
+          [
+            1,
+            11
+          ],
+          [
+            12,
+            21
+          ]
+        ],
+        "django/middleware/common.py": [
+          [
+            1,
+            12
+          ]
+        ],
+        "django/contrib/auth/views.py": [
+          [
+            172,
+            179
+          ],
+          [
+            250,
+            254
+          ],
+          [
+            378,
+            384
+          ]
+        ],
+        "django/middleware/locale.py": [
+          [
+            1,
+            9
+          ]
+        ],
+        "django/middleware/security.py": [
+          [
+            1,
+            7
+          ]
+        ],
+        "django/middleware/cache.py": [
+          [
+            1,
+            21
+          ]
+        ],
+        "django/views/decorators/csrf.py": [
+          [
+            1,
+            16
+          ],
+          [
+            17,
+            31
+          ],
+          [
+            32,
+            50
+          ]
+        ],
+        "django/contrib/auth/__init__.py": [
+          [
+            1,
+            21
+          ],
+          [
+            22,
+            25
+          ],
+          [
+            26,
+            38
+          ],
+          [
+            59,
+            64
+          ],
+          [
+            97,
+            101
+          ],
+          [
+            155,
+            159
+          ],
+          [
+            160,
+            177
+          ],
+          [
+            178,
+            182
+          ],
+          [
+            244,
+            248
+          ]
+        ],
+        "django/core/exceptions.py": [
+          [
+            1,
+            9
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            16,
+            21
+          ],
+          [
+            22,
+            27
+          ],
+          [
+            28,
+            33
+          ],
+          [
+            38,
+            43
+          ],
+          [
+            44,
+            49
+          ],
+          [
+            50,
+            55
+          ],
+          [
+            56,
+            61
+          ],
+          [
+            62,
+            70
+          ],
+          [
+            71,
+            79
+          ],
+          [
+            80,
+            88
+          ],
+          [
+            89,
+            94
+          ],
+          [
+            95,
+            100
+          ],
+          [
+            101,
+            106
+          ],
+          [
+            107,
+            112
+          ],
+          [
+            113,
+            118
+          ],
+          [
+            119,
+            124
+          ],
+          [
+            125,
+            133
+          ],
+          [
+            240,
+            245
+          ],
+          [
+            246,
+            251
+          ],
+          [
+            252,
+            255
+          ]
+        ],
+        "django/core/handlers/asgi.py": [
+          [
+            1,
+            28
+          ],
+          [
+            29,
+            37
+          ]
+        ],
+        "django/core/servers/basehttp.py": [
+          [
+            1,
+            24
+          ],
+          [
+            1,
+            27
+          ]
+        ],
+        "django/contrib/redirects/models.py": [
+          [
+            1,
+            5
+          ]
+        ],
+        "django/views/generic/edit.py": [
+          [
+            1,
+            12
+          ],
+          [
+            137,
+            160
+          ],
+          [
+            161,
+            164
+          ],
+          [
+            165,
+            168
+          ],
+          [
+            169,
+            184
+          ],
+          [
+            185,
+            192
+          ],
+          [
+            193,
+            208
+          ],
+          [
+            209,
+            214
+          ],
+          [
+            241,
+            267
+          ],
+          [
+            268,
+            274
+          ]
+        ],
+        "django/contrib/auth/decorators.py": [
+          [
+            89,
+            96
+          ]
+        ],
+        "django/contrib/auth/mixins.py": [
+          [
+            1,
+            9
+          ],
+          [
+            67,
+            75
+          ]
+        ],
+        "django/contrib/auth/backends.py": [
+          [
+            1,
+            7
+          ]
+        ],
+        "django/middleware/http.py": [
+          [
+            1,
+            5
+          ]
+        ]
+      }
+    }
+  ]
+}

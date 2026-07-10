@@ -1,0 +1,446 @@
+{
+  "task_id": "django_middleware",
+  "repo": "django/django",
+  "question": "How does Django implement the middleware chain for request/response processing?",
+  "results": [
+    {
+      "task_id": "django_middleware",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8468,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "django/core/handlers/base.py",
+        "django/core/handlers/wsgi.py",
+        "django/middleware/common.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "django/core/handlers/base.py",
+        "django/contrib/messages/middleware.py",
+        "django/middleware/csrf.py",
+        "django/middleware/cache.py",
+        "django/middleware/clickjacking.py",
+        "django/middleware/common.py",
+        "django/contrib/redirects/middleware.py",
+        "django/middleware/http.py",
+        "django/contrib/auth/middleware.py",
+        "django/contrib/admindocs/middleware.py",
+        "django/core/handlers/exception.py",
+        "django/core/handlers/asgi.py",
+        "django/middleware/security.py",
+        "django/middleware/locale.py",
+        "django/middleware/gzip.py",
+        "django/template/context_processors.py",
+        "django/utils/deprecation.py",
+        "django/views/decorators/csrf.py",
+        "django/views/decorators/cache.py",
+        "django/core/mail/__init__.py",
+        "django/core/handlers/wsgi.py",
+        "django/core/exceptions.py",
+        "django/views/csrf.py",
+        "django/utils/cache.py",
+        "django/core/checks/security/csrf.py",
+        "django/contrib/auth/__init__.py"
+      ],
+      "wall_time_ms": 315.0749580236152,
+      "cold_start_ms": 2615.469334064983,
+      "regions": {
+        "django/core/handlers/base.py": [
+          [
+            1,
+            19
+          ],
+          [
+            368,
+            373
+          ]
+        ],
+        "django/contrib/messages/middleware.py": [
+          [
+            1,
+            5
+          ],
+          [
+            6,
+            26
+          ]
+        ],
+        "django/middleware/csrf.py": [
+          [
+            1,
+            49
+          ],
+          [
+            84,
+            95
+          ],
+          [
+            96,
+            116
+          ],
+          [
+            117,
+            124
+          ],
+          [
+            143,
+            159
+          ],
+          [
+            160,
+            164
+          ]
+        ],
+        "django/middleware/cache.py": [
+          [
+            1,
+            22
+          ],
+          [
+            1,
+            60
+          ]
+        ],
+        "django/middleware/clickjacking.py": [
+          [
+            1,
+            11
+          ],
+          [
+            12,
+            48
+          ]
+        ],
+        "django/middleware/common.py": [
+          [
+            1,
+            12
+          ]
+        ],
+        "django/contrib/redirects/middleware.py": [
+          [
+            1,
+            9
+          ],
+          [
+            10,
+            50
+          ]
+        ],
+        "django/middleware/http.py": [
+          [
+            1,
+            5
+          ],
+          [
+            6,
+            40
+          ]
+        ],
+        "django/contrib/auth/middleware.py": [
+          [
+            1,
+            14
+          ],
+          [
+            15,
+            20
+          ],
+          [
+            21,
+            26
+          ],
+          [
+            27,
+            40
+          ],
+          [
+            41,
+            90
+          ],
+          [
+            180,
+            191
+          ]
+        ],
+        "django/contrib/admindocs/middleware.py": [
+          [
+            1,
+            8
+          ],
+          [
+            9,
+            33
+          ]
+        ],
+        "django/core/handlers/exception.py": [
+          [
+            1,
+            23
+          ],
+          [
+            24,
+            62
+          ],
+          [
+            161,
+            171
+          ],
+          [
+            172,
+            185
+          ]
+        ],
+        "django/core/handlers/asgi.py": [
+          [
+            1,
+            28
+          ]
+        ],
+        "django/middleware/security.py": [
+          [
+            1,
+            7
+          ]
+        ],
+        "django/middleware/locale.py": [
+          [
+            1,
+            9
+          ]
+        ],
+        "django/middleware/gzip.py": [
+          [
+            1,
+            8
+          ]
+        ],
+        "django/template/context_processors.py": [
+          [
+            1,
+            16
+          ],
+          [
+            17,
+            35
+          ],
+          [
+            36,
+            57
+          ],
+          [
+            58,
+            67
+          ],
+          [
+            68,
+            73
+          ],
+          [
+            74,
+            80
+          ],
+          [
+            81,
+            87
+          ],
+          [
+            88,
+            89
+          ]
+        ],
+        "django/utils/deprecation.py": [
+          [
+            11,
+            17
+          ]
+        ],
+        "django/views/decorators/csrf.py": [
+          [
+            1,
+            16
+          ],
+          [
+            17,
+            31
+          ],
+          [
+            32,
+            49
+          ],
+          [
+            32,
+            50
+          ]
+        ],
+        "django/views/decorators/cache.py": [
+          [
+            1,
+            9
+          ],
+          [
+            10,
+            30
+          ],
+          [
+            31,
+            39
+          ]
+        ],
+        "django/core/mail/__init__.py": [
+          [
+            1,
+            24
+          ]
+        ],
+        "django/core/handlers/wsgi.py": [
+          [
+            1,
+            14
+          ],
+          [
+            113,
+            146
+          ],
+          [
+            147,
+            153
+          ]
+        ],
+        "django/core/exceptions.py": [
+          [
+            1,
+            9
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            16,
+            21
+          ],
+          [
+            22,
+            27
+          ],
+          [
+            38,
+            43
+          ],
+          [
+            62,
+            70
+          ],
+          [
+            71,
+            79
+          ],
+          [
+            80,
+            88
+          ],
+          [
+            89,
+            94
+          ],
+          [
+            95,
+            100
+          ],
+          [
+            107,
+            112
+          ],
+          [
+            113,
+            118
+          ],
+          [
+            119,
+            124
+          ]
+        ],
+        "django/views/csrf.py": [
+          [
+            1,
+            11
+          ]
+        ],
+        "django/utils/cache.py": [
+          [
+            1,
+            33
+          ],
+          [
+            119,
+            126
+          ],
+          [
+            127,
+            137
+          ],
+          [
+            289,
+            298
+          ],
+          [
+            338,
+            349
+          ]
+        ],
+        "django/core/checks/security/csrf.py": [
+          [
+            25,
+            28
+          ],
+          [
+            30,
+            34
+          ],
+          [
+            36,
+            44
+          ],
+          [
+            46,
+            67
+          ]
+        ],
+        "django/contrib/auth/__init__.py": [
+          [
+            59,
+            64
+          ],
+          [
+            97,
+            101
+          ],
+          [
+            155,
+            159
+          ],
+          [
+            178,
+            182
+          ],
+          [
+            244,
+            248
+          ],
+          [
+            270,
+            274
+          ]
+        ]
+      }
+    }
+  ]
+}

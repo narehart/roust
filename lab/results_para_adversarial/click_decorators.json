@@ -1,0 +1,283 @@
+{
+  "task_id": "click_decorators",
+  "repo": "pallets/click",
+  "question": "In click, annotating a function makes it runnable from the terminal with flags. What machinery converts the annotated function and its flags into the executable entry point?",
+  "results": [
+    {
+      "task_id": "click_decorators",
+      "strategy": "bm25_ppr",
+      "tokens_total": 78528,
+      "tool_calls": 1,
+      "files_accessed": 16,
+      "recall": 1.0,
+      "precision": 0.1875,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/click/decorators.py",
+        "src/click/core.py",
+        "src/click/types.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/click/utils.py",
+        "src/click/termui.py",
+        "src/click/core.py",
+        "src/click/types.py",
+        "src/click/_termui_impl.py",
+        "src/click/decorators.py",
+        "src/click/_compat.py",
+        "src/click/formatting.py",
+        "src/click/_winconsole.py",
+        "src/click/shell_completion.py",
+        "src/click/testing.py",
+        "src/click/parser.py",
+        "src/click/__init__.py",
+        "src/click/exceptions.py",
+        "src/click/globals.py",
+        "src/click/_textwrap.py"
+      ],
+      "wall_time_ms": 36.4632080309093,
+      "cold_start_ms": 84.76287499070168
+    },
+    {
+      "task_id": "click_decorators",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8305,
+      "tool_calls": 1,
+      "files_accessed": 16,
+      "recall": 1.0,
+      "precision": 0.1875,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/click/decorators.py",
+        "src/click/core.py",
+        "src/click/types.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/click/utils.py",
+        "src/click/termui.py",
+        "src/click/core.py",
+        "src/click/types.py",
+        "src/click/_termui_impl.py",
+        "src/click/decorators.py",
+        "src/click/_compat.py",
+        "src/click/formatting.py",
+        "src/click/_winconsole.py",
+        "src/click/shell_completion.py",
+        "src/click/testing.py",
+        "src/click/parser.py",
+        "src/click/__init__.py",
+        "src/click/exceptions.py",
+        "src/click/globals.py",
+        "src/click/_textwrap.py"
+      ],
+      "wall_time_ms": 94.98629195149988,
+      "cold_start_ms": 84.76287499070168,
+      "regions": {
+        "src/click/utils.py": [
+          [
+            46,
+            55
+          ],
+          [
+            355,
+            403
+          ],
+          [
+            404,
+            445
+          ],
+          [
+            520,
+            574
+          ]
+        ],
+        "src/click/termui.py": [
+          [
+            251,
+            282
+          ],
+          [
+            435,
+            448
+          ],
+          [
+            591,
+            602
+          ],
+          [
+            603,
+            636
+          ],
+          [
+            637,
+            682
+          ],
+          [
+            683,
+            716
+          ],
+          [
+            717,
+            746
+          ],
+          [
+            747,
+            752
+          ],
+          [
+            753,
+            784
+          ]
+        ],
+        "src/click/core.py": [
+          [
+            1,
+            43
+          ],
+          [
+            1,
+            49
+          ],
+          [
+            116,
+            142
+          ],
+          [
+            143,
+            168
+          ]
+        ],
+        "src/click/types.py": [
+          [
+            165,
+            188
+          ],
+          [
+            189,
+            200
+          ],
+          [
+            201,
+            226
+          ],
+          [
+            405,
+            422
+          ],
+          [
+            517,
+            542
+          ],
+          [
+            594,
+            618
+          ],
+          [
+            619,
+            642
+          ]
+        ],
+        "src/click/_termui_impl.py": [
+          [
+            401,
+            437
+          ],
+          [
+            401,
+            465
+          ]
+        ],
+        "src/click/decorators.py": [
+          [
+            305,
+            314
+          ]
+        ],
+        "src/click/_compat.py": [
+          [
+            15,
+            35
+          ],
+          [
+            205,
+            213
+          ]
+        ],
+        "src/click/formatting.py": [
+          [
+            283,
+            301
+          ]
+        ],
+        "src/click/_winconsole.py": [
+          [
+            114,
+            148
+          ]
+        ],
+        "src/click/shell_completion.py": [
+          [
+            17,
+            54
+          ]
+        ],
+        "src/click/testing.py": [
+          [
+            82,
+            101
+          ]
+        ],
+        "src/click/parser.py": [
+          [
+            1,
+            32
+          ]
+        ],
+        "src/click/__init__.py": [
+          [
+            1,
+            27
+          ]
+        ],
+        "src/click/exceptions.py": [
+          [
+            265,
+            281
+          ],
+          [
+            282,
+            285
+          ]
+        ],
+        "src/click/globals.py": [
+          [
+            1,
+            11
+          ],
+          [
+            20,
+            43
+          ],
+          [
+            54,
+            67
+          ]
+        ],
+        "src/click/_textwrap.py": [
+          [
+            1,
+            5
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "django_middleware": {
+    "natural": "Where in Django does an incoming request pass through the configured middleware before reaching the view, and how is the response path handled?",
+    "adversarial": "When Django serves a page, several layers of pre- and post-processing wrap the view call. How is that onion of wrappers built and executed?"
+  },
+  "celery_task_dispatch": {
+    "natural": "Trace what happens in Celery between calling apply_async on a job and a worker process actually running it.",
+    "adversarial": "When you queue a background job in Celery, what code publishes it to the broker, and what code on the consuming side picks it up and runs it?"
+  },
+  "click_decorators": {
+    "natural": "How do click's @command and @option decorators turn a plain function into a CLI command with parsed parameters?",
+    "adversarial": "In click, annotating a function makes it runnable from the terminal with flags. What machinery converts the annotated function and its flags into the executable entry point?"
+  },
+  "django_orm_queries": {
+    "natural": "How does a Django QuerySet get translated into SQL and run against the database?",
+    "adversarial": "Follow the path from filtering model objects in Django to the actual statement sent to the database engine."
+  },
+  "express_error_handling": {
+    "natural": "When an express handler throws or calls next(err), how does the error reach the error-handling middleware?",
+    "adversarial": "In express, a failure inside one handler ends up in the four-argument handler at the end of the stack. How is that failure propagated and dispatched?"
+  },
+  "fastapi_dependency_injection": {
+    "natural": "How does FastAPI resolve Depends() arguments for a route handler before calling it?",
+    "adversarial": "FastAPI can build and pass shared resources into endpoint functions automatically. Where are those requirements collected from function signatures and satisfied per-request?"
+  },
+  "express_middleware": {
+    "natural": "How does express run each middleware in order, and what does calling next() actually do?",
+    "adversarial": "In express, each registered handler gets a callback that hands control to the following one. How is that chain wired up and advanced?"
+  },
+  "flask_blueprints": {
+    "natural": "How does Flask register a blueprint's routes onto the application?",
+    "adversarial": "Flask lets you group related endpoints in a separate module and attach them to the app later. How does that attachment work internally?"
+  },
+  "fastapi_routing": {
+    "natural": "How does FastAPI register routes and parse typed path parameters from the URL?",
+    "adversarial": "When FastAPI receives a URL like /items/42, how does it pick the endpoint function and convert the 42 into a typed argument?"
+  },
+  "go_gin_middleware": {
+    "natural": "How does gin chain middleware handlers, and what happens when one calls Abort()?",
+    "adversarial": "In gin, handlers registered on a group run one after another, and any of them can stop the rest. How is that sequencing and early exit implemented?"
+  },
+  "httpx_pooling": {
+    "natural": "How does httpx reuse TCP connections across requests with keep-alive and pooling?",
+    "adversarial": "Where does httpx decide whether an existing open socket can serve the next request instead of dialing a new one?"
+  },
+  "gin_routing": {
+    "natural": "How does gin's radix tree match request paths to handlers?",
+    "adversarial": "gin figures out which handler serves a given URL using a fast prefix structure. How is that structure built and searched?"
+  },
+  "mini_redis_async": {
+    "natural": "How does mini-redis accept connections and process commands asynchronously?",
+    "adversarial": "Follow a client request in mini-redis from the socket read to the executed operation and the reply write."
+  },
+  "react_hooks": {
+    "natural": "How does React implement useState and useEffect state across renders?",
+    "adversarial": "React function components remember values between renders through calls like useState. Where is that per-component memory stored and updated during a render pass?"
+  },
+  "pytest_fixtures": {
+    "natural": "How does pytest find fixtures and inject them into test function arguments?",
+    "adversarial": "pytest fills test function parameters by name with prepared objects. How are those providers located and instantiated for each test?"
+  },
+  "pydantic_validators": {
+    "natural": "How does Pydantic collect field validators and run them during model validation?",
+    "adversarial": "Pydantic lets you attach functions that check or transform attribute values on a model. Where are those functions gathered and executed when data is parsed?"
+  },
+  "sqlalchemy_sessions": {
+    "natural": "How does the SQLAlchemy Session track object changes and flush them as a unit of work?",
+    "adversarial": "SQLAlchemy batches your object modifications and writes them to the database at commit time. What component records the changes and orders the writes?"
+  },
+  "requests_sessions": {
+    "natural": "How does a requests Session persist settings and reuse connections between calls?",
+    "adversarial": "Using the same client object in the requests library makes later calls faster and keeps cookies around. What code provides that reuse?"
+  },
+  "rust_tokio_runtime": {
+    "natural": "How does tokio's runtime schedule and poll async tasks across worker threads?",
+    "adversarial": "In tokio, spawned futures get executed by a pool that steals work between threads. Where is the executor loop and the queue logic?"
+  }
+}

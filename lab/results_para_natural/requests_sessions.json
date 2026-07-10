@@ -1,0 +1,415 @@
+{
+  "task_id": "requests_sessions",
+  "repo": "psf/requests",
+  "question": "How does a requests Session persist settings and reuse connections between calls?",
+  "results": [
+    {
+      "task_id": "requests_sessions",
+      "strategy": "bm25_ppr",
+      "tokens_total": 41565,
+      "tool_calls": 1,
+      "files_accessed": 18,
+      "recall": 1.0,
+      "precision": 0.16666666666666666,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/requests/sessions.py",
+        "src/requests/adapters.py",
+        "src/requests/models.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/requests/sessions.py",
+        "src/requests/models.py",
+        "src/requests/adapters.py",
+        "src/requests/auth.py",
+        "src/requests/utils.py",
+        "src/requests/api.py",
+        "src/requests/cookies.py",
+        "src/requests/__init__.py",
+        "src/requests/exceptions.py",
+        "src/requests/compat.py",
+        "src/requests/structures.py",
+        "src/requests/_internal_utils.py",
+        "src/requests/hooks.py",
+        "src/requests/status_codes.py",
+        "src/requests/help.py",
+        "src/requests/certs.py",
+        "src/requests/packages.py",
+        "src/requests/__version__.py"
+      ],
+      "wall_time_ms": 18.88741599395871,
+      "cold_start_ms": 56.736083002761006
+    },
+    {
+      "task_id": "requests_sessions",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8349,
+      "tool_calls": 1,
+      "files_accessed": 18,
+      "recall": 1.0,
+      "precision": 0.16666666666666666,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/requests/sessions.py",
+        "src/requests/adapters.py",
+        "src/requests/models.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/requests/sessions.py",
+        "src/requests/models.py",
+        "src/requests/adapters.py",
+        "src/requests/auth.py",
+        "src/requests/utils.py",
+        "src/requests/api.py",
+        "src/requests/cookies.py",
+        "src/requests/__init__.py",
+        "src/requests/exceptions.py",
+        "src/requests/compat.py",
+        "src/requests/structures.py",
+        "src/requests/_internal_utils.py",
+        "src/requests/hooks.py",
+        "src/requests/status_codes.py",
+        "src/requests/help.py",
+        "src/requests/certs.py",
+        "src/requests/packages.py",
+        "src/requests/__version__.py"
+      ],
+      "wall_time_ms": 50.749541958794,
+      "cold_start_ms": 56.736083002761006,
+      "regions": {
+        "src/requests/sessions.py": [
+          [
+            1,
+            60
+          ],
+          [
+            61,
+            90
+          ],
+          [
+            91,
+            105
+          ],
+          [
+            819,
+            831
+          ]
+        ],
+        "src/requests/models.py": [
+          [
+            1,
+            83
+          ],
+          [
+            206,
+            229
+          ]
+        ],
+        "src/requests/adapters.py": [
+          [
+            90,
+            136
+          ],
+          [
+            137,
+            162
+          ],
+          [
+            137,
+            166
+          ]
+        ],
+        "src/requests/auth.py": [
+          [
+            1,
+            24
+          ],
+          [
+            69,
+            75
+          ],
+          [
+            76,
+            98
+          ],
+          [
+            99,
+            106
+          ]
+        ],
+        "src/requests/utils.py": [
+          [
+            318,
+            344
+          ],
+          [
+            345,
+            374
+          ],
+          [
+            489,
+            513
+          ],
+          [
+            591,
+            635
+          ],
+          [
+            838,
+            863
+          ],
+          [
+            864,
+            890
+          ],
+          [
+            891,
+            899
+          ],
+          [
+            900,
+            913
+          ],
+          [
+            989,
+            1017
+          ],
+          [
+            1081,
+            1096
+          ]
+        ],
+        "src/requests/api.py": [
+          [
+            1,
+            13
+          ],
+          [
+            62,
+            75
+          ],
+          [
+            76,
+            87
+          ],
+          [
+            88,
+            102
+          ],
+          [
+            103,
+            117
+          ],
+          [
+            118,
+            132
+          ],
+          [
+            133,
+            147
+          ],
+          [
+            148,
+            157
+          ]
+        ],
+        "src/requests/cookies.py": [
+          [
+            1,
+            22
+          ],
+          [
+            103,
+            123
+          ],
+          [
+            124,
+            139
+          ],
+          [
+            140,
+            150
+          ],
+          [
+            440,
+            454
+          ],
+          [
+            455,
+            491
+          ],
+          [
+            521,
+            541
+          ]
+        ],
+        "src/requests/__init__.py": [
+          [
+            1,
+            41
+          ]
+        ],
+        "src/requests/exceptions.py": [
+          [
+            1,
+            11
+          ],
+          [
+            12,
+            26
+          ],
+          [
+            27,
+            30
+          ],
+          [
+            55,
+            58
+          ],
+          [
+            59,
+            62
+          ],
+          [
+            63,
+            66
+          ],
+          [
+            67,
+            70
+          ],
+          [
+            71,
+            79
+          ],
+          [
+            80,
+            86
+          ],
+          [
+            91,
+            94
+          ],
+          [
+            95,
+            98
+          ],
+          [
+            99,
+            102
+          ],
+          [
+            103,
+            106
+          ],
+          [
+            107,
+            110
+          ],
+          [
+            111,
+            114
+          ],
+          [
+            119,
+            122
+          ],
+          [
+            123,
+            126
+          ],
+          [
+            127,
+            130
+          ],
+          [
+            131,
+            134
+          ],
+          [
+            135,
+            141
+          ],
+          [
+            142,
+            145
+          ],
+          [
+            146,
+            149
+          ],
+          [
+            150,
+            151
+          ]
+        ],
+        "src/requests/compat.py": [
+          [
+            1,
+            17
+          ]
+        ],
+        "src/requests/structures.py": [
+          [
+            1,
+            12
+          ]
+        ],
+        "src/requests/_internal_utils.py": [
+          [
+            1,
+            24
+          ]
+        ],
+        "src/requests/hooks.py": [
+          [
+            1,
+            14
+          ],
+          [
+            22,
+            33
+          ]
+        ],
+        "src/requests/status_codes.py": [
+          [
+            1,
+            23
+          ]
+        ],
+        "src/requests/help.py": [
+          [
+            1,
+            33
+          ]
+        ],
+        "src/requests/certs.py": [
+          [
+            1,
+            17
+          ]
+        ],
+        "src/requests/packages.py": [
+          [
+            1,
+            23
+          ]
+        ],
+        "src/requests/__version__.py": [
+          [
+            1,
+            14
+          ]
+        ]
+      }
+    }
+  ]
+}

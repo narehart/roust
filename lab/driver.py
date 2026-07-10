@@ -14,9 +14,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 import time
+from collections import defaultdict
 from pathlib import Path
 
 LAB_DIR = Path(__file__).resolve().parent
@@ -104,7 +106,55 @@ def _metrics(task, repo_path: Path, files: list[str], tokens: int, wall_ms: floa
     }
 
 
+_RG_GLOBS = ("*.py", "*.ts", "*.js", "*.go", "*.rs", "*.java", "*.kt", "*.cs", "*.swift")
+
+
+def run_grep_disciplined(task, repo_path: Path, radius: int = 25) -> dict:
+    """Best-case grep agent: same keyword greps as raw_ripgrep, but reads only
+    +-radius lines around each matching line (merged) instead of whole files.
+    Same file set as raw_ripgrep, so recall is identical by construction; the
+    lane isolates how much of grep's token cost mere discipline removes."""
+    rg = shutil.which("rg")
+    if rg is None:
+        raise RuntimeError("grep_disciplined requires rg on PATH")
+    keywords = extract_keywords(task.question, task.keywords)
+    t0 = time.perf_counter()
+    hit_lines: dict[str, set[int]] = defaultdict(set)
+    for kw in keywords:
+        cmd = [rg, "-n", "--ignore-case", "--no-heading",
+               *[f for g in _RG_GLOBS for f in ("--glob", g)], kw, "."]
+        res = subprocess.run(cmd, cwd=repo_path, capture_output=True, text=True, timeout=60)
+        if res.returncode not in (0, 1):
+            raise RuntimeError(f"rg failed for {kw!r}: {res.stderr.strip()[:200]}")
+        for line in res.stdout.splitlines():
+            path, _, rest = line.partition(":")
+            num, _, _ = rest.partition(":")
+            if num.isdigit():
+                hit_lines[path.lstrip("./")].add(int(num))
+    tokens = 0
+    files = sorted(hit_lines)
+    for rel in files:
+        try:
+            lines = (repo_path / rel).read_text(encoding="utf-8", errors="replace").splitlines()
+        except OSError:
+            continue
+        spans: list[list[int]] = []
+        for h in sorted(hit_lines[rel]):
+            a, b = max(1, h - radius), min(len(lines), h + radius)
+            if spans and a <= spans[-1][1] + 1:
+                spans[-1][1] = b
+            else:
+                spans.append([a, b])
+        for a, b in spans:
+            tokens += count_tokens("\n".join(lines[a - 1: b]))
+    wall = (time.perf_counter() - t0) * 1000
+    return _metrics(task, repo_path, files, tokens, wall, "grep_disciplined", 0.0,
+                    extra={"tool_calls": len(keywords)})
+
+
 def run_lane(lane: str, task, repo_path: Path, corpus_cache: dict) -> dict:
+    if lane == "grep_disciplined":
+        return run_grep_disciplined(task, repo_path)
     if lane == "raw_ripgrep":
         t0 = time.perf_counter()
         r = run_raw_ripgrep(task, repo_path)
@@ -165,7 +215,16 @@ def main() -> None:
     ap.add_argument("--lanes", default="raw_ripgrep,raw_files,bm25,bm25_ppr,bm25_ppr_pack")
     ap.add_argument("--tasks-dir", default="benchmarks/tasks")
     ap.add_argument("--out", default=str(LAB_DIR / "results"))
+    ap.add_argument("--questions-json", default=None,
+                    help="JSON {task_id: {variant: question}}; replaces the task "
+                         "question and DROPS task keywords (real agents only have "
+                         "what the user typed)")
+    ap.add_argument("--variant", default="natural", choices=["natural", "adversarial"])
     args = ap.parse_args()
+
+    paraphrases = {}
+    if args.questions_json:
+        paraphrases = json.loads(Path(args.questions_json).read_text())
 
     task_ids = [t.strip() for t in args.tasks.split(",") if t.strip()]
     lanes_ = [x.strip() for x in args.lanes.split(",") if x.strip()]
@@ -177,6 +236,9 @@ def main() -> None:
 
     for tid in task_ids:
         task = all_tasks[tid]
+        if tid in paraphrases:
+            task = task.model_copy(update={
+                "question": paraphrases[tid][args.variant], "keywords": []})
         print(f"=== {tid} ({task.repo}@{task.commit})", flush=True)
         repo_path = clone_repo(task.repo, task.commit)
         results = []

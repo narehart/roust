@@ -1,0 +1,227 @@
+{
+  "task_id": "mini_redis_async",
+  "repo": "tokio-rs/mini-redis",
+  "question": "Follow a client request in mini-redis from the socket read to the executed operation and the reply write.",
+  "results": [
+    {
+      "task_id": "mini_redis_async",
+      "strategy": "bm25_ppr",
+      "tokens_total": 26799,
+      "tool_calls": 1,
+      "files_accessed": 18,
+      "recall": 1.0,
+      "precision": 0.16666666666666666,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/server.rs",
+        "src/cmd/mod.rs",
+        "src/connection.rs"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/clients/client.rs",
+        "src/clients/blocking_client.rs",
+        "src/cmd/set.rs",
+        "src/server.rs",
+        "src/cmd/publish.rs",
+        "src/cmd/subscribe.rs",
+        "src/connection.rs",
+        "src/clients/buffered_client.rs",
+        "src/lib.rs",
+        "src/cmd/ping.rs",
+        "src/cmd/mod.rs",
+        "src/clients/mod.rs",
+        "src/cmd/get.rs",
+        "src/db.rs",
+        "src/frame.rs",
+        "src/cmd/unknown.rs",
+        "src/parse.rs",
+        "src/shutdown.rs"
+      ],
+      "wall_time_ms": 12.22916692495346,
+      "cold_start_ms": 23.653457988984883
+    },
+    {
+      "task_id": "mini_redis_async",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8169,
+      "tool_calls": 1,
+      "files_accessed": 18,
+      "recall": 1.0,
+      "precision": 0.16666666666666666,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/server.rs",
+        "src/cmd/mod.rs",
+        "src/connection.rs"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/clients/client.rs",
+        "src/clients/blocking_client.rs",
+        "src/cmd/set.rs",
+        "src/server.rs",
+        "src/cmd/publish.rs",
+        "src/cmd/subscribe.rs",
+        "src/connection.rs",
+        "src/clients/buffered_client.rs",
+        "src/lib.rs",
+        "src/cmd/ping.rs",
+        "src/cmd/mod.rs",
+        "src/clients/mod.rs",
+        "src/cmd/get.rs",
+        "src/db.rs",
+        "src/frame.rs",
+        "src/cmd/unknown.rs",
+        "src/parse.rs",
+        "src/shutdown.rs"
+      ],
+      "wall_time_ms": 32.41912508383393,
+      "cold_start_ms": 23.653457988984883,
+      "regions": {
+        "src/clients/client.rs": [
+          [
+            1,
+            28
+          ]
+        ],
+        "src/clients/blocking_client.rs": [
+          [
+            1,
+            29
+          ]
+        ],
+        "src/cmd/set.rs": [
+          [
+            1,
+            29
+          ],
+          [
+            1,
+            161
+          ]
+        ],
+        "src/server.rs": [
+          [
+            1,
+            25
+          ]
+        ],
+        "src/cmd/publish.rs": [
+          [
+            2,
+            30
+          ],
+          [
+            2,
+            101
+          ]
+        ],
+        "src/cmd/subscribe.rs": [
+          [
+            1,
+            29
+          ]
+        ],
+        "src/connection.rs": [
+          [
+            1,
+            24
+          ]
+        ],
+        "src/clients/buffered_client.rs": [
+          [
+            1,
+            26
+          ]
+        ],
+        "src/lib.rs": [
+          [
+            1,
+            30
+          ],
+          [
+            1,
+            73
+          ]
+        ],
+        "src/cmd/ping.rs": [
+          [
+            1,
+            31
+          ],
+          [
+            1,
+            81
+          ]
+        ],
+        "src/cmd/mod.rs": [
+          [
+            1,
+            29
+          ]
+        ],
+        "src/clients/mod.rs": [
+          [
+            1,
+            8
+          ]
+        ],
+        "src/cmd/get.rs": [
+          [
+            2,
+            32
+          ],
+          [
+            2,
+            93
+          ]
+        ],
+        "src/db.rs": [
+          [
+            1,
+            25
+          ],
+          [
+            312,
+            369
+          ]
+        ],
+        "src/frame.rs": [
+          [
+            1,
+            41
+          ]
+        ],
+        "src/cmd/unknown.rs": [
+          [
+            1,
+            36
+          ],
+          [
+            1,
+            37
+          ]
+        ],
+        "src/parse.rs": [
+          [
+            78,
+            105
+          ]
+        ],
+        "src/shutdown.rs": [
+          [
+            7,
+            40
+          ]
+        ]
+      }
+    }
+  ]
+}

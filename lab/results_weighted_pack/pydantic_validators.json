@@ -1,0 +1,494 @@
+{
+  "task_id": "pydantic_validators",
+  "repo": "pydantic/pydantic",
+  "question": "How does Pydantic chain and apply field validators?",
+  "results": [
+    {
+      "task_id": "pydantic_validators",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8551,
+      "tool_calls": 1,
+      "files_accessed": 26,
+      "recall": 1.0,
+      "precision": 0.11538461538461539,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "pydantic/_internal/_validate_call.py",
+        "pydantic/_internal/_validators.py",
+        "pydantic/functional_validators.py"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "pydantic/_internal/_decorators.py",
+        "pydantic/_internal/_generate_schema.py",
+        "pydantic/validate_call_decorator.py",
+        "pydantic/functional_validators.py",
+        "pydantic/_internal/_known_annotated_metadata.py",
+        "pydantic/fields.py",
+        "pydantic/v1/class_validators.py",
+        "pydantic/config.py",
+        "pydantic/deprecated/class_validators.py",
+        "pydantic/experimental/pipeline.py",
+        "pydantic/_internal/_fields.py",
+        "pydantic/deprecated/decorator.py",
+        "pydantic/_internal/_validators.py",
+        "pydantic/_internal/_decorators_v1.py",
+        "pydantic/_internal/_validate_call.py",
+        "pydantic/decorator.py",
+        "pydantic/main.py",
+        "pydantic/errors.py",
+        "pydantic/types.py",
+        "pydantic/mypy.py",
+        "pydantic/_internal/_model_construction.py",
+        "pydantic/_internal/_discriminated_union.py",
+        "pydantic/dataclasses.py",
+        "pydantic/json_schema.py",
+        "pydantic/functional_serializers.py",
+        "pydantic/_internal/_dataclasses.py"
+      ],
+      "wall_time_ms": 249.46749990340322,
+      "cold_start_ms": 479.86558405682445,
+      "regions": {
+        "pydantic/_internal/_decorators.py": [
+          [
+            1,
+            26
+          ],
+          [
+            28,
+            50
+          ],
+          [
+            52,
+            73
+          ],
+          [
+            75,
+            87
+          ],
+          [
+            89,
+            110
+          ],
+          [
+            131,
+            159
+          ],
+          [
+            692,
+            707
+          ],
+          [
+            708,
+            715
+          ]
+        ],
+        "pydantic/_internal/_generate_schema.py": [
+          [
+            168,
+            188
+          ],
+          [
+            189,
+            215
+          ],
+          [
+            216,
+            221
+          ],
+          [
+            2267,
+            2291
+          ],
+          [
+            2292,
+            2307
+          ],
+          [
+            2355,
+            2379
+          ],
+          [
+            2411,
+            2419
+          ]
+        ],
+        "pydantic/validate_call_decorator.py": [
+          [
+            1,
+            23
+          ],
+          [
+            73,
+            77
+          ],
+          [
+            79,
+            81
+          ]
+        ],
+        "pydantic/functional_validators.py": [
+          [
+            1,
+            26
+          ],
+          [
+            375,
+            384
+          ],
+          [
+            386,
+            395
+          ],
+          [
+            397,
+            405
+          ],
+          [
+            520,
+            531
+          ],
+          [
+            532,
+            548
+          ],
+          [
+            549,
+            564
+          ],
+          [
+            565,
+            579
+          ],
+          [
+            580,
+            595
+          ],
+          [
+            596,
+            609
+          ],
+          [
+            641,
+            648
+          ],
+          [
+            650,
+            657
+          ],
+          [
+            659,
+            666
+          ]
+        ],
+        "pydantic/_internal/_known_annotated_metadata.py": [
+          [
+            376,
+            391
+          ]
+        ],
+        "pydantic/fields.py": [
+          [
+            89,
+            94
+          ],
+          [
+            1307,
+            1309
+          ]
+        ],
+        "pydantic/v1/class_validators.py": [
+          [
+            1,
+            15
+          ],
+          [
+            108,
+            111
+          ],
+          [
+            113,
+            118
+          ],
+          [
+            195,
+            208
+          ],
+          [
+            234,
+            241
+          ],
+          [
+            281,
+            287
+          ],
+          [
+            355,
+            361
+          ]
+        ],
+        "pydantic/config.py": [
+          [
+            1006,
+            1023
+          ]
+        ],
+        "pydantic/deprecated/class_validators.py": [
+          [
+            76,
+            81
+          ],
+          [
+            198,
+            203
+          ]
+        ],
+        "pydantic/experimental/pipeline.py": [
+          [
+            37,
+            41
+          ],
+          [
+            43,
+            50
+          ],
+          [
+            120,
+            127
+          ],
+          [
+            377,
+            395
+          ],
+          [
+            396,
+            418
+          ]
+        ],
+        "pydantic/_internal/_fields.py": [
+          [
+            34,
+            39
+          ],
+          [
+            269,
+            281
+          ],
+          [
+            371,
+            374
+          ]
+        ],
+        "pydantic/deprecated/decorator.py": [
+          [
+            29,
+            33
+          ],
+          [
+            35,
+            37
+          ],
+          [
+            38,
+            41
+          ]
+        ],
+        "pydantic/_internal/_validators.py": [
+          [
+            60,
+            70
+          ],
+          [
+            122,
+            131
+          ],
+          [
+            163,
+            169
+          ],
+          [
+            170,
+            179
+          ],
+          [
+            180,
+            189
+          ],
+          [
+            190,
+            204
+          ],
+          [
+            220,
+            229
+          ],
+          [
+            230,
+            239
+          ],
+          [
+            240,
+            249
+          ],
+          [
+            250,
+            255
+          ],
+          [
+            266,
+            274
+          ],
+          [
+            275,
+            283
+          ],
+          [
+            284,
+            292
+          ],
+          [
+            293,
+            301
+          ],
+          [
+            302,
+            310
+          ],
+          [
+            311,
+            321
+          ],
+          [
+            322,
+            333
+          ],
+          [
+            373,
+            387
+          ]
+        ],
+        "pydantic/_internal/_decorators_v1.py": [
+          [
+            1,
+            14
+          ],
+          [
+            15,
+            20
+          ],
+          [
+            113,
+            118
+          ],
+          [
+            119,
+            124
+          ],
+          [
+            125,
+            132
+          ]
+        ],
+        "pydantic/_internal/_validate_call.py": [
+          [
+            1,
+            16
+          ],
+          [
+            17,
+            21
+          ]
+        ],
+        "pydantic/decorator.py": [
+          [
+            1,
+            5
+          ]
+        ],
+        "pydantic/main.py": [
+          [
+            1537,
+            1550
+          ]
+        ],
+        "pydantic/errors.py": [
+          [
+            96,
+            99
+          ]
+        ],
+        "pydantic/types.py": [
+          [
+            1230,
+            1240
+          ],
+          [
+            1878,
+            1882
+          ]
+        ],
+        "pydantic/mypy.py": [
+          [
+            1202,
+            1206
+          ]
+        ],
+        "pydantic/_internal/_model_construction.py": [
+          [
+            69,
+            78
+          ],
+          [
+            79,
+            79
+          ],
+          [
+            506,
+            521
+          ],
+          [
+            776,
+            792
+          ]
+        ],
+        "pydantic/_internal/_discriminated_union.py": [
+          [
+            1,
+            19
+          ]
+        ],
+        "pydantic/dataclasses.py": [
+          [
+            97,
+            97
+          ],
+          [
+            354,
+            366
+          ]
+        ],
+        "pydantic/json_schema.py": [
+          [
+            2638,
+            2644
+          ]
+        ],
+        "pydantic/functional_serializers.py": [
+          [
+            207,
+            217
+          ]
+        ],
+        "pydantic/_internal/_dataclasses.py": [
+          [
+            1,
+            16
+          ]
+        ]
+      }
+    }
+  ]
+}

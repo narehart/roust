@@ -1,0 +1,172 @@
+{
+  "task_id": "mini_redis_async",
+  "repo": "tokio-rs/mini-redis",
+  "question": "How does mini-redis handle async command processing and connection management?",
+  "results": [
+    {
+      "task_id": "mini_redis_async",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8260,
+      "tool_calls": 1,
+      "files_accessed": 16,
+      "recall": 1.0,
+      "precision": 0.1875,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "src/server.rs",
+        "src/cmd/mod.rs",
+        "src/connection.rs"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "src/server.rs",
+        "src/lib.rs",
+        "src/clients/buffered_client.rs",
+        "src/connection.rs",
+        "src/bin/cli.rs",
+        "src/clients/client.rs",
+        "src/cmd/get.rs",
+        "src/db.rs",
+        "src/clients/blocking_client.rs",
+        "src/cmd/set.rs",
+        "src/cmd/mod.rs",
+        "src/clients/mod.rs",
+        "src/frame.rs",
+        "src/shutdown.rs",
+        "src/bin/server.rs",
+        "src/parse.rs"
+      ],
+      "wall_time_ms": 30.710792052559555,
+      "cold_start_ms": 25.334165897220373,
+      "regions": {
+        "src/server.rs": [
+          [
+            1,
+            42
+          ]
+        ],
+        "src/lib.rs": [
+          [
+            1,
+            44
+          ],
+          [
+            1,
+            73
+          ]
+        ],
+        "src/clients/buffered_client.rs": [
+          [
+            1,
+            36
+          ],
+          [
+            1,
+            120
+          ]
+        ],
+        "src/connection.rs": [
+          [
+            1,
+            29
+          ]
+        ],
+        "src/bin/cli.rs": [
+          [
+            1,
+            45
+          ],
+          [
+            1,
+            151
+          ]
+        ],
+        "src/clients/client.rs": [
+          [
+            1,
+            32
+          ]
+        ],
+        "src/cmd/get.rs": [
+          [
+            1,
+            33
+          ],
+          [
+            1,
+            93
+          ]
+        ],
+        "src/db.rs": [
+          [
+            1,
+            26
+          ],
+          [
+            1,
+            97
+          ]
+        ],
+        "src/clients/blocking_client.rs": [
+          [
+            1,
+            29
+          ]
+        ],
+        "src/cmd/set.rs": [
+          [
+            77,
+            100
+          ]
+        ],
+        "src/cmd/mod.rs": [
+          [
+            1,
+            30
+          ]
+        ],
+        "src/clients/mod.rs": [
+          [
+            1,
+            8
+          ]
+        ],
+        "src/frame.rs": [
+          [
+            1,
+            38
+          ],
+          [
+            1,
+            41
+          ]
+        ],
+        "src/shutdown.rs": [
+          [
+            1,
+            33
+          ]
+        ],
+        "src/bin/server.rs": [
+          [
+            1,
+            25
+          ]
+        ],
+        "src/parse.rs": [
+          [
+            1,
+            29
+          ],
+          [
+            1,
+            51
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "task_id": "express_middleware",
+  "repo": "expressjs/express",
+  "question": "In express, each registered handler gets a callback that hands control to the following one. How is that chain wired up and advanced?",
+  "results": [
+    {
+      "task_id": "express_middleware",
+      "strategy": "bm25_ppr",
+      "tokens_total": 24508,
+      "tool_calls": 1,
+      "files_accessed": 13,
+      "recall": 1.0,
+      "precision": 0.23076923076923078,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/router/index.js",
+        "lib/router/route.js",
+        "lib/router/layer.js"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/application.js",
+        "lib/router/route.js",
+        "lib/router/index.js",
+        "lib/response.js",
+        "lib/express.js",
+        "lib/request.js",
+        "lib/router/layer.js",
+        "lib/middleware/init.js",
+        "lib/view.js",
+        "test/app.options.js",
+        "lib/utils.js",
+        "lib/middleware/query.js",
+        "index.js"
+      ],
+      "wall_time_ms": 13.227625051513314,
+      "cold_start_ms": 88.18391698878258
+    },
+    {
+      "task_id": "express_middleware",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8198,
+      "tool_calls": 1,
+      "files_accessed": 13,
+      "recall": 1.0,
+      "precision": 0.23076923076923078,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/router/index.js",
+        "lib/router/route.js",
+        "lib/router/layer.js"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/application.js",
+        "lib/router/route.js",
+        "lib/router/index.js",
+        "lib/response.js",
+        "lib/express.js",
+        "lib/request.js",
+        "lib/router/layer.js",
+        "lib/middleware/init.js",
+        "lib/view.js",
+        "test/app.options.js",
+        "lib/utils.js",
+        "lib/middleware/query.js",
+        "index.js"
+      ],
+      "wall_time_ms": 30.407292069867253,
+      "cold_start_ms": 88.18391698878258,
+      "regions": {
+        "lib/application.js": [
+          [
+            1,
+            57
+          ],
+          [
+            93,
+            399
+          ],
+          [
+            435,
+            494
+          ],
+          [
+            435,
+            661
+          ]
+        ],
+        "lib/router/route.js": [
+          [
+            1,
+            64
+          ],
+          [
+            1,
+            230
+          ]
+        ],
+        "lib/router/index.js": [
+          [
+            1,
+            54
+          ]
+        ],
+        "lib/response.js": [
+          [
+            1,
+            48
+          ],
+          [
+            238,
+            286
+          ]
+        ],
+        "lib/express.js": [
+          [
+            1,
+            65
+          ]
+        ],
+        "lib/request.js": [
+          [
+            276,
+            327
+          ]
+        ],
+        "lib/router/layer.js": [
+          [
+            1,
+            64
+          ]
+        ],
+        "lib/middleware/init.js": [
+          [
+            1,
+            43
+          ]
+        ],
+        "lib/view.js": [
+          [
+            1,
+            63
+          ]
+        ],
+        "test/app.options.js": [
+          [
+            1,
+            50
+          ]
+        ],
+        "lib/utils.js": [
+          [
+            1,
+            48
+          ]
+        ],
+        "lib/middleware/query.js": [
+          [
+            1,
+            32
+          ]
+        ],
+        "index.js": [
+          [
+            1,
+            11
+          ]
+        ]
+      }
+    }
+  ]
+}

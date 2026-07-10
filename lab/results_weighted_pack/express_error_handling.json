@@ -1,0 +1,162 @@
+{
+  "task_id": "express_error_handling",
+  "repo": "expressjs/express",
+  "question": "How does express handle errors in the middleware chain?",
+  "results": [
+    {
+      "task_id": "express_error_handling",
+      "strategy": "bm25_ppr_pack",
+      "tokens_total": 8010,
+      "tool_calls": 1,
+      "files_accessed": 14,
+      "recall": 1.0,
+      "precision": 0.21428571428571427,
+      "required_file_recall": 1.0,
+      "missed_required_file_rate": 0.0,
+      "missed_required_task_rate": 0.0,
+      "all_required_files_present": true,
+      "required_files_present": [
+        "lib/router/layer.js",
+        "lib/router/index.js",
+        "lib/application.js"
+      ],
+      "required_files_missing": [],
+      "result_files": [
+        "lib/router/route.js",
+        "lib/application.js",
+        "lib/router/index.js",
+        "lib/middleware/init.js",
+        "lib/response.js",
+        "lib/express.js",
+        "lib/middleware/query.js",
+        "lib/router/layer.js",
+        "examples/route-middleware/index.js",
+        "examples/error/index.js",
+        "lib/view.js",
+        "lib/utils.js",
+        "lib/request.js",
+        "index.js"
+      ],
+      "wall_time_ms": 26.754291960969567,
+      "cold_start_ms": 93.53775007184595,
+      "regions": {
+        "lib/router/route.js": [
+          [
+            1,
+            92
+          ],
+          [
+            1,
+            230
+          ]
+        ],
+        "lib/application.js": [
+          [
+            1,
+            88
+          ],
+          [
+            435,
+            540
+          ],
+          [
+            589,
+            661
+          ]
+        ],
+        "lib/router/index.js": [
+          [
+            1,
+            68
+          ],
+          [
+            621,
+            673
+          ]
+        ],
+        "lib/middleware/init.js": [
+          [
+            1,
+            43
+          ]
+        ],
+        "lib/response.js": [
+          [
+            368,
+            407
+          ],
+          [
+            1141,
+            1179
+          ]
+        ],
+        "lib/express.js": [
+          [
+            1,
+            59
+          ],
+          [
+            1,
+            116
+          ]
+        ],
+        "lib/middleware/query.js": [
+          [
+            1,
+            47
+          ]
+        ],
+        "lib/router/layer.js": [
+          [
+            1,
+            47
+          ]
+        ],
+        "examples/route-middleware/index.js": [
+          [
+            1,
+            29
+          ],
+          [
+            1,
+            90
+          ]
+        ],
+        "examples/error/index.js": [
+          [
+            1,
+            32
+          ],
+          [
+            1,
+            53
+          ]
+        ],
+        "lib/view.js": [
+          [
+            1,
+            57
+          ]
+        ],
+        "lib/utils.js": [
+          [
+            1,
+            48
+          ]
+        ],
+        "lib/request.js": [
+          [
+            1,
+            47
+          ]
+        ],
+        "index.js": [
+          [
+            1,
+            11
+          ]
+        ]
+      }
+    }
+  ]
+}
