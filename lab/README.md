@@ -146,6 +146,19 @@ Lite's easier instance selection with dev-set tuning and is reported as
 non-transferring. Grep-parity latency, ~8.5k-token bundles, zero learned
 parameters throughout.
 
+Post-Verified @1 investigation: BRTracer-style stack-trace boosting (verified
++10pp Top-1 in its home corpus, ICSME 2014) was headroom-measured on Lite
+before building: only 17% of issues contain a traceback, gold is in-trace for
+just 45% of those (CrashLocator's symptom-vs-cause ceiling, worse here), net
+naive @1 bound +5 instances (~+1.7pp) with 3 displacement risks, and zero @10
+headroom — below the pre-committed +10-instance build bar. Not built
+(diag_stacktrace.py). Conclusion: every non-learned precision-class head
+signal is now measured — path anchors (consumed by BM25F), symbol anchors
+(shipped, +1.4pp @10), error strings (dead: f-string interpolation), stack
+traces (below bar). Head precision beyond @1=.354 held-out requires semantics
+that repo mining cannot supply; that boundary is this project's measured edge
+of no-learning retrieval.
+
 ## Run it
 
 ```bash
