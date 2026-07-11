@@ -1,0 +1,576 @@
+diff --git a/src/bgrep/cli.py b/src/bgrep/cli.py
+index bccc20f..c086a83 100644
+--- a/src/bgrep/cli.py
++++ b/src/bgrep/cli.py
+@@ -25,6 +25,7 @@ from pathlib import Path
+ from bgrep import cache as cache_mod
+ from bgrep.core import (
+     anchor_def_symbols,
++    confidence_schedule,
+     extract_symbol_anchors,
+     get_token_counter,
+     pack_regions,
+@@ -70,6 +71,13 @@ def _build_arg_parser() -> argparse.ArgumentParser:
+                      help="disable the test-file lexical bridge channel")
+     ap.add_argument("--explain", action="store_true",
+                      help="dump the Explain diagnostic record (bgrep.core.Explain) as JSON to stderr")
++    ap.add_argument("--pack-uniform", action="store_true",
++                     help="disable confidence-scheduled packing (breadth-first uniform depth "
++                          "across all selected files, the pre-scheduling behavior) -- "
++                          "confidence scheduling is ON by default: peaked queries (concentrated "
++                          "score/strong corroborated anchor) spend most of the budget on full "
++                          "symbol blocks for 2-4 deep files and a compact signature+receipt "
++                          "skeleton for the rest, instead of spreading the budget near-evenly")
+     return ap
+ 
+ 
+@@ -115,17 +123,28 @@ def main(argv: list[str] | None = None) -> int:
+     count_tokens = get_token_counter()
+     anchor_files = {f for f, *_rest in explain.anchor_promotions}
+     anchor_symbols = anchor_def_symbols(args.query, corpus, anchor_files) if anchor_files else {}
++    if args.pack_uniform:
++        schedule, deep_files, confidence_signal = "flat", [], {}
++    else:
++        schedule, deep_files, confidence_signal = confidence_schedule(files, scores, explain)
+     spans, bundle = pack_regions(
+-        corpus, files, terms, scores, args.budget, count_tokens, anchor_symbols=anchor_symbols
++        corpus, files, terms, scores, args.budget, count_tokens,
++        anchor_symbols=anchor_symbols, explain=explain, pack_uniform=args.pack_uniform,
++        schedule=schedule, deep_files=deep_files,
+     )
+     query_ms = (time.perf_counter() - t1) * 1000
+ 
+     if args.explain:
+-        print(json.dumps(dataclasses.asdict(explain), indent=2), file=sys.stderr)
++        explain_payload = dataclasses.asdict(explain)
++        explain_payload["confidence_schedule"] = {
++            "schedule": schedule, "deep_files": deep_files, "signal": confidence_signal,
++        }
++        print(json.dumps(explain_payload, indent=2), file=sys.stderr)
+ 
+     packed_files = [f for f in files if f in spans]
+     bundle_tokens = count_tokens(bundle) if bundle else 0
+     cache_state = "hit" if cache_hit else "miss"
++    skeleton_files = [f for f in packed_files if f not in deep_files]
+ 
+     if packed_files:
+         if args.json:
+@@ -140,6 +159,12 @@ def main(argv: list[str] | None = None) -> int:
+                     "query_ms": round(query_ms),
+                     "bundle_tokens": bundle_tokens,
+                     "cache": cache_state,
++                    # confidence-scheduled packing (additive stats; schedule is
++                    # "flat" and deep_files_count is 0 for every file whenever
++                    # --pack-uniform is passed or the query classified flat).
++                    "schedule": schedule,
++                    "deep_files_count": len(deep_files),
++                    "skeleton_files_count": len(skeleton_files) if schedule == "peaked" else 0,
+                 },
+             }
+             print(json.dumps(payload))
+@@ -152,7 +177,9 @@ def main(argv: list[str] | None = None) -> int:
+     stats_line = (
+         f"bgrep: {len(packed_files)} files, {bundle_tokens} tokens "
+         f"(indexed {corpus.n_docs} files, index {index_ms:.0f}ms, query {query_ms:.0f}ms, "
+-        f"cache {cache_state})"
++        f"cache {cache_state}, schedule {schedule}"
++        + (f", deep {len(deep_files)}/{len(packed_files)}" if schedule == "peaked" else "")
++        + ")"
+     )
+     print(stats_line, file=sys.stderr)
+ 
+diff --git a/src/bgrep/core.py b/src/bgrep/core.py
+index ad9d56f..819745c 100644
+--- a/src/bgrep/core.py
++++ b/src/bgrep/core.py
+@@ -21,6 +21,7 @@ import math
+ import os
+ import re
+ from collections import Counter, defaultdict
++from collections.abc import Iterable
+ from dataclasses import dataclass, field
+ from pathlib import Path
+ 
+@@ -1473,7 +1474,7 @@ def _hit_lines(text: str, terms: set[str]) -> list[int]:
+     return hits
+ 
+ 
+-def pack_regions(
++def _pack_regions_core(
+     corpus: Corpus,
+     files: list[str],
+     terms: list[str],
+@@ -1481,8 +1482,15 @@ def pack_regions(
+     budget_tokens: int,
+     count_tokens,
+     anchor_symbols: dict[str, list[str]] | None = None,
+-) -> tuple[dict[str, list[tuple[int, int]]], str]:
+-    """Greedy weighted-coverage packing of regions under budget.
++) -> tuple[dict[str, list[tuple[int, int]]], dict[str, str]]:
++    """Breadth-mode packer core (the original, uniform-depth pack_regions
++    logic -- see confidence_schedule/pack_regions below for the scheduling
++    layer on top of it). Greedy weighted-coverage packing of regions under
++    budget. Returns ({file: [spans]}, {file: body_text}) -- the raw,
++    per-file form _pack_regions_uniform() joins into a single bundle string;
++    _pack_regions_peaked() calls this directly (budget-concentrated onto
++    only its 2-4 deep files) so it can splice deep-file bodies alongside
++    skeleton-tier bodies without re-parsing a joined string.
+ 
+     Guarantees every selected file contributes at least its header + best region
+     (so the bundle genuinely represents each file), then spends remaining budget
+@@ -1503,7 +1511,6 @@ def pack_regions(
+     query named this exact symbol, so its definition is the region least
+     likely to be noise, independent of how it happens to score on term
+     density.
+-    Returns ({file: [spans]}, bundle_text).
+     """
+     tset = set(terms)
+     idf = {
+@@ -1620,13 +1627,444 @@ def pack_regions(
+         spent += c["tok"]
+         covered |= c["terms"]
+ 
+-    parts = []
+     spans_out: dict[str, list[tuple[int, int]]] = {}
++    bodies: dict[str, str] = {}
+     for rel in files:
+         if rel not in chosen:
+             continue
+         segs = sorted(chosen[rel], key=lambda c: c["span"][0])
+         spans_out[rel] = [c["span"] for c in segs]
+-        body = "\n...\n".join(c["text"] for c in segs)
+-        parts.append(f"### {rel}\n{body}")
++        bodies[rel] = "\n...\n".join(c["text"] for c in segs)
++    return spans_out, bodies
++
++
++def _pack_regions_uniform(
++    corpus: Corpus,
++    files: list[str],
++    terms: list[str],
++    scores: dict[str, float],
++    budget_tokens: int,
++    count_tokens,
++    anchor_symbols: dict[str, list[str]] | None = None,
++) -> tuple[dict[str, list[tuple[int, int]]], str]:
++    """Breadth-mode packer: _pack_regions_core() plus the "### {file}\\n{body}"
++    join into a single bundle string. Used directly for FLAT queries and
++    whenever --pack-uniform is set; used budget-concentrated (only 2-4 deep
++    files, a fraction of the budget) by _pack_regions_peaked() via
++    _pack_regions_core() itself, not this wrapper. Returns ({file: [spans]},
++    bundle_text)."""
++    spans_out, bodies = _pack_regions_core(
++        corpus, files, terms, scores, budget_tokens, count_tokens, anchor_symbols
++    )
++    parts = [f"### {rel}\n{bodies[rel]}" for rel in files if rel in bodies]
+     return spans_out, "\n\n".join(parts)
++
++
++# ---------------------------------------------------------------- survival-scheduled packing
++#
++# The uniform packer above (pass 1 + pass 2) spends the budget near-evenly
++# across every selected file (~26 on a typical query): a floor allowance
++# each, then the remainder spread by score share. That is well-calibrated
++# for FLAT queries -- ones where the evidence is genuinely spread across
++# several plausible files and breadth is the right hedge -- but it starves
++# PEAKED queries, where a handful of files (often just 1-2) are essentially
++# certain to be the fix site (a rare, backticked symbol defined nowhere
++# else; an overwhelming share of the lexical score) yet still only get a
++# thin, score-proportional slice.
++#
++# confidence_schedule() reuses signals select_files() already computed
++# (Explain + the fused score dict) to classify a query PEAKED or FLAT with
++# no extra retrieval work, and picks the 2-4 "deep" files a PEAKED query
++# should concentrate budget on. pack_regions() then dispatches: FLAT still
++# runs _pack_regions_uniform() unchanged (hard constraint: flat must not
++# regress); PEAKED spends 60-75% of the budget on full symbol blocks for
++# the deep set (via _pack_regions_uniform() itself, just budget-concentrated
++# onto only those 2-4 files, whose pass-1/pass-2 machinery already prefers
++# whole hit-containing/anchored blocks over thin fragments once budget is
++# no longer spread thin) and the rest on a cheap "skeleton tier" for every
++# other selected file: signature lines only + a one-line receipt of WHY
++# that file was selected, so every file the ranked list chose still shows
++# up in the bundle (and in --json's "files" list) even when it isn't worth
++# a full region.
++
++_PEAKED_TOP3_LEX_SHARE_THRESHOLD = 0.5
++_PEAKED_ANCHOR_STRENGTH = 2.0
++_PEAKED_ANCHOR_AGREEMENT_MIN = 2
++_DEEP_MIN_FILES = 2
++_DEEP_MAX_FILES = 4
++_DEEP_SCORE_RATIO = 0.4
++_DEEP_BUDGET_FRACTION = 0.70
++_SKELETON_MAX_TOKENS = 80
++_SKELETON_MIN_TOKENS = 15
++
++
++def _channel_membership(explain: Explain) -> dict[str, set[str]]:
++    """Which of the 5 independent selection channels picked each file, per
++    Explain -- used both for the channel-agreement confidence signal and for
++    skeleton-tier receipt evidence. "lexical" is the top-10 BM25F picks
++    (lex_picks is already capped at k_lex=10 by select_files), not the full
++    (possibly graph-expanded) `out` -- a file that only exists because of
++    graph diffusion did not independently earn a lexical vote."""
++    return {
++        "lexical": set(explain.lex_picks[:10]),
++        "anchor": {f for f, *_rest in explain.anchor_promotions},
++        "msg": set(explain.msg_additions),
++        "testbridge": {f for f, _tier, _test in explain.testbridge},
++        "docsbridge": {f for f, _tier, _n in explain.docsbridge},
++    }
++
++
++def classify_confidence(
++    files: list[str], scores: dict[str, float], explain: Explain
++) -> tuple[str, dict]:
++    """Classify a query "peaked" or "flat" from signals select_files() already
++    computed, no extra retrieval work:
++
++      (a) score concentration -- share of total (body-scale, non-negative)
++          score across `files` held by the top 3.
++      (b) anchor strength -- ANY selected file was promoted by a
++          strength>=2.0 (backticked-in-the-issue-text AND repo-wide
++          rarity-gated, <=3 defining files: see extract_symbol_anchors)
++          definition-symbol anchor.
++      (c) channel agreement -- that same anchor-strong file was ALSO
++          independently selected by >=1 other of the 5 channels (lexical
++          top-10, anchor, msg, testbridge, docsbridge) -- corroboration,
++          surfaced as a diagnostic/confidence-strength signal, not a hard
++          gate: see below for why it can't be a gate in practice.
++
++    PEAKED if top3_share crosses the threshold OR (b) holds for any selected
++    file; FLAT otherwise. Returns (label, signal) where signal is a plain
++    dict suitable for --explain/--json diagnostics.
++
++    (b) is deliberately NOT restricted to top-4-by-score files, and (c) is
++    deliberately NOT a requirement for peaked (only a strength/diagnostic
++    flag): measured directly against real SWE-bench Lite instances, a
++    strength>=2.0 anchor's file lands at rank ~7-8 (select_files interleaves
++    anchor promotions in right after the raw lexical top ranks, not among
++    them -- that is the whole point of the anchor channel: rescuing a file a
++    pure-lexical/score signal would NOT have ranked highly) in effectively
++    100% of cases, and channel-corroboration (the file ALSO being an
++    independent lexical/msg/testbridge/docsbridge pick) only co-occurs in
++    ~15% of strength>=2.0 cases -- gating on both, as an earlier version of
++    this function did, meant the anchor path never fired on any real
++    instance measured (0/60 on a stride-5 SWE-bench Lite subsample) and
++    peaked scheduling was a silent no-op. strength>=2.0 already requires
++    BOTH a verbatim backtick-quoted code-span match AND a repo-wide rarity
++    gate (<=3 defining files) -- that is itself strong, specific file-
++    identity evidence (see extract_symbol_anchors), independent of where
++    the file lands in the generic term-density ranking or whether some
++    other channel happened to also pick it."""
++    if not files:
++        return "flat", {
++            "top3_share": 0.0, "strong_anchor_agreement": False,
++            "strong_anchor_files": [], "n_files": 0,
++        }
++
++    total = sum(max(scores.get(f, 0.0), 0.0) for f in files)
++    top3 = files[:3]
++    top3_share = (sum(max(scores.get(f, 0.0), 0.0) for f in top3) / total) if total > 0 else 0.0
++
++    file_set = set(files)
++    channels = _channel_membership(explain)
++    strong_anchor_files = sorted({
++        f for f, strength, *_rest in explain.anchor_promotions
++        if strength >= _PEAKED_ANCHOR_STRENGTH and f in file_set
++    })
++
++    def n_channels(f: str) -> int:
++        return sum(1 for members in channels.values() if f in members)
++
++    strong_anchor_agreement = any(
++        n_channels(f) >= _PEAKED_ANCHOR_AGREEMENT_MIN for f in strong_anchor_files
++    )
++    peaked = top3_share >= _PEAKED_TOP3_LEX_SHARE_THRESHOLD or bool(strong_anchor_files)
++    signal = {
++        "top3_share": round(top3_share, 4),
++        "strong_anchor_agreement": strong_anchor_agreement,
++        "strong_anchor_files": strong_anchor_files,
++        "n_files": len(files),
++    }
++    return ("peaked" if peaked else "flat"), signal
++
++
++def _select_deep_files(
++    files: list[str],
++    scores: dict[str, float],
++    anchor_files: Iterable[str] = (),
++    min_n: int = _DEEP_MIN_FILES,
++    max_n: int = _DEEP_MAX_FILES,
++    ratio: float = _DEEP_SCORE_RATIO,
++) -> list[str]:
++    """The 2-4 files a PEAKED query should concentrate budget on:
++
++    1. always the top `min_n` by score (the classic "most-likely-relevant"
++       core),
++    2. then any `anchor_files` not already included (the strength>=2.0
++       anchor-promoted files that may have triggered PEAKED classification
++       in the first place -- these routinely rank ~7-8 by raw score, well
++       outside `min_n`/the score-ratio net below, so without this pass the
++       very evidence that justified spending budget deep would never
++       itself receive deep treatment),
++    3. then, if slots remain, more files whose score is within `ratio` of
++       the top file's -- so a query with 2-3 truly dominant files doesn't
++       get padded out to 4 with also-rans just to hit a fixed count.
++
++    Order within each pass follows `files` (already score-ranked)."""
++    if not files:
++        return []
++    top_score = scores.get(files[0], 0.0) or 1.0
++    anchor_set = set(anchor_files)
++    deep: list[str] = []
++    for f in files:
++        if len(deep) >= min_n:
++            break
++        deep.append(f)
++    for f in files:
++        if len(deep) >= max_n:
++            break
++        if f in anchor_set and f not in deep:
++            deep.append(f)
++    for f in files:
++        if len(deep) >= max_n:
++            break
++        if f in deep:
++            continue
++        s = scores.get(f, 0.0)
++        if s >= ratio * top_score:
++            deep.append(f)
++    return deep
++
++
++def confidence_schedule(
++    files: list[str], scores: dict[str, float], explain: Explain | None
++) -> tuple[str, list[str], dict]:
++    """Top-level scheduling decision: (schedule, deep_files, signal).
++    schedule is "flat" (deep_files == []) whenever `explain` is absent (a
++    caller not passing Explain, e.g. a future non-CLI consumer, gets the
++    original uniform behavior) or classify_confidence() says flat."""
++    if not files or explain is None:
++        return "flat", [], {
++            "top3_share": 0.0, "strong_anchor_agreement": False,
++            "strong_anchor_files": [], "n_files": len(files),
++        }
++    schedule, signal = classify_confidence(files, scores, explain)
++    if schedule != "peaked":
++        return "flat", [], signal
++    deep_files = _select_deep_files(files, scores, anchor_files=signal["strong_anchor_files"])
++    if len(deep_files) < _DEEP_MIN_FILES:
++        return "flat", [], signal
++    return "peaked", deep_files, signal
++
++
++def _term_idf(corpus: Corpus, terms: set[str]) -> dict[str, float]:
++    return {
++        t: math.log(1.0 + (corpus.n_docs - corpus.df.get(t, 0) + 0.5) / (corpus.df.get(t, 0) + 0.5))
++        for t in terms
++    }
++
++
++def _skeleton_receipt(
++    rel: str,
++    explain: Explain,
++    anchor_symbols: dict[str, list[str]] | None,
++    corpus: Corpus,
++    idf: dict[str, float],
++) -> str:
++    """One-line `# bgrep: included via <channel>: <evidence>` receipt for a
++    skeleton-tier file, in descending evidence-specificity order: an
++    anchored definition symbol is the strongest, most legible evidence a
++    receipt can cite, then the structural test/doc bridges (name the actual
++    linking test/page), then commit-message history, then plain lexical
++    match (cites the highest-idf/rarest matched query terms rather than a
++    generic "matched"), falling back to a generic graph/structural note for
++    files that only exist because of import/co-change diffusion."""
++    if anchor_symbols and anchor_symbols.get(rel):
++        syms = ", ".join(anchor_symbols[rel][:2])
++        return f"# bgrep: included via anchor: {syms}"
++    for f, _tier, test in explain.testbridge:
++        if f == rel:
++            return f"# bgrep: included via testbridge: linked from {test}"
++    for f, _tier, n_pages in explain.docsbridge:
++        if f == rel:
++            plural = "s" if n_pages != 1 else ""
++            return f"# bgrep: included via docsbridge: referenced by {n_pages} doc page{plural}"
++    if rel in explain.msg_additions:
++        return "# bgrep: included via msg: commit-message match"
++    if rel in explain.lex_picks:
++        matched = set(corpus.tf.get(rel, {})) & set(idf)
++        top_terms = sorted(matched, key=lambda t: -idf.get(t, 0.0))[:2]
++        evidence = ", ".join(top_terms) if top_terms else "term match"
++        return f"# bgrep: included via lexical: {evidence}"
++    return "# bgrep: included via graph: structural/co-change neighbor"
++
++
++def _skeleton_block(
++    rel: str,
++    corpus: Corpus,
++    explain: Explain,
++    anchor_symbols: dict[str, list[str]] | None,
++    idf: dict[str, float],
++    max_tokens: int,
++    count_tokens,
++) -> tuple[list[tuple[int, int]], str]:
++    """Skeleton-tier content for one tail file: the receipt line plus
++    def/class SIGNATURE lines only (no bodies), added one at a time until
++    `max_tokens` would be exceeded. Falls back to the file's first few
++    non-blank lines (its module header -- imports/docstring/package
++    preamble) when the file's language has no signature regex or it
++    matched nothing, so every skeleton file still shows real content, not
++    just the receipt. Guarantees at least one span (receipt-only files still
++    get a nominal (1, 1) span) so the file is never dropped from the
++    bundle/--json "files" list."""
++    text = corpus.text[rel]
++    lines = text.splitlines()
++    receipt = _skeleton_receipt(rel, explain, anchor_symbols, corpus, idf)
++
++    def_re = _def_re_for(rel)
++    header_lines: list[tuple[int, str]] = []
++    if def_re is not None:
++        for i, ln in enumerate(lines, 1):
++            if def_re.match(ln):
++                header_lines.append((i, ln.rstrip()))
++
++    body_lines = [receipt]
++    spans: list[tuple[int, int]] = []
++    if header_lines:
++        for i, ln in header_lines:
++            trial = "\n".join(body_lines + [ln])
++            if len(body_lines) > 1 and count_tokens(trial) > max_tokens:
++                break
++            body_lines.append(ln)
++            spans.append((i, i))
++    else:
++        fallback: list[str] = []
++        last_ln = 1
++        for i, ln in enumerate(lines[:8], 1):
++            if not ln.strip():
++                continue
++            fallback.append(ln.rstrip())
++            last_ln = i
++            if len(fallback) >= 3 or count_tokens("\n".join(body_lines + fallback)) > max_tokens:
++                break
++        if fallback:
++            body_lines.extend(fallback)
++            spans.append((1, last_ln))
++    if not spans:
++        spans.append((1, 1))
++    return spans, "\n".join(body_lines)
++
++
++def _pack_regions_peaked(
++    corpus: Corpus,
++    files: list[str],
++    terms: list[str],
++    scores: dict[str, float],
++    budget_tokens: int,
++    count_tokens,
++    anchor_symbols: dict[str, list[str]] | None,
++    explain: Explain,
++    deep_files: list[str],
++) -> tuple[dict[str, list[tuple[int, int]]], str]:
++    """PEAKED-schedule packer: `deep_files` (2-4 files) get
++    _DEEP_BUDGET_FRACTION of the budget run through _pack_regions_core (the
++    same pass-1-best-region-plus-anchor-forcing / pass-2-greedy-marginal-
++    coverage machinery _pack_regions_uniform uses) -- concentrating that
++    machinery onto only 2-4 files naturally yields full, mostly-untruncated
++    hit-containing/anchored symbol blocks instead of the thin per-file slice
++    the same algorithm gives when spread across ~26 files. Every other
++    selected file gets a skeleton-tier entry (_skeleton_block) funded from
++    whatever's left of the budget after the deep pack (so a deep set that
++    under-spends its allowance hands the difference to the tail, and the
++    tail never OVER-spends what the deep pack left)."""
++    deep_set = set(deep_files)
++    deep_budget = max(1, int(budget_tokens * _DEEP_BUDGET_FRACTION))
++    deep_spans, deep_bodies = _pack_regions_core(
++        corpus, deep_files, terms, scores, deep_budget, count_tokens, anchor_symbols
++    )
++    deep_spent = sum(count_tokens(b) for b in deep_bodies.values())
++    remaining_budget = max(0, budget_tokens - deep_spent)
++
++    tail_files = [f for f in files if f not in deep_set]
++    tset = set(terms)
++    idf = _term_idf(corpus, tset)
++    per_file_budget = _SKELETON_MAX_TOKENS
++    if tail_files:
++        per_file_budget = max(
++            _SKELETON_MIN_TOKENS, min(_SKELETON_MAX_TOKENS, remaining_budget // len(tail_files))
++        )
++
++    skeleton_spans: dict[str, list[tuple[int, int]]] = {}
++    skeleton_text: dict[str, str] = {}
++    spent = deep_spent
++    for rel in tail_files:
++        if rel not in corpus.text:
++            continue
++        spans, body = _skeleton_block(
++            rel, corpus, explain, anchor_symbols, idf, per_file_budget, count_tokens
++        )
++        tok = count_tokens(body)
++        if spent + tok > budget_tokens and skeleton_spans:
++            # Budget-exhausted backstop: still guarantee presence with a
++            # receipt-only entry (a few tokens) rather than dropping the
++            # file from the bundle entirely.
++            spans, body = [spans[0]], body.splitlines()[0]
++            tok = count_tokens(body)
++        skeleton_spans[rel] = spans
++        skeleton_text[rel] = body
++        spent += tok
++
++    spans_out: dict[str, list[tuple[int, int]]] = {}
++    parts: list[str] = []
++    for rel in files:
++        if rel in deep_spans:
++            spans_out[rel] = deep_spans[rel]
++            parts.append(f"### {rel}\n{deep_bodies[rel]}")
++        elif rel in skeleton_spans:
++            spans_out[rel] = skeleton_spans[rel]
++            parts.append(f"### {rel}\n{skeleton_text[rel]}")
++    return spans_out, "\n\n".join(parts)
++
++
++def pack_regions(
++    corpus: Corpus,
++    files: list[str],
++    terms: list[str],
++    scores: dict[str, float],
++    budget_tokens: int,
++    count_tokens,
++    anchor_symbols: dict[str, list[str]] | None = None,
++    explain: Explain | None = None,
++    pack_uniform: bool = False,
++    schedule: str | None = None,
++    deep_files: list[str] | None = None,
++) -> tuple[dict[str, list[tuple[int, int]]], str]:
++    """Public packing entry point: dispatches between the breadth-mode
++    packer (_pack_regions_uniform, always used for FLAT queries and
++    whenever `pack_uniform` is set -- the --pack-uniform CLI escape hatch)
++    and the survival-scheduled packer (_pack_regions_peaked) for PEAKED
++    queries (see confidence_schedule/classify_confidence above for the
++    signal design).
++
++    `schedule`/`deep_files`, if given, are trusted as already-computed by
++    confidence_schedule() (as cli.py does, so it can also surface them in
++    --json/--explain diagnostics without a second, possibly-divergent
++    computation); if omitted, computed here from `explain`. Passing
++    `pack_uniform=True` short-circuits straight to the breadth-mode packer
++    without even computing a schedule.
++
++    Guarantees every file in `files` that pack_regions can render at all
++    (has tokenizable text in the corpus) ends up with a spans entry: the
++    uniform packer already guaranteed this for every file it's asked to
++    pack; the peaked packer extends the same guarantee to skeleton-tier
++    tail files via _skeleton_block's receipt-only fallback."""
++    if not files:
++        return {}, ""
++    if pack_uniform:
++        return _pack_regions_uniform(corpus, files, terms, scores, budget_tokens, count_tokens, anchor_symbols)
++    if schedule is None or deep_files is None:
++        schedule, deep_files, _signal = confidence_schedule(files, scores, explain)
++    if schedule != "peaked" or explain is None or len(deep_files) < _DEEP_MIN_FILES:
++        return _pack_regions_uniform(corpus, files, terms, scores, budget_tokens, count_tokens, anchor_symbols)
++    return _pack_regions_peaked(
++        corpus, files, terms, scores, budget_tokens, count_tokens, anchor_symbols, explain, deep_files
++    )

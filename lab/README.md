@@ -229,3 +229,15 @@ Multilingual JS/TS slice: all-gold 2/5 -> 3/5; provably byte-identical on all
 38 sub-threshold instances and inert on every Lite repo (max 2.2k files).
 Promising but n=5; validation at scale on Multi-SWE-bench's 580 JS/TS
 instances (incl. material-ui, 27.6k files) in progress.
+
+## Survival-scheduled packing (2026-07-12, REJECTED — negative result)
+
+Scheduling deep-vs-broad packing by score-concentration confidence (DSpark-inspired
+adaptive verification) failed at estimator calibration, exactly as QPP
+literature warns: flat class byte-identical (guard worked), peaked class net
+-6.5pp with symmetric counts but asymmetric magnitudes — two instances fell
+1.0 -> 0.0 when the scheduler confidently deep-packed the wrong files. Score
+concentration measures confidence, not correctness. Patch + subset data in
+lab/experiments/. Possible salvage (roadmap footnote): gate deep-packing on
+anchor-strength signals only (the measured near-certain class), not score
+concentration.
