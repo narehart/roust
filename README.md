@@ -254,4 +254,4 @@ bgrep is the strongest training-free, model-free point on that curve.
 Research artifacts -- benchmark JSONLs, diagnostics, and pre-registered
 held-out predictions -- live in [`lab/`](lab/README.md).
 
-License: TBD.
+License: MIT.

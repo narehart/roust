@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "bgrep"
 version = "0.1.0"
 description = "Recall-first code retrieval for LLM coding agents — grep-level recall at ~1% of the tokens"
+license = {text = "MIT"}
 requires-python = ">=3.10"
 dependencies = [
     "tiktoken>=0.5",
