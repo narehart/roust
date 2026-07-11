@@ -192,6 +192,7 @@ class Corpus:
         repo_path: Path,
         history_msgs: dict[str, str] | None = None,
         use_comments: bool = False,
+        build_docs: bool = False,
     ):
         self.repo_path = repo_path
         self.files: list[str] = []
@@ -286,6 +287,50 @@ class Corpus:
         self.n_msg_docs = len(self.msg_tf)
         self.msg_avg_len = (sum(self.msg_doclen.values()) / self.n_msg_docs) if self.n_msg_docs else 1.0
 
+        # docs field: *.rst/*.txt/*.md pages, indexed in a wholly separate
+        # field from the code corpus above (own tf/df/doclen, own BM25 --
+        # see docs_bm25). Test-path pages are excluded (a doc page living
+        # under tests/ is test scaffolding, not user-facing documentation).
+        # Only built when build_docs=True: doc pages are typically only a
+        # few hundred files, but repos with huge changelogs/translations can
+        # have thousands, so this is opt-in and capped.
+        self.docs_files: list[str] = []
+        self.docs_text: dict[str, str] = {}
+        self.docs_tf: dict[str, Counter[str]] = {}
+        self.docs_df: Counter[str] = Counter()
+        self.docs_len: dict[str, int] = {}
+        if build_docs:
+            doc_paths: list[Path] = []
+            for p in sorted(repo_path.rglob("*")):
+                if not p.is_file() or p.suffix not in _DOCS_EXTENSIONS:
+                    continue
+                rel = str(p.relative_to(repo_path))
+                if rel.startswith(".git/") or "/.git/" in rel:
+                    continue
+                if _DOCS_EXCLUDE_RE.search(rel):
+                    continue
+                doc_paths.append(p)
+            for p in doc_paths[:_MAX_DOCS_FILES]:
+                rel = str(p.relative_to(repo_path))
+                try:
+                    if p.stat().st_size > _MAX_DOCS_FILE_BYTES:
+                        continue
+                    text = p.read_text(encoding="utf-8", errors="replace")
+                except OSError:
+                    continue
+                dtoks = tokenize(text)
+                if not dtoks:
+                    continue
+                self.docs_files.append(rel)
+                self.docs_text[rel] = text
+                dcounts = Counter(dtoks)
+                self.docs_tf[rel] = dcounts
+                self.docs_len[rel] = len(dtoks)
+                for term in dcounts:
+                    self.docs_df[term] += 1
+        self.n_docs_files = len(self.docs_files)
+        self.docs_avg_len = (sum(self.docs_len.values()) / self.n_docs_files) if self.n_docs_files else 1.0
+
     def bm25(
         self,
         terms: list[str],
@@ -359,6 +404,30 @@ class Corpus:
                 scores[rel] += idf * (mtf * (k1 + 1) / denom)
         if use_prior:
             return {rel: s * impl_prior(rel) for rel, s in scores.items()}
+        return dict(scores)
+
+    def docs_bm25(self, terms: list[str], k1: float = 1.2, b: float = 0.75) -> dict[str, float]:
+        """Standard Okapi BM25 over the docs field (*.rst/*.txt/*.md pages
+        collected when this Corpus was built with build_docs=True), with its
+        own per-field length normalization (docs_len/docs_avg_len). No path
+        field, no impl-file prior -- these are doc pages, not code files.
+        Returns {} if no docs were indexed. Consumed by select_files()'s
+        docs-bridge channel (see _apply_docsbridge_promotions), never
+        blended into bm25()."""
+        if not self.docs_tf or not self.n_docs_files:
+            return {}
+        scores: dict[str, float] = defaultdict(float)
+        for term in terms:
+            ddf = self.docs_df.get(term)
+            if not ddf:
+                continue
+            idf = math.log(1.0 + (self.n_docs_files - ddf + 0.5) / (ddf + 0.5))
+            for rel, dtf_counter in self.docs_tf.items():
+                dtf = dtf_counter.get(term)
+                if not dtf:
+                    continue
+                denom = dtf + k1 * (1 - b + b * self.docs_len[rel] / self.docs_avg_len)
+                scores[rel] += idf * (dtf * (k1 + 1) / denom)
         return dict(scores)
 
 
@@ -621,6 +690,196 @@ def _apply_anchor_promotions(
     return out, promotions
 
 
+_TESTBRIDGE_EXTS = (".py", ".go", ".rs", ".js", ".ts")
+
+
+def _apply_testbridge_promotions(
+    out: list[str], corpus: Corpus, bm: dict[str, float], edges: dict[str, set[str]]
+) -> tuple[list[str], list[tuple[str, str, str]]]:
+    """Test-file lexical bridge channel, TAIL TIER ONLY: 14/52 measured
+    File@10 failures (6/24 at @all) had a stray gold file directly imported
+    by a top-5 BM25-matching test file -- diag_channels.py Signal B. Rank
+    testlike code files (path matches _TESTLIKE_RE, extension restricted to
+    _TESTBRIDGE_EXTS to dodge vendor-y matches) by the RAW (impl-prior-
+    downweighted) body bm25 scores already computed for this query; the
+    uniform 0.3 downweight doesn't change their relative order. Take the
+    top-3 nonzero-scoring test files.
+
+    Candidates are impl files (impl_prior == 1.0) reachable from those test
+    files via the import graph (edges already include test<->impl edges).
+    bridge_strength for a candidate is its best linking test file's score,
+    normalized so the #1 test file's score = 1.0.
+
+    A prior version (v6) also had a "head" tier: candidates linked to the #1
+    test file (bridge_strength == 1.0) promoted at position 8, cap 1. A
+    300-instance ablation measured that tier losing 7 and gaining only 2 at
+    @10 -- it tended to promote low-specificity utility files (e.g.
+    __init__.py, test fixtures/helpers) that the top test imports alongside
+    its actual subject, since those utility files are also imported by every
+    OTHER test in the repo and so look just as "linked to the #1 test" as
+    the genuine subject file. The head tier is removed entirely; only the
+    tail tier remains, ranked by a specificity score that penalizes exactly
+    that failure mode:
+
+        candidate_score = bridge_strength / log(2 + n_test_importers)
+
+    where n_test_importers is the number of testlike files (this corpus's
+    full _TESTLIKE_RE/_TESTBRIDGE_EXTS set, not just the top-3) that are
+    import-graph neighbors of the candidate -- a file imported by many tests
+    is common utility (deprioritized); a file imported by only the linking
+    test is maximally specific to this issue.
+
+    Tail tier: up to 3 candidates absent from `out` are inserted at position
+    14. Positions 0-13 are never touched (a candidate already present
+    anywhere in `out`, including below position 10, is left alone, not
+    moved)."""
+    testlike = [
+        f for f in corpus.files
+        if _TESTLIKE_RE.search(f) and Path(f).suffix in _TESTBRIDGE_EXTS
+    ]
+    testlike_set = set(testlike)
+    ranked_tests = sorted(
+        ((f, bm.get(f, 0.0)) for f in testlike), key=lambda kv: (-kv[1], kv[0])
+    )
+    top_tests = [(f, s) for f, s in ranked_tests if s > 0][:3]
+    if not top_tests:
+        return out, []
+    top_score = top_tests[0][1]
+    if top_score <= 0:
+        return out, []
+
+    # candidate -> (bridge_strength, linking_test)
+    candidates: dict[str, tuple[float, str]] = {}
+    for test, tscore in top_tests:
+        for nbr in edges.get(test, ()):
+            if impl_prior(nbr) != 1.0:
+                continue
+            strength = tscore / top_score
+            cur = candidates.get(nbr)
+            if cur is None or strength > cur[0]:
+                candidates[nbr] = (strength, test)
+
+    def specificity(f: str) -> float:
+        strength = candidates[f][0]
+        n_test_importers = len(edges.get(f, set()) & testlike_set)
+        return strength / math.log(2 + n_test_importers)
+
+    tail_pool = sorted(candidates, key=lambda f: (-specificity(f), f))
+
+    records: list[tuple[str, str, str]] = []  # (file, tier, linking_test)
+    tail_files: list[str] = []
+    for f in tail_pool:
+        if len(tail_files) >= 3:
+            break
+        if f in out:
+            continue
+        tail_files.append(f)
+        records.append((f, "tail", candidates[f][1]))
+    for f in tail_files:
+        pos = min(14, len(out))
+        out = out[:pos] + [f] + out[pos:]
+
+    return out, records
+
+
+# ---------------------------------------------------------------- docs-bridge channel
+
+_DOCS_EXTENSIONS = (".rst", ".txt", ".md")
+_DOCS_EXCLUDE_RE = re.compile(r"(^|/)(tests?|testing|__tests__)(/|$)", re.I)
+_MAX_DOCS_FILE_BYTES = 500_000
+_MAX_DOCS_FILES = 4000
+
+_DOTTED_PATH_RE = re.compile(r"\b[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*){2,}\b")
+_SPHINX_DIRECTIVE_RE = re.compile(
+    r"(?:automodule|currentmodule|module|autoclass|autofunction)::\s*([\w\.]+)"
+)
+
+
+def _resolve_py_dotted(dotted: str, pyidx: dict[str, str]) -> str | None:
+    """Same exact-then-shortening-prefix lookup build_import_graph()'s
+    add_module() uses for `import x.y.z` resolution, factored out so the
+    docs-bridge channel can resolve a dotted reference extracted from prose
+    (not from an actual import statement) the identical way."""
+    parts = [p for p in dotted.split(".") if p]
+    for i in range(len(parts), 0, -1):
+        hit = pyidx.get(".".join(parts[:i]))
+        if hit:
+            return hit
+    return None
+
+
+def _apply_docsbridge_promotions(
+    out: list[str], corpus: Corpus, terms: list[str]
+) -> tuple[list[str], list[tuple[str, str, int]]]:
+    """Docs lexical bridge channel, TAIL TIER ONLY (position 16, cap 2): a
+    corrected docs diagnostic measured 10/52 File@10 failures (3/24 @all)
+    had a stray gold file referenced -- by dotted code path or a Sphinx
+    automodule/autoclass/autofunction/currentmodule/module directive -- on a
+    top-3 BM25-matching *.rst/*.txt/*.md doc page. Requires the Corpus to
+    have been built with build_docs=True (see Corpus.docs_bm25); returns
+    `out` unchanged if it wasn't, or if no doc page scores nonzero for this
+    query.
+
+    Candidates are resolved from the RAW page text (dotted identifier paths
+    of depth >=3, and Sphinx directives) via the same exact-then-prefix
+    python module-index lookup build_import_graph() uses for import
+    resolution (_resolve_py_dotted) -- never through the lexical BM25 index,
+    since a dotted path like `pkg.mod.Class` should resolve structurally,
+    not by term overlap. Only resolutions that land on an implementation
+    file (impl_prior == 1.0) count as candidates.
+
+    Ranking key: (number of the top-3 pages referencing the candidate,
+    then the best-referencing page's rank) -- a file referenced by all
+    three top pages outranks one referenced by only the single best page.
+    Up to 2 candidates absent from `out` are inserted at position 16; a
+    candidate already present anywhere in `out` is left untouched.
+    Positions 0-15 are never touched."""
+    if not corpus.docs_tf:
+        return out, []
+    doc_scores = corpus.docs_bm25(terms)
+    if not doc_scores:
+        return out, []
+    ranked_pages = sorted(doc_scores.items(), key=lambda kv: (-kv[1], kv[0]))
+    top_pages = [(f, s) for f, s in ranked_pages if s > 0][:3]
+    if not top_pages:
+        return out, []
+
+    pyidx = _py_module_index(corpus.files)
+
+    # candidate -> (n_pages_referencing, best_page_rank); best_page_rank 0 ==
+    # the #1-scoring page, so lower is better.
+    candidates: dict[str, tuple[int, int]] = {}
+    for rank, (page, _score) in enumerate(top_pages):
+        text = corpus.docs_text[page]
+        refs: set[str] = {m.group(0) for m in _DOTTED_PATH_RE.finditer(text)}
+        refs.update(m.group(1) for m in _SPHINX_DIRECTIVE_RE.finditer(text))
+        resolved: set[str] = set()
+        for ref in refs:
+            hit = _resolve_py_dotted(ref, pyidx)
+            if hit and impl_prior(hit) == 1.0:
+                resolved.add(hit)
+        for f in resolved:
+            n, best_rank = candidates.get(f, (0, rank))
+            candidates[f] = (n + 1, min(best_rank, rank))
+
+    tail_pool = sorted(candidates, key=lambda f: (-candidates[f][0], candidates[f][1], f))
+
+    records: list[tuple[str, str, int]] = []  # (file, tier, n_pages_referencing)
+    tail_files: list[str] = []
+    for f in tail_pool:
+        if len(tail_files) >= 2:
+            break
+        if f in out:
+            continue
+        tail_files.append(f)
+        records.append((f, "tail", candidates[f][0]))
+    for f in tail_files:
+        pos = min(16, len(out))
+        out = out[:pos] + [f] + out[pos:]
+
+    return out, records
+
+
 def select_files(
     corpus: Corpus,
     terms: list[str],
@@ -632,6 +891,8 @@ def select_files(
     cochange: dict[str, dict[str, int]] | None = None,
     cochange_strong: int = 5,
     anchors: list[tuple[str, float]] | None = None,
+    use_testbridge: bool = False,
+    use_docsbridge: bool = False,
 ) -> tuple[list[str], dict[str, float]]:
     """Return candidate files: top BM25F picks, optionally UNIONed with the top
     graph-diffusion additions. The union is monotone: diffusion can only add
@@ -652,6 +913,12 @@ def select_files(
     only APPEND extra candidates after the body-only additions are finalized
     (see the msg_bm25 top-up below), never influence lex_picks or displace/
     reorder anything the body ranking already chose.
+
+    use_testbridge and use_docsbridge are both TAIL-ONLY channels (see
+    _apply_testbridge_promotions / _apply_docsbridge_promotions): they insert
+    at position >=14, never reorder or displace anything above it, and are
+    independent of each other (each only ever inserts into slots the other
+    left absent).
     """
     global LAST_EXPLAIN
     bm = corpus.bm25(terms)
@@ -667,7 +934,17 @@ def select_files(
     scores = dict(bm_n)
     if not use_ppr:
         lex_out, promotions = _apply_anchor_promotions(lex_picks, anchors)
-        LAST_EXPLAIN = {"lex_picks": lex_picks, "anchor_promotions": promotions}
+        tb_records: list[tuple[str, str, str]] = []
+        if use_testbridge:
+            edges = build_import_graph(corpus)
+            lex_out, tb_records = _apply_testbridge_promotions(lex_out, corpus, bm, edges)
+        db_records: list[tuple[str, str, int]] = []
+        if use_docsbridge:
+            lex_out, db_records = _apply_docsbridge_promotions(lex_out, corpus, terms)
+        LAST_EXPLAIN = {
+            "lex_picks": lex_picks, "anchor_promotions": promotions,
+            "testbridge": tb_records, "docsbridge": db_records,
+        }
         return lex_out, scores
 
     # --- structural expansion: cluster hypothesis + pseudo-relevance feedback.
@@ -802,6 +1079,12 @@ def select_files(
     for f in additions:
         scores[f] = max(scores.get(f, 0.0), 0.3 + 0.5 * fb_n.get(f, 0.0))
     out, anchor_promotions = _apply_anchor_promotions(out, anchors)
+    tb_records: list[tuple[str, str, str]] = []
+    if use_testbridge:
+        out, tb_records = _apply_testbridge_promotions(out, corpus, bm, edges)
+    db_records: list[tuple[str, str, int]] = []
+    if use_docsbridge:
+        out, db_records = _apply_docsbridge_promotions(out, corpus, terms)
 
     LAST_EXPLAIN = {
         "seeds": sources,
@@ -811,6 +1094,8 @@ def select_files(
         "cochange_additions": [c for c in additions if c in cochange_origin],
         "msg_additions": msg_additions,
         "anchor_promotions": anchor_promotions,
+        "testbridge": tb_records,
+        "docsbridge": db_records,
     }
     return out, scores
 

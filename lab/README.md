@@ -87,7 +87,9 @@ Ablation (File@k = all gold files within top-k of the ranked list):
 | + history via RRF fusion (REJECTED) | .337 | .643 | .757 | .890 | 8,457 |
 | **+ history as monotone additions (final)** | **.463** | **.737** | **.813** | **.910** | **8,492** |
 | + def-symbol anchors, flat promotion (superseded) | .463 | .737 | .823 | .917 | 8,515 |
-| **+ def-symbol anchors, tiered (FROZEN CONFIG)** | **.463** | **.737** | **.827** | **.920** | **8,515** |
+| **+ def-symbol anchors, tiered** | **.463** | **.737** | **.827** | **.920** | **8,515** |
+| + test-bridge with head tier (superseded) | .463 | .737 | .810 | .927 | 8,544 |
+| **+ tail-only test+docs bridges (FROZEN v7)** | **.463** | **.737** | **.827** | **.923** | **8,549** |
 
 Final: 91.0% of instances get every gold file, ~8.5k-token bundle, 530ms query.
 Verified SOTA context (SweRank, arXiv:2505.07849): trained embedders reach
@@ -111,6 +113,20 @@ rank 8, top-7 sovereign); weaker anchors append at rank 12+. @10 .813→.827,
 @all .910→.920, zero @all losses, top-7 invariant 300/300. Config FROZEN after
 this change: Lite has served as dev set through five iterations; SWE-bench
 Verified is reserved as the untouched held-out test.
+
+Bridge campaign (2026-07-11): the repo is a self-describing system — tests and
+docs are NL->code mappings written by the developers. Headroom diagnostics:
+test-file lexical bridge (issue matches test vocabulary; test imports gold)
+14/52 @10 + 6/24 @all; docs bridge (issue matches doc page; page references
+gold) 10/52 + 3/24 after fixing a filter bug that had excluded docs/ from its
+own measurement; literal error-string matching 0/52 — modern f-string
+interpolation means quoted runtime messages never exist verbatim in source.
+Shipped tail-only (positions 14/16, top-10 byte-invariant 300/300): @all
+.920->.923. Head-tier test-bridge tried and reverted (-5 net @10: tests import
+their subject plus utilities, and import-linkage alone cannot tell them apart).
+Ceiling-vs-conversion lesson: a channel that can reach gold must still win its
+capped slot against the channel's other candidates — reachability ceilings
+(.943) are permissive, conversion (+1) is an intra-channel ranking problem.
 
 ## Run it
 

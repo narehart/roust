@@ -20,7 +20,25 @@ score file-level recall of the gold-patch-edited files plus packed tokens.
 
 Writes one JSON line per instance (resume-safe: already-done instances skipped).
 
+--testbridge turns on the test-file lexical bridge channel (lanes2.
+select_files use_testbridge / lanes2._apply_testbridge_promotions): impl
+files reachable via the import graph from the top-3 BM25-matching test files
+get promoted (tail-only, position 14, cap 3), ranked by a specificity score
+that deprioritizes candidates imported by many test files.
+
+--docsbridge turns on the docs lexical bridge channel (lanes2.select_files
+use_docsbridge / lanes2._apply_docsbridge_promotions): impl files resolved
+from dotted-path / Sphinx-directive code references on the top-3 BM25-
+matching *.rst/*.txt/*.md doc pages get promoted (tail-only, position 16,
+cap 2). Requires Corpus(build_docs=True), which is passed automatically when
+this flag is set.
+
+Both --testbridge and --docsbridge are tail-only channels (insert at
+position >=14, never above): the top-10 returned_files ordering with either
+or both flags on is identical to the ordering with both off.
+
 Usage:  uv run python swebench_driver2.py [--limit N] [--history] [--comments] [--anchors]
+                                           [--testbridge] [--docsbridge]
                                            [--instances-file PATH | --sample N] --out results.jsonl
 """
 
@@ -119,7 +137,8 @@ def _list_current_files(repo_path: Path) -> set[str]:
 
 
 def run_instance(
-    inst: dict, repo_path: Path, use_history: bool, use_comments: bool, use_anchors: bool = False
+    inst: dict, repo_path: Path, use_history: bool, use_comments: bool, use_anchors: bool = False,
+    use_testbridge: bool = False, use_docsbridge: bool = False,
 ) -> dict:
     t0 = time.perf_counter()
 
@@ -139,14 +158,16 @@ def run_instance(
         history_msgs, cochange, meta = mine_history(repo_path, current_files=current_files)
         mine_ms = (time.perf_counter() - t_mine) * 1000
 
-    corpus = L.Corpus(repo_path, history_msgs=history_msgs, use_comments=use_comments)
+    corpus = L.Corpus(repo_path, history_msgs=history_msgs, use_comments=use_comments,
+                       build_docs=use_docsbridge)
     build_ms = (time.perf_counter() - t0) * 1000
     terms = L.query_terms(inst["problem_statement"], [])
     anchors: list[tuple[str, float]] | None = None
     if use_anchors:
         anchors = L.extract_symbol_anchors(inst["problem_statement"], corpus)
     t1 = time.perf_counter()
-    files, scores = L.select_files(corpus, terms, use_ppr=True, cochange=cochange, anchors=anchors)
+    files, scores = L.select_files(corpus, terms, use_ppr=True, cochange=cochange, anchors=anchors,
+                                    use_testbridge=use_testbridge, use_docsbridge=use_docsbridge)
     spans, bundle = L.pack_regions(corpus, files, terms, scores, 8192, count_tokens)
     query_ms = (time.perf_counter() - t1) * 1000
     packed_files = [f for f in files if f in spans]
@@ -156,6 +177,8 @@ def run_instance(
     recall = len(present) / len(gold) if gold else 1.0
     cochange_additions = list(L.LAST_EXPLAIN.get("cochange_additions", []))
     anchor_promotions = list(L.LAST_EXPLAIN.get("anchor_promotions", []))
+    testbridge = list(L.LAST_EXPLAIN.get("testbridge", []))
+    docsbridge = list(L.LAST_EXPLAIN.get("docsbridge", []))
     return {
         "instance_id": inst["instance_id"],
         "repo": inst["repo"],
@@ -169,12 +192,16 @@ def run_instance(
         "returned_files": packed_files,  # ordered: lexical picks then additions
         "tokens_packed": count_tokens(bundle),
         "corpus_files": corpus.n_docs,
+        "docs_files": corpus.n_docs_files,
         "build_ms": round(build_ms),
         "query_ms": round(query_ms),
         "mine_ms": round(mine_ms),
-        "signals": {"history": use_history, "comments": use_comments, "anchors": use_anchors},
+        "signals": {"history": use_history, "comments": use_comments, "anchors": use_anchors,
+                    "testbridge": use_testbridge, "docsbridge": use_docsbridge},
         "cochange_additions": cochange_additions,
         "anchor_promotions": anchor_promotions,
+        "testbridge": testbridge,
+        "docsbridge": docsbridge,
         "meta_available": bool(meta),  # mined but not yet used for scoring
     }
 
@@ -189,6 +216,13 @@ def main() -> None:
     ap.add_argument("--anchors", action="store_true",
                      help="promote definition-symbol anchor files (identifiers named verbatim "
                           "in the issue that are rarely-defined in the repo) into the top ranks")
+    ap.add_argument("--testbridge", action="store_true",
+                     help="promote impl files reachable via the import graph from the top-3 "
+                          "BM25-matching test files (lanes2.select_files use_testbridge)")
+    ap.add_argument("--docsbridge", action="store_true",
+                     help="promote impl files resolved from dotted-path/Sphinx-directive code "
+                          "references on the top-3 BM25-matching doc pages (lanes2.select_files "
+                          "use_docsbridge); also enables Corpus(build_docs=True)")
     ap.add_argument("--instances-file", default=None,
                      help="newline-separated instance_ids to run only those")
     ap.add_argument("--sample", type=int, default=0,
@@ -220,14 +254,16 @@ def main() -> None:
         instances = instances[: args.limit]
     todo = [i for i in instances if i["instance_id"] not in done]
     print(f"{len(instances)} instances, {len(done)} done, {len(todo)} to run "
-          f"(history={args.history} comments={args.comments} anchors={args.anchors})", flush=True)
+          f"(history={args.history} comments={args.comments} anchors={args.anchors} "
+          f"testbridge={args.testbridge} docsbridge={args.docsbridge})", flush=True)
 
     with out_path.open("a") as fh:
         for k, inst in enumerate(todo, 1):
             try:
                 repo = repo_clone(inst["repo"])
                 checkout(repo, inst["base_commit"])
-                res = run_instance(inst, repo, args.history, args.comments, args.anchors)
+                res = run_instance(inst, repo, args.history, args.comments, args.anchors,
+                                    args.testbridge, args.docsbridge)
             except Exception as exc:
                 res = {"instance_id": inst["instance_id"], "repo": inst["repo"],
                        "error": str(exc)[:300]}
