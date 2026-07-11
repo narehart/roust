@@ -43,6 +43,13 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 CODE_EXTENSIONS = (".py", ".ts", ".js", ".go", ".rs", ".java", ".kt", ".cs", ".swift", ".tsx", ".jsx")
+# Extended profile for the multilingual baseline (lab experiment code only --
+# NOT used by default; see Corpus's `extensions` param and
+# swebench_driver2.py's --extensions flag). Adds PHP, Ruby, and the C-family
+# (C/C++/Objective-C headers), deduped against CODE_EXTENSIONS.
+EXTENDED_EXTENSIONS = tuple(dict.fromkeys(
+    CODE_EXTENSIONS + (".php", ".rb", ".c", ".cc", ".cpp", ".cxx", ".h", ".hpp", ".java", ".kt", ".cs", ".swift")
+))
 MAX_FILE_BYTES = 2_000_000
 LAST_EXPLAIN: dict = {}
 
@@ -193,6 +200,7 @@ class Corpus:
         history_msgs: dict[str, str] | None = None,
         use_comments: bool = False,
         build_docs: bool = False,
+        extensions: tuple = CODE_EXTENSIONS,
     ):
         self.repo_path = repo_path
         self.files: list[str] = []
@@ -206,7 +214,7 @@ class Corpus:
         self.com_df: Counter[str] = Counter()
         self.def_index: dict[str, list[str]] = defaultdict(list)
         for p in sorted(repo_path.rglob("*")):
-            if not p.is_file() or p.suffix not in CODE_EXTENSIONS:
+            if not p.is_file() or p.suffix not in extensions:
                 continue
             rel = str(p.relative_to(repo_path))
             if rel.startswith(".git/") or "/.git/" in rel:

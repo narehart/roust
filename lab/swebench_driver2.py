@@ -115,14 +115,14 @@ def checkout(repo: Path, sha: str) -> None:
                    text=True, timeout=300)
 
 
-def _list_current_files(repo_path: Path) -> set[str]:
+def _list_current_files(repo_path: Path, extensions: tuple = L.CODE_EXTENSIONS) -> set[str]:
     """Cheap mirror of Corpus's file-collection filter (extension, .git,
     size cap) without reading/tokenizing file contents -- just enough to
     let mine_history() drop history entries for files that no longer exist
     at this checkout."""
     files: set[str] = set()
     for p in repo_path.rglob("*"):
-        if not p.is_file() or p.suffix not in L.CODE_EXTENSIONS:
+        if not p.is_file() or p.suffix not in extensions:
             continue
         rel = str(p.relative_to(repo_path))
         if rel.startswith(".git/") or "/.git/" in rel:
@@ -138,7 +138,7 @@ def _list_current_files(repo_path: Path) -> set[str]:
 
 def run_instance(
     inst: dict, repo_path: Path, use_history: bool, use_comments: bool, use_anchors: bool = False,
-    use_testbridge: bool = False, use_docsbridge: bool = False,
+    use_testbridge: bool = False, use_docsbridge: bool = False, extensions: tuple = L.CODE_EXTENSIONS,
 ) -> dict:
     t0 = time.perf_counter()
 
@@ -154,12 +154,12 @@ def run_instance(
     mine_ms = 0.0
     if use_history:
         t_mine = time.perf_counter()
-        current_files = _list_current_files(repo_path)
+        current_files = _list_current_files(repo_path, extensions=extensions)
         history_msgs, cochange, meta = mine_history(repo_path, current_files=current_files)
         mine_ms = (time.perf_counter() - t_mine) * 1000
 
     corpus = L.Corpus(repo_path, history_msgs=history_msgs, use_comments=use_comments,
-                       build_docs=use_docsbridge)
+                       build_docs=use_docsbridge, extensions=extensions)
     build_ms = (time.perf_counter() - t0) * 1000
     terms = L.query_terms(inst["problem_statement"], [])
     anchors: list[tuple[str, float]] | None = None
@@ -171,7 +171,7 @@ def run_instance(
     spans, bundle = L.pack_regions(corpus, files, terms, scores, 8192, count_tokens)
     query_ms = (time.perf_counter() - t1) * 1000
     packed_files = [f for f in files if f in spans]
-    gold = [g for g in inst["gold_files"] if g.endswith(tuple(L.CODE_EXTENSIONS))]
+    gold = [g for g in inst["gold_files"] if g.endswith(tuple(extensions))]
     fset = set(packed_files)
     present = [g for g in gold if g in fset]
     recall = len(present) / len(gold) if gold else 1.0
@@ -197,7 +197,8 @@ def run_instance(
         "query_ms": round(query_ms),
         "mine_ms": round(mine_ms),
         "signals": {"history": use_history, "comments": use_comments, "anchors": use_anchors,
-                    "testbridge": use_testbridge, "docsbridge": use_docsbridge},
+                    "testbridge": use_testbridge, "docsbridge": use_docsbridge,
+                    "extensions": "extended" if extensions == L.EXTENDED_EXTENSIONS else "default"},
         "cochange_additions": cochange_additions,
         "anchor_promotions": anchor_promotions,
         "testbridge": testbridge,
@@ -233,8 +234,13 @@ def main() -> None:
                      help="override the SWE-bench parquet dataset URL (default: SWE-bench Lite)")
     ap.add_argument("--parquet-cache", default=None,
                      help="override the local parquet cache path (default: swebench_lite.parquet in LAB_DIR)")
+    ap.add_argument("--extensions", choices=["default", "extended"], default="default",
+                     help="'extended' adds PHP/Ruby/C-family extensions (lanes2.EXTENDED_EXTENSIONS) "
+                          "to both the Corpus file walk and gold-file filtering, for the multilingual "
+                          "baseline; 'default' (lanes2.CODE_EXTENSIONS) is byte-identical to prior runs")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
+    extensions = L.EXTENDED_EXTENSIONS if args.extensions == "extended" else L.CODE_EXTENSIONS
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -260,7 +266,8 @@ def main() -> None:
     todo = [i for i in instances if i["instance_id"] not in done]
     print(f"{len(instances)} instances, {len(done)} done, {len(todo)} to run "
           f"(history={args.history} comments={args.comments} anchors={args.anchors} "
-          f"testbridge={args.testbridge} docsbridge={args.docsbridge})", flush=True)
+          f"testbridge={args.testbridge} docsbridge={args.docsbridge} extensions={args.extensions})",
+          flush=True)
 
     with out_path.open("a") as fh:
         for k, inst in enumerate(todo, 1):
@@ -268,7 +275,7 @@ def main() -> None:
                 repo = repo_clone(inst["repo"])
                 checkout(repo, inst["base_commit"])
                 res = run_instance(inst, repo, args.history, args.comments, args.anchors,
-                                    args.testbridge, args.docsbridge)
+                                    args.testbridge, args.docsbridge, extensions)
             except Exception as exc:
                 res = {"instance_id": inst["instance_id"], "repo": inst["repo"],
                        "error": str(exc)[:300]}

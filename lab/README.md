@@ -171,3 +171,25 @@ uv run python <this dir>/driver.py --questions-json paraphrases.json --variant a
 Result JSONs: `results/` (dev), `results_holdout/` (frozen-config loc_*),
 `results_grepdisc/` (disciplined-grep control), `results_para_*/` (paraphrase
 robustness), `results_weighted_pack/` (allocation ablation).
+
+## SWE-bench Multilingual — zero-shot baseline (2026-07-11)
+
+Frozen v7 pipeline + extension-visibility fix only (no language-specific
+engineering beyond existing regexes). First non-LLM localization numbers on
+this benchmark. n=283 evaluated (17 harness errors):
+
+| language | n | @5 | @10 | @all |
+|---|---|---|---|---|
+| Java | 26 | .769 | .846 | .885 |
+| C | 41 | .732 | .756 | .878 |
+| PHP | 43 | .628 | .721 | .791 |
+| Go | 41 | .537 | .683 | .780 |
+| Rust | 43 | .465 | .628 | .767 |
+| JS/TS | 43 | .256 | .535 | .744 |
+| Ruby | 44 | .591 | .682 | .705 |
+| ALL | 283 | .555 | .682 | .784 |
+
+The language-agnostic lexical core carries .78 all-gold across nine languages.
+Tree-sitter priority, from measured gaps: Ruby (no .rb parsing exists at all),
+JS/TS (worst @5; re-export-heavy import graphs), Rust (@1 .163). Java and C
+nearly match Python with lexical signals alone.
