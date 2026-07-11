@@ -141,6 +141,7 @@ def _list_current_files(repo_path: Path, extensions: tuple = L.CODE_EXTENSIONS) 
 def run_instance(
     inst: dict, repo_path: Path, use_history: bool, use_comments: bool, use_anchors: bool = False,
     use_testbridge: bool = False, use_docsbridge: bool = False, extensions: tuple = L.CODE_EXTENSIONS,
+    use_neighborhood: bool = False,
 ) -> dict:
     t0 = time.perf_counter()
 
@@ -169,7 +170,8 @@ def run_instance(
         anchors = L.extract_symbol_anchors(inst["problem_statement"], corpus)
     t1 = time.perf_counter()
     files, scores = L.select_files(corpus, terms, use_ppr=True, cochange=cochange, anchors=anchors,
-                                    use_testbridge=use_testbridge, use_docsbridge=use_docsbridge)
+                                    use_testbridge=use_testbridge, use_docsbridge=use_docsbridge,
+                                    use_neighborhood=use_neighborhood)
     spans, bundle = L.pack_regions(corpus, files, terms, scores, 8192, count_tokens)
     query_ms = (time.perf_counter() - t1) * 1000
     packed_files = [f for f in files if f in spans]
@@ -181,6 +183,7 @@ def run_instance(
     anchor_promotions = list(L.LAST_EXPLAIN.get("anchor_promotions", []))
     testbridge = list(L.LAST_EXPLAIN.get("testbridge", []))
     docsbridge = list(L.LAST_EXPLAIN.get("docsbridge", []))
+    neighborhood = dict(L.LAST_EXPLAIN.get("neighborhood", {}))
     return {
         "instance_id": inst["instance_id"],
         "repo": inst["repo"],
@@ -200,11 +203,13 @@ def run_instance(
         "mine_ms": round(mine_ms),
         "signals": {"history": use_history, "comments": use_comments, "anchors": use_anchors,
                     "testbridge": use_testbridge, "docsbridge": use_docsbridge,
-                    "extensions": "extended" if extensions == L.EXTENDED_EXTENSIONS else "default"},
+                    "extensions": "extended" if extensions == L.EXTENDED_EXTENSIONS else "default",
+                    "neighborhood": use_neighborhood},
         "cochange_additions": cochange_additions,
         "anchor_promotions": anchor_promotions,
         "testbridge": testbridge,
         "docsbridge": docsbridge,
+        "neighborhood": neighborhood,
         "meta_available": bool(meta),  # mined but not yet used for scoring
     }
 
@@ -236,6 +241,11 @@ def main() -> None:
                      help="override the SWE-bench parquet dataset URL (default: SWE-bench Lite)")
     ap.add_argument("--parquet-cache", default=None,
                      help="override the local parquet cache path (default: swebench_lite.parquet in LAB_DIR)")
+    ap.add_argument("--neighborhood", action="store_true",
+                     help="neighborhood-first retrieval for large (>3000-file) repos "
+                          "(lanes2.select_files use_neighborhood): seed-anchor + structural-"
+                          "expand a region, then mask body bm25 to it before ranking; "
+                          "no-op on repos at or below the threshold")
     ap.add_argument("--extensions", choices=["default", "extended"], default="default",
                      help="'extended' adds PHP/Ruby/C-family extensions (lanes2.EXTENDED_EXTENSIONS) "
                           "to both the Corpus file walk and gold-file filtering, for the multilingual "
@@ -268,7 +278,8 @@ def main() -> None:
     todo = [i for i in instances if i["instance_id"] not in done]
     print(f"{len(instances)} instances, {len(done)} done, {len(todo)} to run "
           f"(history={args.history} comments={args.comments} anchors={args.anchors} "
-          f"testbridge={args.testbridge} docsbridge={args.docsbridge} extensions={args.extensions})",
+          f"testbridge={args.testbridge} docsbridge={args.docsbridge} extensions={args.extensions} "
+          f"neighborhood={args.neighborhood})",
           flush=True)
 
     with out_path.open("a") as fh:
@@ -277,7 +288,7 @@ def main() -> None:
                 repo = repo_clone(inst["repo"])
                 checkout(repo, inst["base_commit"])
                 res = run_instance(inst, repo, args.history, args.comments, args.anchors,
-                                    args.testbridge, args.docsbridge, extensions)
+                                    args.testbridge, args.docsbridge, extensions, args.neighborhood)
             except Exception as exc:
                 res = {"instance_id": inst["instance_id"], "repo": inst["repo"],
                        "error": str(exc)[:300]}

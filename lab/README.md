@@ -219,3 +219,13 @@ identical (parity green). On the right-files-found subset: 0.49 / median 0.50.
 archex expected_regions (informational, 9 tasks): 0.13 -> 0.19. Note: bgrep-rs
 does not yet carry the v2 packing — its parity gate covers file rankings only;
 porting + a region-metric gate is queued.
+
+## Neighborhood-first retrieval (2026-07-12, experiment, flag off by default)
+
+For repos >3000 files, seed with rare-term + symbol-anchor hits, expand 2 hops
+over import+dir edges (cap 800), rank only within the region (LARGER pattern,
+arXiv:2605.16352). Engaged only on babel (16.5k files) in the SWE-bench
+Multilingual JS/TS slice: all-gold 2/5 -> 3/5; provably byte-identical on all
+38 sub-threshold instances and inert on every Lite repo (max 2.2k files).
+Promising but n=5; validation at scale on Multi-SWE-bench's 580 JS/TS
+instances (incl. material-ui, 27.6k files) in progress.

@@ -20,6 +20,12 @@ signals, all default OFF so lanes2 with flags off matches lanes.py's
   (c) co-change edges in select_files() frontier expansion (cochange),
       including test-file bridge edges between production files that
       co-change with the same test (see history.py)
+  (f) neighborhood-first retrieval for large (>3000-file) repos
+      (select_files(use_neighborhood=True)): masks the body bm25 dict to a
+      seed-anchored, structurally-expanded region before lex_picks/sources/
+      pool/additions are chosen, so a monorepo's global lexical dilution
+      can't bury the right subgraph (see the "neighborhood-first retrieval"
+      section above select_files() for the full design).
 See history.py for how (a)/(c) are mined.
 
 Two additional fixes are UNCONDITIONAL (independent of any flag, since both
@@ -1180,6 +1186,114 @@ def _apply_docsbridge_promotions(
     return out, records
 
 
+# ---------------------------------------------------------------- neighborhood-first retrieval (large repos)
+
+# In large (>3000-file) monorepos, global BM25 dilutes: the right subgraph
+# never seeds because the corpus-wide idf/length normalization spreads mass
+# too thin across thousands of unrelated files (measured on the JS/TS
+# multilingual slice -- babel's 13-16k-file monorepo). LARGER (arXiv:2605.
+# 16352) and GraphCoder show the fix: anchor with a few high-precision
+# lexical hits, expand structurally over the import/same-dir graph, then run
+# the EXISTING full scoring pipeline only within the reached neighborhood.
+# Gated OFF by default and only ever engages above _NEIGHBORHOOD_THRESHOLD
+# files -- small repos (all measured SWE-bench Lite repos included, max
+# ~2.2k files) keep the current pipeline byte-identical.
+_NEIGHBORHOOD_THRESHOLD = 3000
+# A=10 (not the originally-proposed 20): a 6-instance, 5-value A/R/hops sweep
+# on the babel/babel subset of the JS/TS slice (the only >3000-file repo in
+# that slice, so the only one where use_neighborhood ever actually engages --
+# see swebench_driver2.py runs) measured A in {5,6,8,10,12,15} all beating
+# A=20/A=40 by +1 recall (3/5 vs 2/5 gold-present), with no A value in that
+# range beating any other -- fewer, sharper rare-term seeds keep the region
+# tightly on-topic; A=20's extra seeds pull in enough tangential structural
+# neighbors to dilute the in-region BM25 ranking back toward the same
+# top-10 cutoff failure the global ranking already had. R and hops were
+# NOT the lever: measured region sizes for this corpus topped out at ~330
+# files, so R=800/hops=2 never bind (R=150 was tested and DID regress one
+# instance by truncating a genuine 1-hop neighbor out of the region -- so
+# the cap is real safety margin, not free to shrink without a larger/more
+# diverse test corpus to validate against).
+_NEIGHBORHOOD_ANCHOR_A = 10
+_NEIGHBORHOOD_REGION_CAP = 800
+_NEIGHBORHOOD_HOPS = 2
+_NEIGHBORHOOD_MIN_REGION = 30
+_NEIGHBORHOOD_RARE_DF_RATIO = 0.02
+
+
+def _neighborhood_seeds(
+    corpus: Corpus, terms: list[str], anchors: list[tuple[str, float]] | None
+) -> tuple[list[str], dict[str, float]]:
+    """Seed set for neighborhood-first retrieval: top-A files by the sum of
+    idf of matched RARE query terms (df/n_docs < 2% -- a cheap, high-
+    precision lexical signal), UNION all definition-symbol anchor files
+    (the caller's already-computed `anchors`, see extract_symbol_anchors).
+    These are seeds for structural expansion, never results themselves.
+
+    seed_score gives a single priority key spanning both seed sources so
+    region expansion can be ordered deterministically: anchor files (strong
+    per-symbol identity evidence) always outrank rare-term seeds; rare-term
+    seeds break ties by their idf-sum."""
+    rare_terms = [
+        t for t in dict.fromkeys(terms)
+        if corpus.df.get(t, 0) and corpus.df[t] / corpus.n_docs < _NEIGHBORHOOD_RARE_DF_RATIO
+    ]
+    rare_score: dict[str, float] = defaultdict(float)
+    for t in rare_terms:
+        df = corpus.df[t]
+        idf = math.log(1.0 + (corpus.n_docs - df + 0.5) / (df + 0.5))
+        for rel in corpus.files:
+            if t in corpus.tf[rel]:
+                rare_score[rel] += idf
+    top_rare = [f for f, _ in sorted(rare_score.items(), key=lambda kv: -kv[1])[:_NEIGHBORHOOD_ANCHOR_A]]
+    anchor_files = [f for f, _ in (anchors or [])]
+    seeds = list(dict.fromkeys(anchor_files + top_rare))
+    seed_score: dict[str, float] = {}
+    for f, strength in (anchors or []):
+        seed_score[f] = max(seed_score.get(f, 0.0), 1000.0 + strength)
+    for f, s in rare_score.items():
+        if f not in seed_score:
+            seed_score[f] = s
+    return seeds, seed_score
+
+
+def _expand_region(
+    seeds: list[str],
+    seed_score: dict[str, float],
+    edges: dict[str, set[str]],
+    same_dir: dict[str, list[str]],
+    cap: int = _NEIGHBORHOOD_REGION_CAP,
+    hops: int = _NEIGHBORHOOD_HOPS,
+) -> set[str]:
+    """BFS from `seeds` over import-graph + same-directory edges, capped at
+    `cap` total files. Expansion stops by hop first (hop 2 never starts if
+    the cap is already hit after hop 1), then within a hop by descending
+    seed-score priority -- so a capped region always keeps the highest-
+    confidence seeds' neighborhoods intact and drops the weakest seeds'
+    expansions first. same_dir neighbors of a seed already reach that
+    seed's directory siblings on hop 1, so "the seeds' directories'
+    siblings" needs no special-casing beyond that."""
+    region: set[str] = set(seeds)
+    frontier = sorted(seeds, key=lambda f: -seed_score.get(f, 0.0))
+    for _ in range(hops):
+        if len(region) >= cap:
+            break
+        next_frontier: list[str] = []
+        for node in frontier:
+            if len(region) >= cap:
+                break
+            nbrs = set(edges.get(node, ())) | set(same_dir.get(str(Path(node).parent), []))
+            nbrs.discard(node)
+            for nb in sorted(nbrs):
+                if nb in region:
+                    continue
+                if len(region) >= cap:
+                    break
+                region.add(nb)
+                next_frontier.append(nb)
+        frontier = next_frontier
+    return region
+
+
 def select_files(
     corpus: Corpus,
     terms: list[str],
@@ -1193,6 +1307,7 @@ def select_files(
     anchors: list[tuple[str, float]] | None = None,
     use_testbridge: bool = False,
     use_docsbridge: bool = False,
+    use_neighborhood: bool = False,
 ) -> tuple[list[str], dict[str, float]]:
     """Return candidate files: top BM25F picks, optionally UNIONed with the top
     graph-diffusion additions. The union is monotone: diffusion can only add
@@ -1219,11 +1334,48 @@ def select_files(
     at position >=14, never reorder or displace anything above it, and are
     independent of each other (each only ever inserts into slots the other
     left absent).
+
+    use_neighborhood (default OFF) only ever engages when
+    corpus.n_docs > _NEIGHBORHOOD_THRESHOLD (see the neighborhood-first
+    retrieval section above): a seed set (rare-term idf anchors + symbol
+    anchors) is expanded 2 hops over the import/same-dir graph into a capped
+    region, and the body bm25 dict is masked to that region BEFORE
+    lex_picks/sources/pool/additions are chosen -- every downstream channel
+    (anchor promotions, testbridge, docsbridge, msg top-up) then operates
+    exactly as it already does, just over a candidate set that excludes
+    files outside the region. If the region comes out under
+    _NEIGHBORHOOD_MIN_REGION files (or the mask empties bm entirely), this
+    falls back to the unmasked global pipeline for this query and records
+    the fallback in LAST_EXPLAIN['neighborhood'].
     """
     global LAST_EXPLAIN
     bm = corpus.bm25(terms)
     if not bm:
         return [], {}
+
+    edges: dict[str, set[str]] | None = None
+    neighborhood_explain: dict = {}
+    region: set[str] | None = None
+    if use_neighborhood and corpus.n_docs > _NEIGHBORHOOD_THRESHOLD:
+        same_dir_all: dict[str, list[str]] = defaultdict(list)
+        for rel in corpus.files:
+            same_dir_all[str(Path(rel).parent)].append(rel)
+        edges = build_import_graph(corpus)
+        seeds, seed_score = _neighborhood_seeds(corpus, terms, anchors)
+        region = _expand_region(seeds, seed_score, edges, same_dir_all)
+        region_size = len(region)
+        fallback = region_size < _NEIGHBORHOOD_MIN_REGION
+        masked_bm = {f: s for f, s in bm.items() if f in region} if not fallback else {}
+        if fallback or not masked_bm:
+            fallback = True
+            region = None
+        else:
+            bm = masked_bm
+        neighborhood_explain = {
+            "active": True, "seed_count": len(seeds),
+            "region_size": region_size, "fallback": fallback,
+        }
+
     bm_n = _normalize(bm)
     ranked = sorted(bm_n.items(), key=lambda kv: -kv[1])
     best = ranked[0][1]
@@ -1236,7 +1388,7 @@ def select_files(
         lex_out, promotions = _apply_anchor_promotions(lex_picks, anchors)
         tb_records: list[tuple[str, str, str]] = []
         if use_testbridge:
-            edges = build_import_graph(corpus)
+            edges = edges if edges is not None else build_import_graph(corpus)
             lex_out, tb_records = _apply_testbridge_promotions(lex_out, corpus, bm, edges)
         db_records: list[tuple[str, str, int]] = []
         if use_docsbridge:
@@ -1245,6 +1397,8 @@ def select_files(
             "lex_picks": lex_picks, "anchor_promotions": promotions,
             "testbridge": tb_records, "docsbridge": db_records,
         }
+        if neighborhood_explain:
+            LAST_EXPLAIN["neighborhood"] = neighborhood_explain
         return lex_out, scores
 
     # --- structural expansion: cluster hypothesis + pseudo-relevance feedback.
@@ -1253,7 +1407,7 @@ def select_files(
     #   1. take the top impl-file seeds,
     #   2. expand the query with each seed's distinctive tf-idf terms (RM3-lite),
     #   3. rank only the seeds' 1-hop neighborhood with the expanded query.
-    edges = build_import_graph(corpus)
+    edges = edges if edges is not None else build_import_graph(corpus)
     same_dir: dict[str, list[str]] = defaultdict(list)
     for rel in corpus.files:
         same_dir[str(Path(rel).parent)].append(rel)
@@ -1290,6 +1444,12 @@ def select_files(
         co_partners = cochange.get(s, {}) if cochange else {}
         neighbors = list(edges.get(s, ())) + same_dir.get(str(Path(s).parent), [])
         neighbors += [c for c in co_partners if c in fileset and c not in neighbors]
+        if region is not None:
+            # neighborhood mode: structural-expansion candidates are also
+            # restricted to the region (only lex_picks/sources and the
+            # body bm dict are masked above; this keeps the pool consistent
+            # with them rather than reaching back out to the full corpus).
+            neighbors = [c for c in neighbors if c in region]
         for c in neighbors:
             if c in lex_picks or c == s or impl_prior(c) < 1.0:
                 continue
@@ -1397,6 +1557,8 @@ def select_files(
         "testbridge": tb_records,
         "docsbridge": db_records,
     }
+    if neighborhood_explain:
+        LAST_EXPLAIN["neighborhood"] = neighborhood_explain
     return out, scores
 
 
