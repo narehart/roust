@@ -128,6 +128,24 @@ Ceiling-vs-conversion lesson: a channel that can reach gold must still win its
 capped slot against the channel's other candidates — reachability ceilings
 (.943) are permissive, conversion (+1) is an intra-channel ranking problem.
 
+## SWE-bench Verified — held-out validation (2026-07-11)
+
+Frozen v7 config, predictions pre-registered in PREDICTIONS.md (commit f5f6b0e)
+before the run finished. 500 instances, zero errors.
+
+| subset | n | @1 | @5 | @10 | @all |
+|---|---|---|---|---|---|
+| **held-out (minus Lite overlap)** | 407 | .354 | .649 | **.794** | **.921** |
+| Lite overlap (contaminated) | 93 | .505 | .774 | .817 | .914 |
+| full Verified | 500 | .382 | .672 | .798 | .920 |
+
+Recall (.921) matches the dev set (.923) on never-seen instances — the
+recall-first architecture generalizes. Head precision (@1/@5) came in below
+the pre-registered intervals; the Lite-vs-held-out @1 gap (15pp) confounds
+Lite's easier instance selection with dev-set tuning and is reported as
+non-transferring. Grep-parity latency, ~8.5k-token bundles, zero learned
+parameters throughout.
+
 ## Run it
 
 ```bash

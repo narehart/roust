@@ -68,13 +68,13 @@ REPO_CACHE = LAB_DIR / "swebench_repos"
 _DIFF_FILE_RE = re.compile(r"^diff --git a/(\S+) b/", re.M)
 
 
-def load_instances() -> list[dict]:
+def load_instances(parquet_url: str = PARQUET_URL, parquet_cache: Path | None = None) -> list[dict]:
     import pandas as pd  # provided by archex venv
 
-    cache = LAB_DIR / "swebench_lite.parquet"
+    cache = parquet_cache if parquet_cache is not None else LAB_DIR / "swebench_lite.parquet"
     if not cache.exists():
-        print("downloading SWE-bench Lite parquet...", flush=True)
-        urllib.request.urlretrieve(PARQUET_URL, cache)
+        print(f"downloading SWE-bench parquet from {parquet_url}...", flush=True)
+        urllib.request.urlretrieve(parquet_url, cache)
     df = pd.read_parquet(cache)
     out = []
     for _, row in df.iterrows():
@@ -229,6 +229,10 @@ def main() -> None:
                      help="take every Nth instance (by the (repo, instance_id) sort order "
                           "load_instances() produces) instead of --instances-file; "
                           "e.g. --sample 15 on 300 instances yields 20")
+    ap.add_argument("--parquet-url", default=PARQUET_URL,
+                     help="override the SWE-bench parquet dataset URL (default: SWE-bench Lite)")
+    ap.add_argument("--parquet-cache", default=None,
+                     help="override the local parquet cache path (default: swebench_lite.parquet in LAB_DIR)")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
@@ -242,7 +246,8 @@ def main() -> None:
             except (json.JSONDecodeError, KeyError):
                 pass
 
-    instances = load_instances()
+    parquet_cache = Path(args.parquet_cache) if args.parquet_cache else None
+    instances = load_instances(args.parquet_url, parquet_cache)
     if args.instances_file:
         wanted = {
             ln.strip() for ln in Path(args.instances_file).read_text().splitlines() if ln.strip()

@@ -41,3 +41,24 @@ dev set for five tuning iterations and is contaminated).
 - Channel-level check: if bridges/anchors show near-zero net contribution
   held-out (measurable later by ablation), they get demoted from the paper's
   contribution list to its negative-results list regardless of aggregate.
+
+## Results (graded 2026-07-11, run completed after predictions were committed)
+
+Held-out subset (Verified minus Lite overlap, n=407, zero errors):
+
+| metric | predicted | actual | verdict |
+|---|---|---|---|
+| File@1 | .45 (.41-.49) | .354 | MISS, below interval |
+| File@5 | .72 (.69-.75) | .649 | MISS, below interval |
+| File@10 | .80 (.77-.83) | .794 | HIT |
+| File@all | .90 (.87-.93) | .921 | HIT, >= .92 full-generalization line |
+
+Full Verified (n=500): @1 .382 / @5 .672 / @10 .798 / @all .920.
+Lite-overlap subset (n=93): @1 .505 / @5 .774 / @10 .817 / @all .914.
+
+Reading: RECALL generalizes perfectly (.921 held-out vs .923 dev) — the
+recall-first architecture and monotone channels transfer. HEAD PRECISION does
+not: the 15pp @1 gap between Lite-overlap and held-out mixes two inseparable
+effects (Lite instances were selected to be simpler; five tuning iterations
+touched the ranking head). Per the pre-registered channel-level criterion, any
+paper must report @1/@5 as non-transferring and lead with @10/@all.
