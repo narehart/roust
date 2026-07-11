@@ -23,7 +23,14 @@ import time
 from pathlib import Path
 
 from bgrep import cache as cache_mod
-from bgrep.core import extract_symbol_anchors, get_token_counter, pack_regions, query_terms, select_files
+from bgrep.core import (
+    anchor_def_symbols,
+    extract_symbol_anchors,
+    get_token_counter,
+    pack_regions,
+    query_terms,
+    select_files,
+)
 
 
 def _build_arg_parser() -> argparse.ArgumentParser:
@@ -106,7 +113,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.k:
         files = files[: args.k]
     count_tokens = get_token_counter()
-    spans, bundle = pack_regions(corpus, files, terms, scores, args.budget, count_tokens)
+    anchor_files = {f for f, *_rest in explain.anchor_promotions}
+    anchor_symbols = anchor_def_symbols(args.query, corpus, anchor_files) if anchor_files else {}
+    spans, bundle = pack_regions(
+        corpus, files, terms, scores, args.budget, count_tokens, anchor_symbols=anchor_symbols
+    )
     query_ms = (time.perf_counter() - t1) * 1000
 
     if args.explain:

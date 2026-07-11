@@ -195,3 +195,16 @@ The language-agnostic lexical core carries .78 all-gold across nine languages.
 Tree-sitter priority, from measured gaps: Ruby (no .rb parsing exists at all),
 JS/TS (worst @5; re-export-heavy import graphs), Rust (@1 .163). Java and C
 nearly match Python with lexical signals alone.
+
+## Region-quality baseline and channel-aware packing (2026-07-11)
+
+Ground truth: the exact lines edited by each gold patch (SWE-bench Lite, 300).
+Baseline packing (keyword-coverage only): fix-line recall mean 0.26, median 0.00
+— right files, wrong slices; 66% of instances had zero fix-line coverage.
+Channel-aware packing v2 (the packer now honors WHY each file was selected:
+anchored symbols' definition blocks are packed; deeper allocation to top
+evidence files): mean 0.46, median 0.26, +0.4% tokens, file rankings byte-
+identical (parity green). On the right-files-found subset: 0.49 / median 0.50.
+archex expected_regions (informational, 9 tasks): 0.13 -> 0.19. Note: bgrep-rs
+does not yet carry the v2 packing — its parity gate covers file rankings only;
+porting + a region-metric gate is queued.

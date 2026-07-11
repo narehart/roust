@@ -630,6 +630,39 @@ def extract_symbol_anchors(question: str, corpus: Corpus) -> list[tuple[str, flo
     return sorted(best.items(), key=lambda kv: (kv[1], -def_counts[kv[0]]), reverse=True)
 
 
+def anchor_def_symbols(question: str, corpus: Corpus, files: set[str]) -> dict[str, list[str]]:
+    """Best-effort recovery of WHICH rarity-gated definition symbol(s) (see
+    extract_symbol_anchors above) anchored each of `files` into the ranked
+    file list, for pack_regions' channel-aware packing: an anchor-selected
+    file's packed regions should include the anchored symbol's own
+    definition block, not just whatever region wins on generic term
+    density.
+
+    Deliberately a separate, independent pass over the question text rather
+    than a refactor of extract_symbol_anchors -- that function's return
+    value (one collapsed best-symbol-per-file strength, in a specific tie-
+    break order) is parity-pinned against lab/lanes2.py's frozen copy
+    (tests/test_parity.py). This helper may return MULTIPLE symbols per
+    file and is never consumed by select_files, so nothing here can affect
+    the ranked file list or the parity comparison. Applies the identical
+    rarity gate (<=3 defining files) so it only ever surfaces symbols that
+    extract_symbol_anchors itself would have considered."""
+    out: dict[str, list[str]] = defaultdict(list)
+    if not files:
+        return {}
+    for m in _ANCHOR_IDENT_RE.finditer(question):
+        s = m.group(0)
+        if s.lower() in _STOP:
+            continue
+        def_files = corpus.def_index.get(s)
+        if not def_files or len(def_files) > 3:
+            continue
+        for f in def_files:
+            if f in files and s not in out[f]:
+                out[f].append(s)
+    return dict(out)
+
+
 # ---------------------------------------------------------------- import graph
 
 _PY_FROM_RE = re.compile(r"^\s*from\s+([\w\.]+)\s+import\s+(\([^)]*\)|[^\n]+)", re.M)
@@ -1342,20 +1375,78 @@ def select_files(
 
 # ---------------------------------------------------------------- region packing
 
-_PY_BLOCK_RE = re.compile(r"^(async def |def |class |@)", re.M)
+_PY_BLOCK_RE = re.compile(r"^([ \t]*)(async def |def |class |@)")
 
 
 def _python_blocks(text: str) -> list[tuple[int, int]]:
-    """Top-level block spans (1-indexed, inclusive) split at column-0 def/class/decorator."""
+    """Signature-plus-body block spans (1-indexed, inclusive), split at EVERY
+    def/class/decorator header regardless of indentation -- not just
+    column-0, as a prior version did. Column-0-only splitting made an entire
+    class (every one of its methods) a single multi-hundred-line block, so
+    pack_regions' per-file token cap trimmed from that block's START and any
+    gold hunk past the class's first method was silently dropped -- the
+    measured root cause of most SWE-bench Lite hunk-line-recall==0 cases
+    (gold fixes deep inside a large class/file; see e.g. django's
+    SQLCompiler.__init__ at line ~32 of a 1140-line class, or astropy's
+    NDArithmeticMixin._arithmetic_mask at line 485 of a 647-line class).
+
+    Blocks now nest: a class's own span still covers its header through its
+    last method (so "class X: <giant body>" remains a valid whole-class
+    candidate for pack_regions' greedy packing, same as before), but each
+    direct child header (a method, or a nested function) ALSO gets its own,
+    tighter span from its header line to the next sibling header at the
+    same-or-lower indentation. This hands pack_regions candidates at
+    multiple granularities, so a hit deep inside a large class can be
+    represented by its own small method-level block instead of only ever
+    appearing as an early fragment of the whole class."""
     lines = text.splitlines()
-    starts = [i for i, ln in enumerate(lines) if _PY_BLOCK_RE.match(ln)]
-    if not starts:
-        return [(1, len(lines))]
-    spans = [(1, starts[0])] if starts[0] > 0 else []
-    for j, s in enumerate(starts):
-        end = starts[j + 1] if j + 1 < len(starts) else len(lines)
-        spans.append((s + 1, end))
+    n = len(lines)
+    headers: list[tuple[int, int]] = []  # (0-indexed line, indent width)
+    for i, ln in enumerate(lines):
+        m = _PY_BLOCK_RE.match(ln)
+        if m:
+            headers.append((i, len(m.group(1))))
+    if not headers:
+        return [(1, n)]
+
+    spans: list[tuple[int, int]] = []
+    if headers[0][0] > 0:
+        spans.append((1, headers[0][0]))  # leading preamble (imports, module docstring)
+
+    for idx, (i, indent) in enumerate(headers):
+        if lines[i].lstrip().startswith("@"):
+            continue  # standalone decorator: folded into the following def/class's span below
+        start = i
+        k = i - 1
+        while k >= 0 and lines[k].lstrip().startswith("@"):
+            start = k
+            k -= 1
+        end = n
+        for j, ind2 in headers[idx + 1:]:
+            if ind2 <= indent:
+                end = j
+                break
+        spans.append((start + 1, end))
     return [(a, b) for a, b in spans if b >= a]
+
+
+_PY_DEF_LINE_RE = re.compile(r"^[ \t]*(?:async def|def|class)\s+(\w+)")
+
+
+def _py_def_line_numbers(text: str) -> dict[str, int]:
+    """1-indexed line number of each class/def header's FIRST occurrence in
+    `text` (Python only, any indentation), keyed by symbol name -- used to
+    seat an anchor-channel symbol's own signature+body block among
+    _python_blocks' spans (a span with that exact start line is that
+    symbol's def block). First occurrence wins: a symbol name can recur
+    (overload-by-decorator, reassignment) but pack_regions only needs A
+    definition site to anchor the forced block at, not every one."""
+    out: dict[str, int] = {}
+    for i, ln in enumerate(text.splitlines(), 1):
+        m = _PY_DEF_LINE_RE.match(ln)
+        if m and m.group(1) not in out:
+            out[m.group(1)] = i
+    return out
 
 
 def _window_blocks(text: str, hit_lines: list[int], radius: int = 30) -> list[tuple[int, int]]:
@@ -1389,15 +1480,40 @@ def pack_regions(
     scores: dict[str, float],
     budget_tokens: int,
     count_tokens,
+    anchor_symbols: dict[str, list[str]] | None = None,
 ) -> tuple[dict[str, list[tuple[int, int]]], str]:
     """Greedy weighted-coverage packing of regions under budget.
 
     Guarantees every selected file contributes at least its header + best region
     (so the bundle genuinely represents each file), then spends remaining budget
-    on regions with the highest marginal (term-coverage x file-score) gain per token.
+    on regions with the highest marginal (rarity-weighted term-coverage x
+    file-score) gain per token. A region's term coverage is weighted by each
+    matched term's corpus idf rather than counted flatly, so a region hitting
+    a couple of rare, highly-specific identifiers outranks one hitting many
+    generic terms ("error", "value", ...) that happen to be query terms too
+    -- generic-term density was previously indistinguishable from genuine
+    specificity in the gain score.
+
+    `anchor_symbols` (see anchor_def_symbols), if given, maps an
+    anchor-channel file to the definition-symbol(s) that anchored it in.
+    Channel-aware packing: the anchored symbol's OWN signature+body block
+    (found among _python_blocks' nested spans by matching def-line number,
+    see _py_def_line_numbers) is force-included as that file's pass-1
+    region, at a deeper cap than the generic score-proportional one -- the
+    query named this exact symbol, so its definition is the region least
+    likely to be noise, independent of how it happens to score on term
+    density.
     Returns ({file: [spans]}, bundle_text).
     """
     tset = set(terms)
+    idf = {
+        t: math.log(1.0 + (corpus.n_docs - corpus.df.get(t, 0) + 0.5) / (corpus.df.get(t, 0) + 0.5))
+        for t in tset
+    }
+
+    def _weight(seg_terms: set[str]) -> float:
+        return sum(idf.get(t, 0.0) for t in seg_terms)
+
     candidates: list[dict] = []
     for rel in files:
         text = corpus.text[rel]
@@ -1414,10 +1530,29 @@ def pack_regions(
             tok = count_tokens(seg)
             if tok == 0:
                 continue
-            gain = (len(seg_terms) + 0.5 * n_hits) * (0.3 + scores.get(rel, 0.0))
+            gain = (_weight(seg_terms) + 0.5 * n_hits) * (0.3 + scores.get(rel, 0.0))
             candidates.append(
                 {"file": rel, "span": (a, b), "tok": tok, "terms": seg_terms, "gain": gain, "text": seg}
             )
+
+    # Channel-aware forced region: for each anchor-selected file, seat its
+    # anchored symbol's own def block (a candidate whose span starts exactly
+    # at that symbol's def line, per _py_def_line_numbers) as the pass-1
+    # pick -- bypassing the generic gain/tok ranking entirely, since the
+    # query named this exact symbol.
+    forced: dict[str, dict] = {}
+    if anchor_symbols:
+        for rel, syms in anchor_symbols.items():
+            if rel not in files or not rel.endswith(".py"):
+                continue
+            def_lines = _py_def_line_numbers(corpus.text[rel])
+            cand_by_start = {c["span"][0]: c for c in candidates if c["file"] == rel}
+            for sym in syms:
+                ln = def_lines.get(sym)
+                c = cand_by_start.get(ln) if ln is not None else None
+                if c is not None:
+                    forced[rel] = c
+                    break
 
     chosen: dict[str, list[dict]] = defaultdict(list)
     spent = 0
@@ -1427,7 +1562,10 @@ def pack_regions(
     # Every file gets representation. Allowances are evidence-proportional:
     # a floor of 120 tokens each, with half the budget's remainder distributed
     # by file score, so top-evidence files get deep regions instead of every
-    # file getting an equally thin slice.
+    # file getting an equally thin slice. Anchor-forced files get a deeper
+    # cap on top of their score-proportional one (up to budget/10), funded
+    # from pass 2's headroom -- the definition block a query explicitly
+    # named is worth more depth than generic density would otherwise buy it.
     n_files = max(len(files), 1)
     floor_tok = 120
     spare = max(0, budget_tokens // 2 - floor_tok * n_files)
@@ -1436,12 +1574,16 @@ def pack_regions(
         f: floor_tok + int(spare * scores.get(f, 0.0) / total_score)
         for f in files
     }
+    anchor_cap = max(floor_tok, budget_tokens // 10)
     for rel in files:
         cands = [c for c in candidates if c["file"] == rel]
         if not cands:
             continue
-        best = max(cands, key=lambda c: c["gain"] / max(c["tok"], 1))
+        forced_c = forced.get(rel)
+        best = forced_c if forced_c is not None else max(cands, key=lambda c: c["gain"] / max(c["tok"], 1))
         per_file_cap = caps[rel]
+        if forced_c is not None:
+            per_file_cap = max(per_file_cap, min(best["tok"], anchor_cap))
         if best["tok"] > per_file_cap:
             a, b = best["span"]
             seg_lines = corpus.text[rel].splitlines()[a - 1: b]
@@ -1466,8 +1608,8 @@ def pack_regions(
     remaining = [c for c in candidates if c not in [x for v in chosen.values() for x in v]]
     while remaining and spent < budget_tokens:
         def marginal(c: dict) -> float:
-            new_terms = len(c["terms"] - covered)
-            return (new_terms + 0.25 * len(c["terms"]) + 0.1) * (0.3 + scores.get(c["file"], 0.0)) / max(c["tok"], 1)
+            new_weight = _weight(c["terms"] - covered)
+            return (new_weight + 0.25 * _weight(c["terms"]) + 0.1) * (0.3 + scores.get(c["file"], 0.0)) / max(c["tok"], 1)
         remaining.sort(key=marginal, reverse=True)
         c = remaining.pop(0)
         if spent + c["tok"] > budget_tokens:
