@@ -1261,7 +1261,7 @@ def select_files(
         w = bm_n.get(s, 0.0)
         imp: list[str] = []
         co_partners = cochange.get(s, {}) if cochange else {}
-        neighbors = list(edges.get(s, ())) + same_dir.get(str(Path(s).parent), [])
+        neighbors = sorted(edges.get(s, ())) + same_dir.get(str(Path(s).parent), [])  # deterministic order (PYTHONHASHSEED)
         neighbors += [c for c in co_partners if c in fileset and c not in neighbors]
         for c in neighbors:
             if c in lex_picks or c == s or impl_prior(c) < 1.0:
