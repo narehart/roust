@@ -53,7 +53,7 @@ _SCRATCH = Path(
     "3ab12e71-fab2-4a81-bb2b-84700d211ef2/scratchpad"
 )
 
-BGREP_BIN = Path("/Users/nicholasarehart/programming-projects/bgrep/.venv-pkg/bin/bgrep")
+ROUST_BIN = Path("/Users/nicholasarehart/programming-projects/bgrep/.venv-pkg/bin/roust")
 
 LITE_PARQUET = _SCRATCH / "bgrep_lab" / "swebench_lite.parquet"
 LITE_REPOS = _SCRATCH / "bgrep_lab" / "swebench_repos"
@@ -93,18 +93,18 @@ def swebench_driver_guard() -> str | None:
 
 
 # ---------------------------------------------------------------------------
-# bgrep CLI invocation
+# roust CLI invocation
 # ---------------------------------------------------------------------------
 
 
-def run_bgrep(
+def run_roust(
     query: str, repo_path: Path, timeout: float, pack_uniform: bool = False
 ) -> tuple[dict | None, str | None]:
-    """Runs the installed bgrep CLI in --json mode. Returns (parsed_json, error).
-    `pack_uniform` passes bgrep's --pack-uniform escape hatch through, for A/B
+    """Runs the installed roust CLI in --json mode. Returns (parsed_json, error).
+    `pack_uniform` passes roust's --pack-uniform escape hatch through, for A/B
     comparison against confidence-scheduled packing (additive; default False
     preserves the exact invocation this function always used)."""
-    argv = [str(BGREP_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
+    argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
     if pack_uniform:
         argv.insert(1, "--pack-uniform")
     try:
@@ -112,7 +112,7 @@ def run_bgrep(
     except subprocess.TimeoutExpired:
         return None, f"timed out after {timeout}s"
     except OSError as exc:
-        return None, f"failed to spawn bgrep: {exc}"
+        return None, f"failed to spawn roust: {exc}"
     if proc.returncode != 0:
         return None, f"exit {proc.returncode}: stderr[:300]={proc.stderr[:300]!r}"
     stdout = proc.stdout.strip()
@@ -260,7 +260,7 @@ def eval_lite_instance(row: dict, timeout: float, pack_uniform: bool = False) ->
         rec["error"] = f"checkout failed: {exc}"
         return rec
 
-    obj, err = run_bgrep(row["problem_statement"], repo_path, timeout, pack_uniform=pack_uniform)
+    obj, err = run_roust(row["problem_statement"], repo_path, timeout, pack_uniform=pack_uniform)
     if err:
         rec["error"] = err
         return rec
@@ -470,7 +470,7 @@ def eval_archex_task(task_id: str, timeout: float) -> dict:
         rec["error"] = f"no repo checkout found for {data['repo']}"
         return rec
 
-    obj, err = run_bgrep(data["question"], repo_path, timeout)
+    obj, err = run_roust(data["question"], repo_path, timeout)
     if err:
         rec["error"] = err
         return rec
@@ -590,8 +590,8 @@ def main() -> None:
                           "own default)")
     args = ap.parse_args()
 
-    if not BGREP_BIN.exists():
-        raise SystemExit(f"bgrep binary not found at {BGREP_BIN}")
+    if not ROUST_BIN.exists():
+        raise SystemExit(f"roust binary not found at {ROUST_BIN}")
 
     report: dict = {}
     if args.part in ("a", "all"):

@@ -1,12 +1,12 @@
-"""Incremental index-update tests for bgrep.cache.
+"""Incremental index-update tests for roust.cache.
 
-Core acceptance bar (see bgrep.cache's module docstring): an
+Core acceptance bar (see roust.cache's module docstring): an
 incrementally-patched Corpus must be OBSERVATIONALLY IDENTICAL to a
 fresh-built Corpus over the same on-disk content -- same select_files()
 output (files AND scores) for any query. These tests build a synthetic repo,
 apply a scripted sequence of content-only edits, and after EACH edit compare
 the cache's load_or_build_ex() result against an independently fresh-built
-Corpus, while also asserting which update path (bgrep.cache's "unchanged" /
+Corpus, while also asserting which update path (roust.cache's "unchanged" /
 "incremental" / "full" `update_kind`) was actually taken.
 """
 
@@ -18,8 +18,8 @@ from pathlib import Path
 
 import pytest
 
-from bgrep import cache as cache_mod
-from bgrep.core import (
+from roust import cache as cache_mod
+from roust.core import (
     Corpus,
     build_import_graph,
     extract_symbol_anchors,

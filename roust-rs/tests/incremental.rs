@@ -1,4 +1,4 @@
-//! Incremental index-update tests for `bgrep_rs::cache` -- a Rust port of
+//! Incremental index-update tests for `roust::cache` -- a Rust port of
 //! `tests/test_incremental.py`'s property test.
 //!
 //! Core acceptance bar (see `cache.rs`'s module docstring): an
@@ -10,8 +10,8 @@
 //! independently fresh-built Corpus, while also asserting which update path
 //! (`"unchanged"` / `"incremental"` / `"full"`) was actually taken.
 
-use bgrep_rs::cache;
-use bgrep_rs::core::{self, extract_symbol_anchors, query_terms, select_files, Corpus, SelectParams};
+use roust::cache;
+use roust::core::{self, extract_symbol_anchors, query_terms, select_files, Corpus, SelectParams};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 

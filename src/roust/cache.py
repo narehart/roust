@@ -1,7 +1,7 @@
-"""On-disk index cache for bgrep, stored under ``<repo>/.bgrep/``.
+"""On-disk index cache for roust, stored under ``<repo>/.roust/``.
 
 Corpus construction (a full file walk + read + tokenize pass over every
-candidate file in the repo) is the expensive part of a bgrep run; this module
+candidate file in the repo) is the expensive part of a roust run; this module
 caches that work (plus the import graph and, optionally, mined git history)
 keyed on:
 
@@ -32,7 +32,7 @@ working tree since the cache was written:
 A successful incremental patch is designed to be byte-for-byte
 observationally identical to a fresh build over the same on-disk content
 (same corpus.bm25/select_files output for any query) -- see the docstrings
-on Corpus.update_files / update_import_graph_for_files in bgrep.core for the
+on Corpus.update_files / update_import_graph_for_files in roust.core for the
 subtract-then-add invariant this relies on. If a patch attempt turns out to
 be shaped like an add/remove after all (e.g. an edit shrinks a file below
 MAX_FILE_BYTES's oversized-exclusion threshold, or empties it out entirely),
@@ -43,8 +43,8 @@ The pickle also carries an explicit ``CACHE_VERSION``; bumping it invalidates
 every existing cache file regardless of key match, for use whenever the
 pickled shape (Corpus's attributes, the edges type, the history tuple shape,
 the manifest schema) changes in a way that would make an old pickle unsafe to
-unpickle into the current code. ``bgrep.core.Corpus`` unconditionally
-excludes ``.bgrep/`` from its own file walk, so this cache directory is never
+unpickle into the current code. ``roust.core.Corpus`` unconditionally
+excludes ``.roust/`` from its own file walk, so this cache directory is never
 itself indexed.
 """
 
@@ -55,17 +55,17 @@ import pickle
 import subprocess
 from pathlib import Path
 
-from bgrep.core import (
+from roust.core import (
     CODE_EXTENSIONS,
     Corpus,
     _DOCS_EXTENSIONS,
     build_import_graph,
     update_import_graph_for_files,
 )
-from bgrep.history import mine_history
+from roust.history import mine_history
 
-CACHE_VERSION = 2
-CACHE_DIRNAME = ".bgrep"
+CACHE_VERSION = 3
+CACHE_DIRNAME = ".roust"
 _INDEX_FILENAME = "index.pkl"
 _PRUNE_DIRS = {".git", CACHE_DIRNAME}
 
@@ -243,11 +243,11 @@ def load_or_build(
     was avoided -- i.e. both the "unchanged" (no work) and "incremental"
     (file-level patch) cases from load_or_build_ex's finer-grained
     `update_kind` collapse to True here; only "full" is False. Thin wrapper
-    around load_or_build_ex() for callers (bgrep.cli) that only need the
+    around load_or_build_ex() for callers (roust.cli) that only need the
     coarse hit/miss distinction.
 
-    `edges` (bgrep.core.build_import_graph(corpus)) is cached alongside the
-    corpus even though bgrep.core.select_files() -- kept byte-for-byte
+    `edges` (roust.core.build_import_graph(corpus)) is cached alongside the
+    corpus even though roust.core.select_files() -- kept byte-for-byte
     equivalent to lab/lanes2.py -- always rebuilds its own edges internally
     when use_ppr/use_testbridge require them (that rebuild is pure in-memory
     regex work over corpus.text, not file I/O, so it's cheap once the corpus

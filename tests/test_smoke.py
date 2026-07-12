@@ -1,5 +1,5 @@
-"""End-to-end smoke test: builds a tiny synthetic repo, runs the real bgrep
-CLI against it via subprocess (python -m bgrep.cli, exercising the installed
+"""End-to-end smoke test: builds a tiny synthetic repo, runs the real roust
+CLI against it via subprocess (python -m roust.cli, exercising the installed
 package exactly as a user would), and checks the three output modes."""
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ def _make_repo(tmp_path: Path) -> Path:
 
 def _run_cli(args: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
     return subprocess.run(
-        [sys.executable, "-m", "bgrep.cli", *args],
+        [sys.executable, "-m", "roust.cli", *args],
         cwd=cwd, capture_output=True, text=True, timeout=60,
     )
 
@@ -57,8 +57,8 @@ def test_bundle_output(tmp_path: Path) -> None:
     assert "### " in r.stdout
     assert "routing.py" in r.stdout
     # stats footer must go to stderr, never stdout
-    assert "bgrep:" in r.stderr
-    assert "bgrep:" not in r.stdout
+    assert "roust:" in r.stderr
+    assert "roust:" not in r.stdout
 
 
 def test_json_output(tmp_path: Path) -> None:

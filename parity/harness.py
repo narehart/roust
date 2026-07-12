@@ -13,7 +13,7 @@ CONTRACT under test
 The candidate is invoked via a shell-quoted TEMPLATE string containing the
 literal placeholders ``{query}`` and ``{repo_path}``, e.g.::
 
-    bgrep-rs --json --budget 8192 {query} {repo_path}
+    roust --json --budget 8192 {query} {repo_path}
 
 The template is tokenized with ``shlex.split`` *before* substitution, so the
 query text (which may be arbitrarily long, multi-line, and contain quotes)
@@ -526,7 +526,7 @@ def main() -> None:
                                   formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--cmd", required=True,
                      help="candidate command template, e.g. "
-                          "'bgrep-rs --json --budget 8192 {query} {repo_path}'")
+                          "'roust --json --budget 8192 {query} {repo_path}'")
     ap.add_argument("--suite", choices=["lite", "archex", "all"], default="all")
     ap.add_argument("--limit", type=int, default=0, help="cap tasks per suite")
     ap.add_argument("--report", type=Path, default=None, help="write full JSON report to PATH")

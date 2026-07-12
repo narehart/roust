@@ -1,4 +1,4 @@
-"""bgrep retrieval core -- a packaged port of lab/lanes2.py (frozen v7 config).
+"""roust retrieval core -- a packaged port of lab/lanes2.py (frozen v7 config).
 
 This module MUST stay retrieval-logic-identical to lab/lanes2.py. The only
 intentional differences from lanes2.py are:
@@ -6,10 +6,10 @@ intentional differences from lanes2.py are:
   - No LAST_EXPLAIN module global for debugging: select_files() returns an
     Explain dataclass instance instead (see Explain below).
   - Token counting is a local lazy-import wrapper (get_token_counter) instead
-    of importing archex.reporting.count_tokens (bgrep has no archex
+    of importing archex.reporting.count_tokens (roust has no archex
     dependency); it uses the identical tiktoken cl100k_base encoding.
   - The Corpus file walk additionally excludes the on-disk index cache
-    directory (.bgrep/), which does not exist in the lab environment.
+    directory (.roust/), which does not exist in the lab environment.
 
 See lab/lanes2.py's module docstring for the retrieval-design rationale
 (lanes, history signals, vendor/pack-safety fixes) -- it is not repeated here.
@@ -27,9 +27,9 @@ from pathlib import Path
 CODE_EXTENSIONS = (".py", ".ts", ".js", ".go", ".rs", ".java", ".kt", ".cs", ".swift", ".tsx", ".jsx")
 MAX_FILE_BYTES = 2_000_000
 
-# On-disk index cache directory (bgrep.cache); excluded from the corpus like
+# On-disk index cache directory (roust.cache); excluded from the corpus like
 # .git so it never shows up as a candidate file or pollutes token counts.
-_CACHE_DIR_NAME = ".bgrep"
+_CACHE_DIR_NAME = ".roust"
 
 
 def _is_cache_or_git_path(rel: str) -> bool:
@@ -44,7 +44,7 @@ def _is_cache_or_git_path(rel: str) -> bool:
 def get_token_counter():
     """Return a count_tokens(text: str) -> int callable using tiktoken's
     cl100k_base encoding, matching archex.reporting.count_tokens exactly.
-    tiktoken is imported lazily so importing bgrep.core doesn't pay its
+    tiktoken is imported lazily so importing roust.core doesn't pay its
     (small but nonzero) import cost when token counting isn't needed."""
     import tiktoken
 
@@ -354,7 +354,7 @@ class Corpus:
 
     # ------------------------------------------------------------ incremental update
     #
-    # Both methods below exist for bgrep.cache's incremental-update path (the
+    # Both methods below exist for roust.cache's incremental-update path (the
     # common agent edit-loop case: a file's CONTENT changed but its relpath
     # set did not -- no add/remove). Each re-derives a modified file's
     # contribution to the corpus from scratch (subtract old, add new) using
@@ -363,7 +363,7 @@ class Corpus:
     # on-disk content. Neither method touches ptoks (the path, and therefore
     # path_tokens, is unchanged by a content-only edit) or the msg_* fields
     # (commit history is keyed on git HEAD, which incremental updates require
-    # to be unchanged -- see bgrep.cache).
+    # to be unchanged -- see roust.cache).
     #
     # Both are all-or-nothing: every file is pre-checked against __init__'s
     # own inclusion criteria BEFORE any mutation happens, so a False return
@@ -692,7 +692,7 @@ def _file_import_targets(
 ) -> set[str]:
     """The set of files that `rel`'s OWN text authors an import edge to
     (pre-symmetrization) -- i.e. the per-file body of build_import_graph's
-    main loop, factored out so bgrep.cache's incremental-update path
+    main loop, factored out so roust.cache's incremental-update path
     (update_import_graph_for_files) can recompute a single changed file's
     authored edges without re-parsing the whole corpus. Must stay exactly in
     sync with build_import_graph's loop body -- best-effort per language,
@@ -790,7 +790,7 @@ def update_import_graph_for_files(
 ) -> None:
     """Incrementally patch `edges` (mutated in place) for a batch of files
     whose content changed but whose relpath set is unchanged -- see
-    bgrep.cache's incremental-update path. `old_text` is {rel: text} holding
+    roust.cache's incremental-update path. `old_text` is {rel: text} holding
     each changed file's PRE-edit text; corpus.text[rel] must already hold
     the POST-edit text for every rel in `old_text` by the time this is
     called (see Corpus.update_files, which must run first).

@@ -2,6 +2,6 @@ __pycache__/
 *.pyc
 lab/repos/
 .venv/
-.bgrep/
+.roust/
 .venv-pkg/
-bgrep-rs/target/
+roust-rs/target/

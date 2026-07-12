@@ -44,7 +44,7 @@ from collections import Counter, defaultdict
 from itertools import combinations
 from pathlib import Path
 
-from bgrep.core import CODE_EXTENSIONS, _TESTLIKE_RE
+from roust.core import CODE_EXTENSIONS, _TESTLIKE_RE
 
 _SENTINEL = "__C__"
 MAX_MSG_CHARS = 40_000

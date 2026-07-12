@@ -1,8 +1,8 @@
-"""bgrep command-line interface.
+"""roust command-line interface.
 
-    bgrep QUERY [PATH]
+    roust QUERY [PATH]
 
-Runs the frozen-v7 retrieval pipeline (bgrep.core, bgrep.cache) against a
+Runs the frozen-v7 retrieval pipeline (roust.core, roust.cache) against a
 repo and prints a token-budgeted, region-packed bundle of the files most
 relevant to QUERY -- grep-level recall at a fraction of grep's tokens, no
 LLM/embeddings/network involved.
@@ -22,8 +22,8 @@ import sys
 import time
 from pathlib import Path
 
-from bgrep import cache as cache_mod
-from bgrep.core import (
+from roust import cache as cache_mod
+from roust.core import (
     anchor_def_symbols,
     extract_symbol_anchors,
     get_token_counter,
@@ -35,7 +35,7 @@ from bgrep.core import (
 
 def _build_arg_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        prog="bgrep",
+        prog="roust",
         description=(
             "Recall-first code retrieval for LLM coding agents -- "
             "grep-level recall at ~1% of the tokens."
@@ -56,7 +56,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--json", action="store_true",
                      help="machine-readable JSON output instead of the packed bundle")
     ap.add_argument("--no-cache", action="store_true",
-                     help="do not read or write the on-disk index cache (<repo>/.bgrep/)")
+                     help="do not read or write the on-disk index cache (<repo>/.roust/)")
     ap.add_argument("--reindex", action="store_true",
                      help="force a fresh index build even if a matching cache entry exists "
                           "(still writes the cache afterward unless combined with --no-cache)")
@@ -69,7 +69,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--no-testbridge", action="store_true",
                      help="disable the test-file lexical bridge channel")
     ap.add_argument("--explain", action="store_true",
-                     help="dump the Explain diagnostic record (bgrep.core.Explain) as JSON to stderr")
+                     help="dump the Explain diagnostic record (roust.core.Explain) as JSON to stderr")
     return ap
 
 
@@ -84,7 +84,7 @@ def main(argv: list[str] | None = None) -> int:
 
     repo_path = Path(args.path).resolve()
     if not repo_path.is_dir():
-        print(f"bgrep: error: not a directory: {args.path}", file=sys.stderr)
+        print(f"roust: error: not a directory: {args.path}", file=sys.stderr)
         return 2
 
     with_history = not args.no_history
@@ -150,7 +150,7 @@ def main(argv: list[str] | None = None) -> int:
             print(bundle)
 
     stats_line = (
-        f"bgrep: {len(packed_files)} files, {bundle_tokens} tokens "
+        f"roust: {len(packed_files)} files, {bundle_tokens} tokens "
         f"(indexed {corpus.n_docs} files, index {index_ms:.0f}ms, query {query_ms:.0f}ms, "
         f"cache {cache_state})"
     )

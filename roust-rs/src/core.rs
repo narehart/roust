@@ -1,4 +1,4 @@
-//! bgrep retrieval core -- a Rust port of `lab/lanes2.py` (frozen v7
+//! roust retrieval core -- a Rust port of `lab/lanes2.py` (frozen v7
 //! pipeline). Must stay retrieval-logic-identical to lanes2.py; see
 //! PARITY_NOTES.md for every place Python runtime semantics (dict/set
 //! ordering, `Path` comparison, `str.splitlines()`, hash randomization)
@@ -633,7 +633,7 @@ impl Corpus {
 
     // -------------------------------------------------------- incremental update
     //
-    // Ports of `bgrep.core.Corpus.update_files` / `update_docs_files` (see
+    // Ports of `roust.core.Corpus.update_files` / `update_docs_files` (see
     // `cache.py`'s module docstring for the design). Both exist for
     // `crate::cache`'s incremental-update path (the common agent edit-loop
     // case: a file's CONTENT changed but its relpath set did not). Each
@@ -2541,7 +2541,7 @@ mod tests {
         // module, plus an unrelated test file, exercising Corpus building,
         // BM25, the import graph, and select_files' structural-expansion
         // path end to end.
-        let tmp = std::env::temp_dir().join(format!("bgrep_rs_smoke_{}", std::process::id()));
+        let tmp = std::env::temp_dir().join(format!("roust_smoke_{}", std::process::id()));
         std::fs::create_dir_all(tmp.join("pkg")).unwrap();
         std::fs::create_dir_all(tmp.join("tests")).unwrap();
         std::fs::write(

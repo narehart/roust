@@ -1,12 +1,12 @@
-//! bgrep-rs command-line interface -- a Rust port of `src/bgrep/cli.py`.
+//! roust command-line interface -- a Rust port of `src/roust/cli.py`.
 //!
-//!     bgrep-rs [--json] [--files-only] [--budget N=8192] [--k N]
+//!     roust [--json] [--files-only] [--budget N=8192] [--k N]
 //!              [--no-cache] [--reindex]
 //!              [--no-history] [--no-docs] [--no-anchors] [--no-testbridge]
 //!              [--explain] QUERY PATH
 //!
-//! Runs the frozen-v7 retrieval pipeline (bgrep_rs::core, bgrep_rs::cache,
-//! bgrep_rs::history) against a repo and prints a token-budgeted,
+//! Runs the frozen-v7 retrieval pipeline (roust::core, roust::cache,
+//! roust::history) against a repo and prints a token-budgeted,
 //! region-packed bundle of the files most relevant to QUERY.
 //!
 //! Default output (stdout) is the packed bundle text. A one-line stats
@@ -15,8 +15,8 @@
 //!
 //! Exit codes: 0 = results found, 1 = no results, 2 = usage error.
 
-use bgrep_rs::cache;
-use bgrep_rs::core::{anchor_def_symbols, extract_symbol_anchors, pack_regions, query_terms, select_files, SelectParams};
+use roust::cache;
+use roust::core::{anchor_def_symbols, extract_symbol_anchors, pack_regions, query_terms, select_files, SelectParams};
 use clap::Parser;
 use std::collections::HashSet;
 use std::path::PathBuf;
@@ -24,7 +24,7 @@ use std::time::Instant;
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "bgrep-rs",
+    name = "roust",
     about = "Recall-first code retrieval for LLM coding agents -- grep-level recall at ~1% of the tokens."
 )]
 struct Args {
@@ -52,7 +52,7 @@ struct Args {
     #[arg(long)]
     json: bool,
 
-    /// do not read or write the on-disk index cache (<repo>/.bgrep/)
+    /// do not read or write the on-disk index cache (<repo>/.roust/)
     #[arg(long)]
     no_cache: bool,
 
@@ -86,17 +86,17 @@ fn main() {
     let args = Args::parse();
 
     if args.budget <= 0 {
-        eprintln!("bgrep-rs: error: --budget must be positive");
+        eprintln!("roust: error: --budget must be positive");
         std::process::exit(2);
     }
     if args.k < 0 {
-        eprintln!("bgrep-rs: error: --k must be >= 0");
+        eprintln!("roust: error: --k must be >= 0");
         std::process::exit(2);
     }
 
     let repo_path = PathBuf::from(&args.path);
     if !repo_path.is_dir() {
-        eprintln!("bgrep-rs: error: not a directory: {}", args.path);
+        eprintln!("roust: error: not a directory: {}", args.path);
         std::process::exit(2);
     }
 
@@ -191,7 +191,7 @@ fn main() {
     }
 
     eprintln!(
-        "bgrep-rs: {} files, {} tokens (indexed {} files, index {}ms, query {}ms, cache {})",
+        "roust: {} files, {} tokens (indexed {} files, index {}ms, query {}ms, cache {})",
         packed_files.len(),
         bundle_tokens,
         corpus.n_docs,

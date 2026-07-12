@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "bgrep"
+name = "roust"
 version = "0.1.0"
 description = "Recall-first code retrieval for LLM coding agents — grep-level recall at ~1% of the tokens"
 license = {text = "MIT"}
@@ -13,10 +13,10 @@ dependencies = [
 ]
 
 [project.scripts]
-bgrep = "bgrep.cli:main"
+roust = "roust.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/bgrep"]
+packages = ["src/roust"]
 
 [dependency-groups]
 dev = [

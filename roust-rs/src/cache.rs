@@ -1,5 +1,5 @@
-//! On-disk index cache for bgrep-rs, stored under `<repo>/.bgrep/` -- a Rust
-//! port of `bgrep.cache` (Python commit 16e7c71). See that module's
+//! On-disk index cache for roust, stored under `<repo>/.roust/` -- a Rust
+//! port of `roust.cache` (Python commit 16e7c71). See that module's
 //! docstring for the full design rationale; the summary:
 //!
 //! Corpus construction (a full file walk + read + tokenize pass over every
@@ -36,14 +36,14 @@
 //!
 //! ## Cache-file isolation from the Python implementation
 //!
-//! The Python cache (`bgrep.cache`) writes `<repo>/.bgrep/index.pkl`
-//! (a pickle). This module writes `<repo>/.bgrep/rust-index.bin` -- a
+//! The Python cache (`roust.cache`) writes `<repo>/.roust/index.pkl`
+//! (a pickle). This module writes `<repo>/.roust/rust-index.bin` -- a
 //! DIFFERENT filename in the same directory, deliberately, so the two
 //! independent implementations never attempt to read each other's cache
 //! file (a pickle is not valid JSON and vice versa; even if it were, the
-//! two Corpus shapes are not identical types). Running both `bgrep` and
-//! `bgrep-rs` against the same repo is therefore always safe -- each
-//! maintains its own cache entry.
+//! two Corpus shapes are not identical types). Running both the Python
+//! `roust` console script and this crate's `roust` binary against the same
+//! repo is therefore always safe -- each maintains its own cache entry.
 
 use crate::core::{self, build_import_graph, update_import_graph_for_files, Corpus, EdgeMap};
 use crate::history::{mine_history, HistoryData};
@@ -53,7 +53,7 @@ use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 pub const CACHE_VERSION: i64 = 1;
-pub const CACHE_DIRNAME: &str = ".bgrep";
+pub const CACHE_DIRNAME: &str = ".roust";
 const INDEX_FILENAME: &str = "rust-index.bin";
 
 /// `{relpath: (mtime_ns, size)}` for every candidate-extension file, as of
@@ -235,7 +235,7 @@ fn load(repo_path: &Path, key: &str) -> Option<CachePayload> {
 
 /// Cache directory not writable (read-only checkout, permissions, disk
 /// full, ...): degrade to "no cache" rather than fail the query, mirroring
-/// `bgrep.cache._save`'s `except OSError: pass`.
+/// `roust.cache._save`'s `except OSError: pass`.
 fn save(repo_path: &Path, key: &str, corpus: &Corpus, edges: &EdgeMap, history: &Option<HistoryData>, manifest: &Manifest) {
     let cache_dir = repo_path.join(CACHE_DIRNAME);
     if std::fs::create_dir_all(&cache_dir).is_err() {
@@ -261,8 +261,8 @@ fn save(repo_path: &Path, key: &str, corpus: &Corpus, edges: &EdgeMap, history: 
 }
 
 /// Cheap mirror of `Corpus::build`'s file-collection filter (extension,
-/// `.git`/`.bgrep` exclusion) without reading/tokenizing file contents --
-/// matches `bgrep.cache._build_fresh`'s `current_files` comprehension
+/// `.git`/`.roust` exclusion) without reading/tokenizing file contents --
+/// matches `roust.cache._build_fresh`'s `current_files` comprehension
 /// (including its "top-level `startswith` only, not nested-`.git`-aware"
 /// quirk, since that's exactly what it mirrors).
 fn collect_current_code_files(repo_path: &Path) -> HashSet<String> {
@@ -325,7 +325,7 @@ fn try_incremental_update(corpus: &mut Corpus, edges: &mut EdgeMap, modified: &[
     // Defensive: `scan_manifest` doesn't apply Corpus::build's own
     // vendor/size/oversized-line filters, so a "modified" rel can name a
     // file that was never actually indexed (e.g. under a vendor/ path).
-    // bgrep.cache's Python equivalent has no such guard and would raise a
+    // roust.cache's Python equivalent has no such guard and would raise a
     // KeyError in this situation; declining incrementally (forcing the
     // always-safe full-rebuild fallback) is strictly more robust and never
     // changes the observable result, so this is a deliberate hardening, not

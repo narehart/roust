@@ -3,25 +3,6 @@ revision = 3
 requires-python = ">=3.10"
 
 [[package]]
-name = "bgrep"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "tiktoken" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "tiktoken", specifier = ">=0.5" }]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=7.0" }]
-
-[[package]]
 name = "certifi"
 version = "2026.6.17"
 source = { registry = "https://pypi.org/simple" }
@@ -336,6 +317,25 @@ sdist = { url = "https://files.pythonhosted.org/packages/ac/c3/e2a2b89f2d3e2179a
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl", hash = "sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0", size = 73075, upload-time = "2026-05-14T19:25:26.443Z" },
 ]
+
+[[package]]
+name = "roust"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "tiktoken" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "tiktoken", specifier = ">=0.5" }]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=7.0" }]
 
 [[package]]
 name = "tiktoken"

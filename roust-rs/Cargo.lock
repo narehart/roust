@@ -74,19 +74,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d297deb1925b89f2ccc13d7635fa0714f12c87adce1c75356b39ca9b7178567"
 
 [[package]]
-name = "bgrep-rs"
-version = "0.1.0"
-dependencies = [
- "clap",
- "filetime",
- "indexmap",
- "regex",
- "serde",
- "serde_json",
- "tiktoken-rs",
-]
-
-[[package]]
 name = "bit-set"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -344,6 +331,19 @@ name = "regex-syntax"
 version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
+
+[[package]]
+name = "roust"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "filetime",
+ "indexmap",
+ "regex",
+ "serde",
+ "serde_json",
+ "tiktoken-rs",
+]
 
 [[package]]
 name = "rustc-hash"

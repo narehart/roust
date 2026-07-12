@@ -5,7 +5,7 @@ candidate files tied exactly on add_score (Guarantee 1's `max(imp,
 key=add_score)`, and the pool dict's insertion order feeding
 `sorted(pool, key=add_score, reverse=True)`), which one won the tie could
 swap across otherwise-identical process invocations. Fixed by sorting the
-neighbor set at the point it's converted to a list (bgrep.core / lab/
+neighbor set at the point it's converted to a list (roust.core / lab/
 lanes2.py); this test builds a repo engineered to have an exact score tie
 across several import-graph siblings and checks the result is byte-identical
 across two subprocesses with different PYTHONHASHSEED, and across two
@@ -67,7 +67,7 @@ _QUERY = "how does the dispatcher route incoming requests through the pipeline"
 
 def _run_cli(args: list[str], env: dict) -> subprocess.CompletedProcess:
     return subprocess.run(
-        [sys.executable, "-m", "bgrep.cli", *args],
+        [sys.executable, "-m", "roust.cli", *args],
         capture_output=True, text=True, timeout=60, env=env,
     )
 
@@ -102,7 +102,7 @@ def test_cli_json_deterministic_across_hashseeds(tmp_path: Path) -> None:
 
 
 def test_select_files_deterministic_in_process(tmp_path: Path) -> None:
-    from bgrep.core import Corpus, build_import_graph, query_terms, select_files
+    from roust.core import Corpus, build_import_graph, query_terms, select_files
 
     repo = _make_tie_repo(tmp_path)
     corpus = Corpus(repo)

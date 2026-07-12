@@ -1,8 +1,8 @@
 {
   "cmd": "/Users/nicholasarehart/programming-projects/bgrep/bgrep-rs/target/release/bgrep-rs --json --budget 8192 {query} {repo_path}",
   "gate_mode": "exact",
-  "verdict": "GATE: PASS (lite exact-match 300/300)",
-  "passed": true,
+  "verdict": "GATE: FAIL (lite exact-match 299/300)",
+  "passed": false,
   "suites": [
     {
       "name": "lite",
@@ -10,10 +10,10 @@
       "skipped": false,
       "skip_reason": "",
       "tasks_run": 300,
-      "errors": 0,
-      "exact_match": 300,
-      "set_match": 300,
-      "top10_match": 300,
+      "errors": 1,
+      "exact_match": 299,
+      "set_match": 299,
+      "top10_match": 299,
       "tasks": [
         {
           "task_id": "astropy__astropy-12907",
@@ -101,7 +101,7 @@
             "astropy/coordinates/builtin_frames/cirs_observed_transforms.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4623649169225246
+          "elapsed_s": 1.4071024169679731
         },
         {
           "task_id": "astropy__astropy-14182",
@@ -189,7 +189,7 @@
             "astropy/io/votable/table.py"
           ],
           "diff": [],
-          "elapsed_s": 1.5683373750653118
+          "elapsed_s": 1.557545791962184
         },
         {
           "task_id": "astropy__astropy-14365",
@@ -279,7 +279,7 @@
             "astropy/io/fits/hdu/base.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7110583749599755
+          "elapsed_s": 1.684496125089936
         },
         {
           "task_id": "astropy__astropy-14995",
@@ -367,7 +367,7 @@
             "astropy/io/fits/file.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6037548329913989
+          "elapsed_s": 1.5745621250243858
         },
         {
           "task_id": "astropy__astropy-6938",
@@ -457,7 +457,7 @@
             "astropy/coordinates/solar_system.py"
           ],
           "diff": [],
-          "elapsed_s": 1.287126166978851
+          "elapsed_s": 1.2161721250740811
         },
         {
           "task_id": "astropy__astropy-7746",
@@ -545,7 +545,7 @@
             "astropy/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 1.3564838749589399
+          "elapsed_s": 1.3727680830052122
         },
         {
           "task_id": "django__django-10914",
@@ -631,7 +631,7 @@
             "django/utils/timezone.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9437818339793012
+          "elapsed_s": 1.76593095890712
         },
         {
           "task_id": "django__django-10924",
@@ -717,7 +717,7 @@
             "django/forms/fields.py"
           ],
           "diff": [],
-          "elapsed_s": 1.991134292096831
+          "elapsed_s": 2.007541667087935
         },
         {
           "task_id": "django__django-11001",
@@ -803,7 +803,7 @@
             "django/db/backends/oracle/base.py"
           ],
           "diff": [],
-          "elapsed_s": 2.176049333065748
+          "elapsed_s": 2.1689085830003023
         },
         {
           "task_id": "django__django-11019",
@@ -889,7 +889,7 @@
             "django/contrib/staticfiles/storage.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0856655829120427
+          "elapsed_s": 2.1173887500772253
         },
         {
           "task_id": "django__django-11039",
@@ -975,7 +975,7 @@
             "django/db/models/constraints.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8059449580032378
+          "elapsed_s": 1.8185304589569569
         },
         {
           "task_id": "django__django-11049",
@@ -1061,7 +1061,7 @@
             "django/utils/log.py"
           ],
           "diff": [],
-          "elapsed_s": 1.921878166962415
+          "elapsed_s": 1.9498977919574827
         },
         {
           "task_id": "django__django-11099",
@@ -1147,7 +1147,7 @@
             "django/utils/timezone.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7077050419757143
+          "elapsed_s": 1.6949729589978233
         },
         {
           "task_id": "django__django-11133",
@@ -1233,7 +1233,7 @@
             "django/core/servers/basehttp.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7804010420804843
+          "elapsed_s": 1.7822587500559166
         },
         {
           "task_id": "django__django-11179",
@@ -1319,7 +1319,7 @@
             "django/contrib/auth/apps.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9101572920335457
+          "elapsed_s": 1.8714654580689967
         },
         {
           "task_id": "django__django-11283",
@@ -1405,7 +1405,7 @@
             "django/db/transaction.py"
           ],
           "diff": [],
-          "elapsed_s": 2.141334499930963
+          "elapsed_s": 2.031877832952887
         },
         {
           "task_id": "django__django-11422",
@@ -1491,7 +1491,7 @@
             "django/views/decorators/http.py"
           ],
           "diff": [],
-          "elapsed_s": 1.76223412505351
+          "elapsed_s": 1.6971602080157027
         },
         {
           "task_id": "django__django-11564",
@@ -1577,7 +1577,7 @@
             "django/core/servers/basehttp.py"
           ],
           "diff": [],
-          "elapsed_s": 1.789936083019711
+          "elapsed_s": 1.775846750009805
         },
         {
           "task_id": "django__django-11583",
@@ -1663,7 +1663,7 @@
             "django/db/models/deletion.py"
           ],
           "diff": [],
-          "elapsed_s": 2.071716249920428
+          "elapsed_s": 2.046035874984227
         },
         {
           "task_id": "django__django-11620",
@@ -1749,7 +1749,7 @@
             "django/db/transaction.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9212574160192162
+          "elapsed_s": 1.8832975840196013
         },
         {
           "task_id": "django__django-11630",
@@ -1835,7 +1835,7 @@
             "django/db/backends/sqlite3/features.py"
           ],
           "diff": [],
-          "elapsed_s": 1.908891125000082
+          "elapsed_s": 1.9149733750382438
         },
         {
           "task_id": "django__django-11742",
@@ -1921,7 +1921,7 @@
             "django/db/transaction.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9189982920652255
+          "elapsed_s": 1.9322795000625774
         },
         {
           "task_id": "django__django-11797",
@@ -2007,7 +2007,7 @@
             "django/contrib/auth/handlers/modwsgi.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8210826249560341
+          "elapsed_s": 1.8517708339495584
         },
         {
           "task_id": "django__django-11815",
@@ -2093,7 +2093,7 @@
             "django/contrib/admin/models.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9838727499591187
+          "elapsed_s": 1.97781870898325
         },
         {
           "task_id": "django__django-11848",
@@ -2179,7 +2179,7 @@
             "django/db/backends/sqlite3/base.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8100024999585003
+          "elapsed_s": 1.7794215829344466
         },
         {
           "task_id": "django__django-11905",
@@ -2265,7 +2265,7 @@
             "django/db/backends/base/features.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8836580419447273
+          "elapsed_s": 1.9116960420506075
         },
         {
           "task_id": "django__django-11910",
@@ -2351,7 +2351,7 @@
             "django/db/models/fields/related_lookups.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8712035829667002
+          "elapsed_s": 1.9482849999330938
         },
         {
           "task_id": "django__django-11964",
@@ -2437,7 +2437,7 @@
             "django/db/backends/oracle/base.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1057182499207556
+          "elapsed_s": 2.148008832940832
         },
         {
           "task_id": "django__django-11999",
@@ -2523,7 +2523,7 @@
             "django/db/backends/oracle/introspection.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9436639579944313
+          "elapsed_s": 2.0143662919290364
         },
         {
           "task_id": "django__django-12113",
@@ -2609,7 +2609,7 @@
             "django/contrib/auth/forms.py"
           ],
           "diff": [],
-          "elapsed_s": 2.363091874984093
+          "elapsed_s": 2.2875111249741167
         },
         {
           "task_id": "django__django-12125",
@@ -2695,7 +2695,7 @@
             "django/db/models/fields/related_lookups.py"
           ],
           "diff": [],
-          "elapsed_s": 2.026227166992612
+          "elapsed_s": 2.1062796670012176
         },
         {
           "task_id": "django__django-12184",
@@ -2781,7 +2781,7 @@
             "django/db/models/lookups.py"
           ],
           "diff": [],
-          "elapsed_s": 1.859553916961886
+          "elapsed_s": 1.8520382499555126
         },
         {
           "task_id": "django__django-12284",
@@ -2867,7 +2867,7 @@
             "django/db/backends/sqlite3/introspection.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1070508329430595
+          "elapsed_s": 2.054048874997534
         },
         {
           "task_id": "django__django-12286",
@@ -2953,7 +2953,7 @@
             "django/contrib/auth/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8264015410095453
+          "elapsed_s": 1.8232518339063972
         },
         {
           "task_id": "django__django-12308",
@@ -3039,7 +3039,7 @@
             "django/contrib/admin/models.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9352906249696389
+          "elapsed_s": 1.8676160000031814
         },
         {
           "task_id": "django__django-12453",
@@ -3125,7 +3125,7 @@
             "django/core/serializers/base.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0746828330447897
+          "elapsed_s": 2.0544307079399005
         },
         {
           "task_id": "django__django-12470",
@@ -3211,7 +3211,7 @@
             "django/db/backends/oracle/base.py"
           ],
           "diff": [],
-          "elapsed_s": 1.966268999967724
+          "elapsed_s": 1.938581999973394
         },
         {
           "task_id": "django__django-12497",
@@ -3297,7 +3297,7 @@
             "django/urls/resolvers.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0423742909915745
+          "elapsed_s": 2.027811332955025
         },
         {
           "task_id": "django__django-12589",
@@ -3383,7 +3383,7 @@
             "django/forms/models.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1824942079838365
+          "elapsed_s": 2.1305809590267017
         },
         {
           "task_id": "django__django-12700",
@@ -3469,7 +3469,7 @@
             "django/contrib/auth/views.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8003044169163331
+          "elapsed_s": 1.8299281250219792
         },
         {
           "task_id": "django__django-12708",
@@ -3555,7 +3555,7 @@
             "django/db/backends/oracle/base.py"
           ],
           "diff": [],
-          "elapsed_s": 1.987777541973628
+          "elapsed_s": 1.94622658402659
         },
         {
           "task_id": "django__django-12747",
@@ -3641,7 +3641,7 @@
             "django/db/migrations/operations/base.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0988638749113306
+          "elapsed_s": 2.035310290986672
         },
         {
           "task_id": "django__django-12856",
@@ -3727,7 +3727,7 @@
             "django/contrib/admin/migrations/0001_initial.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9692722080508247
+          "elapsed_s": 1.9473427080083638
         },
         {
           "task_id": "django__django-12908",
@@ -3813,7 +3813,7 @@
             "django/db/backends/oracle/utils.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0539532910333946
+          "elapsed_s": 2.0376208330271766
         },
         {
           "task_id": "django__django-12915",
@@ -3899,7 +3899,7 @@
             "django/http/response.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7352657499723136
+          "elapsed_s": 1.7428564170841128
         },
         {
           "task_id": "django__django-12983",
@@ -3985,7 +3985,7 @@
             "django/utils/hashable.py"
           ],
           "diff": [],
-          "elapsed_s": 1.696353750070557
+          "elapsed_s": 1.7429090830264613
         },
         {
           "task_id": "django__django-13028",
@@ -4071,7 +4071,7 @@
             "django/db/backends/oracle/utils.py"
           ],
           "diff": [],
-          "elapsed_s": 2.3203810419654474
+          "elapsed_s": 2.3137146659428254
         },
         {
           "task_id": "django__django-13033",
@@ -4157,7 +4157,7 @@
             "django/db/backends/sqlite3/schema.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1641552910441533
+          "elapsed_s": 2.1966510409256443
         },
         {
           "task_id": "django__django-13158",
@@ -4243,7 +4243,7 @@
             "django/db/transaction.py"
           ],
           "diff": [],
-          "elapsed_s": 2.058828584034927
+          "elapsed_s": 2.149794875062071
         },
         {
           "task_id": "django__django-13220",
@@ -4329,7 +4329,7 @@
             "django/contrib/postgres/constraints.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0277083329856396
+          "elapsed_s": 2.063239499926567
         },
         {
           "task_id": "django__django-13230",
@@ -4411,7 +4411,7 @@
             "django/contrib/postgres/constraints.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8100935420952737
+          "elapsed_s": 1.865272333030589
         },
         {
           "task_id": "django__django-13265",
@@ -4497,7 +4497,7 @@
             "django/db/migrations/operations/fields.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1158292909385636
+          "elapsed_s": 2.093510332982987
         },
         {
           "task_id": "django__django-13315",
@@ -4583,7 +4583,7 @@
             "django/core/management/commands/inspectdb.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0105249589541927
+          "elapsed_s": 1.995934332953766
         },
         {
           "task_id": "django__django-13321",
@@ -4669,7 +4669,7 @@
             "django/core/servers/basehttp.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9988359999842942
+          "elapsed_s": 2.018957208027132
         },
         {
           "task_id": "django__django-13401",
@@ -4755,7 +4755,7 @@
             "django/forms/models.py"
           ],
           "diff": [],
-          "elapsed_s": 2.160704541951418
+          "elapsed_s": 2.14701466599945
         },
         {
           "task_id": "django__django-13447",
@@ -4841,7 +4841,7 @@
             "django/views/generic/base.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9367023339727893
+          "elapsed_s": 2.00761125003919
         },
         {
           "task_id": "django__django-13448",
@@ -4927,7 +4927,7 @@
             "django/db/models/deletion.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1577060000272468
+          "elapsed_s": 2.2339732920518145
         },
         {
           "task_id": "django__django-13551",
@@ -5013,7 +5013,7 @@
             "django/db/migrations/state.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7781983750173822
+          "elapsed_s": 1.8232897500274703
         },
         {
           "task_id": "django__django-13590",
@@ -5099,7 +5099,7 @@
             "django/db/backends/postgresql/operations.py"
           ],
           "diff": [],
-          "elapsed_s": 2.009872499969788
+          "elapsed_s": 2.1417817500187084
         },
         {
           "task_id": "django__django-13658",
@@ -5185,7 +5185,7 @@
             "django/db/backends/mysql/client.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8017334170872346
+          "elapsed_s": 1.8834132920019329
         },
         {
           "task_id": "django__django-13660",
@@ -5271,7 +5271,7 @@
             "django/db/backends/oracle/base.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7251135829137638
+          "elapsed_s": 1.8318229580763727
         },
         {
           "task_id": "django__django-13710",
@@ -5357,7 +5357,7 @@
             "django/contrib/admin/static/admin/js/inlines.js"
           ],
           "diff": [],
-          "elapsed_s": 1.9254719170276076
+          "elapsed_s": 2.0223256250610575
         },
         {
           "task_id": "django__django-13757",
@@ -5443,7 +5443,7 @@
             "django/db/backends/mysql/compiler.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9571219999343157
+          "elapsed_s": 1.9866366249043494
         },
         {
           "task_id": "django__django-13768",
@@ -5529,7 +5529,7 @@
             "django/db/backends/oracle/base.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7474852500017732
+          "elapsed_s": 1.863439833978191
         },
         {
           "task_id": "django__django-13925",
@@ -5615,7 +5615,7 @@
             "django/contrib/sites/apps.py"
           ],
           "diff": [],
-          "elapsed_s": 1.948253249982372
+          "elapsed_s": 1.9459483340615407
         },
         {
           "task_id": "django__django-13933",
@@ -5701,7 +5701,7 @@
             "django/db/models/fields/related_lookups.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0198520409176126
+          "elapsed_s": 2.085102334036492
         },
         {
           "task_id": "django__django-13964",
@@ -5787,7 +5787,7 @@
             "django/db/backends/sqlite3/introspection.py"
           ],
           "diff": [],
-          "elapsed_s": 2.257221083040349
+          "elapsed_s": 2.2756863329559565
         },
         {
           "task_id": "django__django-14016",
@@ -5873,7 +5873,7 @@
             "django/views/debug.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9472272080602124
+          "elapsed_s": 1.9829228339949623
         },
         {
           "task_id": "django__django-14017",
@@ -5959,7 +5959,7 @@
             "django/db/backends/oracle/base.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9060365420300514
+          "elapsed_s": 1.9889937909319997
         },
         {
           "task_id": "django__django-14155",
@@ -6045,7 +6045,7 @@
             "django/core/management/commands/loaddata.py"
           ],
           "diff": [],
-          "elapsed_s": 1.834128167014569
+          "elapsed_s": 1.8443405830767006
         },
         {
           "task_id": "django__django-14238",
@@ -6131,7 +6131,7 @@
             "django/contrib/auth/models.py"
           ],
           "diff": [],
-          "elapsed_s": 1.935352333006449
+          "elapsed_s": 2.0128140000160784
         },
         {
           "task_id": "django__django-14382",
@@ -6217,7 +6217,7 @@
             "django/template/defaulttags.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7093677500961348
+          "elapsed_s": 1.7325966670177877
         },
         {
           "task_id": "django__django-14411",
@@ -6303,7 +6303,7 @@
             "django/contrib/admin/static/admin/js/collapse.js"
           ],
           "diff": [],
-          "elapsed_s": 1.8008554170373827
+          "elapsed_s": 1.8805897500133142
         },
         {
           "task_id": "django__django-14534",
@@ -6389,7 +6389,7 @@
             "django/db/models/fields/related.py"
           ],
           "diff": [],
-          "elapsed_s": 2.011972749955021
+          "elapsed_s": 2.130747833987698
         },
         {
           "task_id": "django__django-14580",
@@ -6475,7 +6475,7 @@
             "django/contrib/admin/migrations/0001_initial.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8694550830405205
+          "elapsed_s": 1.922561249928549
         },
         {
           "task_id": "django__django-14608",
@@ -6561,7 +6561,7 @@
             "django/contrib/postgres/search.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8606272080214694
+          "elapsed_s": 1.9372654580511153
         },
         {
           "task_id": "django__django-14667",
@@ -6647,7 +6647,7 @@
             "django/db/backends/postgresql/operations.py"
           ],
           "diff": [],
-          "elapsed_s": 2.023561792098917
+          "elapsed_s": 2.071126875001937
         },
         {
           "task_id": "django__django-14672",
@@ -6735,7 +6735,7 @@
             "django/db/transaction.py"
           ],
           "diff": [],
-          "elapsed_s": 2.166540125035681
+          "elapsed_s": 2.276778458035551
         },
         {
           "task_id": "django__django-14730",
@@ -6821,7 +6821,7 @@
             "django/contrib/admin/checks.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0236102499766275
+          "elapsed_s": 2.074004083056934
         },
         {
           "task_id": "django__django-14752",
@@ -6907,7 +6907,7 @@
             "django/db/models/fields/related.py"
           ],
           "diff": [],
-          "elapsed_s": 2.162552542053163
+          "elapsed_s": 2.290589165990241
         },
         {
           "task_id": "django__django-14787",
@@ -6993,7 +6993,7 @@
             "django/db/models/deletion.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8221022500656545
+          "elapsed_s": 1.8919056250015274
         },
         {
           "task_id": "django__django-14855",
@@ -7079,7 +7079,7 @@
             "django/db/models/deletion.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9972738339565694
+          "elapsed_s": 2.0658813340123743
         },
         {
           "task_id": "django__django-14915",
@@ -7165,7 +7165,7 @@
             "django/contrib/admindocs/views.py"
           ],
           "diff": [],
-          "elapsed_s": 2.021984374965541
+          "elapsed_s": 2.118075874983333
         },
         {
           "task_id": "django__django-14997",
@@ -7251,7 +7251,7 @@
             "django/db/backends/mysql/base.py"
           ],
           "diff": [],
-          "elapsed_s": 2.056063291965984
+          "elapsed_s": 2.1198445829795673
         },
         {
           "task_id": "django__django-14999",
@@ -7335,7 +7335,7 @@
             "django/db/models/fields/related.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8217114999424666
+          "elapsed_s": 1.8308332919841632
         },
         {
           "task_id": "django__django-15061",
@@ -7421,7 +7421,7 @@
             "django/db/backends/oracle/schema.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9072350410278887
+          "elapsed_s": 1.921973624965176
         },
         {
           "task_id": "django__django-15202",
@@ -7507,7 +7507,7 @@
             "django/contrib/gis/db/backends/postgis/pgraster.py"
           ],
           "diff": [],
-          "elapsed_s": 1.898821708979085
+          "elapsed_s": 1.933955332962796
         },
         {
           "task_id": "django__django-15213",
@@ -7593,7 +7593,7 @@
             "django/utils/tree.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9831480830907822
+          "elapsed_s": 2.0499587910017
         },
         {
           "task_id": "django__django-15252",
@@ -7679,7 +7679,7 @@
             "django/db/models/deletion.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9391482920618728
+          "elapsed_s": 2.012561250012368
         },
         {
           "task_id": "django__django-15320",
@@ -7765,7 +7765,7 @@
             "django/urls/resolvers.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0413877080427483
+          "elapsed_s": 2.087327291024849
         },
         {
           "task_id": "django__django-15347",
@@ -7851,7 +7851,7 @@
             "django/db/models/fields/related_descriptors.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9683105408912525
+          "elapsed_s": 2.0438515830319375
         },
         {
           "task_id": "django__django-15388",
@@ -7937,7 +7937,7 @@
             "django/db/migrations/autodetector.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9213563749799505
+          "elapsed_s": 1.9307049589697272
         },
         {
           "task_id": "django__django-15400",
@@ -8023,7 +8023,7 @@
             "django/db/models/fields/related_descriptors.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0089113749563694
+          "elapsed_s": 2.003132416983135
         },
         {
           "task_id": "django__django-15498",
@@ -8109,7 +8109,7 @@
             "django/core/management/commands/dumpdata.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8603975829901174
+          "elapsed_s": 1.8858537499327213
         },
         {
           "task_id": "django__django-15695",
@@ -8195,7 +8195,7 @@
             "django/contrib/contenttypes/models.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9533617499982938
+          "elapsed_s": 1.9620325420983136
         },
         {
           "task_id": "django__django-15738",
@@ -8281,7 +8281,7 @@
             "django/db/backends/postgresql/schema.py"
           ],
           "diff": [],
-          "elapsed_s": 2.3302705839741975
+          "elapsed_s": 2.3659106669947505
         },
         {
           "task_id": "django__django-15781",
@@ -8367,7 +8367,7 @@
             "django/views/debug.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7961637909756973
+          "elapsed_s": 1.825445624999702
         },
         {
           "task_id": "django__django-15789",
@@ -8449,7 +8449,7 @@
             "django/contrib/auth/hashers.py"
           ],
           "diff": [],
-          "elapsed_s": 1.972583124996163
+          "elapsed_s": 1.950362249976024
         },
         {
           "task_id": "django__django-15790",
@@ -8533,7 +8533,7 @@
             "django/core/servers/basehttp.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8161050420021638
+          "elapsed_s": 1.8504559999564663
         },
         {
           "task_id": "django__django-15814",
@@ -8619,7 +8619,7 @@
             "django/core/management/commands/loaddata.py"
           ],
           "diff": [],
-          "elapsed_s": 2.3793704169802368
+          "elapsed_s": 2.457862541079521
         },
         {
           "task_id": "django__django-15819",
@@ -8705,7 +8705,7 @@
             "django/db/models/sql/subqueries.py"
           ],
           "diff": [],
-          "elapsed_s": 2.046546292025596
+          "elapsed_s": 2.1094037909060717
         },
         {
           "task_id": "django__django-15851",
@@ -8791,7 +8791,7 @@
             "django/db/backends/mysql/client.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9765136250061914
+          "elapsed_s": 1.9995143330888823
         },
         {
           "task_id": "django__django-15902",
@@ -8877,7 +8877,7 @@
             "django/db/migrations/loader.py"
           ],
           "diff": [],
-          "elapsed_s": 1.901029875036329
+          "elapsed_s": 1.9265785840107128
         },
         {
           "task_id": "django__django-15996",
@@ -8963,7 +8963,7 @@
             "django/db/migrations/operations/models.py"
           ],
           "diff": [],
-          "elapsed_s": 2.07131445792038
+          "elapsed_s": 2.1654732500901446
         },
         {
           "task_id": "django__django-16041",
@@ -9049,7 +9049,7 @@
             "django/contrib/contenttypes/fields.py"
           ],
           "diff": [],
-          "elapsed_s": 2.118549166014418
+          "elapsed_s": 2.2053567500552163
         },
         {
           "task_id": "django__django-16046",
@@ -9135,7 +9135,7 @@
             "django/contrib/gis/admin/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8871785419760272
+          "elapsed_s": 1.9641269170679152
         },
         {
           "task_id": "django__django-16139",
@@ -9221,7 +9221,7 @@
             "django/contrib/admin/filters.py"
           ],
           "diff": [],
-          "elapsed_s": 2.23234341701027
+          "elapsed_s": 2.3095183330588043
         },
         {
           "task_id": "django__django-16229",
@@ -9307,7 +9307,7 @@
             "django/contrib/contenttypes/fields.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1459455830045044
+          "elapsed_s": 2.194421459105797
         },
         {
           "task_id": "django__django-16255",
@@ -9393,7 +9393,7 @@
             "django/core/management/commands/loaddata.py"
           ],
           "diff": [],
-          "elapsed_s": 1.957487624953501
+          "elapsed_s": 1.9867099999682978
         },
         {
           "task_id": "django__django-16379",
@@ -9479,7 +9479,7 @@
             "django/db/models/fields/related_descriptors.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8280676669673994
+          "elapsed_s": 1.8667909170035273
         },
         {
           "task_id": "django__django-16400",
@@ -9565,7 +9565,7 @@
             "django/db/migrations/operations/fields.py"
           ],
           "diff": [],
-          "elapsed_s": 2.210485624964349
+          "elapsed_s": 2.309457499999553
         },
         {
           "task_id": "django__django-16408",
@@ -9647,7 +9647,7 @@
             "django/contrib/admin/widgets.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1171970419818535
+          "elapsed_s": 2.1563395840348676
         },
         {
           "task_id": "django__django-16527",
@@ -9733,7 +9733,7 @@
             "django/db/models/constraints.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8600797499530017
+          "elapsed_s": 1.922517333063297
         },
         {
           "task_id": "django__django-16595",
@@ -9819,7 +9819,7 @@
             "django/db/backends/oracle/schema.py"
           ],
           "diff": [],
-          "elapsed_s": 1.952321832999587
+          "elapsed_s": 2.087194624939002
         },
         {
           "task_id": "django__django-16816",
@@ -9905,7 +9905,7 @@
             "django/db/models/enums.py"
           ],
           "diff": [],
-          "elapsed_s": 2.014742000028491
+          "elapsed_s": 2.0597463339800015
         },
         {
           "task_id": "django__django-16820",
@@ -9989,7 +9989,7 @@
             "django/contrib/auth/models.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9249971659155563
+          "elapsed_s": 1.9856761660194024
         },
         {
           "task_id": "django__django-16873",
@@ -10077,7 +10077,7 @@
             "django/apps/registry.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9919972920324653
+          "elapsed_s": 2.0139774159761146
         },
         {
           "task_id": "django__django-16910",
@@ -10163,7 +10163,7 @@
             "django/db/backends/postgresql/schema.py"
           ],
           "diff": [],
-          "elapsed_s": 2.244670958025381
+          "elapsed_s": 2.2817346249939874
         },
         {
           "task_id": "django__django-17051",
@@ -10249,7 +10249,7 @@
             "django/db/models/constraints.py"
           ],
           "diff": [],
-          "elapsed_s": 2.290416833013296
+          "elapsed_s": 2.2804277919931337
         },
         {
           "task_id": "django__django-17087",
@@ -10335,7 +10335,7 @@
             "django/db/backends/oracle/schema.py"
           ],
           "diff": [],
-          "elapsed_s": 2.147874250076711
+          "elapsed_s": 2.1671920829685405
         },
         {
           "task_id": "matplotlib__matplotlib-18869",
@@ -10411,7 +10411,7 @@
             "lib/matplotlib/texmanager.py"
           ],
           "diff": [],
-          "elapsed_s": 2.03499066689983
+          "elapsed_s": 2.023178083007224
         },
         {
           "task_id": "matplotlib__matplotlib-22711",
@@ -10487,7 +10487,7 @@
             "lib/matplotlib/backends/qt_editor/figureoptions.py"
           ],
           "diff": [],
-          "elapsed_s": 2.218462708988227
+          "elapsed_s": 2.1858670830260962
         },
         {
           "task_id": "matplotlib__matplotlib-22835",
@@ -10565,7 +10565,7 @@
             "lib/matplotlib/dviread.py"
           ],
           "diff": [],
-          "elapsed_s": 1.706263041938655
+          "elapsed_s": 1.6738901670323685
         },
         {
           "task_id": "matplotlib__matplotlib-23299",
@@ -10641,7 +10641,7 @@
             "lib/matplotlib/backends/backend_template.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4225671250605956
+          "elapsed_s": 1.4851574579952285
         },
         {
           "task_id": "matplotlib__matplotlib-23314",
@@ -10721,7 +10721,7 @@
             "lib/matplotlib/backends/backend_qt5cairo.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4213847500504926
+          "elapsed_s": 1.4691835830453783
         },
         {
           "task_id": "matplotlib__matplotlib-23476",
@@ -10797,7 +10797,7 @@
             "lib/matplotlib/backends/backend_svg.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7012374580372125
+          "elapsed_s": 1.6817907920340076
         },
         {
           "task_id": "matplotlib__matplotlib-23562",
@@ -10875,7 +10875,7 @@
             "lib/matplotlib/axes/_subplots.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7718731249915436
+          "elapsed_s": 1.7107276249444112
         },
         {
           "task_id": "matplotlib__matplotlib-23563",
@@ -10953,7 +10953,7 @@
             "lib/matplotlib/backends/backend_gtk4agg.py"
           ],
           "diff": [],
-          "elapsed_s": 2.3110342919826508
+          "elapsed_s": 2.4163600830361247
         },
         {
           "task_id": "matplotlib__matplotlib-23913",
@@ -11029,7 +11029,7 @@
             "lib/matplotlib/_constrained_layout.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6383747500367463
+          "elapsed_s": 1.5590428750729188
         },
         {
           "task_id": "matplotlib__matplotlib-23964",
@@ -11109,7 +11109,7 @@
             "lib/matplotlib/mathtext.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9751389169832692
+          "elapsed_s": 1.8729792500380427
         },
         {
           "task_id": "matplotlib__matplotlib-23987",
@@ -11185,7 +11185,7 @@
             "lib/matplotlib/backends/backend_nbagg.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7239604579517618
+          "elapsed_s": 1.673484958941117
         },
         {
           "task_id": "matplotlib__matplotlib-24149",
@@ -11265,7 +11265,7 @@
             "lib/matplotlib/style/core.py"
           ],
           "diff": [],
-          "elapsed_s": 2.283336083055474
+          "elapsed_s": 2.188391209114343
         },
         {
           "task_id": "matplotlib__matplotlib-24265",
@@ -11337,7 +11337,7 @@
             "tools/boilerplate.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4335885419277474
+          "elapsed_s": 1.354668291984126
         },
         {
           "task_id": "matplotlib__matplotlib-24334",
@@ -11415,7 +11415,7 @@
             "lib/mpl_toolkits/axisartist/grid_helper_curvelinear.py"
           ],
           "diff": [],
-          "elapsed_s": 1.745432332972996
+          "elapsed_s": 1.6960897500393912
         },
         {
           "task_id": "matplotlib__matplotlib-24970",
@@ -11491,7 +11491,7 @@
             "lib/matplotlib/texmanager.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7394283750327304
+          "elapsed_s": 1.6958320830017328
         },
         {
           "task_id": "matplotlib__matplotlib-25079",
@@ -11571,7 +11571,7 @@
             "lib/matplotlib/backends/backend_agg.py"
           ],
           "diff": [],
-          "elapsed_s": 2.144923874991946
+          "elapsed_s": 2.0432456249836832
         },
         {
           "task_id": "matplotlib__matplotlib-25311",
@@ -11649,7 +11649,7 @@
             "lib/matplotlib/_mathtext.py"
           ],
           "diff": [],
-          "elapsed_s": 1.707282540970482
+          "elapsed_s": 1.6254390419926494
         },
         {
           "task_id": "matplotlib__matplotlib-25332",
@@ -11729,7 +11729,7 @@
             "lib/matplotlib/_mathtext.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6574259999906644
+          "elapsed_s": 1.58742358291056
         },
         {
           "task_id": "matplotlib__matplotlib-25433",
@@ -11805,7 +11805,7 @@
             "lib/matplotlib/backends/qt_compat.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6766565840225667
+          "elapsed_s": 1.623017584090121
         },
         {
           "task_id": "matplotlib__matplotlib-25442",
@@ -11883,7 +11883,7 @@
             "lib/matplotlib/backends/backend_qt5.py"
           ],
           "diff": [],
-          "elapsed_s": 2.136892542010173
+          "elapsed_s": 2.123438625014387
         },
         {
           "task_id": "matplotlib__matplotlib-25498",
@@ -11959,7 +11959,7 @@
             "lib/matplotlib/backends/backend_macosx.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8379718750948086
+          "elapsed_s": 1.776798167033121
         },
         {
           "task_id": "matplotlib__matplotlib-26011",
@@ -12039,7 +12039,7 @@
             "lib/matplotlib/backends/backend_webagg_core.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9466750000137836
+          "elapsed_s": 1.8974352499935776
         },
         {
           "task_id": "matplotlib__matplotlib-26020",
@@ -12119,7 +12119,7 @@
             "lib/matplotlib/dviread.py"
           ],
           "diff": [],
-          "elapsed_s": 3.1555534170474857
+          "elapsed_s": 3.0144273329060525
         },
         {
           "task_id": "mwaskom__seaborn-2848",
@@ -12195,7 +12195,7 @@
             "setup.py"
           ],
           "diff": [],
-          "elapsed_s": 0.5030243329238147
+          "elapsed_s": 0.4894879589555785
         },
         {
           "task_id": "mwaskom__seaborn-3010",
@@ -12273,7 +12273,7 @@
             "seaborn/_core/typing.py"
           ],
           "diff": [],
-          "elapsed_s": 0.5661821250105277
+          "elapsed_s": 0.5663230840582401
         },
         {
           "task_id": "mwaskom__seaborn-3190",
@@ -12353,7 +12353,7 @@
             "seaborn/algorithms.py"
           ],
           "diff": [],
-          "elapsed_s": 0.5018615000881255
+          "elapsed_s": 0.4963082920294255
         },
         {
           "task_id": "mwaskom__seaborn-3407",
@@ -12429,7 +12429,7 @@
             "seaborn/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 0.5026948750019073
+          "elapsed_s": 0.4805904580280185
         },
         {
           "task_id": "pallets__flask-4045",
@@ -12487,7 +12487,7 @@
             "setup.py"
           ],
           "diff": [],
-          "elapsed_s": 0.27635516703594476
+          "elapsed_s": 0.2687199580250308
         },
         {
           "task_id": "pallets__flask-4992",
@@ -12545,7 +12545,7 @@
             "src/flask/__main__.py"
           ],
           "diff": [],
-          "elapsed_s": 0.28857545799110085
+          "elapsed_s": 0.2787435839418322
         },
         {
           "task_id": "pallets__flask-5063",
@@ -12603,7 +12603,7 @@
             "src/flask/__main__.py"
           ],
           "diff": [],
-          "elapsed_s": 0.3031555840279907
+          "elapsed_s": 0.30510391702409834
         },
         {
           "task_id": "psf__requests-1963",
@@ -12671,7 +12671,7 @@
             "requests/hooks.py"
           ],
           "diff": [],
-          "elapsed_s": 0.20723487494979054
+          "elapsed_s": 0.20272200007457286
         },
         {
           "task_id": "psf__requests-2148",
@@ -12747,7 +12747,7 @@
             "requests/compat.py"
           ],
           "diff": [],
-          "elapsed_s": 0.22739258292131126
+          "elapsed_s": 0.23878520890139043
         },
         {
           "task_id": "psf__requests-2317",
@@ -12821,7 +12821,7 @@
             "setup.py"
           ],
           "diff": [],
-          "elapsed_s": 0.2144105409970507
+          "elapsed_s": 0.2201286250492558
         },
         {
           "task_id": "psf__requests-2674",
@@ -12899,7 +12899,7 @@
             "requests/hooks.py"
           ],
           "diff": [],
-          "elapsed_s": 0.21424295799806714
+          "elapsed_s": 0.21219658304471523
         },
         {
           "task_id": "psf__requests-3362",
@@ -12975,7 +12975,7 @@
             "setup.py"
           ],
           "diff": [],
-          "elapsed_s": 0.2367300420301035
+          "elapsed_s": 0.2214207499055192
         },
         {
           "task_id": "psf__requests-863",
@@ -13049,7 +13049,7 @@
             "requests/exceptions.py"
           ],
           "diff": [],
-          "elapsed_s": 0.2055343750398606
+          "elapsed_s": 0.20009066606871784
         },
         {
           "task_id": "pydata__xarray-3364",
@@ -13135,7 +13135,7 @@
             "xarray/core/formatting.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7095765830017626
+          "elapsed_s": 0.6912347499746829
         },
         {
           "task_id": "pydata__xarray-4094",
@@ -13221,7 +13221,7 @@
             "xarray/core/options.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7679117500083521
+          "elapsed_s": 0.7901718330103904
         },
         {
           "task_id": "pydata__xarray-4248",
@@ -13303,7 +13303,7 @@
             "xarray/plot/utils.py"
           ],
           "diff": [],
-          "elapsed_s": 0.6947122500278056
+          "elapsed_s": 0.6746197500033304
         },
         {
           "task_id": "pydata__xarray-4493",
@@ -13387,7 +13387,7 @@
             "xarray/backends/pynio_.py"
           ],
           "diff": [],
-          "elapsed_s": 0.8374467500252649
+          "elapsed_s": 0.81537099997513
         },
         {
           "task_id": "pydata__xarray-5131",
@@ -13469,7 +13469,7 @@
             "xarray/coding/cftime_offsets.py"
           ],
           "diff": [],
-          "elapsed_s": 0.9793939169030637
+          "elapsed_s": 0.9441597500117496
         },
         {
           "task_id": "pylint-dev__pylint-5859",
@@ -13551,7 +13551,7 @@
             "pylint/utils/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7215979999164119
+          "elapsed_s": 0.6285959589295089
         },
         {
           "task_id": "pylint-dev__pylint-6506",
@@ -13637,7 +13637,7 @@
             "setup.py"
           ],
           "diff": [],
-          "elapsed_s": 0.6627357499673963
+          "elapsed_s": 0.6348641670774668
         },
         {
           "task_id": "pylint-dev__pylint-7080",
@@ -13719,7 +13719,7 @@
             "pylint/checkers/base/basic_checker.py"
           ],
           "diff": [],
-          "elapsed_s": 1.1403601249912754
+          "elapsed_s": 1.0985330410767347
         },
         {
           "task_id": "pylint-dev__pylint-7114",
@@ -13805,7 +13805,7 @@
             "pylint/checkers/mapreduce_checker.py"
           ],
           "diff": [],
-          "elapsed_s": 0.73130254202988
+          "elapsed_s": 0.6940155000193045
         },
         {
           "task_id": "pylint-dev__pylint-7228",
@@ -13895,7 +13895,7 @@
             "pylint/testutils/decorator.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7781307499390095
+          "elapsed_s": 0.773721499950625
         },
         {
           "task_id": "pylint-dev__pylint-7993",
@@ -13979,7 +13979,7 @@
             "pylint/lint/parallel.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7244729999219999
+          "elapsed_s": 0.6991592911072075
         },
         {
           "task_id": "pytest-dev__pytest-11143",
@@ -14057,7 +14057,7 @@
             "src/_pytest/monkeypatch.py"
           ],
           "diff": [],
-          "elapsed_s": 0.9692020829534158
+          "elapsed_s": 0.9500275829341263
         },
         {
           "task_id": "pytest-dev__pytest-11148",
@@ -14131,7 +14131,7 @@
             "src/_pytest/unittest.py"
           ],
           "diff": [],
-          "elapsed_s": 0.9024429590208456
+          "elapsed_s": 0.8899388749850914
         },
         {
           "task_id": "pytest-dev__pytest-5103",
@@ -14207,7 +14207,7 @@
             "src/_pytest/skipping.py"
           ],
           "diff": [],
-          "elapsed_s": 0.5754702920094132
+          "elapsed_s": 0.5679311250569299
         },
         {
           "task_id": "pytest-dev__pytest-5221",
@@ -14281,7 +14281,7 @@
             "src/_pytest/mark/structures.py"
           ],
           "diff": [],
-          "elapsed_s": 0.4504432500107214
+          "elapsed_s": 0.45126154203899205
         },
         {
           "task_id": "pytest-dev__pytest-5227",
@@ -14355,7 +14355,7 @@
             "setup.py"
           ],
           "diff": [],
-          "elapsed_s": 0.5207584999734536
+          "elapsed_s": 0.5179764589993283
         },
         {
           "task_id": "pytest-dev__pytest-5413",
@@ -14429,7 +14429,7 @@
             "src/_pytest/skipping.py"
           ],
           "diff": [],
-          "elapsed_s": 0.6038287909468636
+          "elapsed_s": 0.5701002080459148
         },
         {
           "task_id": "pytest-dev__pytest-5495",
@@ -14501,7 +14501,7 @@
             "src/_pytest/mark/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 0.4810004170285538
+          "elapsed_s": 0.48095462494529784
         },
         {
           "task_id": "pytest-dev__pytest-5692",
@@ -14575,7 +14575,7 @@
             "src/_pytest/outcomes.py"
           ],
           "diff": [],
-          "elapsed_s": 0.5543450840050355
+          "elapsed_s": 0.5413938330020756
         },
         {
           "task_id": "pytest-dev__pytest-6116",
@@ -14647,7 +14647,7 @@
             "src/_pytest/assertion/util.py"
           ],
           "diff": [],
-          "elapsed_s": 0.5568150000181049
+          "elapsed_s": 0.5091325000394136
         },
         {
           "task_id": "pytest-dev__pytest-7168",
@@ -14719,7 +14719,7 @@
             "src/_pytest/compat.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7700425829971209
+          "elapsed_s": 0.7763966670027003
         },
         {
           "task_id": "pytest-dev__pytest-7220",
@@ -14791,7 +14791,7 @@
             "src/_pytest/unittest.py"
           ],
           "diff": [],
-          "elapsed_s": 0.657558957929723
+          "elapsed_s": 0.6315596660133451
         },
         {
           "task_id": "pytest-dev__pytest-7373",
@@ -14863,7 +14863,7 @@
             "src/_pytest/assertion/util.py"
           ],
           "diff": [],
-          "elapsed_s": 0.6203352919546887
+          "elapsed_s": 0.5793650830164552
         },
         {
           "task_id": "pytest-dev__pytest-7432",
@@ -14937,7 +14937,7 @@
             "src/_pytest/nose.py"
           ],
           "diff": [],
-          "elapsed_s": 0.6087408330058679
+          "elapsed_s": 0.5954083340475336
         },
         {
           "task_id": "pytest-dev__pytest-7490",
@@ -15011,7 +15011,7 @@
             "src/_pytest/skipping.py"
           ],
           "diff": [],
-          "elapsed_s": 0.9222194590838626
+          "elapsed_s": 0.8804977079853415
         },
         {
           "task_id": "pytest-dev__pytest-8365",
@@ -15087,7 +15087,7 @@
             "src/_pytest/outcomes.py"
           ],
           "diff": [],
-          "elapsed_s": 0.774862208054401
+          "elapsed_s": 0.7257047910243273
         },
         {
           "task_id": "pytest-dev__pytest-8906",
@@ -15161,7 +15161,7 @@
             "src/pytest/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7452424169750884
+          "elapsed_s": 0.7345080840168521
         },
         {
           "task_id": "pytest-dev__pytest-9359",
@@ -15235,7 +15235,7 @@
             "src/_pytest/mark/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 0.750737958936952
+          "elapsed_s": 0.7281074170023203
         },
         {
           "task_id": "scikit-learn__scikit-learn-10297",
@@ -15321,7 +15321,7 @@
             "sklearn/grid_search.py"
           ],
           "diff": [],
-          "elapsed_s": 1.2592344579752535
+          "elapsed_s": 1.1498296250356361
         },
         {
           "task_id": "scikit-learn__scikit-learn-10508",
@@ -15407,7 +15407,7 @@
             "sklearn/linear_model/randomized_l1.py"
           ],
           "diff": [],
-          "elapsed_s": 1.132515290984884
+          "elapsed_s": 1.0636598750716075
         },
         {
           "task_id": "scikit-learn__scikit-learn-10949",
@@ -15489,7 +15489,7 @@
             "sklearn/linear_model/logistic.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0075152500066906
+          "elapsed_s": 0.9777842500479892
         },
         {
           "task_id": "scikit-learn__scikit-learn-11040",
@@ -15573,7 +15573,7 @@
             "sklearn/ensemble/forest.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0031993750017136
+          "elapsed_s": 0.9901865830179304
         },
         {
           "task_id": "scikit-learn__scikit-learn-11281",
@@ -15655,7 +15655,7 @@
             "sklearn/feature_selection/rfe.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0178282499546185
+          "elapsed_s": 1.0238711659330875
         },
         {
           "task_id": "scikit-learn__scikit-learn-12471",
@@ -15739,7 +15739,7 @@
             "sklearn/cluster/setup.py"
           ],
           "diff": [],
-          "elapsed_s": 1.148309167008847
+          "elapsed_s": 1.1749188750982285
         },
         {
           "task_id": "scikit-learn__scikit-learn-13142",
@@ -15821,7 +15821,7 @@
             "sklearn/cluster/optics_.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0174254579469562
+          "elapsed_s": 1.04211708297953
         },
         {
           "task_id": "scikit-learn__scikit-learn-13241",
@@ -15905,7 +15905,7 @@
             "sklearn/cluster/mean_shift_.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0169566670665517
+          "elapsed_s": 1.0567404159810394
         },
         {
           "task_id": "scikit-learn__scikit-learn-13439",
@@ -15991,7 +15991,7 @@
             "sklearn/model_selection/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0411115000024438
+          "elapsed_s": 1.0488531249575317
         },
         {
           "task_id": "scikit-learn__scikit-learn-13496",
@@ -16075,7 +16075,7 @@
             "sklearn/cluster/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 1.276814250042662
+          "elapsed_s": 1.2586010420927778
         },
         {
           "task_id": "scikit-learn__scikit-learn-13497",
@@ -16157,7 +16157,7 @@
             "sklearn/cluster/setup.py"
           ],
           "diff": [],
-          "elapsed_s": 1.115087459096685
+          "elapsed_s": 1.1010706659872085
         },
         {
           "task_id": "scikit-learn__scikit-learn-13584",
@@ -16239,7 +16239,7 @@
             "sklearn/metrics/regression.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0698488330235705
+          "elapsed_s": 1.111337292008102
         },
         {
           "task_id": "scikit-learn__scikit-learn-13779",
@@ -16321,7 +16321,7 @@
             "sklearn/utils/metaestimators.py"
           ],
           "diff": [],
-          "elapsed_s": 1.1282832080032676
+          "elapsed_s": 1.1730692919809371
         },
         {
           "task_id": "scikit-learn__scikit-learn-14087",
@@ -16405,7 +16405,7 @@
             "sklearn/calibration.py"
           ],
           "diff": [],
-          "elapsed_s": 1.1706200420157984
+          "elapsed_s": 1.2533321660012007
         },
         {
           "task_id": "scikit-learn__scikit-learn-14092",
@@ -16493,7 +16493,7 @@
             "sklearn/calibration.py"
           ],
           "diff": [],
-          "elapsed_s": 1.3316647090250626
+          "elapsed_s": 1.3133554590167478
         },
         {
           "task_id": "scikit-learn__scikit-learn-14894",
@@ -16579,7 +16579,7 @@
             "sklearn/cluster/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 1.3000839999876916
+          "elapsed_s": 1.341066083055921
         },
         {
           "task_id": "scikit-learn__scikit-learn-14983",
@@ -16661,7 +16661,7 @@
             "sklearn/datasets/rcv1.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0979394159512594
+          "elapsed_s": 1.119946958962828
         },
         {
           "task_id": "scikit-learn__scikit-learn-15512",
@@ -16747,7 +16747,7 @@
             "sklearn/ensemble/_hist_gradient_boosting/grower.py"
           ],
           "diff": [],
-          "elapsed_s": 1.3370239170035347
+          "elapsed_s": 1.3193395420676097
         },
         {
           "task_id": "scikit-learn__scikit-learn-15535",
@@ -16829,7 +16829,7 @@
             "sklearn/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 1.1070431250846013
+          "elapsed_s": 1.0911209170008078
         },
         {
           "task_id": "scikit-learn__scikit-learn-25500",
@@ -16915,7 +16915,7 @@
             "sklearn/model_selection/_split.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6557569579454139
+          "elapsed_s": 1.61780012503732
         },
         {
           "task_id": "scikit-learn__scikit-learn-25570",
@@ -17003,7 +17003,7 @@
             "sklearn/utils/fixes.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7290961249964312
+          "elapsed_s": 1.7369047499960288
         },
         {
           "task_id": "scikit-learn__scikit-learn-25638",
@@ -17087,7 +17087,7 @@
             "sklearn/compose/_column_transformer.py"
           ],
           "diff": [],
-          "elapsed_s": 1.5308392499573529
+          "elapsed_s": 1.4870715830475092
         },
         {
           "task_id": "scikit-learn__scikit-learn-25747",
@@ -17171,7 +17171,7 @@
             "sklearn/utils/multiclass.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6267765410011634
+          "elapsed_s": 1.688669833005406
         },
         {
           "task_id": "sphinx-doc__sphinx-10325",
@@ -17247,7 +17247,7 @@
             "sphinx/domains/std.py"
           ],
           "diff": [],
-          "elapsed_s": 1.2519963750382885
+          "elapsed_s": 1.2962464169831946
         },
         {
           "task_id": "sphinx-doc__sphinx-10451",
@@ -17321,7 +17321,7 @@
             "sphinx/util/typing.py"
           ],
           "diff": [],
-          "elapsed_s": 0.9755018750438467
+          "elapsed_s": 1.00165329198353
         },
         {
           "task_id": "sphinx-doc__sphinx-11445",
@@ -17407,7 +17407,7 @@
             "sphinx/themes/basic/static/searchtools.js"
           ],
           "diff": [],
-          "elapsed_s": 1.1164979580789804
+          "elapsed_s": 1.1290751249762252
         },
         {
           "task_id": "sphinx-doc__sphinx-7686",
@@ -17491,7 +17491,7 @@
             "sphinx/builders/changes.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7673692499520257
+          "elapsed_s": 0.8095706660533324
         },
         {
           "task_id": "sphinx-doc__sphinx-7738",
@@ -17575,7 +17575,7 @@
             "sphinx/ext/coverage.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0540815410204232
+          "elapsed_s": 1.087079583085142
         },
         {
           "task_id": "sphinx-doc__sphinx-7975",
@@ -17657,7 +17657,7 @@
             "sphinx/cmd/quickstart.py"
           ],
           "diff": [],
-          "elapsed_s": 1.050494333030656
+          "elapsed_s": 1.0559699999867007
         },
         {
           "task_id": "sphinx-doc__sphinx-8273",
@@ -17743,7 +17743,7 @@
             "sphinx/util/i18n.py"
           ],
           "diff": [],
-          "elapsed_s": 1.1097929580137134
+          "elapsed_s": 1.1367998329224065
         },
         {
           "task_id": "sphinx-doc__sphinx-8282",
@@ -17819,7 +17819,7 @@
             "sphinx/ext/intersphinx.py"
           ],
           "diff": [],
-          "elapsed_s": 0.8687126660952345
+          "elapsed_s": 0.8881482920842245
         },
         {
           "task_id": "sphinx-doc__sphinx-8435",
@@ -17891,7 +17891,7 @@
             "sphinx/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7753734579309821
+          "elapsed_s": 0.8153650410240516
         },
         {
           "task_id": "sphinx-doc__sphinx-8474",
@@ -17977,7 +17977,7 @@
             "sphinx/themes/basic/static/searchtools.js"
           ],
           "diff": [],
-          "elapsed_s": 1.0340013339882717
+          "elapsed_s": 1.0315655829617754
         },
         {
           "task_id": "sphinx-doc__sphinx-8506",
@@ -18063,7 +18063,7 @@
             "sphinx/builders/changes.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0457242080010474
+          "elapsed_s": 1.0501018749782816
         },
         {
           "task_id": "sphinx-doc__sphinx-8595",
@@ -18143,7 +18143,7 @@
             "sphinx/errors.py"
           ],
           "diff": [],
-          "elapsed_s": 0.8468250830192119
+          "elapsed_s": 0.8473477920051664
         },
         {
           "task_id": "sphinx-doc__sphinx-8627",
@@ -18229,7 +18229,7 @@
             "sphinx/builders/linkcheck.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0571643749717623
+          "elapsed_s": 1.043623041943647
         },
         {
           "task_id": "sphinx-doc__sphinx-8713",
@@ -18307,7 +18307,7 @@
             "sphinx/builders/__init__.py"
           ],
           "diff": [],
-          "elapsed_s": 1.0377228750148788
+          "elapsed_s": 1.0515974999871105
         },
         {
           "task_id": "sphinx-doc__sphinx-8721",
@@ -18391,7 +18391,7 @@
             "sphinx/ext/intersphinx.py"
           ],
           "diff": [],
-          "elapsed_s": 0.7872078750515357
+          "elapsed_s": 0.7985237080138177
         },
         {
           "task_id": "sphinx-doc__sphinx-8801",
@@ -18469,7 +18469,7 @@
             "sphinx/errors.py"
           ],
           "diff": [],
-          "elapsed_s": 0.9852963750017807
+          "elapsed_s": 0.9832082919310778
         },
         {
           "task_id": "sympy__sympy-11400",
@@ -18553,7 +18553,7 @@
             "sympy/core/add.py"
           ],
           "diff": [],
-          "elapsed_s": 1.385554249980487
+          "elapsed_s": 1.385607042000629
         },
         {
           "task_id": "sympy__sympy-11870",
@@ -18637,7 +18637,7 @@
             "sympy/core/relational.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6612623329274356
+          "elapsed_s": 1.6490590000757948
         },
         {
           "task_id": "sympy__sympy-11897",
@@ -18725,7 +18725,7 @@
             "sympy/codegen/ast.py"
           ],
           "diff": [],
-          "elapsed_s": 1.5424257920822129
+          "elapsed_s": 1.5427396249724552
         },
         {
           "task_id": "sympy__sympy-12171",
@@ -18811,7 +18811,7 @@
             "sympy/vector/scalar.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6318852079566568
+          "elapsed_s": 1.6773169999942183
         },
         {
           "task_id": "sympy__sympy-12236",
@@ -18891,7 +18891,7 @@
             "sympy/solvers/solveset.py"
           ],
           "diff": [],
-          "elapsed_s": 1.369184875045903
+          "elapsed_s": 1.3674276659730822
         },
         {
           "task_id": "sympy__sympy-12419",
@@ -18977,7 +18977,7 @@
             "sympy/physics/vector/frame.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4752116670133546
+          "elapsed_s": 1.4416864999802783
         },
         {
           "task_id": "sympy__sympy-12454",
@@ -19063,7 +19063,7 @@
             "sympy/polys/numberfields.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4107977079693228
+          "elapsed_s": 1.4022237079916522
         },
         {
           "task_id": "sympy__sympy-12481",
@@ -19149,7 +19149,7 @@
             "sympy/polys/rootisolation.py"
           ],
           "diff": [],
-          "elapsed_s": 1.607453417032957
+          "elapsed_s": 1.6282676660921425
         },
         {
           "task_id": "sympy__sympy-13031",
@@ -19233,7 +19233,7 @@
             "sympy/physics/mechanics/kane.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4711873339256272
+          "elapsed_s": 1.4590493330033496
         },
         {
           "task_id": "sympy__sympy-13043",
@@ -19317,7 +19317,7 @@
             "sympy/core/numbers.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6884365830337629
+          "elapsed_s": 1.6485032920027152
         },
         {
           "task_id": "sympy__sympy-13146",
@@ -19403,7 +19403,7 @@
             "sympy/core/add.py"
           ],
           "diff": [],
-          "elapsed_s": 1.5799613329581916
+          "elapsed_s": 1.5707695829914883
         },
         {
           "task_id": "sympy__sympy-13177",
@@ -19487,7 +19487,7 @@
             "sympy/solvers/inequalities.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4343089590547606
+          "elapsed_s": 1.4337240419117734
         },
         {
           "task_id": "sympy__sympy-13437",
@@ -19575,7 +19575,7 @@
             "sympy/integrals/meijerint.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6820094590075314
+          "elapsed_s": 1.613945958088152
         },
         {
           "task_id": "sympy__sympy-13471",
@@ -19665,7 +19665,7 @@
             "sympy/polys/polytools.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6492256249766797
+          "elapsed_s": 1.6440864169271663
         },
         {
           "task_id": "sympy__sympy-13480",
@@ -19751,7 +19751,7 @@
             "sympy/sets/fancysets.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6537354580359533
+          "elapsed_s": 1.6345288750017062
         },
         {
           "task_id": "sympy__sympy-13647",
@@ -19835,7 +19835,7 @@
             "sympy/calculus/util.py"
           ],
           "diff": [],
-          "elapsed_s": 1.5819887090474367
+          "elapsed_s": 1.545251208008267
         },
         {
           "task_id": "sympy__sympy-13773",
@@ -19921,7 +19921,7 @@
             "sympy/polys/polytools.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6650427499553189
+          "elapsed_s": 1.6836952499579638
         },
         {
           "task_id": "sympy__sympy-13895",
@@ -20007,7 +20007,7 @@
             "sympy/functions/combinatorial/factorials.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4681488749338314
+          "elapsed_s": 1.505333040957339
         },
         {
           "task_id": "sympy__sympy-13915",
@@ -20089,7 +20089,7 @@
             "sympy/solvers/solveset.py"
           ],
           "diff": [],
-          "elapsed_s": 1.5061997909797356
+          "elapsed_s": 1.4836305000353605
         },
         {
           "task_id": "sympy__sympy-13971",
@@ -20179,7 +20179,7 @@
             "sympy/integrals/heurisch.py"
           ],
           "diff": [],
-          "elapsed_s": 1.481238582986407
+          "elapsed_s": 1.539891624939628
         },
         {
           "task_id": "sympy__sympy-14024",
@@ -20263,7 +20263,7 @@
             "sympy/printing/latex.py"
           ],
           "diff": [],
-          "elapsed_s": 1.5318891670322046
+          "elapsed_s": 1.51071283291094
         },
         {
           "task_id": "sympy__sympy-14308",
@@ -20343,7 +20343,7 @@
             "sympy/functions/special/tensor_functions.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4236648329533637
+          "elapsed_s": 1.3546316660940647
         },
         {
           "task_id": "sympy__sympy-14317",
@@ -20425,7 +20425,7 @@
             "sympy/functions/special/tensor_functions.py"
           ],
           "diff": [],
-          "elapsed_s": 1.4718918750295416
+          "elapsed_s": 1.4678373340284452
         },
         {
           "task_id": "sympy__sympy-14396",
@@ -20509,7 +20509,7 @@
             "sympy/utilities/lambdify.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6149900000309572
+          "elapsed_s": 1.5542202088981867
         },
         {
           "task_id": "sympy__sympy-14774",
@@ -20597,7 +20597,7 @@
             "sympy/utilities/lambdify.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6559244160307571
+          "elapsed_s": 1.575754625024274
         },
         {
           "task_id": "sympy__sympy-14817",
@@ -20687,7 +20687,7 @@
             "sympy/utilities/codegen.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9970930409617722
+          "elapsed_s": 1.9125486669363454
         },
         {
           "task_id": "sympy__sympy-15011",
@@ -20777,7 +20777,7 @@
             "sympy/functions/elementary/exponential.py"
           ],
           "diff": [],
-          "elapsed_s": 1.780278416001238
+          "elapsed_s": 1.7127747080521658
         },
         {
           "task_id": "sympy__sympy-15308",
@@ -20867,7 +20867,7 @@
             "sympy/functions/elementary/exponential.py"
           ],
           "diff": [],
-          "elapsed_s": 1.768384583061561
+          "elapsed_s": 1.7312731250422075
         },
         {
           "task_id": "sympy__sympy-15345",
@@ -20953,7 +20953,7 @@
             "sympy/core/numbers.py"
           ],
           "diff": [],
-          "elapsed_s": 1.769408459076658
+          "elapsed_s": 1.6818731250241399
         },
         {
           "task_id": "sympy__sympy-15346",
@@ -21039,7 +21039,7 @@
             "sympy/functions/elementary/trigonometric.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7953487080521882
+          "elapsed_s": 1.7315680000465363
         },
         {
           "task_id": "sympy__sympy-15609",
@@ -21129,7 +21129,7 @@
             "sympy/printing/printer.py"
           ],
           "diff": [],
-          "elapsed_s": 1.6801741659874097
+          "elapsed_s": 1.6299525420181453
         },
         {
           "task_id": "sympy__sympy-15678",
@@ -21215,7 +21215,7 @@
             "sympy/utilities/lambdify.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8989856659900397
+          "elapsed_s": 1.835212333011441
         },
         {
           "task_id": "sympy__sympy-16106",
@@ -21303,7 +21303,7 @@
             "sympy/stats/frv_types.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9290143749676645
+          "elapsed_s": 1.798046916956082
         },
         {
           "task_id": "sympy__sympy-16281",
@@ -21389,7 +21389,7 @@
             "sympy/combinatorics/perm_groups.py"
           ],
           "diff": [],
-          "elapsed_s": 1.888814540929161
+          "elapsed_s": 1.8215911670122296
         },
         {
           "task_id": "sympy__sympy-16503",
@@ -21473,7 +21473,7 @@
             "sympy/series/order.py"
           ],
           "diff": [],
-          "elapsed_s": 1.60444708308205
+          "elapsed_s": 1.5277810409897938
         },
         {
           "task_id": "sympy__sympy-16792",
@@ -21561,7 +21561,7 @@
             "sympy/core/mul.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1992620419478044
+          "elapsed_s": 2.155757833039388
         },
         {
           "task_id": "sympy__sympy-16988",
@@ -21647,7 +21647,7 @@
             "sympy/sets/conditionset.py"
           ],
           "diff": [],
-          "elapsed_s": 1.819387709023431
+          "elapsed_s": 1.7959348330041394
         },
         {
           "task_id": "sympy__sympy-17022",
@@ -21735,7 +21735,7 @@
             "sympy/matrices/expressions/matmul.py"
           ],
           "diff": [],
-          "elapsed_s": 1.913968666922301
+          "elapsed_s": 1.8904797499999404
         },
         {
           "task_id": "sympy__sympy-17139",
@@ -21821,7 +21821,7 @@
             "sympy/functions/special/error_functions.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9302950829733163
+          "elapsed_s": 1.8624571670079604
         },
         {
           "task_id": "sympy__sympy-17630",
@@ -21909,7 +21909,7 @@
             "sympy/matrices/expressions/matpow.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9735619170824066
+          "elapsed_s": 1.9062237910693511
         },
         {
           "task_id": "sympy__sympy-17655",
@@ -21999,7 +21999,7 @@
             "sympy/printing/pycode.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0802897500107065
+          "elapsed_s": 2.034975165966898
         },
         {
           "task_id": "sympy__sympy-18057",
@@ -22089,7 +22089,7 @@
             "sympy/geometry/util.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1915029579540715
+          "elapsed_s": 2.1343758329749107
         },
         {
           "task_id": "sympy__sympy-18087",
@@ -22175,7 +22175,7 @@
             "sympy/integrals/manualintegrate.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0756574160186574
+          "elapsed_s": 2.0533771249465644
         },
         {
           "task_id": "sympy__sympy-18189",
@@ -22259,7 +22259,7 @@
             "sympy/matrices/expressions/matmul.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8800413329154253
+          "elapsed_s": 1.8885772919747978
         },
         {
           "task_id": "sympy__sympy-18199",
@@ -22345,7 +22345,7 @@
             "sympy/ntheory/generate.py"
           ],
           "diff": [],
-          "elapsed_s": 1.936043416033499
+          "elapsed_s": 1.8852104169782251
         },
         {
           "task_id": "sympy__sympy-18532",
@@ -22433,7 +22433,7 @@
             "sympy/polys/polytools.py"
           ],
           "diff": [],
-          "elapsed_s": 2.14919754199218
+          "elapsed_s": 2.1734608330298215
         },
         {
           "task_id": "sympy__sympy-18621",
@@ -22519,7 +22519,7 @@
             "sympy/ntheory/generate.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8284266670234501
+          "elapsed_s": 1.7746156249195337
         },
         {
           "task_id": "sympy__sympy-18698",
@@ -22605,7 +22605,7 @@
             "sympy/stats/joint_rv_types.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9076915410114452
+          "elapsed_s": 1.8694267919054255
         },
         {
           "task_id": "sympy__sympy-18835",
@@ -22693,7 +22693,7 @@
             "sympy/utilities/misc.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9771467909449711
+          "elapsed_s": 2.0172205419512466
         },
         {
           "task_id": "sympy__sympy-19007",
@@ -22779,7 +22779,7 @@
             "sympy/functions/combinatorial/numbers.py"
           ],
           "diff": [],
-          "elapsed_s": 1.8419284999836236
+          "elapsed_s": 1.8366532920626923
         },
         {
           "task_id": "sympy__sympy-19254",
@@ -22865,7 +22865,7 @@
             "sympy/polys/domains/fractionfield.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9644314589677379
+          "elapsed_s": 1.9825018750270829
         },
         {
           "task_id": "sympy__sympy-19487",
@@ -22949,7 +22949,7 @@
             "sympy/polys/polyroots.py"
           ],
           "diff": [],
-          "elapsed_s": 2.079332249937579
+          "elapsed_s": 2.088293250068091
         },
         {
           "task_id": "sympy__sympy-20049",
@@ -23027,7 +23027,7 @@
             "sympy/printing/codeprinter.py"
           ],
           "diff": [],
-          "elapsed_s": 1.660109541960992
+          "elapsed_s": 1.6363188750110567
         },
         {
           "task_id": "sympy__sympy-20154",
@@ -23113,7 +23113,7 @@
             "sympy/codegen/futils.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0253313329303637
+          "elapsed_s": 2.0287284170044586
         },
         {
           "task_id": "sympy__sympy-20212",
@@ -23199,7 +23199,7 @@
             "sympy/polys/polytools.py"
           ],
           "diff": [],
-          "elapsed_s": 2.088473584037274
+          "elapsed_s": 2.1003381250193343
         },
         {
           "task_id": "sympy__sympy-20322",
@@ -23289,7 +23289,7 @@
             "sympy/polys/polytools.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9774476669263095
+          "elapsed_s": 1.9859380420530215
         },
         {
           "task_id": "sympy__sympy-20442",
@@ -23377,7 +23377,7 @@
             "sympy/polys/polytools.py"
           ],
           "diff": [],
-          "elapsed_s": 2.1272675410145894
+          "elapsed_s": 2.158555542002432
         },
         {
           "task_id": "sympy__sympy-20590",
@@ -23467,7 +23467,7 @@
             "sympy/polys/polytools.py"
           ],
           "diff": [],
-          "elapsed_s": 2.01510379195679
+          "elapsed_s": 2.043258708086796
         },
         {
           "task_id": "sympy__sympy-20639",
@@ -23551,7 +23551,7 @@
             "sympy/printing/repr.py"
           ],
           "diff": [],
-          "elapsed_s": 1.7099290419137105
+          "elapsed_s": 1.7455127499997616
         },
         {
           "task_id": "sympy__sympy-21055",
@@ -23637,15 +23637,15 @@
             "sympy/sets/fancysets.py"
           ],
           "diff": [],
-          "elapsed_s": 2.227415749919601
+          "elapsed_s": 2.207993125077337
         },
         {
           "task_id": "sympy__sympy-21171",
-          "ok": true,
-          "error": null,
-          "exact_match": true,
-          "set_match": true,
-          "top10_match": true,
+          "ok": false,
+          "error": "exit 101: stderr[:300]=\"\\nthread 'main' panicked at library/core/src/slice/sort/shared/smallsort.rs:865:5:\\nuser-provided comparison function does not correctly implement a total order\\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\\n\"",
+          "exact_match": false,
+          "set_match": false,
+          "top10_match": false,
           "expected": [
             "sympy/physics/continuum_mechanics/beam.py",
             "sympy/printing/latex.py",
@@ -23683,45 +23683,40 @@
             "sympy/simplify/radsimp.py",
             "sympy/physics/vector/dyadic.py"
           ],
-          "actual": [
-            "sympy/physics/continuum_mechanics/beam.py",
-            "sympy/printing/latex.py",
-            "sympy/printing/printer.py",
-            "sympy/interactive/printing.py",
-            "sympy/core/function.py",
-            "sympy/core/expr.py",
-            "sympy/printing/str.py",
-            "sympy/physics/units/quantities.py",
-            "sympy/printing/mathml.py",
-            "sympy/printing/pretty/pretty.py",
-            "sympy/printing/codeprinter.py",
-            "sympy/solvers/solvers.py",
-            "sympy/printing/octave.py",
-            "sympy/printing/glsl.py",
-            "sympy/geometry/__init__.py",
-            "sympy/utilities/misc.py",
-            "sympy/assumptions/ask.py",
-            "sympy/core/numbers.py",
-            "sympy/utilities/runtests.py",
-            "sympy/printing/julia.py",
-            "sympy/printing/pycode.py",
-            "sympy/printing/fortran.py",
-            "sympy/core/sympify.py",
-            "sympy/physics/vector/printing.py",
-            "sympy/codegen/ast.py",
-            "sympy/matrices/matrices.py",
-            "sympy/utilities/lambdify.py",
-            "sympy/physics/units/dimensions.py",
-            "sympy/printing/rust.py",
-            "sympy/printing/rcode.py",
-            "sympy/printing/c.py",
-            "sympy/printing/jscode.py",
-            "sympy/core/operations.py",
-            "sympy/simplify/radsimp.py",
-            "sympy/physics/vector/dyadic.py"
+          "actual": null,
+          "diff": [
+            "--- expected",
+            "+++ actual",
+            "@@ -1,35 +1 @@",
+            "-sympy/physics/continuum_mechanics/beam.py",
+            "-sympy/printing/latex.py",
+            "-sympy/printing/printer.py",
+            "-sympy/interactive/printing.py",
+            "-sympy/core/function.py",
+            "-sympy/core/expr.py",
+            "-sympy/printing/str.py",
+            "-sympy/physics/units/quantities.py",
+            "-sympy/printing/mathml.py",
+            "-sympy/printing/pretty/pretty.py",
+            "-sympy/printing/codeprinter.py",
+            "-sympy/solvers/solvers.py",
+            "-sympy/printing/octave.py",
+            "-sympy/printing/glsl.py",
+            "-sympy/geometry/__init__.py",
+            "-sympy/utilities/misc.py",
+            "-sympy/assumptions/ask.py",
+            "-sympy/core/numbers.py",
+            "-sympy/utilities/runtests.py",
+            "-sympy/printing/julia.py",
+            "-sympy/printing/pycode.py",
+            "-sympy/printing/fortran.py",
+            "-sympy/core/sympify.py",
+            "-sympy/physics/vector/printing.py",
+            "-sympy/codegen/ast.py",
+            "-sympy/matrices/matrices.py",
+            "-sympy/utilities/lambdify.py"
           ],
-          "diff": [],
-          "elapsed_s": 2.442313500097953
+          "elapsed_s": 2.188390458934009
         },
         {
           "task_id": "sympy__sympy-21379",
@@ -23811,7 +23806,7 @@
             "sympy/simplify/radsimp.py"
           ],
           "diff": [],
-          "elapsed_s": 2.482878791051917
+          "elapsed_s": 2.4356022919528186
         },
         {
           "task_id": "sympy__sympy-21612",
@@ -23899,7 +23894,7 @@
             "sympy/core/mul.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9347820420516655
+          "elapsed_s": 1.9002255420200527
         },
         {
           "task_id": "sympy__sympy-21614",
@@ -23981,7 +23976,7 @@
             "sympy/core/trace.py"
           ],
           "diff": [],
-          "elapsed_s": 1.862419291981496
+          "elapsed_s": 1.8400631250115111
         },
         {
           "task_id": "sympy__sympy-21627",
@@ -24069,7 +24064,7 @@
             "sympy/stats/drv.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9367414580192417
+          "elapsed_s": 1.920760125038214
         },
         {
           "task_id": "sympy__sympy-21847",
@@ -24159,7 +24154,7 @@
             "sympy/printing/str.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0110040409490466
+          "elapsed_s": 2.013643875019625
         },
         {
           "task_id": "sympy__sympy-22005",
@@ -24245,7 +24240,7 @@
             "sympy/core/mod.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0721950409933925
+          "elapsed_s": 2.0740212500095367
         },
         {
           "task_id": "sympy__sympy-22714",
@@ -24329,7 +24324,7 @@
             "sympy/integrals/transforms.py"
           ],
           "diff": [],
-          "elapsed_s": 2.147676374996081
+          "elapsed_s": 2.1957695829914883
         },
         {
           "task_id": "sympy__sympy-22840",
@@ -24413,7 +24408,7 @@
             "sympy/tensor/array/expressions/conv_array_to_matrix.py"
           ],
           "diff": [],
-          "elapsed_s": 2.016124166897498
+          "elapsed_s": 2.0391826250124723
         },
         {
           "task_id": "sympy__sympy-23117",
@@ -24501,7 +24496,7 @@
             "sympy/plotting/plot.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9831027910113335
+          "elapsed_s": 1.9657686670543626
         },
         {
           "task_id": "sympy__sympy-23191",
@@ -24583,7 +24578,7 @@
             "sympy/physics/mechanics/rigidbody.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9631337500177324
+          "elapsed_s": 1.838952707941644
         },
         {
           "task_id": "sympy__sympy-23262",
@@ -24671,7 +24666,7 @@
             "sympy/printing/fcode.py"
           ],
           "diff": [],
-          "elapsed_s": 2.2249623750103638
+          "elapsed_s": 2.2160287919687107
         },
         {
           "task_id": "sympy__sympy-24066",
@@ -24757,7 +24752,7 @@
             "sympy/functions/elementary/complexes.py"
           ],
           "diff": [],
-          "elapsed_s": 2.047256625024602
+          "elapsed_s": 2.034219584078528
         },
         {
           "task_id": "sympy__sympy-24102",
@@ -24843,7 +24838,7 @@
             "sympy/geometry/point.py"
           ],
           "diff": [],
-          "elapsed_s": 2.0899424999952316
+          "elapsed_s": 2.08765250002034
         },
         {
           "task_id": "sympy__sympy-24152",
@@ -24931,7 +24926,7 @@
             "sympy/polys/polyutils.py"
           ],
           "diff": [],
-          "elapsed_s": 2.4272864579688758
+          "elapsed_s": 2.4106557910563424
         },
         {
           "task_id": "sympy__sympy-24213",
@@ -25021,7 +25016,7 @@
             "sympy/plotting/experimental_lambdify.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9858124169986695
+          "elapsed_s": 2.005148999975063
         },
         {
           "task_id": "sympy__sympy-24909",
@@ -25109,7 +25104,7 @@
             "sympy/core/power.py"
           ],
           "diff": [],
-          "elapsed_s": 1.9316885829903185
+          "elapsed_s": 1.9300565840676427
         }
       ]
     }

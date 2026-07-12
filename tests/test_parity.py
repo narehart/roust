@@ -1,8 +1,8 @@
-"""Parity test: bgrep.core (+ bgrep.history) must return IDENTICAL ranked
+"""Parity test: roust.core (+ roust.history) must return IDENTICAL ranked
 file lists to lab/lanes2.py (+ lab/history.py) -- the frozen v7 source of
 truth this package was ported from -- on a real checked-out repo.
 
-Only runs when BGREP_PARITY_REPO points at a repo checkout; skipped
+Only runs when ROUST_PARITY_REPO points at a repo checkout; skipped
 otherwise, since it needs a real multi-hundred-file codebase (not a tiny
 fixture) to meaningfully exercise BM25 + graph expansion + all the tail-tier
 bridge channels.
@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-_REPO_ENV = "BGREP_PARITY_REPO"
+_REPO_ENV = "ROUST_PARITY_REPO"
 _LAB_DIR = Path(__file__).resolve().parents[1] / "lab"
 
 pytestmark = pytest.mark.skipif(
@@ -49,15 +49,15 @@ def test_select_files_parity() -> None:
 
     lab_lanes2 = _load_lab_lanes2()
 
-    import bgrep.core as core
-    import bgrep.history as bgrep_history
+    import roust.core as core
+    import roust.history as roust_history
 
     current_files = {
         str(p.relative_to(repo_path))
         for p in repo_path.rglob("*")
         if p.is_file() and p.suffix in core.CODE_EXTENSIONS
     }
-    msgs, cochange, _meta = bgrep_history.mine_history(repo_path, current_files=current_files)
+    msgs, cochange, _meta = roust_history.mine_history(repo_path, current_files=current_files)
 
     lab_corpus = lab_lanes2.Corpus(repo_path, history_msgs=msgs, use_comments=False, build_docs=True)
     core_corpus = core.Corpus(repo_path, history_msgs=msgs, use_comments=False, build_docs=True)

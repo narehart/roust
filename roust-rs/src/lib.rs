@@ -1,4 +1,4 @@
-//! bgrep-rs: a Rust port of bgrep's frozen-v7 retrieval pipeline
+//! roust: a Rust port of roust's frozen-v7 retrieval pipeline
 //! (lab/lanes2.py + lab/history.py). See PARITY_NOTES.md for the
 //! Python-semantics translation notes.
 
