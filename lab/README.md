@@ -241,3 +241,16 @@ concentration measures confidence, not correctness. Patch + subset data in
 lab/experiments/. Possible salvage (roadmap footnote): gate deep-packing on
 anchor-strength signals only (the measured near-certain class), not score
 concentration.
+
+## Neighborhood-first at scale (2026-07-12, REJECTED)
+
+Multi-SWE-bench JS/TS validation (580 instances; material-ui = 174 instances at
+10.4k files) reversed the babel n=5 result decisively — engaged-group all-gold
+43.1% -> 29.9% (+4/-27). Mechanism: the 800-file region cap saturates on every
+engaged instance (2-hop expansion from ~15 seeds exceeds it immediately),
+making the "neighborhood" a truncation artifact that excludes fix files. The
+n=5 babel win was noise; the scale gate worked as designed. Salvage hypotheses
+(roadmap, unproven): repo-size-proportional region caps; confidence-filtered
+expansion instead of fixed hop/cap truncation. SEPARATE FINDING: 3
+sub-threshold svelte instances returned non-identical lists flag-on vs
+flag-off (should be inert) — determinism investigation below.
