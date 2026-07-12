@@ -289,3 +289,21 @@ Conclusion: the no-learning boundary at @1 .35 / @10 .83 held against every
 deterministic channel imagined, including the strongest hypothesis. Remaining
 deterministic stack (elicitation + hunks) is worth ~+5pp combined, pending a
 stacking measurement. Beyond that: learned semantics or nothing.
+
+## Wave-1 breadth scouting: four territories, three kills, one survivor (2026-07-12)
+
+Territories: rank-aggregation theory, fault localization, recsys cold-start,
+MaxEnt/statistical physics (reports in lab/research/wave1/). Diagnostics:
+- **CAPS-OFF CEILING**: uncapped evaluation surfaces gold in 98% of failures but at
+  median rank 30-70 (tail to 400+), only 31% in any affordably-harvestable
+  window, at 4.6x token cost — capacity machinery (TA/NRA/Pandora) killed;
+  add_score evidence is the binding constraint. The "fixed caps are the
+  villain" arc ends here: caps were hiding an evidence problem, not causing it.
+- **PROPAGATION RERANK (RP3beta/heat-kernel sweep)**: headroom only in configs that
+  destroy controls (4/52 target at 5/10 control); no differential effect on its
+  target class (7.9% siblings vs 7.1% non). Killed.
+- **ANCHOR-DISTANCE (SBEST transfer)**: gold top-5 in 19/52 failures, 9/10 control
+  — the surviving evidence term; suppressed by incumbent-blends, must enter
+  add_score directly. Build in progress.
+Also shelved from recsys: stigmergy (per-repo co-access accumulation from agent
+sessions) as a v0.3+ product feedback loop — the only signal that grows with use.

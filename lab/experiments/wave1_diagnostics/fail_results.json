@@ -1,0 +1,2827 @@
+[
+ {
+  "instance_id": "astropy__astropy-14182",
+  "repo": "astropy/astropy",
+  "n_gold": 1,
+  "missing10": [
+   "astropy/io/ascii/rst.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 20,
+  "anchors": [
+   "astropy/io/ascii/connect.py",
+   "astropy/io/ascii/core.py",
+   "astropy/io/ascii/ui.py",
+   "astropy/io/fits/card.py",
+   "astropy/io/fits/column.py",
+   "astropy/io/fits/hdu/hdulist.py",
+   "astropy/io/fits/header.py",
+   "astropy/io/fits/util.py",
+   "astropy/io/registry/core.py",
+   "astropy/io/registry/interface.py",
+   "astropy/io/votable/converters.py",
+   "astropy/io/votable/tree.py",
+   "astropy/samp/hub_proxy.py",
+   "astropy/samp/integrated_client.py",
+   "astropy/table/connect.py",
+   "astropy/table/row.py",
+   "astropy/table/table.py",
+   "astropy/units/core.py",
+   "astropy/units/quantity.py",
+   "astropy/utils/console.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "astropy/io/ascii/connect.py",
+    "astropy/io/ascii/core.py",
+    "astropy/io/ascii/ui.py",
+    "astropy/io/fits/card.py",
+    "astropy/io/fits/column.py",
+    "astropy/io/fits/hdu/hdulist.py",
+    "astropy/io/fits/header.py",
+    "astropy/io/fits/util.py",
+    "astropy/io/registry/core.py",
+    "astropy/io/registry/interface.py",
+    "astropy/io/votable/converters.py",
+    "astropy/io/votable/tree.py",
+    "astropy/samp/hub_proxy.py",
+    "astropy/samp/integrated_client.py",
+    "astropy/table/row.py",
+    "astropy/table/table.py",
+    "astropy/units/core.py",
+    "astropy/units/quantity.py",
+    "astropy/utils/console.py"
+   ],
+   "path_mention_files": [
+    "astropy/io/ascii/connect.py",
+    "astropy/io/ascii/core.py",
+    "astropy/io/ascii/ui.py",
+    "astropy/io/registry/core.py",
+    "astropy/table/connect.py"
+   ]
+  },
+  "missing_ranks": {
+   "astropy/io/ascii/rst.py": {
+    "rank_a": 8,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 892
+ },
+ {
+  "instance_id": "django__django-11283",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/contrib/auth/migrations/0011_update_proxy_permissions.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 19,
+  "anchors": [
+   "django/contrib/admin/filters.py",
+   "django/contrib/auth/context_processors.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/gis/geos/geometry.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/core/mail/message.py",
+   "django/core/management/commands/shell.py",
+   "django/db/migrations/executor.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/db/utils.py",
+   "django/forms/boundfield.py",
+   "django/template/defaultfilters.py",
+   "django/utils/datetime_safe.py",
+   "tests/i18n/sampleproject/manage.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/filters.py",
+    "django/contrib/auth/context_processors.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/gis/geos/geometry.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/core/mail/message.py",
+    "django/core/management/commands/shell.py",
+    "django/db/migrations/executor.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/db/utils.py",
+    "django/forms/boundfield.py",
+    "django/template/defaultfilters.py",
+    "django/utils/datetime_safe.py"
+   ],
+   "path_mention_files": [
+    "tests/i18n/sampleproject/manage.py"
+   ]
+  },
+  "missing_ranks": {
+   "django/contrib/auth/migrations/0011_update_proxy_permissions.py": {
+    "rank_a": 10,
+    "rank_b": 11,
+    "dist_score": 0.3333333333333333,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2071
+ },
+ {
+  "instance_id": "django__django-11564",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/conf/__init__.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 18,
+  "anchors": [
+   "django/conf/urls/static.py",
+   "django/contrib/admin/filters.py",
+   "django/contrib/admin/templatetags/admin_list.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/messages/storage/cookie.py",
+   "django/contrib/staticfiles/storage.py",
+   "django/core/files/storage.py",
+   "django/core/serializers/json.py",
+   "django/db/migrations/autodetector.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/forms/boundfield.py",
+   "django/template/context_processors.py",
+   "django/template/defaultfilters.py",
+   "django/template/smartif.py",
+   "django/templatetags/static.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/conf/urls/static.py",
+    "django/contrib/admin/filters.py",
+    "django/contrib/admin/templatetags/admin_list.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/messages/storage/cookie.py",
+    "django/contrib/staticfiles/storage.py",
+    "django/core/files/storage.py",
+    "django/core/serializers/json.py",
+    "django/db/migrations/autodetector.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/forms/boundfield.py",
+    "django/template/context_processors.py",
+    "django/template/defaultfilters.py",
+    "django/template/smartif.py",
+    "django/templatetags/static.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/conf/__init__.py": {
+    "rank_a": 4,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.36111111111111116
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2091
+ },
+ {
+  "instance_id": "django__django-11797",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/models/lookups.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 6,
+  "anchors": [
+   "django/contrib/auth/context_processors.py",
+   "django/contrib/auth/models.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/db/models/query.py",
+   "django/template/library.py",
+   "django/utils/log.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/auth/context_processors.py",
+    "django/contrib/auth/models.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/db/models/query.py",
+    "django/template/library.py",
+    "django/utils/log.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/db/models/lookups.py": {
+    "rank_a": 7,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.19444444444444442
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2090
+ },
+ {
+  "instance_id": "django__django-11815",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/migrations/serializer.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 15,
+  "anchors": [
+   "django/contrib/admin/filters.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/gis/geos/geometry.py",
+   "django/contrib/messages/storage/cookie.py",
+   "django/core/serializers/json.py",
+   "django/db/models/base.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/forms/boundfield.py",
+   "django/forms/fields.py",
+   "django/template/defaultfilters.py",
+   "django/templatetags/i18n.py",
+   "django/utils/translation/trans_real.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/filters.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/gis/geos/geometry.py",
+    "django/contrib/messages/storage/cookie.py",
+    "django/core/serializers/json.py",
+    "django/db/models/base.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/forms/boundfield.py",
+    "django/forms/fields.py",
+    "django/template/defaultfilters.py",
+    "django/templatetags/i18n.py",
+    "django/utils/translation/trans_real.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/db/migrations/serializer.py": {
+    "rank_a": 9,
+    "rank_b": 11,
+    "dist_score": 0.3333333333333333,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2091
+ },
+ {
+  "instance_id": "django__django-11964",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/models/enums.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 26,
+  "anchors": [
+   "django/contrib/admin/filters.py",
+   "django/contrib/admin/templatetags/admin_list.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/messages/storage/cookie.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/core/files/base.py",
+   "django/core/mail/message.py",
+   "django/core/management/__init__.py",
+   "django/core/serializers/json.py",
+   "django/db/models/base.py",
+   "django/db/models/enums.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/dispatch/dispatcher.py",
+   "django/forms/boundfield.py",
+   "django/forms/fields.py",
+   "django/forms/models.py",
+   "django/template/defaultfilters.py",
+   "django/utils/functional.py",
+   "django/utils/translation/trans_real.py",
+   "js_tests/qunit/qunit.js",
+   "tests/i18n/sampleproject/manage.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/filters.py",
+    "django/contrib/admin/templatetags/admin_list.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/messages/storage/cookie.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/core/files/base.py",
+    "django/core/mail/message.py",
+    "django/core/management/__init__.py",
+    "django/core/serializers/json.py",
+    "django/db/models/base.py",
+    "django/db/models/enums.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/dispatch/dispatcher.py",
+    "django/forms/boundfield.py",
+    "django/forms/fields.py",
+    "django/forms/models.py",
+    "django/template/defaultfilters.py",
+    "django/utils/functional.py",
+    "django/utils/translation/trans_real.py",
+    "js_tests/qunit/qunit.js"
+   ],
+   "path_mention_files": [
+    "tests/i18n/sampleproject/manage.py"
+   ]
+  },
+  "missing_ranks": {
+   "django/db/models/enums.py": {
+    "rank_a": 2,
+    "rank_b": 5,
+    "dist_score": 1.0,
+    "order_score": 0.6388888888888888
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2094
+ },
+ {
+  "instance_id": "django__django-12113",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/backends/sqlite3/creation.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 35,
+  "anchors": [
+   "django/contrib/auth/base_user.py",
+   "django/contrib/auth/context_processors.py",
+   "django/contrib/auth/models.py",
+   "django/contrib/auth/views.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/messages/context_processors.py",
+   "django/contrib/messages/storage/cookie.py",
+   "django/core/exceptions.py",
+   "django/core/files/base.py",
+   "django/core/serializers/json.py",
+   "django/db/backends/base/base.py",
+   "django/db/backends/base/operations.py",
+   "django/db/backends/mysql/compiler.py",
+   "django/db/backends/sqlite3/base.py",
+   "django/db/backends/utils.py",
+   "django/db/migrations/executor.py",
+   "django/db/migrations/migration.py",
+   "django/db/migrations/state.py",
+   "django/db/models/base.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/manager.py",
+   "django/db/models/query.py",
+   "django/db/models/sql/compiler.py",
+   "django/db/models/sql/query.py",
+   "django/db/utils.py",
+   "django/template/defaultfilters.py",
+   "django/template/loader_tags.py",
+   "django/test/testcases.py",
+   "django/views/generic/base.py",
+   "django/views/generic/edit.py",
+   "js_tests/qunit/qunit.js",
+   "tests/admin_views/test_multidb.py",
+   "tests/migrations/test_multidb.py",
+   "tests/runtests.py",
+   "tests/test_sqlite.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/auth/context_processors.py",
+    "django/contrib/auth/models.py",
+    "django/contrib/auth/views.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/messages/context_processors.py",
+    "django/contrib/messages/storage/cookie.py",
+    "django/core/exceptions.py",
+    "django/core/files/base.py",
+    "django/core/serializers/json.py",
+    "django/db/backends/base/base.py",
+    "django/db/backends/base/operations.py",
+    "django/db/backends/utils.py",
+    "django/db/migrations/executor.py",
+    "django/db/migrations/migration.py",
+    "django/db/migrations/state.py",
+    "django/db/models/base.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/manager.py",
+    "django/db/models/query.py",
+    "django/db/models/sql/compiler.py",
+    "django/db/models/sql/query.py",
+    "django/db/utils.py",
+    "django/template/defaultfilters.py",
+    "django/template/loader_tags.py",
+    "django/views/generic/base.py",
+    "django/views/generic/edit.py",
+    "js_tests/qunit/qunit.js"
+   ],
+   "path_mention_files": [
+    "django/contrib/auth/base_user.py",
+    "django/contrib/auth/models.py",
+    "django/db/backends/mysql/compiler.py",
+    "django/db/backends/sqlite3/base.py",
+    "django/db/backends/utils.py",
+    "django/db/models/base.py",
+    "django/db/models/manager.py",
+    "django/db/models/query.py",
+    "django/db/models/sql/compiler.py",
+    "django/db/models/sql/query.py",
+    "django/db/utils.py",
+    "django/test/testcases.py",
+    "tests/admin_views/test_multidb.py",
+    "tests/migrations/test_multidb.py",
+    "tests/runtests.py",
+    "tests/test_sqlite.py"
+   ]
+  },
+  "missing_ranks": {
+   "django/db/backends/sqlite3/creation.py": {
+    "rank_a": 8,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2098
+ },
+ {
+  "instance_id": "django__django-12125",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/migrations/serializer.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 12,
+  "anchors": [
+   "django/contrib/admin/templatetags/admin_list.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/db/migrations/operations/models.py",
+   "django/db/models/base.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/forms/fields.py",
+   "tests/i18n/sampleproject/manage.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/templatetags/admin_list.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/db/migrations/operations/models.py",
+    "django/db/models/base.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/forms/fields.py"
+   ],
+   "path_mention_files": [
+    "tests/i18n/sampleproject/manage.py"
+   ]
+  },
+  "missing_ranks": {
+   "django/db/migrations/serializer.py": {
+    "rank_a": 10,
+    "rank_b": 11,
+    "dist_score": 0.3333333333333333,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2099
+ },
+ {
+  "instance_id": "django__django-12747",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/models/deletion.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 14,
+  "anchors": [
+   "django/contrib/admin/filters.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/gis/gdal/geometries.py",
+   "django/contrib/gis/geos/geometry.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/base.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/core/files/base.py",
+   "django/db/models/expressions.py",
+   "django/db/models/options.py",
+   "django/db/models/query.py",
+   "django/forms/boundfield.py",
+   "django/utils/translation/trans_real.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/filters.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/gis/gdal/geometries.py",
+    "django/contrib/gis/geos/geometry.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/base.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/core/files/base.py",
+    "django/db/models/expressions.py",
+    "django/db/models/options.py",
+    "django/db/models/query.py",
+    "django/forms/boundfield.py",
+    "django/utils/translation/trans_real.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/db/models/deletion.py": {
+    "rank_a": 5,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.36111111111111116
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2122
+ },
+ {
+  "instance_id": "django__django-14016",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/models/query_utils.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 6,
+  "anchors": [
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/sessions/backends/base.py",
+   "django/db/models/query.py",
+   "django/template/defaultfilters.py",
+   "django/utils/translation/trans_real.py",
+   "django/views/generic/base.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/sessions/backends/base.py",
+    "django/db/models/query.py",
+    "django/template/defaultfilters.py",
+    "django/utils/translation/trans_real.py",
+    "django/views/generic/base.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/db/models/query_utils.py": {
+    "rank_a": 6,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.4722222222222222
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2150
+ },
+ {
+  "instance_id": "django__django-14580",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/migrations/serializer.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 11,
+  "anchors": [
+   "django/contrib/admin/helpers.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/gis/geos/geometry.py",
+   "django/core/files/base.py",
+   "django/db/migrations/operations/models.py",
+   "django/db/models/base.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/forms/boundfield.py",
+   "django/forms/widgets.py",
+   "django/views/generic/base.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/helpers.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/gis/geos/geometry.py",
+    "django/core/files/base.py",
+    "django/db/migrations/operations/models.py",
+    "django/db/models/base.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/forms/boundfield.py",
+    "django/forms/widgets.py",
+    "django/views/generic/base.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/db/migrations/serializer.py": {
+    "rank_a": 10,
+    "rank_b": 11,
+    "dist_score": 0.3333333333333333,
+    "order_score": 0.6111111111111112
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2166
+ },
+ {
+  "instance_id": "django__django-14997",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/backends/ddl_references.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 39,
+  "anchors": [
+   "django/contrib/admin/filters.py",
+   "django/contrib/auth/context_processors.py",
+   "django/contrib/auth/hashers.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/core/files/base.py",
+   "django/core/management/base.py",
+   "django/core/management/commands/migrate.py",
+   "django/core/management/commands/shell.py",
+   "django/core/management/commands/test.py",
+   "django/db/backends/base/base.py",
+   "django/db/backends/base/schema.py",
+   "django/db/backends/postgresql/schema.py",
+   "django/db/backends/sqlite3/schema.py",
+   "django/db/backends/utils.py",
+   "django/db/migrations/executor.py",
+   "django/db/migrations/loader.py",
+   "django/db/migrations/migration.py",
+   "django/db/migrations/operations/fields.py",
+   "django/db/migrations/operations/models.py",
+   "django/db/migrations/state.py",
+   "django/db/models/base.py",
+   "django/db/models/constraints.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/db/utils.py",
+   "django/forms/boundfield.py",
+   "django/forms/fields.py",
+   "django/forms/widgets.py",
+   "django/template/defaultfilters.py",
+   "django/template/loader_tags.py",
+   "django/utils/deprecation.py",
+   "django/utils/safestring.py",
+   "django/views/generic/base.py",
+   "tests/i18n/sampleproject/manage.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/filters.py",
+    "django/contrib/auth/context_processors.py",
+    "django/contrib/auth/hashers.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/core/files/base.py",
+    "django/core/management/base.py",
+    "django/core/management/commands/shell.py",
+    "django/core/management/commands/test.py",
+    "django/db/backends/base/base.py",
+    "django/db/backends/base/schema.py",
+    "django/db/backends/postgresql/schema.py",
+    "django/db/backends/sqlite3/schema.py",
+    "django/db/backends/utils.py",
+    "django/db/migrations/executor.py",
+    "django/db/migrations/loader.py",
+    "django/db/migrations/migration.py",
+    "django/db/migrations/operations/fields.py",
+    "django/db/migrations/operations/models.py",
+    "django/db/migrations/state.py",
+    "django/db/models/base.py",
+    "django/db/models/constraints.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/db/utils.py",
+    "django/forms/boundfield.py",
+    "django/forms/fields.py",
+    "django/forms/widgets.py",
+    "django/template/defaultfilters.py",
+    "django/template/loader_tags.py",
+    "django/utils/deprecation.py",
+    "django/utils/safestring.py",
+    "django/views/generic/base.py"
+   ],
+   "path_mention_files": [
+    "django/core/management/commands/migrate.py",
+    "django/db/migrations/executor.py",
+    "django/db/migrations/migration.py",
+    "tests/i18n/sampleproject/manage.py"
+   ]
+  },
+  "missing_ranks": {
+   "django/db/backends/ddl_references.py": {
+    "rank_a": 9,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2173
+ },
+ {
+  "instance_id": "django__django-15213",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/models/fields/__init__.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 9,
+  "anchors": [
+   "django/contrib/admin/filters.py",
+   "django/db/migrations/operations/base.py",
+   "django/db/migrations/operations/fields.py",
+   "django/db/migrations/operations/models.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/forms/fields.py",
+   "django/template/defaultfilters.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/filters.py",
+    "django/db/migrations/operations/base.py",
+    "django/db/migrations/operations/fields.py",
+    "django/db/migrations/operations/models.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/forms/fields.py",
+    "django/template/defaultfilters.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/db/models/fields/__init__.py": {
+    "rank_a": 2,
+    "rank_b": 3,
+    "dist_score": 1.0,
+    "order_score": 0.6944444444444444
+   }
+  },
+  "any_missing_top3_b": true,
+  "all_missing_top3_b": true,
+  "corpus_files": 2182
+ },
+ {
+  "instance_id": "django__django-15388",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/template/autoreload.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 9,
+  "anchors": [
+   "django/contrib/gis/gdal/geometries.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/gis/geos/geometry.py",
+   "django/contrib/staticfiles/finders.py",
+   "django/db/migrations/autodetector.py",
+   "django/template/utils.py",
+   "django/utils/archive.py",
+   "django/utils/connection.py",
+   "tests/i18n/sampleproject/manage.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/gis/gdal/geometries.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/gis/geos/geometry.py",
+    "django/contrib/staticfiles/finders.py",
+    "django/db/migrations/autodetector.py",
+    "django/template/utils.py",
+    "django/utils/archive.py",
+    "django/utils/connection.py"
+   ],
+   "path_mention_files": [
+    "tests/i18n/sampleproject/manage.py"
+   ]
+  },
+  "missing_ranks": {
+   "django/template/autoreload.py": {
+    "rank_a": 4,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2190
+ },
+ {
+  "instance_id": "django__django-15851",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/backends/postgresql/client.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 8,
+  "anchors": [
+   "django/contrib/gis/db/backends/mysql/operations.py",
+   "django/contrib/messages/api.py",
+   "django/contrib/staticfiles/finders.py",
+   "django/db/models/query.py",
+   "django/forms/widgets.py",
+   "django/utils/archive.py",
+   "django/views/generic/base.py",
+   "tests/i18n/sampleproject/manage.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/gis/db/backends/mysql/operations.py",
+    "django/contrib/messages/api.py",
+    "django/contrib/staticfiles/finders.py",
+    "django/db/models/query.py",
+    "django/forms/widgets.py",
+    "django/utils/archive.py",
+    "django/views/generic/base.py"
+   ],
+   "path_mention_files": [
+    "tests/i18n/sampleproject/manage.py"
+   ]
+  },
+  "missing_ranks": {
+   "django/db/backends/postgresql/client.py": {
+    "rank_a": 11,
+    "rank_b": 11,
+    "dist_score": 0.25,
+    "order_score": 0.08333333333333337
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2209
+ },
+ {
+  "instance_id": "django__django-16229",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/forms/boundfield.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 24,
+  "anchors": [
+   "django/contrib/admin/filters.py",
+   "django/contrib/admin/helpers.py",
+   "django/contrib/admin/options.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/messages/storage/cookie.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/contrib/staticfiles/finders.py",
+   "django/core/exceptions.py",
+   "django/core/serializers/json.py",
+   "django/db/models/base.py",
+   "django/db/models/deletion.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/fields/related.py",
+   "django/db/models/fields/reverse_related.py",
+   "django/db/models/query.py",
+   "django/forms/boundfield.py",
+   "django/forms/fields.py",
+   "django/forms/formsets.py",
+   "django/forms/models.py",
+   "django/template/defaultfilters.py",
+   "django/utils/archive.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/filters.py",
+    "django/contrib/admin/helpers.py",
+    "django/contrib/admin/options.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/messages/storage/cookie.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/contrib/staticfiles/finders.py",
+    "django/core/exceptions.py",
+    "django/core/serializers/json.py",
+    "django/db/models/base.py",
+    "django/db/models/deletion.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/fields/related.py",
+    "django/db/models/fields/reverse_related.py",
+    "django/db/models/query.py",
+    "django/forms/boundfield.py",
+    "django/forms/fields.py",
+    "django/forms/formsets.py",
+    "django/forms/models.py",
+    "django/template/defaultfilters.py",
+    "django/utils/archive.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/forms/boundfield.py": {
+    "rank_a": 5,
+    "rank_b": 10,
+    "dist_score": 1.0,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2211
+ },
+ {
+  "instance_id": "django__django-16400",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/contrib/auth/management/__init__.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 23,
+  "anchors": [
+   "django/contrib/admin/static/admin/js/actions.js",
+   "django/contrib/gis/db/backends/base/models.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/gis/gdal/srs.py",
+   "django/contrib/messages/storage/cookie.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/contrib/staticfiles/handlers.py",
+   "django/contrib/staticfiles/management/commands/collectstatic.py",
+   "django/core/handlers/base.py",
+   "django/core/mail/message.py",
+   "django/core/serializers/json.py",
+   "django/db/migrations/executor.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/db/utils.py",
+   "django/http/request.py",
+   "django/middleware/security.py",
+   "django/template/context_processors.py",
+   "django/template/defaultfilters.py",
+   "django/utils/connection.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/static/admin/js/actions.js",
+    "django/contrib/gis/db/backends/base/models.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/gis/gdal/srs.py",
+    "django/contrib/messages/storage/cookie.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/contrib/staticfiles/handlers.py",
+    "django/contrib/staticfiles/management/commands/collectstatic.py",
+    "django/core/handlers/base.py",
+    "django/core/mail/message.py",
+    "django/core/serializers/json.py",
+    "django/db/migrations/executor.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/db/utils.py",
+    "django/http/request.py",
+    "django/middleware/security.py",
+    "django/template/context_processors.py",
+    "django/template/defaultfilters.py",
+    "django/utils/connection.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/contrib/auth/management/__init__.py": {
+    "rank_a": 10,
+    "rank_b": 11,
+    "dist_score": 0.3333333333333333,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2216
+ },
+ {
+  "instance_id": "django__django-16816",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/contrib/admin/checks.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 35,
+  "anchors": [
+   "django/contrib/admin/templatetags/admin_list.py",
+   "django/contrib/admin/templatetags/base.py",
+   "django/contrib/admin/utils.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/contrib/staticfiles/finders.py",
+   "django/contrib/staticfiles/handlers.py",
+   "django/core/exceptions.py",
+   "django/core/files/base.py",
+   "django/core/files/storage/handler.py",
+   "django/core/handlers/base.py",
+   "django/core/handlers/exception.py",
+   "django/core/mail/message.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/functions/comparison.py",
+   "django/db/models/query.py",
+   "django/db/models/sql/query.py",
+   "django/forms/models.py",
+   "django/forms/widgets.py",
+   "django/http/request.py",
+   "django/http/response.py",
+   "django/template/backends/django.py",
+   "django/template/base.py",
+   "django/template/context_processors.py",
+   "django/template/defaultfilters.py",
+   "django/template/defaulttags.py",
+   "django/template/library.py",
+   "django/template/loader_tags.py",
+   "django/template/response.py",
+   "django/utils/archive.py",
+   "django/utils/regex_helper.py",
+   "django/utils/safestring.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/templatetags/admin_list.py",
+    "django/contrib/admin/utils.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/contrib/staticfiles/finders.py",
+    "django/contrib/staticfiles/handlers.py",
+    "django/core/exceptions.py",
+    "django/core/files/base.py",
+    "django/core/files/storage/handler.py",
+    "django/core/handlers/base.py",
+    "django/core/mail/message.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/functions/comparison.py",
+    "django/db/models/query.py",
+    "django/db/models/sql/query.py",
+    "django/forms/models.py",
+    "django/forms/widgets.py",
+    "django/http/request.py",
+    "django/http/response.py",
+    "django/template/base.py",
+    "django/template/context_processors.py",
+    "django/template/defaultfilters.py",
+    "django/template/defaulttags.py",
+    "django/template/loader_tags.py",
+    "django/template/response.py",
+    "django/utils/archive.py",
+    "django/utils/regex_helper.py",
+    "django/utils/safestring.py"
+   ],
+   "path_mention_files": [
+    "django/contrib/admin/templatetags/admin_list.py",
+    "django/contrib/admin/templatetags/base.py",
+    "django/contrib/admin/utils.py",
+    "django/core/handlers/base.py",
+    "django/core/handlers/exception.py",
+    "django/http/response.py",
+    "django/template/backends/django.py",
+    "django/template/base.py",
+    "django/template/library.py",
+    "django/template/loader_tags.py",
+    "django/template/response.py"
+   ]
+  },
+  "missing_ranks": {
+   "django/contrib/admin/checks.py": {
+    "rank_a": 7,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.4722222222222222
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2209
+ },
+ {
+  "instance_id": "django__django-17087",
+  "repo": "django/django",
+  "n_gold": 1,
+  "missing10": [
+   "django/db/migrations/serializer.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 21,
+  "anchors": [
+   "django/contrib/admin/filters.py",
+   "django/contrib/admin/utils.py",
+   "django/contrib/gis/gdal/field.py",
+   "django/contrib/gis/gdal/geomtype.py",
+   "django/contrib/messages/storage/cookie.py",
+   "django/contrib/postgres/fields/array.py",
+   "django/contrib/postgres/fields/ranges.py",
+   "django/contrib/sessions/backends/db.py",
+   "django/contrib/staticfiles/finders.py",
+   "django/core/serializers/json.py",
+   "django/db/migrations/executor.py",
+   "django/db/migrations/operations/fields.py",
+   "django/db/models/base.py",
+   "django/db/models/enums.py",
+   "django/db/models/expressions.py",
+   "django/db/models/fields/__init__.py",
+   "django/db/models/query.py",
+   "django/forms/boundfield.py",
+   "django/forms/fields.py",
+   "django/template/defaultfilters.py",
+   "django/utils/archive.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "django/contrib/admin/filters.py",
+    "django/contrib/admin/utils.py",
+    "django/contrib/gis/gdal/field.py",
+    "django/contrib/gis/gdal/geomtype.py",
+    "django/contrib/messages/storage/cookie.py",
+    "django/contrib/postgres/fields/array.py",
+    "django/contrib/postgres/fields/ranges.py",
+    "django/contrib/sessions/backends/db.py",
+    "django/contrib/staticfiles/finders.py",
+    "django/core/serializers/json.py",
+    "django/db/migrations/executor.py",
+    "django/db/migrations/operations/fields.py",
+    "django/db/models/base.py",
+    "django/db/models/enums.py",
+    "django/db/models/expressions.py",
+    "django/db/models/fields/__init__.py",
+    "django/db/models/query.py",
+    "django/forms/boundfield.py",
+    "django/forms/fields.py",
+    "django/template/defaultfilters.py",
+    "django/utils/archive.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "django/db/migrations/serializer.py": {
+    "rank_a": 9,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 2214
+ },
+ {
+  "instance_id": "matplotlib__matplotlib-23314",
+  "repo": "matplotlib/matplotlib",
+  "n_gold": 1,
+  "missing10": [
+   "lib/mpl_toolkits/mplot3d/axes3d.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 10,
+  "anchors": [
+   "lib/matplotlib/_type1font.py",
+   "lib/matplotlib/artist.py",
+   "lib/matplotlib/axes/_axes.py",
+   "lib/matplotlib/figure.py",
+   "lib/matplotlib/gridspec.py",
+   "lib/matplotlib/pyplot.py",
+   "lib/matplotlib/widgets.py",
+   "lib/mpl_toolkits/axes_grid1/mpl_axes.py",
+   "lib/mpl_toolkits/mplot3d/axes3d.py",
+   "setupext.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "lib/matplotlib/_type1font.py",
+    "lib/matplotlib/artist.py",
+    "lib/matplotlib/axes/_axes.py",
+    "lib/matplotlib/figure.py",
+    "lib/matplotlib/gridspec.py",
+    "lib/matplotlib/pyplot.py",
+    "lib/matplotlib/widgets.py",
+    "lib/mpl_toolkits/axes_grid1/mpl_axes.py",
+    "lib/mpl_toolkits/mplot3d/axes3d.py",
+    "setupext.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "lib/mpl_toolkits/mplot3d/axes3d.py": {
+    "rank_a": 6,
+    "rank_b": 10,
+    "dist_score": 1.0,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 895
+ },
+ {
+  "instance_id": "matplotlib__matplotlib-23476",
+  "repo": "matplotlib/matplotlib",
+  "n_gold": 1,
+  "missing10": [
+   "lib/matplotlib/figure.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 12,
+  "anchors": [
+   "lib/matplotlib/__init__.py",
+   "lib/matplotlib/backend_bases.py",
+   "lib/matplotlib/backend_managers.py",
+   "lib/matplotlib/backend_tools.py",
+   "lib/matplotlib/backends/backend_macosx.py",
+   "lib/matplotlib/backends/backend_webagg.py",
+   "lib/matplotlib/cbook/__init__.py",
+   "lib/matplotlib/figure.py",
+   "lib/matplotlib/pyplot.py",
+   "lib/matplotlib/transforms.py",
+   "lib/matplotlib/widgets.py",
+   "setupext.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "lib/matplotlib/__init__.py",
+    "lib/matplotlib/backend_bases.py",
+    "lib/matplotlib/backend_managers.py",
+    "lib/matplotlib/backend_tools.py",
+    "lib/matplotlib/backends/backend_webagg.py",
+    "lib/matplotlib/cbook/__init__.py",
+    "lib/matplotlib/pyplot.py",
+    "lib/matplotlib/transforms.py",
+    "lib/matplotlib/widgets.py",
+    "setupext.py"
+   ],
+   "path_mention_files": [
+    "lib/matplotlib/backend_bases.py",
+    "lib/matplotlib/backends/backend_macosx.py",
+    "lib/matplotlib/figure.py"
+   ]
+  },
+  "missing_ranks": {
+   "lib/matplotlib/figure.py": {
+    "rank_a": 6,
+    "rank_b": 8,
+    "dist_score": 1.0,
+    "order_score": 0.4193548387096774
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 891
+ },
+ {
+  "instance_id": "matplotlib__matplotlib-24265",
+  "repo": "matplotlib/matplotlib",
+  "n_gold": 1,
+  "missing10": [
+   "lib/matplotlib/style/core.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 2,
+  "anchors": [
+   "lib/matplotlib/cbook/__init__.py",
+   "setupext.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "lib/matplotlib/cbook/__init__.py",
+    "setupext.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "lib/matplotlib/style/core.py": {
+    "rank_a": 10,
+    "rank_b": 10,
+    "dist_score": 0.3333333333333333,
+    "order_score": 0.6551724137931034
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 897
+ },
+ {
+  "instance_id": "matplotlib__matplotlib-25311",
+  "repo": "matplotlib/matplotlib",
+  "n_gold": 1,
+  "missing10": [
+   "lib/matplotlib/offsetbox.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 12,
+  "anchors": [
+   "lib/matplotlib/axes/_axes.py",
+   "lib/matplotlib/axis.py",
+   "lib/matplotlib/backend_managers.py",
+   "lib/matplotlib/backend_tools.py",
+   "lib/matplotlib/backends/backend_qtagg.py",
+   "lib/matplotlib/figure.py",
+   "lib/matplotlib/legend.py",
+   "lib/matplotlib/pyplot.py",
+   "lib/matplotlib/text.py",
+   "lib/mpl_toolkits/axes_grid1/mpl_axes.py",
+   "lib/mpl_toolkits/mplot3d/axes3d.py",
+   "setupext.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "lib/matplotlib/axes/_axes.py",
+    "lib/matplotlib/axis.py",
+    "lib/matplotlib/backend_managers.py",
+    "lib/matplotlib/backend_tools.py",
+    "lib/matplotlib/backends/backend_qtagg.py",
+    "lib/matplotlib/figure.py",
+    "lib/matplotlib/legend.py",
+    "lib/matplotlib/pyplot.py",
+    "lib/matplotlib/text.py",
+    "lib/mpl_toolkits/axes_grid1/mpl_axes.py",
+    "lib/mpl_toolkits/mplot3d/axes3d.py",
+    "setupext.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "lib/matplotlib/offsetbox.py": {
+    "rank_a": 11,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.375
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 894
+ },
+ {
+  "instance_id": "pylint-dev__pylint-7080",
+  "repo": "pylint-dev/pylint",
+  "n_gold": 1,
+  "missing10": [
+   "pylint/lint/expand_modules.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 3,
+  "anchors": [
+   "pylint/checkers/format.py",
+   "pylint/checkers/unicode.py",
+   "pylint/pyreverse/diagrams.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "pylint/checkers/format.py",
+    "pylint/checkers/unicode.py",
+    "pylint/pyreverse/diagrams.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "pylint/lint/expand_modules.py": {
+    "rank_a": 10,
+    "rank_b": 11,
+    "dist_score": 0.3333333333333333,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1832
+ },
+ {
+  "instance_id": "pylint-dev__pylint-7228",
+  "repo": "pylint-dev/pylint",
+  "n_gold": 1,
+  "missing10": [
+   "pylint/config/argument.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 11,
+  "anchors": [
+   "pylint/__init__.py",
+   "pylint/checkers/format.py",
+   "pylint/checkers/unicode.py",
+   "pylint/config/arguments_manager.py",
+   "pylint/config/arguments_provider.py",
+   "pylint/config/config_initialization.py",
+   "pylint/epylint.py",
+   "pylint/lint/run.py",
+   "pylint/pyreverse/diagrams.py",
+   "pylint/reporters/multi_reporter.py",
+   "pylint/testutils/_primer/package_to_lint.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "pylint/__init__.py",
+    "pylint/checkers/format.py",
+    "pylint/checkers/unicode.py",
+    "pylint/config/arguments_manager.py",
+    "pylint/config/arguments_provider.py",
+    "pylint/config/config_initialization.py",
+    "pylint/epylint.py",
+    "pylint/pyreverse/diagrams.py",
+    "pylint/reporters/multi_reporter.py",
+    "pylint/testutils/_primer/package_to_lint.py"
+   ],
+   "path_mention_files": [
+    "pylint/__init__.py",
+    "pylint/config/arguments_manager.py",
+    "pylint/config/config_initialization.py",
+    "pylint/lint/run.py"
+   ]
+  },
+  "missing_ranks": {
+   "pylint/config/argument.py": {
+    "rank_a": 7,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.39473684210526316
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1843
+ },
+ {
+  "instance_id": "pytest-dev__pytest-11148",
+  "repo": "pytest-dev/pytest",
+  "n_gold": 1,
+  "missing10": [
+   "src/_pytest/pathlib.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 12,
+  "anchors": [
+   "bench/xunit.py",
+   "src/_pytest/_code/code.py",
+   "src/_pytest/_py/path.py",
+   "src/_pytest/assertion/rewrite.py",
+   "src/_pytest/capture.py",
+   "src/_pytest/debugging.py",
+   "src/_pytest/fixtures.py",
+   "src/_pytest/legacypath.py",
+   "src/_pytest/logging.py",
+   "src/_pytest/pytester.py",
+   "src/_pytest/python.py",
+   "src/_pytest/reports.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "bench/xunit.py",
+    "src/_pytest/_code/code.py",
+    "src/_pytest/_py/path.py",
+    "src/_pytest/assertion/rewrite.py",
+    "src/_pytest/capture.py",
+    "src/_pytest/debugging.py",
+    "src/_pytest/fixtures.py",
+    "src/_pytest/legacypath.py",
+    "src/_pytest/logging.py",
+    "src/_pytest/pytester.py",
+    "src/_pytest/python.py",
+    "src/_pytest/reports.py"
+   ],
+   "path_mention_files": [
+    "src/_pytest/logging.py"
+   ]
+  },
+  "missing_ranks": {
+   "src/_pytest/pathlib.py": {
+    "rank_a": 9,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.1333333333333333
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 240
+ },
+ {
+  "instance_id": "pytest-dev__pytest-6116",
+  "repo": "pytest-dev/pytest",
+  "n_gold": 1,
+  "missing10": [
+   "src/_pytest/main.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 1,
+  "anchors": [
+   "src/_pytest/mark/structures.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "src/_pytest/mark/structures.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "src/_pytest/main.py": {
+    "rank_a": 4,
+    "rank_b": 9,
+    "dist_score": 0.3333333333333333,
+    "order_score": 0.5862068965517242
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 194
+ },
+ {
+  "instance_id": "pytest-dev__pytest-7220",
+  "repo": "pytest-dev/pytest",
+  "n_gold": 1,
+  "missing10": [
+   "src/_pytest/nodes.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 9,
+  "anchors": [
+   "src/_pytest/_code/code.py",
+   "src/_pytest/capture.py",
+   "src/_pytest/config/argparsing.py",
+   "src/_pytest/fixtures.py",
+   "src/_pytest/main.py",
+   "src/_pytest/monkeypatch.py",
+   "src/_pytest/outcomes.py",
+   "src/_pytest/pytester.py",
+   "src/_pytest/unittest.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "src/_pytest/_code/code.py",
+    "src/_pytest/capture.py",
+    "src/_pytest/config/argparsing.py",
+    "src/_pytest/fixtures.py",
+    "src/_pytest/main.py",
+    "src/_pytest/monkeypatch.py",
+    "src/_pytest/outcomes.py",
+    "src/_pytest/pytester.py",
+    "src/_pytest/unittest.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "src/_pytest/nodes.py": {
+    "rank_a": 8,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.24137931034482762
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 201
+ },
+ {
+  "instance_id": "pytest-dev__pytest-7490",
+  "repo": "pytest-dev/pytest",
+  "n_gold": 1,
+  "missing10": [
+   "src/_pytest/skipping.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 15,
+  "anchors": [
+   "bench/skip.py",
+   "src/_pytest/_io/terminalwriter.py",
+   "src/_pytest/_io/wcwidth.py",
+   "src/_pytest/config/argparsing.py",
+   "src/_pytest/fixtures.py",
+   "src/_pytest/junitxml.py",
+   "src/_pytest/logging.py",
+   "src/_pytest/mark/__init__.py",
+   "src/_pytest/mark/structures.py",
+   "src/_pytest/nodes.py",
+   "src/_pytest/outcomes.py",
+   "src/_pytest/python.py",
+   "src/_pytest/python_api.py",
+   "src/_pytest/recwarn.py",
+   "src/_pytest/terminal.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "bench/skip.py",
+    "src/_pytest/_io/terminalwriter.py",
+    "src/_pytest/_io/wcwidth.py",
+    "src/_pytest/config/argparsing.py",
+    "src/_pytest/fixtures.py",
+    "src/_pytest/junitxml.py",
+    "src/_pytest/logging.py",
+    "src/_pytest/mark/__init__.py",
+    "src/_pytest/mark/structures.py",
+    "src/_pytest/nodes.py",
+    "src/_pytest/outcomes.py",
+    "src/_pytest/python.py",
+    "src/_pytest/python_api.py",
+    "src/_pytest/recwarn.py",
+    "src/_pytest/terminal.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "src/_pytest/skipping.py": {
+    "rank_a": 10,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.033333333333333326
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 206
+ },
+ {
+  "instance_id": "pytest-dev__pytest-9359",
+  "repo": "pytest-dev/pytest",
+  "n_gold": 1,
+  "missing10": [
+   "src/_pytest/_code/source.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 10,
+  "anchors": [
+   "src/_pytest/_code/code.py",
+   "src/_pytest/_io/terminalwriter.py",
+   "src/_pytest/config/argparsing.py",
+   "src/_pytest/fixtures.py",
+   "src/_pytest/legacypath.py",
+   "src/_pytest/python.py",
+   "src/_pytest/recwarn.py",
+   "src/_pytest/reports.py",
+   "src/_pytest/terminal.py",
+   "src/_pytest/unittest.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "src/_pytest/_code/code.py",
+    "src/_pytest/_io/terminalwriter.py",
+    "src/_pytest/config/argparsing.py",
+    "src/_pytest/fixtures.py",
+    "src/_pytest/legacypath.py",
+    "src/_pytest/python.py",
+    "src/_pytest/recwarn.py",
+    "src/_pytest/reports.py",
+    "src/_pytest/terminal.py",
+    "src/_pytest/unittest.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "src/_pytest/_code/source.py": {
+    "rank_a": 5,
+    "rank_b": 10,
+    "dist_score": 0.5,
+    "order_score": 0.4666666666666667
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 235
+ },
+ {
+  "instance_id": "scikit-learn__scikit-learn-25500",
+  "repo": "scikit-learn/scikit-learn",
+  "n_gold": 1,
+  "missing10": [
+   "sklearn/isotonic.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 9,
+  "anchors": [
+   "build_tools/update_environments_and_lock_files.py",
+   "sklearn/_config.py",
+   "sklearn/calibration.py",
+   "sklearn/isotonic.py",
+   "sklearn/linear_model/_stochastic_gradient.py",
+   "sklearn/model_selection/_validation.py",
+   "sklearn/pipeline.py",
+   "sklearn/utils/fixes.py",
+   "sklearn/utils/parallel.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "build_tools/update_environments_and_lock_files.py",
+    "sklearn/_config.py",
+    "sklearn/calibration.py",
+    "sklearn/isotonic.py",
+    "sklearn/linear_model/_stochastic_gradient.py",
+    "sklearn/model_selection/_validation.py"
+   ],
+   "path_mention_files": [
+    "sklearn/calibration.py",
+    "sklearn/model_selection/_validation.py",
+    "sklearn/pipeline.py",
+    "sklearn/utils/fixes.py",
+    "sklearn/utils/parallel.py"
+   ]
+  },
+  "missing_ranks": {
+   "sklearn/isotonic.py": {
+    "rank_a": 4,
+    "rank_b": 6,
+    "dist_score": 1.0,
+    "order_score": 0.6666666666666667
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 852
+ },
+ {
+  "instance_id": "sphinx-doc__sphinx-11445",
+  "repo": "sphinx-doc/sphinx",
+  "n_gold": 1,
+  "missing10": [
+   "sphinx/util/rst.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 10,
+  "anchors": [
+   "sphinx/addnodes.py",
+   "sphinx/application.py",
+   "sphinx/builders/__init__.py",
+   "sphinx/builders/gettext.py",
+   "sphinx/domains/__init__.py",
+   "sphinx/domains/c.py",
+   "sphinx/domains/cpp.py",
+   "sphinx/util/cfamily.py",
+   "sphinx/util/docutils.py",
+   "sphinx/util/rst.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sphinx/addnodes.py",
+    "sphinx/application.py",
+    "sphinx/builders/__init__.py",
+    "sphinx/builders/gettext.py",
+    "sphinx/domains/__init__.py",
+    "sphinx/domains/c.py",
+    "sphinx/domains/cpp.py",
+    "sphinx/util/cfamily.py",
+    "sphinx/util/docutils.py",
+    "sphinx/util/rst.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sphinx/util/rst.py": {
+    "rank_a": 6,
+    "rank_b": 6,
+    "dist_score": 1.0,
+    "order_score": 0.6666666666666667
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 617
+ },
+ {
+  "instance_id": "sphinx-doc__sphinx-7738",
+  "repo": "sphinx-doc/sphinx",
+  "n_gold": 1,
+  "missing10": [
+   "sphinx/ext/napoleon/docstring.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 4,
+  "anchors": [
+   "sphinx/addnodes.py",
+   "sphinx/application.py",
+   "sphinx/domains/c.py",
+   "sphinx/domains/cpp.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sphinx/addnodes.py",
+    "sphinx/application.py",
+    "sphinx/domains/c.py",
+    "sphinx/domains/cpp.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sphinx/ext/napoleon/docstring.py": {
+    "rank_a": 8,
+    "rank_b": 9,
+    "dist_score": 0.5,
+    "order_score": 0.7142857142857143
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 495
+ },
+ {
+  "instance_id": "sphinx-doc__sphinx-8273",
+  "repo": "sphinx-doc/sphinx",
+  "n_gold": 1,
+  "missing10": [
+   "sphinx/builders/manpage.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 4,
+  "anchors": [
+   "sphinx/application.py",
+   "sphinx/builders/__init__.py",
+   "sphinx/builders/gettext.py",
+   "sphinx/theming.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sphinx/application.py",
+    "sphinx/builders/__init__.py",
+    "sphinx/builders/gettext.py",
+    "sphinx/theming.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sphinx/builders/manpage.py": {
+    "rank_a": 4,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 545
+ },
+ {
+  "instance_id": "sphinx-doc__sphinx-8627",
+  "repo": "sphinx-doc/sphinx",
+  "n_gold": 1,
+  "missing10": [
+   "sphinx/util/typing.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 5,
+  "anchors": [
+   "doc/development/tutorials/examples/helloworld.py",
+   "sphinx/addnodes.py",
+   "sphinx/application.py",
+   "sphinx/environment/adapters/toctree.py",
+   "sphinx/themes/basic/static/jquery-3.5.1.js"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sphinx/addnodes.py",
+    "sphinx/application.py",
+    "sphinx/environment/adapters/toctree.py",
+    "sphinx/themes/basic/static/jquery-3.5.1.js"
+   ],
+   "path_mention_files": [
+    "doc/development/tutorials/examples/helloworld.py"
+   ]
+  },
+  "missing_ranks": {
+   "sphinx/util/typing.py": {
+    "rank_a": 10,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 560
+ },
+ {
+  "instance_id": "sympy__sympy-12236",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/polys/domains/polynomialring.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 12,
+  "anchors": [
+   "sympy/assumptions/ask.py",
+   "sympy/core/expr.py",
+   "sympy/core/symbol.py",
+   "sympy/integrals/manualintegrate.py",
+   "sympy/polys/domains/domain.py",
+   "sympy/polys/partfrac.py",
+   "sympy/polys/polyoptions.py",
+   "sympy/stats/frv.py",
+   "sympy/stats/rv.py",
+   "sympy/vector/deloperator.py",
+   "sympy/vector/scalar.py",
+   "sympy/vector/vector.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/ask.py",
+    "sympy/core/expr.py",
+    "sympy/core/symbol.py",
+    "sympy/integrals/manualintegrate.py",
+    "sympy/polys/domains/domain.py",
+    "sympy/polys/partfrac.py",
+    "sympy/polys/polyoptions.py",
+    "sympy/stats/frv.py",
+    "sympy/stats/rv.py",
+    "sympy/vector/deloperator.py",
+    "sympy/vector/scalar.py",
+    "sympy/vector/vector.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/polys/domains/polynomialring.py": {
+    "rank_a": 5,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1045
+ },
+ {
+  "instance_id": "sympy__sympy-13146",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/core/operations.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 3,
+  "anchors": [
+   "sympy/assumptions/handlers/calculus.py",
+   "sympy/assumptions/handlers/common.py",
+   "sympy/core/symbol.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/handlers/calculus.py",
+    "sympy/assumptions/handlers/common.py",
+    "sympy/core/symbol.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/core/operations.py": {
+    "rank_a": 7,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1076
+ },
+ {
+  "instance_id": "sympy__sympy-13895",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/core/numbers.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 3,
+  "anchors": [
+   "sympy/assumptions/handlers/calculus.py",
+   "sympy/assumptions/handlers/common.py",
+   "sympy/core/symbol.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/handlers/calculus.py",
+    "sympy/assumptions/handlers/common.py",
+    "sympy/core/symbol.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/core/numbers.py": {
+    "rank_a": 1,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1101
+ },
+ {
+  "instance_id": "sympy__sympy-13915",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/core/mul.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 5,
+  "anchors": [
+   "sympy/core/symbol.py",
+   "sympy/polys/polyoptions.py",
+   "sympy/solvers/solveset.py",
+   "sympy/stats/frv.py",
+   "sympy/stats/rv.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/core/symbol.py",
+    "sympy/polys/polyoptions.py",
+    "sympy/solvers/solveset.py",
+    "sympy/stats/frv.py",
+    "sympy/stats/rv.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/core/mul.py": {
+    "rank_a": 5,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1101
+ },
+ {
+  "instance_id": "sympy__sympy-14024",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/core/numbers.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 5,
+  "anchors": [
+   "sympy/assumptions/ask.py",
+   "sympy/assumptions/handlers/calculus.py",
+   "sympy/assumptions/handlers/common.py",
+   "sympy/core/symbol.py",
+   "sympy/logic/boolalg.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/ask.py",
+    "sympy/assumptions/handlers/calculus.py",
+    "sympy/assumptions/handlers/common.py",
+    "sympy/core/symbol.py",
+    "sympy/logic/boolalg.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/core/numbers.py": {
+    "rank_a": 5,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.11428571428571432
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1112
+ },
+ {
+  "instance_id": "sympy__sympy-15346",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/simplify/trigsimp.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 8,
+  "anchors": [
+   "sympy/assumptions/ask.py",
+   "sympy/assumptions/handlers/order.py",
+   "sympy/assumptions/handlers/sets.py",
+   "sympy/core/numbers.py",
+   "sympy/functions/elementary/trigonometric.py",
+   "sympy/plotting/intervalmath/lib_interval.py",
+   "sympy/polys/domains/domain.py",
+   "sympy/printing/python.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/ask.py",
+    "sympy/assumptions/handlers/order.py",
+    "sympy/assumptions/handlers/sets.py",
+    "sympy/core/numbers.py",
+    "sympy/functions/elementary/trigonometric.py",
+    "sympy/plotting/intervalmath/lib_interval.py",
+    "sympy/polys/domains/domain.py",
+    "sympy/printing/python.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/simplify/trigsimp.py": {
+    "rank_a": 10,
+    "rank_b": 10,
+    "dist_score": 0.5,
+    "order_score": 0.6944444444444444
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1207
+ },
+ {
+  "instance_id": "sympy__sympy-17022",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/printing/pycode.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 12,
+  "anchors": [
+   "sympy/assumptions/ask.py",
+   "sympy/assumptions/handlers/matrices.py",
+   "sympy/codegen/fnodes.py",
+   "sympy/combinatorics/permutations.py",
+   "sympy/geometry/line.py",
+   "sympy/matrices/expressions/matexpr.py",
+   "sympy/multipledispatch/dispatcher.py",
+   "sympy/parsing/autolev/_antlr/autolevparser.py",
+   "sympy/plotting/experimental_lambdify.py",
+   "sympy/printing/python.py",
+   "sympy/utilities/lambdify.py",
+   "sympy/utilities/source.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/ask.py",
+    "sympy/assumptions/handlers/matrices.py",
+    "sympy/codegen/fnodes.py",
+    "sympy/combinatorics/permutations.py",
+    "sympy/geometry/line.py",
+    "sympy/matrices/expressions/matexpr.py",
+    "sympy/multipledispatch/dispatcher.py",
+    "sympy/parsing/autolev/_antlr/autolevparser.py",
+    "sympy/plotting/experimental_lambdify.py",
+    "sympy/printing/python.py",
+    "sympy/utilities/lambdify.py",
+    "sympy/utilities/source.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/printing/pycode.py": {
+    "rank_a": 9,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.4864864864864865
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1221
+ },
+ {
+  "instance_id": "sympy__sympy-17630",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/matrices/expressions/matexpr.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 11,
+  "anchors": [
+   "sympy/assumptions/handlers/matrices.py",
+   "sympy/core/numbers.py",
+   "sympy/integrals/transforms.py",
+   "sympy/logic/boolalg.py",
+   "sympy/matrices/expressions/blockmatrix.py",
+   "sympy/matrices/expressions/matexpr.py",
+   "sympy/matrices/immutable.py",
+   "sympy/ntheory/factor_.py",
+   "sympy/parsing/autolev/_antlr/autolevparser.py",
+   "sympy/simplify/gammasimp.py",
+   "sympy/strategies/core.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/handlers/matrices.py",
+    "sympy/core/numbers.py",
+    "sympy/integrals/transforms.py",
+    "sympy/logic/boolalg.py",
+    "sympy/matrices/expressions/blockmatrix.py",
+    "sympy/matrices/expressions/matexpr.py",
+    "sympy/matrices/immutable.py",
+    "sympy/ntheory/factor_.py",
+    "sympy/parsing/autolev/_antlr/autolevparser.py",
+    "sympy/simplify/gammasimp.py",
+    "sympy/strategies/core.py"
+   ],
+   "path_mention_files": [
+    "sympy/matrices/expressions/blockmatrix.py",
+    "sympy/strategies/core.py"
+   ]
+  },
+  "missing_ranks": {
+   "sympy/matrices/expressions/matexpr.py": {
+    "rank_a": 4,
+    "rank_b": 5,
+    "dist_score": 1.0,
+    "order_score": 0.4864864864864865
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1244
+ },
+ {
+  "instance_id": "sympy__sympy-18087",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/core/exprtools.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 7,
+  "anchors": [
+   "sympy/assumptions/ask.py",
+   "sympy/core/expr.py",
+   "sympy/integrals/rubi/utility_function.py",
+   "sympy/polys/domains/domain.py",
+   "sympy/printing/pretty/stringpict.py",
+   "sympy/simplify/trigsimp.py",
+   "sympy/vector/basisdependent.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/ask.py",
+    "sympy/core/expr.py",
+    "sympy/integrals/rubi/utility_function.py",
+    "sympy/polys/domains/domain.py",
+    "sympy/printing/pretty/stringpict.py",
+    "sympy/simplify/trigsimp.py",
+    "sympy/vector/basisdependent.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/core/exprtools.py": {
+    "rank_a": 3,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1261
+ },
+ {
+  "instance_id": "sympy__sympy-20322",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/core/mul.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 12,
+  "anchors": [
+   "sympy/assumptions/ask.py",
+   "sympy/core/numbers.py",
+   "sympy/core/parameters.py",
+   "sympy/core/sympify.py",
+   "sympy/functions/elementary/integers.py",
+   "sympy/geometry/line.py",
+   "sympy/logic/boolalg.py",
+   "sympy/multipledispatch/conflict.py",
+   "sympy/polys/fields.py",
+   "sympy/polys/rings.py",
+   "sympy/printing/python.py",
+   "sympy/solvers/solvers.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/ask.py",
+    "sympy/core/numbers.py",
+    "sympy/core/parameters.py",
+    "sympy/core/sympify.py",
+    "sympy/functions/elementary/integers.py",
+    "sympy/geometry/line.py",
+    "sympy/logic/boolalg.py",
+    "sympy/multipledispatch/conflict.py",
+    "sympy/polys/fields.py",
+    "sympy/polys/rings.py",
+    "sympy/printing/python.py",
+    "sympy/solvers/solvers.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/core/mul.py": {
+    "rank_a": 7,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.3421052631578947
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1345
+ },
+ {
+  "instance_id": "sympy__sympy-20590",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/core/_print_helpers.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 8,
+  "anchors": [
+   "sympy/assumptions/handlers/calculus.py",
+   "sympy/assumptions/handlers/common.py",
+   "sympy/core/symbol.py",
+   "sympy/physics/quantum/commutator.py",
+   "sympy/printing/python.py",
+   "sympy/stats/frv.py",
+   "sympy/stats/frv_types.py",
+   "sympy/stats/rv.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/handlers/calculus.py",
+    "sympy/assumptions/handlers/common.py",
+    "sympy/core/symbol.py",
+    "sympy/physics/quantum/commutator.py",
+    "sympy/printing/python.py",
+    "sympy/stats/frv.py",
+    "sympy/stats/frv_types.py",
+    "sympy/stats/rv.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/core/_print_helpers.py": {
+    "rank_a": 3,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1353
+ },
+ {
+  "instance_id": "sympy__sympy-20639",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/printing/pretty/pretty.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 6,
+  "anchors": [
+   "sympy/combinatorics/graycode.py",
+   "sympy/geometry/point.py",
+   "sympy/matrices/matrices.py",
+   "sympy/printing/latex.py",
+   "sympy/printing/pretty/pretty.py",
+   "sympy/simplify/hyperexpand.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/combinatorics/graycode.py",
+    "sympy/geometry/point.py",
+    "sympy/matrices/matrices.py",
+    "sympy/printing/latex.py",
+    "sympy/printing/pretty/pretty.py",
+    "sympy/simplify/hyperexpand.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/printing/pretty/pretty.py": {
+    "rank_a": 2,
+    "rank_b": 2,
+    "dist_score": 1.0,
+    "order_score": 0.6857142857142857
+   }
+  },
+  "any_missing_top3_b": true,
+  "all_missing_top3_b": true,
+  "corpus_files": 1353
+ },
+ {
+  "instance_id": "sympy__sympy-21055",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/assumptions/refine.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 9,
+  "anchors": [
+   "sympy/assumptions/ask.py",
+   "sympy/assumptions/assume.py",
+   "sympy/functions/elementary/piecewise.py",
+   "sympy/functions/special/bessel.py",
+   "sympy/functions/special/hyper.py",
+   "sympy/geometry/curve.py",
+   "sympy/integrals/integrals.py",
+   "sympy/polys/domains/domain.py",
+   "sympy/sets/sets.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/ask.py",
+    "sympy/assumptions/assume.py",
+    "sympy/functions/elementary/piecewise.py",
+    "sympy/functions/special/bessel.py",
+    "sympy/functions/special/hyper.py",
+    "sympy/geometry/curve.py",
+    "sympy/integrals/integrals.py",
+    "sympy/polys/domains/domain.py",
+    "sympy/sets/sets.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/assumptions/refine.py": {
+    "rank_a": 4,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1394
+ },
+ {
+  "instance_id": "sympy__sympy-21379",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/core/mod.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 30,
+  "anchors": [
+   "sympy/assumptions/ask.py",
+   "sympy/assumptions/assume.py",
+   "sympy/codegen/cxxnodes.py",
+   "sympy/combinatorics/fp_groups.py",
+   "sympy/combinatorics/perm_groups.py",
+   "sympy/combinatorics/permutations.py",
+   "sympy/core/assumptions.py",
+   "sympy/core/basic.py",
+   "sympy/core/cache.py",
+   "sympy/functions/elementary/hyperbolic.py",
+   "sympy/functions/elementary/piecewise.py",
+   "sympy/geometry/curve.py",
+   "sympy/integrals/transforms.py",
+   "sympy/liealgebras/weyl_group.py",
+   "sympy/logic/boolalg.py",
+   "sympy/matrices/common.py",
+   "sympy/ntheory/factor_.py",
+   "sympy/parsing/latex/_antlr/latexparser.py",
+   "sympy/plotting/experimental_lambdify.py",
+   "sympy/plotting/intervalmath/lib_interval.py",
+   "sympy/polys/domains/domain.py",
+   "sympy/polys/matrices/sdm.py",
+   "sympy/polys/polyconfig.py",
+   "sympy/polys/polyerrors.py",
+   "sympy/polys/rootoftools.py",
+   "sympy/printing/pretty/stringpict.py",
+   "sympy/printing/python.py",
+   "sympy/solvers/solveset.py",
+   "sympy/tensor/tensor.py",
+   "sympy/utilities/lambdify.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/assumptions/ask.py",
+    "sympy/assumptions/assume.py",
+    "sympy/codegen/cxxnodes.py",
+    "sympy/combinatorics/fp_groups.py",
+    "sympy/combinatorics/perm_groups.py",
+    "sympy/combinatorics/permutations.py",
+    "sympy/core/assumptions.py",
+    "sympy/core/basic.py",
+    "sympy/core/cache.py",
+    "sympy/functions/elementary/hyperbolic.py",
+    "sympy/functions/elementary/piecewise.py",
+    "sympy/geometry/curve.py",
+    "sympy/integrals/transforms.py",
+    "sympy/liealgebras/weyl_group.py",
+    "sympy/logic/boolalg.py",
+    "sympy/matrices/common.py",
+    "sympy/ntheory/factor_.py",
+    "sympy/parsing/latex/_antlr/latexparser.py",
+    "sympy/plotting/experimental_lambdify.py",
+    "sympy/plotting/intervalmath/lib_interval.py",
+    "sympy/polys/domains/domain.py",
+    "sympy/polys/matrices/sdm.py",
+    "sympy/polys/polyconfig.py",
+    "sympy/polys/polyerrors.py",
+    "sympy/polys/rootoftools.py",
+    "sympy/printing/pretty/stringpict.py",
+    "sympy/printing/python.py",
+    "sympy/solvers/solveset.py",
+    "sympy/tensor/tensor.py",
+    "sympy/utilities/lambdify.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/core/mod.py": {
+    "rank_a": 7,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1406
+ },
+ {
+  "instance_id": "sympy__sympy-21612",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/printing/str.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 11,
+  "anchors": [
+   "sympy/core/numbers.py",
+   "sympy/functions/elementary/integers.py",
+   "sympy/functions/elementary/miscellaneous.py",
+   "sympy/multipledispatch/dispatcher.py",
+   "sympy/parsing/latex/__init__.py",
+   "sympy/parsing/latex/_antlr/latexparser.py",
+   "sympy/parsing/latex/_parse_latex_antlr.py",
+   "sympy/polys/polyoptions.py",
+   "sympy/polys/polytools.py",
+   "sympy/printing/latex.py",
+   "sympy/printing/pretty/stringpict.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/core/numbers.py",
+    "sympy/functions/elementary/integers.py",
+    "sympy/functions/elementary/miscellaneous.py",
+    "sympy/multipledispatch/dispatcher.py",
+    "sympy/parsing/latex/__init__.py",
+    "sympy/parsing/latex/_antlr/latexparser.py",
+    "sympy/parsing/latex/_parse_latex_antlr.py",
+    "sympy/polys/polyoptions.py",
+    "sympy/polys/polytools.py",
+    "sympy/printing/latex.py",
+    "sympy/printing/pretty/stringpict.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/printing/str.py": {
+    "rank_a": 8,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.3783783783783784
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1408
+ },
+ {
+  "instance_id": "sympy__sympy-21627",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/functions/elementary/complexes.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 8,
+  "anchors": [
+   "sympy/calculus/util.py",
+   "sympy/combinatorics/pc_groups.py",
+   "sympy/core/sympify.py",
+   "sympy/functions/elementary/hyperbolic.py",
+   "sympy/functions/elementary/trigonometric.py",
+   "sympy/logic/boolalg.py",
+   "sympy/plotting/intervalmath/lib_interval.py",
+   "sympy/polys/agca/ideals.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/calculus/util.py",
+    "sympy/combinatorics/pc_groups.py",
+    "sympy/core/sympify.py",
+    "sympy/functions/elementary/hyperbolic.py",
+    "sympy/functions/elementary/trigonometric.py",
+    "sympy/logic/boolalg.py",
+    "sympy/plotting/intervalmath/lib_interval.py",
+    "sympy/polys/agca/ideals.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/functions/elementary/complexes.py": {
+    "rank_a": 6,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.0
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1408
+ },
+ {
+  "instance_id": "sympy__sympy-22840",
+  "repo": "sympy/sympy",
+  "n_gold": 1,
+  "missing10": [
+   "sympy/simplify/cse_main.py"
+  ],
+  "n_missing10": 1,
+  "mini_corpus_size": 11,
+  "n_anchors": 7,
+  "anchors": [
+   "sympy/codegen/fnodes.py",
+   "sympy/matrices/expressions/matexpr.py",
+   "sympy/parsing/autolev/_antlr/autolevparser.py",
+   "sympy/polys/numberfields/modules.py",
+   "sympy/printing/codeprinter.py",
+   "sympy/printing/python.py",
+   "sympy/utilities/codegen.py"
+  ],
+  "anchor_detail": {
+   "symbol_anchor_files": [
+    "sympy/codegen/fnodes.py",
+    "sympy/matrices/expressions/matexpr.py",
+    "sympy/parsing/autolev/_antlr/autolevparser.py",
+    "sympy/polys/numberfields/modules.py",
+    "sympy/printing/codeprinter.py",
+    "sympy/printing/python.py",
+    "sympy/utilities/codegen.py"
+   ],
+   "path_mention_files": []
+  },
+  "missing_ranks": {
+   "sympy/simplify/cse_main.py": {
+    "rank_a": 11,
+    "rank_b": 11,
+    "dist_score": 0.5,
+    "order_score": 0.6857142857142857
+   }
+  },
+  "any_missing_top3_b": false,
+  "all_missing_top3_b": false,
+  "corpus_files": 1445
+ }
+]

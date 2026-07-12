@@ -1,0 +1,3821 @@
+{
+  "n_target": 52,
+  "n_control": 10,
+  "baseline_target_headroom": 0,
+  "baseline_control_headroom": 10,
+  "target_headroom_by_config": {
+    "beta=0.0_steps=1": 3,
+    "beta=0.3_steps=1": 1,
+    "beta=0.6_steps=1": 0,
+    "beta=1.0_steps=1": 0,
+    "beta=0.0_steps=2": 4,
+    "beta=0.3_steps=2": 2,
+    "beta=0.6_steps=2": 0,
+    "beta=1.0_steps=2": 0,
+    "heat_t=0.3": 2,
+    "heat_t=0.7": 2
+  },
+  "control_headroom_by_config": {
+    "beta=0.0_steps=1": 8,
+    "beta=0.3_steps=1": 10,
+    "beta=0.6_steps=1": 10,
+    "beta=1.0_steps=1": 10,
+    "beta=0.0_steps=2": 5,
+    "beta=0.3_steps=2": 9,
+    "beta=0.6_steps=2": 10,
+    "beta=1.0_steps=2": 10,
+    "heat_t=0.3": 10,
+    "heat_t=0.7": 9
+  },
+  "best_config": "beta=0.0_steps=2",
+  "n_same_dir_sibling_targets": 38,
+  "n_best_config_wins": 4,
+  "n_best_config_wins_same_dir_sibling": 3,
+  "target_results": [
+    {
+      "instance_id": "astropy__astropy-14182",
+      "repo": "astropy/astropy",
+      "gold": "astropy/io/ascii/rst.py",
+      "n_mini": 11,
+      "corpus_files": 892,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003699
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003698
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003648
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003618
+        },
+        "beta=0.0_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.003616
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003646
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003561
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003506
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003683
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003617
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-11283",
+      "repo": "django/django",
+      "gold": "django/contrib/auth/migrations/0011_update_proxy_permissions.py",
+      "n_mini": 11,
+      "corpus_files": 2071,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00202
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002417
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002588
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002671
+        },
+        "beta=0.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.0016
+        },
+        "beta=0.3_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002093
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002334
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002457
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002416
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002079
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-11564",
+      "repo": "django/django",
+      "gold": "django/conf/__init__.py",
+      "n_mini": 11,
+      "corpus_files": 2091,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.010691
+        },
+        "beta=0.3_steps=1": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.003995
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002094
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001667
+        },
+        "beta=0.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.01297
+        },
+        "beta=0.3_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.005253
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002332
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001583
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.0059
+        },
+        "heat_t=0.7": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.007723
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-11797",
+      "repo": "django/django",
+      "gold": "django/db/models/lookups.py",
+      "n_mini": 11,
+      "corpus_files": 2090,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.002427
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002488
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00253
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002589
+        },
+        "beta=0.0_steps=2": {
+          "rank": 6,
+          "headroom": false,
+          "score": 0.002228
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002254
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002284
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002367
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002589
+        },
+        "heat_t=0.7": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.00243
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-11815",
+      "repo": "django/django",
+      "gold": "django/db/migrations/serializer.py",
+      "n_mini": 11,
+      "corpus_files": 2091,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001718
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001838
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001877
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001905
+        },
+        "beta=0.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001574
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001698
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001748
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001791
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001853
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001738
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-11964",
+      "repo": "django/django",
+      "gold": "django/db/models/enums.py",
+      "n_mini": 11,
+      "corpus_files": 2094,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001513
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001887
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002077
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002185
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001147
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001558
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001828
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002004
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001923
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00163
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-12113",
+      "repo": "django/django",
+      "gold": "django/db/backends/sqlite3/creation.py",
+      "n_mini": 11,
+      "corpus_files": 2098,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001397
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001611
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001648
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001615
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001223
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001606
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001686
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001627
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001468
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001328
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-12125",
+      "repo": "django/django",
+      "gold": "django/db/migrations/serializer.py",
+      "n_mini": 11,
+      "corpus_files": 2099,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.002008
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002166
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002213
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002245
+        },
+        "beta=0.0_steps=2": {
+          "rank": 6,
+          "headroom": false,
+          "score": 0.001834
+        },
+        "beta=0.3_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.001999
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002059
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002109
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002177
+        },
+        "heat_t=0.7": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.002037
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-12747",
+      "repo": "django/django",
+      "gold": "django/db/models/deletion.py",
+      "n_mini": 11,
+      "corpus_files": 2122,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.002461
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002676
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002759
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002815
+        },
+        "beta=0.0_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.00208
+        },
+        "beta=0.3_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.002331
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002421
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002485
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002742
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002437
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-14016",
+      "repo": "django/django",
+      "gold": "django/db/models/query_utils.py",
+      "n_mini": 11,
+      "corpus_files": 2150,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.002824
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002792
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002754
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002763
+        },
+        "beta=0.0_steps=2": {
+          "rank": 3,
+          "headroom": true,
+          "score": 0.002595
+        },
+        "beta=0.3_steps=2": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.00266
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002617
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002632
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00281
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002626
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-14580",
+      "repo": "django/django",
+      "gold": "django/db/migrations/serializer.py",
+      "n_mini": 11,
+      "corpus_files": 2166,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001849
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001888
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001864
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001854
+        },
+        "beta=0.0_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.001779
+        },
+        "beta=0.3_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001797
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001738
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001707
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.0019
+        },
+        "heat_t=0.7": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001844
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-14997",
+      "repo": "django/django",
+      "gold": "django/db/backends/ddl_references.py",
+      "n_mini": 11,
+      "corpus_files": 2173,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001176
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00132
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001311
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00125
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001053
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001364
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001384
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001282
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001159
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001061
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-15213",
+      "repo": "django/django",
+      "gold": "django/db/models/fields/__init__.py",
+      "n_mini": 11,
+      "corpus_files": 2182,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.00309
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003034
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003014
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003053
+        },
+        "beta=0.0_steps=2": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.002979
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002877
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002821
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002879
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003135
+        },
+        "heat_t=0.7": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003046
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-15388",
+      "repo": "django/django",
+      "gold": "django/template/autoreload.py",
+      "n_mini": 11,
+      "corpus_files": 2190,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001482
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001571
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001585
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001588
+        },
+        "beta=0.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001329
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001441
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00144
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00143
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00158
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001458
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-15851",
+      "repo": "django/django",
+      "gold": "django/db/backends/postgresql/client.py",
+      "n_mini": 11,
+      "corpus_files": 2209,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002425
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002873
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003002
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003002
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002017
+        },
+        "beta=0.3_steps=2": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.00277
+        },
+        "beta=0.6_steps=2": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.003016
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003016
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002665
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002339
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-16229",
+      "repo": "django/django",
+      "gold": "django/forms/boundfield.py",
+      "n_mini": 11,
+      "corpus_files": 2211,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001547
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001914
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002072
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002146
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001155
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001625
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001873
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001998
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001889
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001576
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-16400",
+      "repo": "django/django",
+      "gold": "django/contrib/auth/management/__init__.py",
+      "n_mini": 11,
+      "corpus_files": 2216,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001471
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001848
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002031
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002125
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001027
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001486
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001756
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001902
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001869
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001514
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-16816",
+      "repo": "django/django",
+      "gold": "django/contrib/admin/checks.py",
+      "n_mini": 11,
+      "corpus_files": 2209,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001888
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00213
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00226
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00235
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00162
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001824
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001995
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002134
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002207
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001993
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-17087",
+      "repo": "django/django",
+      "gold": "django/db/migrations/serializer.py",
+      "n_mini": 11,
+      "corpus_files": 2214,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001647
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001766
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001796
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001816
+        },
+        "beta=0.0_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.001505
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001648
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00169
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001721
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001763
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001649
+        }
+      }
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23314",
+      "repo": "matplotlib/matplotlib",
+      "gold": "lib/mpl_toolkits/mplot3d/axes3d.py",
+      "n_mini": 11,
+      "corpus_files": 895,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003377
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.004246
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.004591
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.004645
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00295
+        },
+        "beta=0.3_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.004309
+        },
+        "beta=0.6_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.00479
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.004763
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003961
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003619
+        }
+      }
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23476",
+      "repo": "matplotlib/matplotlib",
+      "gold": "lib/matplotlib/figure.py",
+      "n_mini": 11,
+      "corpus_files": 891,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005129
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00539
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005727
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.006027
+        },
+        "beta=0.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.004462
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004438
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004887
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005397
+        },
+        "heat_t=0.3": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005835
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.005302
+        }
+      }
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24265",
+      "repo": "matplotlib/matplotlib",
+      "gold": "lib/matplotlib/style/core.py",
+      "n_mini": 11,
+      "corpus_files": 897,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004265
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.005815
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.006599
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.006927
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003438
+        },
+        "beta=0.3_steps=2": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.00612
+        },
+        "beta=0.6_steps=2": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.007595
+        },
+        "beta=1.0_steps=2": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.00809
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.005592
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004931
+        }
+      }
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25311",
+      "repo": "matplotlib/matplotlib",
+      "gold": "lib/matplotlib/offsetbox.py",
+      "n_mini": 11,
+      "corpus_files": 894,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004395
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004574
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004831
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.005068
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003849
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003783
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004112
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004499
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004955
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004518
+        }
+      }
+    },
+    {
+      "instance_id": "pylint-dev__pylint-7080",
+      "repo": "pylint-dev/pylint",
+      "gold": "pylint/lint/expand_modules.py",
+      "n_mini": 11,
+      "corpus_files": 1830,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002445
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002541
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002552
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00254
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002102
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002111
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002045
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001972
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002716
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002441
+        }
+      }
+    },
+    {
+      "instance_id": "pylint-dev__pylint-7228",
+      "repo": "pylint-dev/pylint",
+      "gold": "pylint/config/argument.py",
+      "n_mini": 11,
+      "corpus_files": 1841,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.005474
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005291
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005212
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005215
+        },
+        "beta=0.0_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.005278
+        },
+        "beta=0.3_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.004666
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.004365
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.004267
+        },
+        "heat_t=0.3": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005733
+        },
+        "heat_t=0.7": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.005577
+        }
+      }
+    },
+    {
+      "instance_id": "pytest-dev__pytest-11148",
+      "repo": "pytest-dev/pytest",
+      "gold": "src/_pytest/pathlib.py",
+      "n_mini": 11,
+      "corpus_files": 240,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.01446
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.014458
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.014749
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.015202
+        },
+        "beta=0.0_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.013275
+        },
+        "beta=0.3_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.012246
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.01237
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.013073
+        },
+        "heat_t=0.3": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.015738
+        },
+        "heat_t=0.7": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.01479
+        }
+      }
+    },
+    {
+      "instance_id": "pytest-dev__pytest-6116",
+      "repo": "pytest-dev/pytest",
+      "gold": "src/_pytest/main.py",
+      "n_mini": 11,
+      "corpus_files": 194,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.015532
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.014758
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.01465
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.014932
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.015013
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.012921
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.012437
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.012875
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.016119
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.015704
+        }
+      }
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7220",
+      "repo": "pytest-dev/pytest",
+      "gold": "src/_pytest/nodes.py",
+      "n_mini": 11,
+      "corpus_files": 201,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.01473
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.013399
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.013011
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.013148
+        },
+        "beta=0.0_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.014678
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.011859
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.010919
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.011082
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.014857
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.014816
+        }
+      }
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7490",
+      "repo": "pytest-dev/pytest",
+      "gold": "src/_pytest/skipping.py",
+      "n_mini": 11,
+      "corpus_files": 206,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.011172
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.009411
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.008692
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.008553
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.011952
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.008807
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00752
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00728
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.010419
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.011043
+        }
+      }
+    },
+    {
+      "instance_id": "pytest-dev__pytest-9359",
+      "repo": "pytest-dev/pytest",
+      "gold": "src/_pytest/_code/source.py",
+      "n_mini": 11,
+      "corpus_files": 235,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.011384
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.014136
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.015083
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.014941
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.010776
+        },
+        "beta=0.3_steps=2": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.016118
+        },
+        "beta=0.6_steps=2": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.017966
+        },
+        "beta=1.0_steps=2": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.017589
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.011553
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.011067
+        }
+      }
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-25500",
+      "repo": "scikit-learn/scikit-learn",
+      "gold": "sklearn/isotonic.py",
+      "n_mini": 11,
+      "corpus_files": 852,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002862
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003182
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003331
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003423
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002506
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002858
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003089
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003251
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003204
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002919
+        }
+      }
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-11445",
+      "repo": "sphinx-doc/sphinx",
+      "gold": "sphinx/util/rst.py",
+      "n_mini": 11,
+      "corpus_files": 617,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.005052
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005264
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005357
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005417
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004356
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.004073
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003963
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003945
+        },
+        "heat_t=0.3": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005914
+        },
+        "heat_t=0.7": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.005357
+        }
+      }
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7738",
+      "repo": "sphinx-doc/sphinx",
+      "gold": "sphinx/ext/napoleon/docstring.py",
+      "n_mini": 11,
+      "corpus_files": 495,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.005401
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00626
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.006407
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.006257
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004226
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.005607
+        },
+        "beta=0.6_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.005776
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.005452
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.005936
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004996
+        }
+      }
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8273",
+      "repo": "sphinx-doc/sphinx",
+      "gold": "sphinx/builders/manpage.py",
+      "n_mini": 11,
+      "corpus_files": 545,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00336
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003095
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002942
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002876
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003374
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002596
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002228
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002074
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003515
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003527
+        }
+      }
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8627",
+      "repo": "sphinx-doc/sphinx",
+      "gold": "sphinx/util/typing.py",
+      "n_mini": 11,
+      "corpus_files": 560,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004522
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003779
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003441
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003322
+        },
+        "beta=0.0_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.004697
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003384
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002745
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002506
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004265
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004405
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-12236",
+      "repo": "sympy/sympy",
+      "gold": "sympy/polys/domains/polynomialring.py",
+      "n_mini": 11,
+      "corpus_files": 1045,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00129
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001452
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001548
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001612
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001134
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001289
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001432
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001546
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001484
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001359
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-13146",
+      "repo": "sympy/sympy",
+      "gold": "sympy/core/operations.py",
+      "n_mini": 11,
+      "corpus_files": 1076,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002432
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002787
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003001
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003136
+        },
+        "beta=0.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002117
+        },
+        "beta=0.3_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002446
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002773
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003019
+        },
+        "heat_t=0.3": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002846
+        },
+        "heat_t=0.7": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002594
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-13895",
+      "repo": "sympy/sympy",
+      "gold": "sympy/core/numbers.py",
+      "n_mini": 11,
+      "corpus_files": 1101,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 3,
+          "headroom": true,
+          "score": 0.004659
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003175
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002745
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002694
+        },
+        "beta=0.0_steps=2": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.005329
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003408
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002716
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002629
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.003678
+        },
+        "heat_t=0.7": {
+          "rank": 6,
+          "headroom": false,
+          "score": 0.004213
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-13915",
+      "repo": "sympy/sympy",
+      "gold": "sympy/core/mul.py",
+      "n_mini": 11,
+      "corpus_files": 1101,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003676
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.00339
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003375
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003456
+        },
+        "beta=0.0_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.003648
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003194
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003164
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003314
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003618
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003596
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-14024",
+      "repo": "sympy/sympy",
+      "gold": "sympy/core/numbers.py",
+      "n_mini": 11,
+      "corpus_files": 1112,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.005702
+        },
+        "beta=0.3_steps=1": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.004157
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003757
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003749
+        },
+        "beta=0.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006204
+        },
+        "beta=0.3_steps=2": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.004278
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003645
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003638
+        },
+        "heat_t=0.3": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.004721
+        },
+        "heat_t=0.7": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.005123
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-15346",
+      "repo": "sympy/sympy",
+      "gold": "sympy/simplify/trigsimp.py",
+      "n_mini": 11,
+      "corpus_files": 1207,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.002759
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003025
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003197
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.00332
+        },
+        "beta=0.0_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.002401
+        },
+        "beta=0.3_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.002688
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002951
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003172
+        },
+        "heat_t=0.3": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003096
+        },
+        "heat_t=0.7": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.002809
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-17022",
+      "repo": "sympy/sympy",
+      "gold": "sympy/printing/pycode.py",
+      "n_mini": 11,
+      "corpus_files": 1221,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002789
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003005
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003131
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003221
+        },
+        "beta=0.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002469
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00274
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002942
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003109
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00304
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002784
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-17630",
+      "repo": "sympy/sympy",
+      "gold": "sympy/matrices/expressions/matexpr.py",
+      "n_mini": 11,
+      "corpus_files": 1244,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003363
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003419
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003513
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003619
+        },
+        "beta=0.0_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.003118
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003139
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003275
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003465
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003547
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003351
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-18087",
+      "repo": "sympy/sympy",
+      "gold": "sympy/core/exprtools.py",
+      "n_mini": 11,
+      "corpus_files": 1261,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001966
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001655
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001532
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001509
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002187
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001706
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001504
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001465
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001761
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001939
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-20322",
+      "repo": "sympy/sympy",
+      "gold": "sympy/core/mul.py",
+      "n_mini": 11,
+      "corpus_files": 1345,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 6,
+          "headroom": false,
+          "score": 0.003674
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003543
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003628
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003765
+        },
+        "beta=0.0_steps=2": {
+          "rank": 6,
+          "headroom": false,
+          "score": 0.00345
+        },
+        "beta=0.3_steps=2": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.003193
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003322
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003576
+        },
+        "heat_t=0.3": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.003787
+        },
+        "heat_t=0.7": {
+          "rank": 6,
+          "headroom": false,
+          "score": 0.003607
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-20590",
+      "repo": "sympy/sympy",
+      "gold": "sympy/core/_print_helpers.py",
+      "n_mini": 11,
+      "corpus_files": 1353,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001768
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002038
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002192
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002286
+        },
+        "beta=0.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001541
+        },
+        "beta=0.3_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001794
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002033
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002209
+        },
+        "heat_t=0.3": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002071
+        },
+        "heat_t=0.7": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.001889
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-20639",
+      "repo": "sympy/sympy",
+      "gold": "sympy/printing/pretty/pretty.py",
+      "n_mini": 11,
+      "corpus_files": 1353,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.003701
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.00429
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004655
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004894
+        },
+        "beta=0.0_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.002966
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003665
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004233
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.004668
+        },
+        "heat_t=0.3": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.004384
+        },
+        "heat_t=0.7": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.003796
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-21055",
+      "repo": "sympy/sympy",
+      "gold": "sympy/assumptions/refine.py",
+      "n_mini": 11,
+      "corpus_files": 1394,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.002084
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002677
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002996
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003164
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001511
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002239
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002753
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.003062
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002665
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002207
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-21379",
+      "repo": "sympy/sympy",
+      "gold": "sympy/core/mod.py",
+      "n_mini": 11,
+      "corpus_files": 1406,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 11,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001361
+        },
+        "beta=0.3_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001295
+        },
+        "beta=0.6_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001273
+        },
+        "beta=1.0_steps=1": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001281
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001443
+        },
+        "beta=0.3_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001274
+        },
+        "beta=0.6_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001232
+        },
+        "beta=1.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001249
+        },
+        "heat_t=0.3": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001346
+        },
+        "heat_t=0.7": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001412
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-21612",
+      "repo": "sympy/sympy",
+      "gold": "sympy/printing/str.py",
+      "n_mini": 11,
+      "corpus_files": 1408,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 8,
+          "headroom": false,
+          "score": 0.002724
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002503
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002445
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002471
+        },
+        "beta=0.0_steps=2": {
+          "rank": 7,
+          "headroom": false,
+          "score": 0.00261
+        },
+        "beta=0.3_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.00239
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002308
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002359
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002613
+        },
+        "heat_t=0.7": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002522
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-21627",
+      "repo": "sympy/sympy",
+      "gold": "sympy/functions/elementary/complexes.py",
+      "n_mini": 11,
+      "corpus_files": 1408,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 10,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002128
+        },
+        "beta=0.3_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001897
+        },
+        "beta=0.6_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.00183
+        },
+        "beta=1.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001838
+        },
+        "beta=0.0_steps=2": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.002186
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001871
+        },
+        "beta=0.6_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001767
+        },
+        "beta=1.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001788
+        },
+        "heat_t=0.3": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001998
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002044
+        }
+      }
+    },
+    {
+      "instance_id": "sympy__sympy-22840",
+      "repo": "sympy/sympy",
+      "gold": "sympy/simplify/cse_main.py",
+      "n_mini": 11,
+      "corpus_files": 1445,
+      "same_dir_sibling_of_top10": false,
+      "rank0_no_propagation": 9,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002246
+        },
+        "beta=0.3_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002891
+        },
+        "beta=0.6_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003244
+        },
+        "beta=1.0_steps=1": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003431
+        },
+        "beta=0.0_steps=2": {
+          "rank": 11,
+          "headroom": false,
+          "score": 0.001587
+        },
+        "beta=0.3_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002389
+        },
+        "beta=0.6_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002968
+        },
+        "beta=1.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.00332
+        },
+        "heat_t=0.3": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.002878
+        },
+        "heat_t=0.7": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.002351
+        }
+      }
+    }
+  ],
+  "control_results": [
+    {
+      "instance_id": "astropy__astropy-12907",
+      "repo": "astropy/astropy",
+      "gold": "astropy/modeling/separable.py",
+      "n_mini": 10,
+      "corpus_files": 873,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.007031
+        },
+        "beta=0.3_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.008608
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.009615
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.010272
+        },
+        "beta=0.0_steps=2": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.005054
+        },
+        "beta=0.3_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006933
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.008474
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.009628
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.008898
+        },
+        "heat_t=0.7": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.007316
+        }
+      }
+    },
+    {
+      "instance_id": "astropy__astropy-14365",
+      "repo": "astropy/astropy",
+      "gold": "astropy/io/ascii/qdp.py",
+      "n_mini": 10,
+      "corpus_files": 902,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.005799
+        },
+        "beta=0.3_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006927
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.007634
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.008101
+        },
+        "beta=0.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004442
+        },
+        "beta=0.3_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.005735
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006786
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.007594
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.007159
+        },
+        "heat_t=0.7": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006073
+        }
+      }
+    },
+    {
+      "instance_id": "astropy__astropy-14995",
+      "repo": "astropy/astropy",
+      "gold": "astropy/nddata/mixins/ndarithmetic.py",
+      "n_mini": 10,
+      "corpus_files": 859,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 5,
+          "headroom": false,
+          "score": 0.004698
+        },
+        "beta=0.3_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006035
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006815
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.007269
+        },
+        "beta=0.0_steps=2": {
+          "rank": 9,
+          "headroom": false,
+          "score": 0.003263
+        },
+        "beta=0.3_steps=2": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.004899
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006077
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006857
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.006146
+        },
+        "heat_t=0.7": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004999
+        }
+      }
+    },
+    {
+      "instance_id": "astropy__astropy-6938",
+      "repo": "astropy/astropy",
+      "gold": "astropy/io/fits/fitsrec.py",
+      "n_mini": 10,
+      "corpus_files": 666,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.009631
+        },
+        "beta=0.3_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.011452
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.012589
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.013331
+        },
+        "beta=0.0_steps=2": {
+          "rank": 3,
+          "headroom": true,
+          "score": 0.00727
+        },
+        "beta=0.3_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.00946
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.011152
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.012415
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.011822
+        },
+        "heat_t=0.7": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.009934
+        }
+      }
+    },
+    {
+      "instance_id": "astropy__astropy-7746",
+      "repo": "astropy/astropy",
+      "gold": "astropy/wcs/wcs.py",
+      "n_mini": 10,
+      "corpus_files": 685,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.009919
+        },
+        "beta=0.3_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.012108
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.013447
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.014292
+        },
+        "beta=0.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.007284
+        },
+        "beta=0.3_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.010004
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.01198
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.013396
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.012459
+        },
+        "heat_t=0.7": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.010351
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-10914",
+      "repo": "django/django",
+      "gold": "django/conf/global_settings.py",
+      "n_mini": 10,
+      "corpus_files": 2060,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.003089
+        },
+        "beta=0.3_steps=1": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.004331
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.005064
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.00551
+        },
+        "beta=0.0_steps=2": {
+          "rank": 10,
+          "headroom": false,
+          "score": 0.001642
+        },
+        "beta=0.3_steps=2": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.003071
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004116
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004815
+        },
+        "heat_t=0.3": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.004572
+        },
+        "heat_t=0.7": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.003414
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-10924",
+      "repo": "django/django",
+      "gold": "django/db/models/fields/__init__.py",
+      "n_mini": 10,
+      "corpus_files": 2071,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.003228
+        },
+        "beta=0.3_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.0032
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.00325
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.003344
+        },
+        "beta=0.0_steps=2": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.002963
+        },
+        "beta=0.3_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.002739
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.002726
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.002832
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.003487
+        },
+        "heat_t=0.7": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.003276
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-11001",
+      "repo": "django/django",
+      "gold": "django/db/models/sql/compiler.py",
+      "n_mini": 10,
+      "corpus_files": 2072,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.003614
+        },
+        "beta=0.3_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004468
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004906
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.005157
+        },
+        "beta=0.0_steps=2": {
+          "rank": 6,
+          "headroom": false,
+          "score": 0.002635
+        },
+        "beta=0.3_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.003649
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004259
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004639
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004572
+        },
+        "heat_t=0.7": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.003789
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-11019",
+      "repo": "django/django",
+      "gold": "django/forms/widgets.py",
+      "n_mini": 10,
+      "corpus_files": 2063,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.00373
+        },
+        "beta=0.3_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004385
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.00476
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.005011
+        },
+        "beta=0.0_steps=2": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.002767
+        },
+        "beta=0.3_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.003607
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.00418
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.0046
+        },
+        "heat_t=0.3": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004502
+        },
+        "heat_t=0.7": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.003731
+        }
+      }
+    },
+    {
+      "instance_id": "django__django-11039",
+      "repo": "django/django",
+      "gold": "django/core/management/commands/sqlmigrate.py",
+      "n_mini": 10,
+      "corpus_files": 2063,
+      "same_dir_sibling_of_top10": true,
+      "rank0_no_propagation": 1,
+      "per_config": {
+        "beta=0.0_steps=1": {
+          "rank": 3,
+          "headroom": true,
+          "score": 0.004064
+        },
+        "beta=0.3_steps=1": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.004788
+        },
+        "beta=0.6_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.00521
+        },
+        "beta=1.0_steps=1": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.005498
+        },
+        "beta=0.0_steps=2": {
+          "rank": 4,
+          "headroom": false,
+          "score": 0.003168
+        },
+        "beta=0.3_steps=2": {
+          "rank": 3,
+          "headroom": true,
+          "score": 0.003974
+        },
+        "beta=0.6_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.004599
+        },
+        "beta=1.0_steps=2": {
+          "rank": 1,
+          "headroom": true,
+          "score": 0.005091
+        },
+        "heat_t=0.3": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.004943
+        },
+        "heat_t=0.7": {
+          "rank": 2,
+          "headroom": true,
+          "score": 0.004226
+        }
+      }
+    }
+  ],
+  "wall_s": 389.1
+}

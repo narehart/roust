@@ -1,0 +1,122 @@
+[
+ {
+  "instance_id": "astropy__astropy-12907",
+  "repo": "astropy/astropy",
+  "gold_files": [
+   "astropy/modeling/separable.py"
+  ],
+  "n_anchors": 12,
+  "gold_ranks_distance_alone": {
+   "astropy/modeling/separable.py": 1
+  },
+  "all_gold_top3_distance": true
+ },
+ {
+  "instance_id": "django__django-12284",
+  "repo": "django/django",
+  "gold_files": [
+   "django/db/models/fields/__init__.py"
+  ],
+  "n_anchors": 14,
+  "gold_ranks_distance_alone": {
+   "django/db/models/fields/__init__.py": 1
+  },
+  "all_gold_top3_distance": true
+ },
+ {
+  "instance_id": "django__django-13551",
+  "repo": "django/django",
+  "gold_files": [
+   "django/contrib/auth/tokens.py"
+  ],
+  "n_anchors": 7,
+  "gold_ranks_distance_alone": {
+   "django/contrib/auth/tokens.py": 1
+  },
+  "all_gold_top3_distance": true
+ },
+ {
+  "instance_id": "django__django-14999",
+  "repo": "django/django",
+  "gold_files": [
+   "django/db/migrations/operations/models.py"
+  ],
+  "n_anchors": 2,
+  "gold_ranks_distance_alone": {
+   "django/db/migrations/operations/models.py": 1
+  },
+  "all_gold_top3_distance": true
+ },
+ {
+  "instance_id": "django__django-16595",
+  "repo": "django/django",
+  "gold_files": [
+   "django/db/migrations/operations/fields.py"
+  ],
+  "n_anchors": 15,
+  "gold_ranks_distance_alone": {
+   "django/db/migrations/operations/fields.py": 1
+  },
+  "all_gold_top3_distance": true
+ },
+ {
+  "instance_id": "mwaskom__seaborn-2848",
+  "repo": "mwaskom/seaborn",
+  "gold_files": [
+   "seaborn/_oldcore.py"
+  ],
+  "n_anchors": 2,
+  "gold_ranks_distance_alone": {
+   "seaborn/_oldcore.py": 3
+  },
+  "all_gold_top3_distance": true
+ },
+ {
+  "instance_id": "pytest-dev__pytest-5221",
+  "repo": "pytest-dev/pytest",
+  "gold_files": [
+   "src/_pytest/python.py"
+  ],
+  "n_anchors": 3,
+  "gold_ranks_distance_alone": {
+   "src/_pytest/python.py": 5
+  },
+  "all_gold_top3_distance": false
+ },
+ {
+  "instance_id": "scikit-learn__scikit-learn-14092",
+  "repo": "scikit-learn/scikit-learn",
+  "gold_files": [
+   "sklearn/neighbors/nca.py"
+  ],
+  "n_anchors": 7,
+  "gold_ranks_distance_alone": {
+   "sklearn/neighbors/nca.py": 2
+  },
+  "all_gold_top3_distance": true
+ },
+ {
+  "instance_id": "sympy__sympy-12419",
+  "repo": "sympy/sympy",
+  "gold_files": [
+   "sympy/matrices/expressions/matexpr.py"
+  ],
+  "n_anchors": 16,
+  "gold_ranks_distance_alone": {
+   "sympy/matrices/expressions/matexpr.py": 3
+  },
+  "all_gold_top3_distance": true
+ },
+ {
+  "instance_id": "sympy__sympy-16503",
+  "repo": "sympy/sympy",
+  "gold_files": [
+   "sympy/printing/pretty/pretty.py"
+  ],
+  "n_anchors": 3,
+  "gold_ranks_distance_alone": {
+   "sympy/printing/pretty/pretty.py": 1
+  },
+  "all_gold_top3_distance": true
+ }
+]
