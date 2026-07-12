@@ -18,6 +18,7 @@
 
 use crate::core::{is_code_file, TESTLIKE_RE};
 use indexmap::IndexMap;
+use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::Path;
 use std::process::Command;
@@ -49,14 +50,14 @@ fn most_common(c: &OrderedCounter) -> Vec<(String, i64)> {
     v
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct FileMeta {
     pub n_commits: i64,
     pub last_ts: i64,
     pub authors: IndexMap<String, i64>,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct HistoryData {
     pub msgs: IndexMap<String, String>,
     pub cochange: IndexMap<String, IndexMap<String, i64>>,

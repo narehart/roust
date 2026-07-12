@@ -210,3 +210,68 @@ completeness/documentation parity, not exercised by any live code path.
 - `pack_regions`' token-budget packing (tiktoken `cl100k_base`, same encoder
   as the Python `tiktoken` package) produces identical region spans and
   bundle text on every gate task.
+
+## 13. Region packing v2 (channel-aware, idf-weighted) -- ported from
+    `bgrep.core` (commit `2a95329`), not `lab/lanes2.py`
+
+`lab/lanes2.py` is the frozen-v7 pipeline this port otherwise tracks
+byte-for-byte, but `pack_regions`/`_python_blocks` moved on in the packaged
+`bgrep.core` module after v7 froze: nested (not column-0-only) Python block
+spans (`python_blocks` in `core.rs`), idf-weighted (not flat-counted) term
+coverage in the gain/marginal scores, and an `anchor_symbols`-driven forced
+region (`anchor_def_symbols`, seated via `py_def_line_numbers` matching a
+span's start line to a symbol's def line) for definition-symbol-anchored
+files. `core.rs`'s `pack_regions`/`python_blocks`/`anchor_def_symbols` track
+`bgrep.core` (the packaged module), not the frozen lab snapshot. Verified via
+a direct `Corpus`/`select_files`/`pack_regions` comparison against the
+Python reference on `encode/httpx@0.28.1` for 5 queries plus one
+hand-constructed anchor-forced-region case (`httpx/_client.py`'s `Client` class,
+~1150 lines deep in a 2019-line file -- exactly the "gold hunk past a large
+class's first method" scenario `_python_blocks`' nesting targets): every
+file's span list and the packed bundle's token count matched exactly,
+including the anchor-forced case where the forced region's span differs from
+the same file's non-anchored packing.
+
+## 14. On-disk index cache (`cache.rs`) -- ported from `bgrep.cache`
+    (commit `16e7c71`)
+
+Same manifest-diff + classify (`unchanged`/`modified`/`full`) + incremental-
+patch design as `bgrep.cache`, with two deliberate differences:
+
+- **Serialization**: `serde_json`, not a pickle-equivalent binary format.
+  `serde_json` is already a direct dependency (used for `--json`/`--explain`
+  output), so caching adds no new dependency; every cached type (`Corpus`,
+  `EdgeMap`, `HistoryData`) derives plain `serde::{Serialize, Deserialize}`
+  with no custom (de)serialization code. This is an internal
+  implementation-detail choice, not load-bearing for parity -- a future pass
+  is free to swap in a binary format purely for size/speed.
+- **Cache file isolation**: written to `<repo>/.bgrep/rust-index.bin`, a
+  DIFFERENT filename from Python's `<repo>/.bgrep/index.pkl`, so the two
+  independent implementations never attempt to read each other's cache file.
+  Running `bgrep` and `bgrep-rs` against the same repo concurrently is
+  therefore always safe.
+
+One deliberate ROBUSTNESS deviation (not a parity gap -- the Python behavior
+here is an unintentional latent bug, not a documented contract):
+`bgrep.cache._scan_manifest`'s coarse stat-only walk doesn't apply
+`Corpus`'s own vendor-regex/oversize/long-line filters, so a "modified" rel
+can name a file that was stat-scanned but never actually indexed into the
+cached `Corpus` (e.g. a vendor-path file). Python's
+`_try_incremental_update` has no guard for this and would raise an uncaught
+`KeyError` (`corpus.text[rel]`) if it ever triggered.
+`cache::try_incremental_update` instead declines incrementally (forcing the
+always-safe full-rebuild fallback) whenever a modified code/docs rel is
+absent from the loaded `Corpus`'s `text`/`docs_text` maps -- strictly more
+robust, and never changes the observable result, since "decline and rebuild"
+is exactly what this module's own documented invariant already promises for
+any patch it can't apply.
+
+Equivalence verified by `tests/incremental.rs` (a port of
+`tests/test_incremental.py`'s property test): a scripted sequence of
+content-only edits to a synthetic repo, asserting after each edit that the
+`unchanged`/`incremental`/`full` path taken matches expectation AND that the
+resulting `Corpus` gives byte-identical `select_files()` file lists and
+(9-decimal-rounded) scores to an independently fresh-built `Corpus`, across
+add/remove-triggers-full-rebuild, docs-field patching, and the
+import-graph "reverse edge survives if the other side still authors it"
+case.

@@ -8,6 +8,7 @@
 use crate::pyutil::{normpath_join, path_join_simple, path_sort_key, py_lower, py_parent, py_parent_name, py_splitlines};
 use indexmap::IndexMap;
 use regex::Regex;
+use serde::{Deserialize, Serialize};
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::LazyLock;
@@ -30,7 +31,7 @@ fn has_code_suffix(rel: &str) -> bool {
     }
 }
 
-fn suffix_of(rel: &str) -> &str {
+pub(crate) fn suffix_of(rel: &str) -> &str {
     // Python `Path(rel).suffix`: the last dotted component of the *final
     // path component* (a leading-dot-only filename like ".gitignore" has no
     // suffix). Good enough here since it's only ever applied to plain
@@ -306,10 +307,10 @@ pub fn extract_comments(rel: &str, text: &str) -> String {
 
 // ---------------------------------------------------------------- docs field constants
 
-const DOCS_EXTENSIONS: &[&str] = &[".rst", ".txt", ".md"];
+pub const DOCS_EXTENSIONS: &[&str] = &[".rst", ".txt", ".md"];
 static DOCS_EXCLUDE_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"(?i)(^|/)(tests?|testing|__tests__)(/|$)").unwrap());
-const MAX_DOCS_FILE_BYTES: u64 = 500_000;
+pub(crate) const MAX_DOCS_FILE_BYTES: u64 = 500_000;
 const MAX_DOCS_FILES: usize = 4000;
 
 // ---------------------------------------------------------------- filesystem walk
@@ -372,6 +373,7 @@ fn counter_from_tokens(tokens: &[String]) -> IndexMap<String, u32> {
 
 // ---------------------------------------------------------------- Corpus
 
+#[derive(Serialize, Deserialize)]
 pub struct Corpus {
     pub repo_path: PathBuf,
     pub files: Vec<String>,
@@ -629,6 +631,226 @@ impl Corpus {
         }
     }
 
+    // -------------------------------------------------------- incremental update
+    //
+    // Ports of `bgrep.core.Corpus.update_files` / `update_docs_files` (see
+    // `cache.py`'s module docstring for the design). Both exist for
+    // `crate::cache`'s incremental-update path (the common agent edit-loop
+    // case: a file's CONTENT changed but its relpath set did not). Each
+    // re-derives a modified file's contribution to the corpus from scratch
+    // (subtract old, add new) using the identical per-file logic `build`
+    // uses, so a successfully patched Corpus is observationally identical to
+    // a fresh build over the same on-disk content. Neither method touches
+    // `ptoks` (unchanged by a content-only edit) or the `msg_*` fields
+    // (commit history is keyed on git HEAD, which incremental updates
+    // require to be unchanged -- see `cache.rs`).
+    //
+    // Both are all-or-nothing: every file is pre-checked against `build`'s
+    // own inclusion criteria BEFORE any mutation happens, so a `false`
+    // return leaves the Corpus completely unmodified and the caller is free
+    // to discard it and fall back to a full rebuild.
+
+    /// Which definition-symbol regex (if any) applies to `rel`, by
+    /// extension -- factored out of `build`'s per-file if/elif chain so
+    /// `update_files` can reuse the identical mapping when
+    /// subtracting/re-adding a modified file's `def_index` contributions.
+    fn def_re_for(rel: &str) -> Option<&'static Regex> {
+        if rel.ends_with(".py") {
+            Some(&PY_DEF_RE)
+        } else if rel.ends_with(".go") {
+            Some(&GO_DEF_RE)
+        } else if rel.ends_with(".rs") {
+            Some(&RS_DEF_RE)
+        } else if rel.ends_with(".js") || rel.ends_with(".ts") || rel.ends_with(".jsx") || rel.ends_with(".tsx") {
+            Some(&JS_DEF_RE)
+        } else {
+            None
+        }
+    }
+
+    fn def_syms(def_re: &Regex, text: &str) -> HashSet<String> {
+        let mut syms = HashSet::new();
+        for cap in def_re.captures_iter(text) {
+            for gi in 1..cap.len() {
+                if let Some(g) = cap.get(gi) {
+                    syms.insert(g.as_str().to_string());
+                }
+            }
+        }
+        syms
+    }
+
+    /// Patch this Corpus in place for `rels` -- files already present in
+    /// `self.files` whose on-disk content has changed. Re-reads each file
+    /// directly from `self.repo_path` and applies exactly `build`'s per-file
+    /// inclusion criteria (`MAX_FILE_BYTES`, `MAX_LINE_CHARS`, non-empty
+    /// tokenization); if any file's new content fails a criterion (or can no
+    /// longer be read), this is shaped like an add/remove and this method
+    /// makes NO changes and returns `false` -- callers must fall back to a
+    /// full rebuild. Returns `true`, having refreshed
+    /// df/tf/doclen/text/def_index (and com_tf/com_df if use_comments) plus
+    /// avg_len/n_com_docs, on full success.
+    pub fn update_files(&mut self, rels: &[String]) -> bool {
+        let mut new_text: HashMap<String, String> = HashMap::new();
+        let mut new_toks: HashMap<String, Vec<String>> = HashMap::new();
+        for rel in rels {
+            let p = self.repo_path.join(rel);
+            let meta = match std::fs::metadata(&p) {
+                Ok(m) => m,
+                Err(_) => return false,
+            };
+            if meta.len() > MAX_FILE_BYTES {
+                return false;
+            }
+            let text = match read_text_lossy(&p) {
+                Some(t) => t,
+                None => return false,
+            };
+            let lines = py_splitlines(&text);
+            if let Some(maxlen) = lines.iter().map(|l| l.chars().count()).max() {
+                if maxlen > MAX_LINE_CHARS {
+                    return false;
+                }
+            }
+            let toks = tokenize(&text);
+            if toks.is_empty() {
+                return false;
+            }
+            new_text.insert(rel.clone(), text);
+            new_toks.insert(rel.clone(), toks);
+        }
+
+        for rel in rels {
+            // --- subtract old contributions (self.text[rel] is still old here)
+            if let Some(old_tf) = self.tf.get(rel) {
+                for term in old_tf.keys() {
+                    if let Some(c) = self.df.get_mut(term) {
+                        *c -= 1;
+                        if *c == 0 {
+                            self.df.remove(term);
+                        }
+                    }
+                }
+            }
+            self.tf.remove(rel);
+            self.doclen.remove(rel);
+            if self.use_comments {
+                if let Some(old_ctf) = self.com_tf.remove(rel) {
+                    for term in old_ctf.keys() {
+                        if let Some(c) = self.com_df.get_mut(term) {
+                            *c -= 1;
+                            if *c == 0 {
+                                self.com_df.remove(term);
+                            }
+                        }
+                    }
+                }
+            }
+            let def_re = if impl_prior(rel) == 1.0 { Self::def_re_for(rel) } else { None };
+            if let Some(re) = def_re {
+                for sym in Self::def_syms(re, &self.text[rel]) {
+                    if let Some(lst) = self.def_index.get_mut(&sym) {
+                        lst.retain(|f| f != rel);
+                    }
+                }
+            }
+
+            // --- add new contributions
+            let toks = &new_toks[rel];
+            let counts = counter_from_tokens(toks);
+            for term in counts.keys() {
+                *self.df.entry(term.clone()).or_insert(0) += 1;
+            }
+            self.doclen.insert(rel.clone(), toks.len() as u32);
+            self.tf.insert(rel.clone(), counts);
+            self.text.insert(rel.clone(), new_text[rel].clone());
+            if self.use_comments {
+                let com_text = extract_comments(rel, &new_text[rel]);
+                let com_toks = tokenize(&com_text);
+                if !com_toks.is_empty() {
+                    let ctf = counter_from_tokens(&com_toks);
+                    for term in ctf.keys() {
+                        *self.com_df.entry(term.clone()).or_insert(0) += 1;
+                    }
+                    self.com_tf.insert(rel.clone(), ctf);
+                }
+            }
+            if let Some(re) = def_re {
+                for sym in Self::def_syms(re, &new_text[rel]) {
+                    self.def_index.entry(sym).or_default().push(rel.clone());
+                }
+            }
+        }
+
+        self.n_com_docs = self.com_tf.len();
+        self.avg_len = if self.n_docs > 0 {
+            self.doclen.values().map(|&v| v as f64).sum::<f64>() / self.n_docs as f64
+        } else {
+            1.0
+        };
+        true
+    }
+
+    /// Analogous to `update_files` but for the docs field (`*.rst`/`*.txt`/
+    /// `*.md` pages collected when this Corpus was built with
+    /// `build_docs=true`). Every rel must already be a member of
+    /// `self.docs_files`. Returns `false` (no changes) if any file's new
+    /// content would flip its `build` inclusion verdict (now oversized, or
+    /// now tokenizes to nothing) or can no longer be read -- callers must
+    /// fall back to a full rebuild.
+    pub fn update_docs_files(&mut self, rels: &[String]) -> bool {
+        let mut new_text: HashMap<String, String> = HashMap::new();
+        let mut new_toks: HashMap<String, Vec<String>> = HashMap::new();
+        for rel in rels {
+            let p = self.repo_path.join(rel);
+            let meta = match std::fs::metadata(&p) {
+                Ok(m) => m,
+                Err(_) => return false,
+            };
+            if meta.len() > MAX_DOCS_FILE_BYTES {
+                return false;
+            }
+            let text = match read_text_lossy(&p) {
+                Some(t) => t,
+                None => return false,
+            };
+            let toks = tokenize(&text);
+            if toks.is_empty() {
+                return false;
+            }
+            new_text.insert(rel.clone(), text);
+            new_toks.insert(rel.clone(), toks);
+        }
+
+        for rel in rels {
+            if let Some(old_tf) = self.docs_tf.get(rel) {
+                for term in old_tf.keys() {
+                    if let Some(c) = self.docs_df.get_mut(term) {
+                        *c -= 1;
+                        if *c == 0 {
+                            self.docs_df.remove(term);
+                        }
+                    }
+                }
+            }
+            let toks = &new_toks[rel];
+            let counts = counter_from_tokens(toks);
+            for term in counts.keys() {
+                *self.docs_df.entry(term.clone()).or_insert(0) += 1;
+            }
+            self.docs_len.insert(rel.clone(), toks.len() as u32);
+            self.docs_tf.insert(rel.clone(), counts);
+            self.docs_text.insert(rel.clone(), new_text[rel].clone());
+        }
+
+        self.docs_avg_len = if self.n_docs_files > 0 {
+            self.docs_len.values().map(|&v| v as f64).sum::<f64>() / self.n_docs_files as f64
+        } else {
+            1.0
+        };
+        true
+    }
+
     /// BM25F-style: body field (Okapi) + path field (binary match, weighted),
     /// multiplied by the implementation-file document prior, plus an
     /// optional comment/NL field term. See lanes2.py's `Corpus.bm25`
@@ -815,6 +1037,51 @@ pub fn extract_symbol_anchors(question: &str, corpus: &Corpus) -> Vec<(String, f
     result
 }
 
+/// Best-effort recovery of WHICH rarity-gated definition symbol(s) (see
+/// `extract_symbol_anchors` above) anchored each of `files` into the ranked
+/// file list, for `pack_regions`' channel-aware packing: an anchor-selected
+/// file's packed regions should include the anchored symbol's own
+/// definition block, not just whatever region wins on generic term
+/// density.
+///
+/// Deliberately a separate, independent pass over the question text rather
+/// than a refactor of `extract_symbol_anchors` -- that function's return
+/// value is parity-pinned. This helper may return MULTIPLE symbols per
+/// file (in question-regex-match order, which `pack_regions` consumes
+/// first-match-wins) and is never consumed by `select_files`, so nothing
+/// here can affect the ranked file list. Applies the identical rarity gate
+/// (<=3 defining files) so it only ever surfaces symbols that
+/// `extract_symbol_anchors` itself would have considered.
+pub fn anchor_def_symbols(
+    question: &str,
+    corpus: &Corpus,
+    files: &HashSet<String>,
+) -> IndexMap<String, Vec<String>> {
+    let mut out: IndexMap<String, Vec<String>> = IndexMap::new();
+    if files.is_empty() {
+        return out;
+    }
+    for m in ANCHOR_IDENT_RE.find_iter(question) {
+        let s = m.as_str();
+        if STOP.contains(py_lower(s).as_str()) {
+            continue;
+        }
+        let def_files = match corpus.def_index.get(s) {
+            Some(f) if !f.is_empty() && f.len() <= 3 => f,
+            _ => continue,
+        };
+        for f in def_files {
+            if files.contains(f) {
+                let entry = out.entry(f.clone()).or_default();
+                if !entry.iter().any(|x| x == s) {
+                    entry.push(s.to_string());
+                }
+            }
+        }
+    }
+    out
+}
+
 // ---------------------------------------------------------------- import graph
 
 static PY_FROM_RE: LazyLock<Regex> =
@@ -850,19 +1117,22 @@ fn py_module_index(files: &[String]) -> HashMap<String, String> {
 /// the whole pipeline).
 pub type EdgeMap = HashMap<String, BTreeSet<String>>;
 
-pub fn build_import_graph(corpus: &Corpus) -> EdgeMap {
-    let mut edges: EdgeMap = HashMap::new();
-    let pyidx = py_module_index(&corpus.files);
-    let fileset: HashSet<&String> = corpus.files.iter().collect();
+/// The set of files that `rel`'s OWN text authors an import edge to
+/// (pre-symmetrization) -- i.e. the per-file body of `build_import_graph`'s
+/// main loop, factored out so `crate::cache`'s incremental-update path
+/// (`update_import_graph_for_files`) can recompute a single changed file's
+/// authored edges without re-parsing the whole corpus. Must stay exactly in
+/// sync with `build_import_graph`'s loop body -- best-effort per language,
+/// unresolved imports ignored.
+fn file_import_targets(
+    rel: &str,
+    text: &str,
+    pyidx: &HashMap<String, String>,
+    fileset: &HashSet<&String>,
+) -> HashSet<String> {
+    let mut targets: HashSet<String> = HashSet::new();
 
-    let add = |edges: &mut EdgeMap, a: &str, b: &str| {
-        if a != b && fileset.contains(&b.to_string()) {
-            edges.entry(a.to_string()).or_default().insert(b.to_string());
-            edges.entry(b.to_string()).or_default().insert(a.to_string());
-        }
-    };
-
-    let resolve_py_module = |module: &str, rel: &str| -> String {
+    let resolve_py_module = |module: &str| -> String {
         if !module.starts_with('.') {
             return module.to_string();
         }
@@ -881,102 +1151,193 @@ pub fn build_import_graph(corpus: &Corpus) -> EdgeMap {
         all.join(".")
     };
 
-    let add_module = |edges: &mut EdgeMap, rel: &str, module: &str| {
+    let add_module = |targets: &mut HashSet<String>, module: &str| {
         let parts: Vec<&str> = module.split('.').filter(|p| !p.is_empty()).collect();
         for i in (1..=parts.len()).rev() {
             let key = parts[..i].join(".");
             if let Some(hit) = pyidx.get(&key) {
-                let hit = hit.clone();
-                add(edges, rel, &hit);
+                if hit != rel {
+                    targets.insert(hit.clone());
+                }
                 return;
             }
         }
     };
 
-    for rel in &corpus.files {
-        let text = &corpus.text[rel];
-        if rel.ends_with(".py") {
-            for cap in PY_FROM_RE.captures_iter(text) {
-                let module_spec = cap.get(1).unwrap().as_str();
-                let module = resolve_py_module(module_spec, rel);
-                add_module(&mut edges, rel, &module);
-                let names_blob = cap.get(2).unwrap().as_str();
-                let trimmed = names_blob.trim_matches(|c| c == '(' || c == ')');
-                for name_raw in trimmed.replace('\n', " ").split(',') {
-                    let name = name_raw.trim();
-                    let name = name.split(" as ").next().unwrap_or(name).trim();
-                    let name = name.trim_matches(|c: char| c == '*' || c == '#' || c == ' ' || c == '\t');
-                    if !name.is_empty() && !name.contains('.') {
-                        let sub_key = format!("{module}.{name}");
-                        if let Some(sub) = pyidx.get(&sub_key) {
-                            let sub = sub.clone();
-                            add(&mut edges, rel, &sub);
+    if rel.ends_with(".py") {
+        for cap in PY_FROM_RE.captures_iter(text) {
+            let module_spec = cap.get(1).unwrap().as_str();
+            let module = resolve_py_module(module_spec);
+            add_module(&mut targets, &module);
+            let names_blob = cap.get(2).unwrap().as_str();
+            let trimmed = names_blob.trim_matches(|c| c == '(' || c == ')');
+            for name_raw in trimmed.replace('\n', " ").split(',') {
+                let name = name_raw.trim();
+                let name = name.split(" as ").next().unwrap_or(name).trim();
+                let name = name.trim_matches(|c: char| c == '*' || c == '#' || c == ' ' || c == '\t');
+                if !name.is_empty() && !name.contains('.') {
+                    let sub_key = format!("{module}.{name}");
+                    if let Some(sub) = pyidx.get(&sub_key) {
+                        if sub != rel {
+                            targets.insert(sub.clone());
                         }
                     }
                 }
             }
-            for cap in PY_PLAIN_IMPORT_RE.captures_iter(text) {
-                let spec_list = cap.get(1).unwrap().as_str();
-                for spec in spec_list.split(',') {
-                    let module = spec.trim().split(" as ").next().unwrap_or("").trim();
-                    if !module.is_empty() {
-                        add_module(&mut edges, rel, module);
-                    }
+        }
+        for cap in PY_PLAIN_IMPORT_RE.captures_iter(text) {
+            let spec_list = cap.get(1).unwrap().as_str();
+            for spec in spec_list.split(',') {
+                let module = spec.trim().split(" as ").next().unwrap_or("").trim();
+                if !module.is_empty() {
+                    add_module(&mut targets, module);
                 }
             }
-        } else if rel.ends_with(".js") || rel.ends_with(".ts") || rel.ends_with(".jsx") || rel.ends_with(".tsx") {
-            let base = py_parent(rel);
-            for cap in JS_IMPORT_RE.captures_iter(text) {
-                let spec = (1..=3).find_map(|i| cap.get(i)).map(|m| m.as_str()).unwrap_or("");
-                if !spec.starts_with('.') {
-                    continue;
-                }
-                let cand = normpath_join(base, spec);
-                let suffixes = ["", ".js", ".ts", ".jsx", ".tsx", "/index.js", "/index.ts"];
-                for suffix in suffixes {
-                    let candidate = format!("{cand}{suffix}");
-                    if fileset.contains(&candidate) {
-                        add(&mut edges, rel, &candidate);
-                        break;
+        }
+    } else if rel.ends_with(".js") || rel.ends_with(".ts") || rel.ends_with(".jsx") || rel.ends_with(".tsx") {
+        let base = py_parent(rel);
+        for cap in JS_IMPORT_RE.captures_iter(text) {
+            let spec = (1..=3).find_map(|i| cap.get(i)).map(|m| m.as_str()).unwrap_or("");
+            if !spec.starts_with('.') {
+                continue;
+            }
+            let cand = normpath_join(base, spec);
+            let suffixes = ["", ".js", ".ts", ".jsx", ".tsx", "/index.js", "/index.ts"];
+            for suffix in suffixes {
+                let candidate = format!("{cand}{suffix}");
+                if fileset.contains(&candidate) {
+                    if candidate != rel {
+                        targets.insert(candidate);
                     }
+                    break;
                 }
             }
-        } else if rel.ends_with(".rs") {
-            let base = py_parent(rel);
-            for cap in RS_MOD_RE.captures_iter(text) {
-                let name = cap.get(1).unwrap().as_str();
-                for cand in [path_join_simple(base, &format!("{name}.rs")), path_join_simple(base, &format!("{name}/mod.rs"))] {
-                    if fileset.contains(&cand) {
-                        add(&mut edges, rel, &cand);
-                    }
+        }
+    } else if rel.ends_with(".rs") {
+        let base = py_parent(rel);
+        for cap in RS_MOD_RE.captures_iter(text) {
+            let name = cap.get(1).unwrap().as_str();
+            for cand in [path_join_simple(base, &format!("{name}.rs")), path_join_simple(base, &format!("{name}/mod.rs"))] {
+                if fileset.contains(&cand) && cand != rel {
+                    targets.insert(cand);
                 }
             }
-            for cap in RS_USE_RE.captures_iter(text) {
-                let head = cap.get(1).unwrap().as_str().split("::").next().unwrap_or("");
-                for cand in [
-                    path_join_simple(base, &format!("{head}.rs")),
-                    path_join_simple(base, &format!("{head}/mod.rs")),
-                    format!("src/{head}.rs"),
-                    format!("src/{head}/mod.rs"),
-                ] {
-                    if fileset.contains(&cand) {
-                        add(&mut edges, rel, &cand);
-                    }
+        }
+        for cap in RS_USE_RE.captures_iter(text) {
+            let head = cap.get(1).unwrap().as_str().split("::").next().unwrap_or("");
+            for cand in [
+                path_join_simple(base, &format!("{head}.rs")),
+                path_join_simple(base, &format!("{head}/mod.rs")),
+                format!("src/{head}.rs"),
+                format!("src/{head}/mod.rs"),
+            ] {
+                if fileset.contains(&cand) && cand != rel {
+                    targets.insert(cand);
                 }
             }
-        } else if rel.ends_with(".go") {
-            for cap in GO_IMPORT_RE.captures_iter(text) {
-                let pkg = cap.get(1).unwrap().as_str();
-                let tail = pkg.rsplit('/').next().unwrap_or(pkg);
-                for other in &corpus.files {
-                    if other.ends_with(".go") && py_parent_name(other) == tail {
-                        add(&mut edges, rel, other);
-                    }
+        }
+    } else if rel.ends_with(".go") {
+        for cap in GO_IMPORT_RE.captures_iter(text) {
+            let pkg = cap.get(1).unwrap().as_str();
+            let tail = pkg.rsplit('/').next().unwrap_or(pkg);
+            for other in fileset {
+                if other.as_str() != rel && other.ends_with(".go") && py_parent_name(other) == tail {
+                    targets.insert((*other).clone());
                 }
             }
         }
     }
+    targets
+}
+
+pub fn build_import_graph(corpus: &Corpus) -> EdgeMap {
+    let mut edges: EdgeMap = HashMap::new();
+    let pyidx = py_module_index(&corpus.files);
+    let fileset: HashSet<&String> = corpus.files.iter().collect();
+
+    for rel in &corpus.files {
+        let text = &corpus.text[rel];
+        let targets = file_import_targets(rel, text, &pyidx, &fileset);
+        for t in targets {
+            edges.entry(rel.clone()).or_default().insert(t.clone());
+            edges.entry(t).or_default().insert(rel.clone());
+        }
+    }
     edges
+}
+
+/// Incrementally patch `edges` (mutated in place) for a batch of files whose
+/// content changed but whose relpath set is unchanged -- see
+/// `crate::cache`'s incremental-update path. `old_text` is `{rel: text}`
+/// holding each changed file's PRE-edit text; `corpus.text[rel]` must
+/// already hold the POST-edit text for every rel in `old_text` by the time
+/// this is called (see `Corpus::update_files`, which must run first).
+///
+/// Recomputes each changed file's own authored-edge set
+/// (`file_import_targets`) from both its old and new text. An edge
+/// `(rel, t)` is removed only if `rel` was its SOLE author -- `t`'s own
+/// current text, re-checked on demand, doesn't independently author it
+/// back -- so an edge created by an UNCHANGED file Y importing a changed
+/// file `rel` is left untouched even though `rel`'s content changed, since
+/// Y's text (the sole source of that edge) didn't.
+pub fn update_import_graph_for_files(corpus: &Corpus, edges: &mut EdgeMap, old_text: &HashMap<String, String>) {
+    let fileset: HashSet<&String> = corpus.files.iter().collect();
+    let pyidx = py_module_index(&corpus.files);
+
+    let authored = |rel: &str, text: &str| -> HashSet<String> { file_import_targets(rel, text, &pyidx, &fileset) };
+
+    let mut new_authored: HashMap<String, HashSet<String>> = HashMap::new();
+    let mut old_authored: HashMap<String, HashSet<String>> = HashMap::new();
+    for rel in old_text.keys() {
+        if let Some(text) = corpus.text.get(rel) {
+            new_authored.insert(rel.clone(), authored(rel, text));
+        }
+    }
+    for (rel, text) in old_text {
+        old_authored.insert(rel.clone(), authored(rel, text));
+    }
+
+    let other_authors = |t: &str, rel: &str| -> bool {
+        if old_text.contains_key(t) {
+            new_authored.get(t).map(|s| s.contains(rel)).unwrap_or(false)
+        } else {
+            match corpus.text.get(t) {
+                Some(text) => authored(t, text).contains(rel),
+                None => false,
+            }
+        }
+    };
+
+    let mut touched: HashSet<String> = old_text.keys().cloned().collect();
+    for rel in old_text.keys() {
+        let empty = HashSet::new();
+        let old_set = old_authored.get(rel).unwrap_or(&empty);
+        let new_set = new_authored.get(rel).unwrap_or(&empty);
+        let removed: Vec<String> = old_set.difference(new_set).cloned().collect();
+        let added: Vec<String> = new_set.difference(old_set).cloned().collect();
+        touched.extend(removed.iter().cloned());
+        touched.extend(added.iter().cloned());
+        for t in &removed {
+            if !other_authors(t, rel) {
+                if let Some(s) = edges.get_mut(rel) {
+                    s.remove(t);
+                }
+                if let Some(s) = edges.get_mut(t) {
+                    s.remove(rel);
+                }
+            }
+        }
+        for t in &added {
+            edges.entry(rel.clone()).or_default().insert(t.clone());
+            edges.entry(t.clone()).or_default().insert(rel.clone());
+        }
+    }
+
+    for k in &touched {
+        if edges.get(k).map(|s| s.is_empty()).unwrap_or(false) {
+            edges.remove(k);
+        }
+    }
 }
 
 /// Random walk with restart -- present for structural parity with
@@ -1644,28 +2005,87 @@ pub fn select_files(
 
 // ---------------------------------------------------------------- region packing
 
-static PY_BLOCK_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?m)^(async def |def |class |@)").unwrap());
+// v2: matched per-line via `.captures()` (not `.find_iter()` over the whole
+// text), so no `(?m)` flag is needed -- mirrors lanes2.py's
+// `_PY_BLOCK_RE.match(ln)` per-line loop.
+static PY_BLOCK_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^([ \t]*)(async def |def |class |@)").unwrap());
 
+/// Signature-plus-body block spans (1-indexed, inclusive), split at EVERY
+/// def/class/decorator header regardless of indentation -- not just
+/// column-0, as a prior version did. Column-0-only splitting made an entire
+/// class (every one of its methods) a single multi-hundred-line block, so
+/// `pack_regions`' per-file token cap trimmed from that block's START and
+/// any gold hunk past the class's first method was silently dropped.
+///
+/// Blocks now nest: a class's own span still covers its header through its
+/// last method (so "class X: <giant body>" remains a valid whole-class
+/// candidate for `pack_regions`' greedy packing, same as before), but each
+/// direct child header (a method, or a nested function) ALSO gets its own,
+/// tighter span from its header line to the next sibling header at the
+/// same-or-lower indentation. This hands `pack_regions` candidates at
+/// multiple granularities, so a hit deep inside a large class can be
+/// represented by its own small method-level block instead of only ever
+/// appearing as an early fragment of the whole class.
 fn python_blocks(text: &str) -> Vec<(usize, usize)> {
     let lines = py_splitlines(text);
-    let starts: Vec<usize> = lines
-        .iter()
-        .enumerate()
-        .filter(|(_, ln)| PY_BLOCK_RE.is_match(ln))
-        .map(|(i, _)| i)
-        .collect();
-    if starts.is_empty() {
-        return vec![(1, lines.len())];
+    let n = lines.len();
+    // (0-indexed line, indent width)
+    let mut headers: Vec<(usize, usize)> = Vec::new();
+    for (i, ln) in lines.iter().enumerate() {
+        if let Some(caps) = PY_BLOCK_RE.captures(ln) {
+            let indent = caps.get(1).unwrap().as_str().chars().count();
+            headers.push((i, indent));
+        }
     }
+    if headers.is_empty() {
+        return vec![(1, n)];
+    }
+
     let mut spans: Vec<(usize, usize)> = Vec::new();
-    if starts[0] > 0 {
-        spans.push((1, starts[0]));
+    if headers[0].0 > 0 {
+        spans.push((1, headers[0].0)); // leading preamble (imports, module docstring)
     }
-    for (j, &s) in starts.iter().enumerate() {
-        let end = starts.get(j + 1).copied().unwrap_or(lines.len());
-        spans.push((s + 1, end));
+
+    for (idx, &(i, indent)) in headers.iter().enumerate() {
+        if lines[i].trim_start().starts_with('@') {
+            continue; // standalone decorator: folded into the following def/class's span below
+        }
+        let mut start = i;
+        let mut k = i as isize - 1;
+        while k >= 0 && lines[k as usize].trim_start().starts_with('@') {
+            start = k as usize;
+            k -= 1;
+        }
+        let mut end = n;
+        for &(j, ind2) in &headers[idx + 1..] {
+            if ind2 <= indent {
+                end = j;
+                break;
+            }
+        }
+        spans.push((start + 1, end));
     }
     spans.into_iter().filter(|&(a, b)| b >= a).collect()
+}
+
+static PY_DEF_LINE_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[ \t]*(?:async def|def|class)\s+(\w+)").unwrap());
+
+/// 1-indexed line number of each class/def header's FIRST occurrence in
+/// `text` (Python only, any indentation), keyed by symbol name -- used to
+/// seat an anchor-channel symbol's own signature+body block among
+/// `python_blocks`' spans (a span with that exact start line is that
+/// symbol's def block). First occurrence wins: a symbol name can recur
+/// (overload-by-decorator, reassignment) but `pack_regions` only needs A
+/// definition site to anchor the forced block at, not every one.
+fn py_def_line_numbers(text: &str) -> HashMap<String, usize> {
+    let mut out: HashMap<String, usize> = HashMap::new();
+    for (i, ln) in py_splitlines(text).iter().enumerate() {
+        if let Some(caps) = PY_DEF_LINE_RE.captures(ln) {
+            let name = caps.get(1).unwrap().as_str().to_string();
+            out.entry(name).or_insert(i + 1);
+        }
+    }
+    out
 }
 
 fn window_blocks(text: &str, hit_lines: &[usize], radius: usize) -> Vec<(usize, usize)> {
@@ -1712,6 +2132,21 @@ struct Candidate {
 
 /// Greedy weighted-coverage packing of regions under budget. See
 /// lanes2.py's `pack_regions` docstring.
+///
+/// A region's term coverage is weighted by each matched term's corpus idf
+/// rather than counted flatly, so a region hitting a couple of rare,
+/// highly-specific identifiers outranks one hitting many generic terms
+/// ("error", "value", ...) that happen to be query terms too.
+///
+/// `anchor_symbols` (see `anchor_def_symbols`), if given, maps an
+/// anchor-channel file to the definition-symbol(s) that anchored it in.
+/// Channel-aware packing: the anchored symbol's OWN signature+body block
+/// (found among `python_blocks`' nested spans by matching def-line number,
+/// see `py_def_line_numbers`) is force-included as that file's pass-1
+/// region, at a deeper cap than the generic score-proportional one -- the
+/// query named this exact symbol, so its definition is the region least
+/// likely to be noise, independent of how it happens to score on term
+/// density.
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],
@@ -1719,8 +2154,19 @@ pub fn pack_regions(
     scores: &IndexMap<String, f64>,
     budget_tokens: i64,
     count_tokens: &dyn Fn(&str) -> usize,
+    anchor_symbols: Option<&IndexMap<String, Vec<String>>>,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
     let tset: HashSet<String> = terms.iter().cloned().collect();
+    let idf: HashMap<String, f64> = tset
+        .iter()
+        .map(|t| {
+            let df = corpus.df.get(t).copied().unwrap_or(0) as f64;
+            let v = (1.0 + (corpus.n_docs as f64 - df + 0.5) / (df + 0.5)).ln();
+            (t.clone(), v)
+        })
+        .collect();
+    let weight = |seg_terms: &HashSet<String>| -> f64 { seg_terms.iter().map(|t| idf.get(t).copied().unwrap_or(0.0)).sum() };
+
     let mut candidates: Vec<Candidate> = Vec::new();
 
     for rel in files {
@@ -1756,8 +2202,37 @@ pub fn pack_regions(
             if tok == 0 {
                 continue;
             }
-            let gain = (seg_terms.len() as f64 + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
+            let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
             candidates.push(Candidate { file: rel.clone(), span: (a, b), tok, terms: seg_terms, gain, text: seg });
+        }
+    }
+
+    // Channel-aware forced region: for each anchor-selected file, seat its
+    // anchored symbol's own def block (a candidate whose span starts exactly
+    // at that symbol's def line, per `py_def_line_numbers`) as the pass-1
+    // pick -- bypassing the generic gain/tok ranking entirely, since the
+    // query named this exact symbol.
+    let mut forced: HashMap<String, usize> = HashMap::new(); // file -> candidate index
+    if let Some(anchor_map) = anchor_symbols {
+        for (rel, syms) in anchor_map {
+            if !rel.ends_with(".py") || !files.iter().any(|f| f == rel) {
+                continue;
+            }
+            let def_lines = py_def_line_numbers(&corpus.text[rel]);
+            let mut cand_by_start: HashMap<usize, usize> = HashMap::new();
+            for (i, c) in candidates.iter().enumerate() {
+                if &c.file == rel {
+                    cand_by_start.insert(c.span.0, i);
+                }
+            }
+            for sym in syms {
+                if let Some(&ln) = def_lines.get(sym) {
+                    if let Some(&idx) = cand_by_start.get(&ln) {
+                        forced.insert(rel.clone(), idx);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -1784,30 +2259,43 @@ pub fn pack_regions(
             (f.clone(), floor_tok + ((spare as f64) * sc / total_score) as i64)
         })
         .collect();
+    // Anchor-forced files get a deeper cap on top of their score-proportional
+    // one (up to budget/10) -- the definition block a query explicitly named
+    // is worth more depth than generic density would otherwise buy it.
+    let anchor_cap: i64 = (budget_tokens / 10).max(floor_tok);
 
     for rel in files {
         let idxs: Vec<usize> = candidates.iter().enumerate().filter(|(_, c)| &c.file == rel).map(|(i, _)| i).collect();
         if idxs.is_empty() {
             continue;
         }
+        let forced_idx = forced.get(rel).copied();
         // Python's `max(cands, key=...)` returns the FIRST maximal element
         // on ties; Rust's `Iterator::max_by` returns the LAST. Replicate
         // Python's tie behavior with an explicit "strictly greater only
         // replaces" fold.
-        let mut best_idx = idxs[0];
-        let mut best_ratio = candidates[best_idx].gain / (candidates[best_idx].tok.max(1) as f64);
-        for &i in &idxs[1..] {
-            let ratio = candidates[i].gain / (candidates[i].tok.max(1) as f64);
-            if ratio > best_ratio {
-                best_ratio = ratio;
-                best_idx = i;
+        let best_idx = if let Some(fi) = forced_idx {
+            fi
+        } else {
+            let mut best_idx = idxs[0];
+            let mut best_ratio = candidates[best_idx].gain / (candidates[best_idx].tok.max(1) as f64);
+            for &i in &idxs[1..] {
+                let ratio = candidates[i].gain / (candidates[i].tok.max(1) as f64);
+                if ratio > best_ratio {
+                    best_ratio = ratio;
+                    best_idx = i;
+                }
             }
-        }
+            best_idx
+        };
         let mut best_span = candidates[best_idx].span;
         let mut best_text = candidates[best_idx].text.clone();
         let mut best_tok = candidates[best_idx].tok;
         let best_terms = candidates[best_idx].terms.clone();
-        let per_file_cap = *caps.get(rel).unwrap_or(&floor_tok);
+        let mut per_file_cap = *caps.get(rel).unwrap_or(&floor_tok);
+        if forced_idx.is_some() {
+            per_file_cap = per_file_cap.max((best_tok as i64).min(anchor_cap));
+        }
 
         if best_tok as i64 > per_file_cap {
             let (a, b) = best_span;
@@ -1871,8 +2359,9 @@ pub fn pack_regions(
     while !remaining.is_empty() && spent < budget_tokens {
         let marginal = |i: usize| -> f64 {
             let c = &candidates[i];
-            let new_terms = c.terms.difference(&covered).count() as f64;
-            (new_terms + 0.25 * c.terms.len() as f64 + 0.1) * (0.3 + scores.get(&c.file).copied().unwrap_or(0.0)) / (c.tok.max(1) as f64)
+            let diff: HashSet<String> = c.terms.difference(&covered).cloned().collect();
+            let new_weight = weight(&diff);
+            (new_weight + 0.25 * weight(&c.terms) + 0.1) * (0.3 + scores.get(&c.file).copied().unwrap_or(0.0)) / (c.tok.max(1) as f64)
         };
         remaining.sort_by(|&a, &b| marginal(b).partial_cmp(&marginal(a)).unwrap());
         let i = remaining.remove(0);
@@ -2085,7 +2574,7 @@ mod tests {
         assert!(files.contains(&"pkg/validators.py".to_string()));
 
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None);
         assert!(!bundle.is_empty());
         assert!(spans.contains_key("pkg/router.py"));
 

@@ -1,12 +1,13 @@
 //! bgrep-rs command-line interface -- a Rust port of `src/bgrep/cli.py`.
 //!
 //!     bgrep-rs [--json] [--files-only] [--budget N=8192] [--k N]
+//!              [--no-cache] [--reindex]
 //!              [--no-history] [--no-docs] [--no-anchors] [--no-testbridge]
 //!              [--explain] QUERY PATH
 //!
-//! Runs the frozen-v7 retrieval pipeline (bgrep_rs::core, bgrep_rs::history)
-//! against a repo and prints a token-budgeted, region-packed bundle of the
-//! files most relevant to QUERY.
+//! Runs the frozen-v7 retrieval pipeline (bgrep_rs::core, bgrep_rs::cache,
+//! bgrep_rs::history) against a repo and prints a token-budgeted,
+//! region-packed bundle of the files most relevant to QUERY.
 //!
 //! Default output (stdout) is the packed bundle text. A one-line stats
 //! summary always goes to stderr, never stdout, so stdout stays
@@ -14,12 +15,11 @@
 //!
 //! Exit codes: 0 = results found, 1 = no results, 2 = usage error.
 
-use bgrep_rs::core::{self, extract_symbol_anchors, pack_regions, query_terms, select_files, Corpus, SelectParams};
-use bgrep_rs::history::mine_history;
+use bgrep_rs::cache;
+use bgrep_rs::core::{anchor_def_symbols, extract_symbol_anchors, pack_regions, query_terms, select_files, SelectParams};
 use clap::Parser;
-use indexmap::IndexMap;
 use std::collections::HashSet;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::time::Instant;
 
 #[derive(Parser, Debug)]
@@ -51,6 +51,15 @@ struct Args {
     /// machine-readable JSON output instead of the packed bundle
     #[arg(long)]
     json: bool,
+
+    /// do not read or write the on-disk index cache (<repo>/.bgrep/)
+    #[arg(long)]
+    no_cache: bool,
+
+    /// force a fresh index build even if a matching cache entry exists
+    /// (still writes the cache afterward unless combined with --no-cache)
+    #[arg(long)]
+    reindex: bool,
 
     /// disable the git-history commit-message field + co-change frontier expansion
     #[arg(long)]
@@ -98,15 +107,8 @@ fn main() {
 
     let t0 = Instant::now();
 
-    let history = if with_history {
-        let current_files = list_current_files(&repo_path);
-        Some(mine_history(&repo_path, 5000, Some(&current_files)))
-    } else {
-        None
-    };
-    let history_msgs: Option<&IndexMap<String, String>> = history.as_ref().map(|h| &h.msgs);
-
-    let corpus = Corpus::build(&repo_path, history_msgs, false, with_docs);
+    let (corpus, _edges, history, cache_hit) =
+        cache::load_or_build(&repo_path, with_history, with_docs, !args.no_cache, args.reindex);
     let index_ms = t0.elapsed().as_secs_f64() * 1000.0;
 
     let t1 = Instant::now();
@@ -133,7 +135,13 @@ fn main() {
     let encoder = tiktoken_rs::cl100k_base_singleton();
     let count_tokens = |text: &str| -> usize { encoder.lock().encode_ordinary(text).len() };
 
-    let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, args.budget, &count_tokens);
+    let anchor_files: HashSet<String> = explain.anchor_promotions.iter().map(|(f, ..)| f.clone()).collect();
+    let anchor_symbols = if anchor_files.is_empty() {
+        indexmap::IndexMap::new()
+    } else {
+        anchor_def_symbols(&args.query, &corpus, &anchor_files)
+    };
+    let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, args.budget, &count_tokens, Some(&anchor_symbols));
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
     if args.explain {
@@ -142,6 +150,7 @@ fn main() {
 
     let packed_files: Vec<String> = files.iter().filter(|f| spans.contains_key(f.as_str())).cloned().collect();
     let bundle_tokens = if !bundle.is_empty() { count_tokens(&bundle) } else { 0 };
+    let cache_state = if cache_hit { "hit" } else { "miss" };
 
     if !packed_files.is_empty() {
         if args.json {
@@ -168,7 +177,7 @@ fn main() {
                     "index_ms": index_ms.round() as i64,
                     "query_ms": query_ms.round() as i64,
                     "bundle_tokens": bundle_tokens,
-                    "cache": "miss",
+                    "cache": cache_state,
                 },
             });
             println!("{}", serde_json::to_string(&payload).unwrap());
@@ -182,69 +191,16 @@ fn main() {
     }
 
     eprintln!(
-        "bgrep-rs: {} files, {} tokens (indexed {} files, index {}ms, query {}ms, cache miss)",
+        "bgrep-rs: {} files, {} tokens (indexed {} files, index {}ms, query {}ms, cache {})",
         packed_files.len(),
         bundle_tokens,
         corpus.n_docs,
         index_ms.round() as i64,
         query_ms.round() as i64,
+        cache_state,
     );
 
     if packed_files.is_empty() {
         std::process::exit(1);
     }
-}
-
-/// Cheap mirror of Corpus's file-collection filter (extension, .git, size
-/// cap) without reading/tokenizing file contents -- matches
-/// swebench_driver2.py's `_list_current_files`.
-fn list_current_files(repo_path: &Path) -> HashSet<String> {
-    let mut files = HashSet::new();
-    fn recurse(dir: &Path, base: &Path, out: &mut HashSet<String>) {
-        let entries = match std::fs::read_dir(dir) {
-            Ok(e) => e,
-            Err(_) => return,
-        };
-        for entry in entries.flatten() {
-            let path = entry.path();
-            let file_type = match entry.file_type() {
-                Ok(t) => t,
-                Err(_) => continue,
-            };
-            if file_type.is_dir() {
-                recurse(&path, base, out);
-            } else {
-                let is_file = if file_type.is_symlink() {
-                    std::fs::metadata(&path).map(|m| m.is_file()).unwrap_or(false)
-                } else {
-                    file_type.is_file()
-                };
-                if !is_file {
-                    continue;
-                }
-                let rel = match path.strip_prefix(base) {
-                    Ok(r) => r,
-                    Err(_) => continue,
-                };
-                let relstr = match rel.to_str() {
-                    Some(s) => s.replace('\\', "/"),
-                    None => continue,
-                };
-                if relstr.starts_with(".git/") || relstr.contains("/.git/") {
-                    continue;
-                }
-                if !core::CODE_EXTENSIONS.iter().any(|ext| relstr.ends_with(ext)) {
-                    continue;
-                }
-                if let Ok(meta) = std::fs::metadata(&path) {
-                    if meta.len() > core::MAX_FILE_BYTES {
-                        continue;
-                    }
-                }
-                out.insert(relstr);
-            }
-        }
-    }
-    recurse(repo_path, repo_path, &mut files);
-    files
 }

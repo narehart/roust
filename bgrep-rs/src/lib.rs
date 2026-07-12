@@ -2,6 +2,7 @@
 //! (lab/lanes2.py + lab/history.py). See PARITY_NOTES.md for the
 //! Python-semantics translation notes.
 
+pub mod cache;
 pub mod core;
 pub mod history;
 pub mod pyutil;
