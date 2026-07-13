@@ -25,7 +25,7 @@ use std::time::Instant;
 #[derive(Parser, Debug)]
 #[command(
     name = "roust",
-    about = "Recall-first code retrieval for LLM coding agents -- grep-level recall at ~1% of the tokens."
+    about = "Recall-first code retrieval for coding agents - one ranked, token-budgeted bundle per query, no model or API key required"
 )]
 struct Args {
     /// natural-language query or issue text (pass it raw -- identifiers,
