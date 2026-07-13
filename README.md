@@ -253,7 +253,6 @@ Cold index build, Rust vs Python engine: httpx 145ms vs 522ms; django 1.8s vs 7.
 - archex has never been measured by us on any of our benches — [#1](https://github.com/narehart/roust/issues/1)
 - True cost-per-success is unmeasured (needs repeat runs to get per-task success probability) — [#16](https://github.com/narehart/roust/issues/16)
 - Latency has no committed benchmark artifact — [#15](https://github.com/narehart/roust/issues/15)
-- Rust parity gate currently fails 299/300 (`sympy__sympy-21171` panics) — [#14](https://github.com/narehart/roust/issues/14)
 
 ### How these were measured
 
@@ -277,7 +276,7 @@ Cold index build, Rust vs Python engine: httpx 145ms vs 522ms; django 1.8s vs 7.
 
 ## Roadmap
 
-- ~~Rust port~~ **v0.2 complete**: `roust-rs/` — feature-parity with Python v0.2 (channel-aware packing, on-disk cache with incremental updates, deterministic seed). Parity gate currently **FAILS 299/300 exact** on SWE-bench Lite (report in `parity/rust_gate_300_v2.json`); the one failure is `sympy__sympy-21171`, which panics (`user-provided comparison function does not correctly implement a total order`) instead of returning a result. This is a regression from the prior 300/300 run — see [#14](https://github.com/narehart/roust/issues/14). Cold 3.6–4.2× faster than Python (httpx 145ms vs 522ms, django 1.8s vs 7.6s); warm/incremental 2–3×. Build: `cd roust-rs && cargo build --release`. Prebuilt binaries / Homebrew: still to come.
+- ~~Rust port~~ **v0.2 complete**: `roust-rs/` — feature-parity with Python v0.2 (channel-aware packing, on-disk cache with incremental updates, deterministic seed). Parity gate **PASSES 300/300 exact** on SWE-bench Lite (report in `parity/rust_gate_300_v3.json`). Cold 3.6–4.2× faster than Python (httpx 145ms vs 522ms, django 1.8s vs 7.6s); warm/incremental 2–3×. Build: `cd roust-rs && cargo build --release`. Prebuilt binaries / Homebrew: still to come.
 - MCP server.
 - Incremental index updates (avoid full reindex on every change).
 - Publish to PyPI and Homebrew.

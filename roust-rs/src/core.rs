@@ -1087,7 +1087,16 @@ pub fn extract_symbol_anchors(question: &str, corpus: &Corpus) -> Vec<(String, f
     result.sort_by(|a, b| {
         let ka = (a.1, -(*def_counts.get(&a.0).unwrap() as i64));
         let kb = (b.1, -(*def_counts.get(&b.0).unwrap() as i64));
-        kb.partial_cmp(&ka).unwrap()
+        // f64::total_cmp rather than partial_cmp().unwrap(): never panics
+        // regardless of NaN/inf, and agrees with partial_cmp on every
+        // finite, non-NaN input (all `strength` values here are one of
+        // 1.0/1.5/2.0/2.5, so this is a pure hardening, not a ranking
+        // change). See `pack_regions`' pass-2 `marginal`-based sort, which
+        // gets the same total_cmp hardening for the same reason: a caller
+        // can pass an already-NaN score into either function (e.g. via a
+        // drifted idf input upstream), and partial_cmp().unwrap() panics
+        // the instant that NaN is compared against anything.
+        kb.0.total_cmp(&ka.0).then_with(|| kb.1.cmp(&ka.1))
     });
     result
 }
@@ -1569,7 +1578,7 @@ fn apply_testbridge_promotions(
     let testlike_set: HashSet<String> = testlike.iter().cloned().collect();
 
     let mut ranked_tests: Vec<(String, f64)> = testlike.iter().map(|f| (f.clone(), bm.get(f).copied().unwrap_or(0.0))).collect();
-    ranked_tests.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap().then_with(|| a.0.cmp(&b.0)));
+    ranked_tests.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
     let top_tests: Vec<(String, f64)> = ranked_tests.into_iter().filter(|(_, s)| *s > 0.0).take(3).collect();
     if top_tests.is_empty() {
         return (out, Vec::new());
@@ -1607,12 +1616,7 @@ fn apply_testbridge_promotions(
     };
 
     let mut tail_pool: Vec<String> = candidates.keys().cloned().collect();
-    tail_pool.sort_by(|a, b| {
-        specificity(b)
-            .partial_cmp(&specificity(a))
-            .unwrap()
-            .then_with(|| a.cmp(b))
-    });
+    tail_pool.sort_by(|a, b| specificity(b).total_cmp(&specificity(a)).then_with(|| a.cmp(b)));
 
     let mut records: Vec<(String, String, String)> = Vec::new();
     let mut tail_files: Vec<String> = Vec::new();
@@ -1663,7 +1667,7 @@ fn apply_docsbridge_promotions(
         return (out, Vec::new());
     }
     let mut ranked_pages: Vec<(String, f64)> = doc_scores.into_iter().collect();
-    ranked_pages.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap().then_with(|| a.0.cmp(&b.0)));
+    ranked_pages.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
     let top_pages: Vec<(String, f64)> = ranked_pages.into_iter().filter(|(_, s)| *s > 0.0).take(3).collect();
     if top_pages.is_empty() {
         return (out, Vec::new());
@@ -1766,7 +1770,7 @@ pub fn select_files(
     }
     let bm_n = normalize(&bm);
     let mut ranked: Vec<(String, f64)> = bm_n.iter().map(|(k, v)| (k.clone(), *v)).collect();
-    ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+    ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
     let best = ranked[0].1;
     let lex_picks: Vec<String> = ranked
         .iter()
@@ -1828,7 +1832,7 @@ pub fn select_files(
                     (t.clone(), w)
                 })
                 .collect();
-            weighted.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+            weighted.sort_by(|a, b| b.1.total_cmp(&a.1));
             for (t, _) in weighted.into_iter().take(20) {
                 fb_terms.insert(t);
             }
@@ -1904,7 +1908,7 @@ pub fn select_files(
     };
 
     let mut ranked_pool: Vec<String> = pool.keys().cloned().collect();
-    ranked_pool.sort_by(|a, b| add_score(b, &pool).partial_cmp(&add_score(a, &pool)).unwrap());
+    ranked_pool.sort_by(|a, b| add_score(b, &pool).total_cmp(&add_score(a, &pool)));
 
     let mut additions: Vec<String> = Vec::new();
     if !ranked_pool.is_empty() {
@@ -1937,7 +1941,7 @@ pub fn select_files(
             .cloned()
             .collect();
         let mut path_hits_sorted = path_hits.clone();
-        path_hits_sorted.sort_by(|a, b| add_score(b, &pool).partial_cmp(&add_score(a, &pool)).unwrap());
+        path_hits_sorted.sort_by(|a, b| add_score(b, &pool).total_cmp(&add_score(a, &pool)));
         for c in path_hits_sorted.into_iter().take(6) {
             if !additions.contains(&c) {
                 additions.push(c);
@@ -1999,7 +2003,7 @@ pub fn select_files(
             if msg_max > 0.0 {
                 let already: HashSet<String> = lex_picks.iter().chain(additions.iter()).cloned().collect();
                 let mut msg_ranked: Vec<(String, f64)> = msg_scores.into_iter().collect();
-                msg_ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+                msg_ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
                 for (f, s) in msg_ranked {
                     if msg_additions.len() >= 3 {
                         break;
@@ -2427,7 +2431,16 @@ pub fn pack_regions(
         .iter()
         .map(|f| {
             let sc = scores.get(f).copied().unwrap_or(0.0);
-            (f.clone(), floor_tok + ((spare as f64) * sc / total_score) as i64)
+            // Guard against a non-finite `scores` entry (NaN/inf, e.g. from
+            // an upstream normalization/idf bug): `ratio` can otherwise be
+            // NaN or +inf, and `(x as i64)` on +inf saturates to i64::MAX,
+            // which then overflows the `floor_tok +` add below (checked
+            // arithmetic panics in debug; silently wraps in release either
+            // way it's wrong). A non-finite ratio contributes no bonus
+            // depth instead; finite-input behavior is unchanged.
+            let ratio = sc / total_score;
+            let bonus_tok = if ratio.is_finite() { ((spare as f64) * ratio) as i64 } else { 0 };
+            (f.clone(), floor_tok + bonus_tok)
         })
         .collect();
     // Anchor-forced files get a deeper cap on top of their score-proportional
@@ -2545,7 +2558,16 @@ pub fn pack_regions(
             // marginal race either.
             base + w_name * c.name_score
         };
-        remaining.sort_by(|&a, &b| marginal(b).partial_cmp(&marginal(a)).unwrap());
+        // total_cmp, not partial_cmp().unwrap(): `marginal` folds in
+        // `scores.get(&c.file)`, an externally-supplied score that isn't
+        // guaranteed NaN-free (a caller-side idf/normalization bug upstream
+        // could hand pack_regions a NaN here), and partial_cmp().unwrap()
+        // panics ("called `Option::unwrap()` on a `None` value") the
+        // instant a NaN is compared against anything. total_cmp gives a
+        // deterministic, non-panicking total order and agrees with
+        // partial_cmp on every finite, non-NaN input, so this is a pure
+        // hardening for real inputs, not a ranking change.
+        remaining.sort_by(|&a, &b| marginal(b).total_cmp(&marginal(a)));
         let i = remaining.remove(0);
         let tok = candidates[i].tok as i64;
         if spent + tok > budget_tokens {
@@ -2784,6 +2806,52 @@ mod tests {
 
         let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0);
         assert_eq!(sym_of(&spans_on), Some("pack_regions".to_string()), "w_name=1.0 must select pack_regions via name-score anchoring");
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Regression for issue #14: pack_regions' pass-2 greedy loop sorts
+    /// `remaining` candidates by a `marginal` score that folds in a
+    /// caller-supplied `scores` entry per file. If that score is NaN (e.g.
+    /// upstream normalization/idf drift), the pre-fix
+    /// `partial_cmp().unwrap()` comparator panics the instant the NaN
+    /// candidate is compared against anything. Assert pack_regions instead
+    /// completes without panicking and produces a deterministic ordering
+    /// (same spans across repeated calls with the same NaN input).
+    #[test]
+    fn pack_regions_survives_nan_and_inf_scores() {
+        let tmp = std::env::temp_dir().join(format!("roust_nanscore_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let filler: String = (0..20).map(|i| format!("    x{i} = {i}\n")).collect();
+        std::fs::write(
+            &tmp.join("a.py"),
+            format!("def alpha_token():\n{filler}    return 1\n\n\ndef beta_budget():\n{filler}    return 2\n"),
+        )
+        .unwrap();
+        std::fs::write(
+            &tmp.join("b.py"),
+            format!("def gamma_token():\n{filler}    return 3\n\n\ndef delta_budget():\n{filler}    return 4\n"),
+        )
+        .unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("token budget", &[]);
+        let files = vec!["a.py".to_string(), "b.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        // NaN and +inf scores, directly on the pack_regions contract (a
+        // caller-supplied score map), not manufactured via any specific
+        // upstream idf/normalization path.
+        let scores: IndexMap<String, f64> =
+            [("a.py".to_string(), f64::NAN), ("b.py".to_string(), f64::INFINITY)].into_iter().collect();
+
+        // Large budget so pass 2's greedy loop actually runs over multiple
+        // remaining candidates (pass 1 alone would only ever touch one span
+        // per file).
+        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+        assert_eq!(spans1, spans2, "pack_regions must be deterministic given identical (NaN/inf-bearing) inputs");
+        assert!(!spans1.is_empty(), "pack_regions should still select regions despite NaN/inf scores");
 
         std::fs::remove_dir_all(&tmp).ok();
     }
