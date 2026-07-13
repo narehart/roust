@@ -2,15 +2,15 @@
 
 **Recall-first code retrieval for coding agents.**
 
-Point an agent at grep and it gets perfect recall — at the cost of reading
-roughly a million tokens to answer one question. Point it at roust and it
-gets the same recall for about 8.5k tokens, in under a second, with no
-embeddings, no LLM calls, no API keys, and no training. Validated on 407
-held-out SWE-bench Verified instances (92.1% all-gold-files, never tuned on)
-and on the archex head-to-head benchmark (40/40 tasks at recall 1.00, 95%
-mean token savings vs. raw grep). roust is a ranking-and-packing pipeline over
-plain lexical, structural, and version-control signals — it reads like a very
-disciplined `grep` session, compressed into one process call.
+Point an agent at grep and it has to iterate on search terms, reading through
+a lot of matches to find what it needs. Point it at roust and it gets a
+single, ranked, token-budgeted bundle of the relevant code back in one call,
+with no embeddings, no LLM calls, no API keys, and no training. Validated on
+407 held-out SWE-bench Verified instances (92.1% all-gold-files, never tuned
+on) and on the archex head-to-head benchmark (40/40 tasks at recall 1.00).
+roust is a ranking-and-packing pipeline over plain lexical, structural, and
+version-control signals — it reads like a very disciplined `grep` session,
+compressed into one process call.
 
 ## Install
 
@@ -94,8 +94,8 @@ Exit codes: `0` = results found, `1` = no results, `2` = usage error.
 ## Using with coding agents
 
 This is the point of the tool: an agent that reaches for `roust` before
-`grep` gets the files it needs in one shot, at roughly 1% of the token cost,
-without needing to iterate on search terms.
+`grep` gets the files it needs in one shot, without needing to iterate on
+search terms across a much larger result set.
 
 ### Claude Code
 
@@ -207,24 +207,57 @@ number in this README is reproduced in the pipeline's research log,
 including negative results and a pre-registered held-out validation run:
 see [`lab/README.md`](lab/README.md).
 
-## Benchmarks
+## Scoreboard
 
-| benchmark | metric | result |
-|---|---|---|
-| SWE-bench Verified, held-out (n=407, unseen) | all-gold-files | 92.1% |
-| SWE-bench Verified, held-out (n=407, unseen) | File@10 | 79.4% |
-| SWE-bench Lite, dev (n=300) | all-gold-files | 92.3% |
-| SWE-bench Lite, dev (n=300) | File@10 | 82.7% |
-| archex (40 tasks, 17 repos, 5 languages) | file recall | 1.00 (40/40) |
-| archex | token savings vs. raw grep | 94–96% (mean) |
+Given the same task and the same agent (tokenbench v2, live Sonnet 4.5, each method as the agent's only tool), roust solves **93.3%** of tasks, grep **26.7%**, embedding-RAG **71.4%** — n=15, a partial run (see below). roust is **not** the most accurate retriever available: trained retrievers (see *Localization accuracy* below) score higher on published localization benchmarks. What roust offers is the best result you can get for free — no model, no embeddings, no API key, no training.
 
-Bundles run ~8.5k tokens; index build is ~0.2–6s cold and ~10ms on a cache
-hit; queries run 150–550ms end to end. All numbers above are training-free
-and model-free -- no embeddings, no fine-tuning, no GPU.
+### Agent-loop outcomes (our protocol)
 
-Trained embedding retrievers reach higher File@10 (90.9–94.2, per SweRank,
-arXiv:2505.07849) at the cost of a model and GPU inference on every query.
-roust is the strongest training-free, model-free point on that curve.
+| System | Solves | Median turns | Tokens / attempt | $ / attempt | $ / successful run |
+|---|---|---|---|---|---|
+| **roust** | 93.3% | 9 | 308,184 | $0.95 | $0.93 |
+| grep | 26.7% | 30 | 239,600 | $0.76 | $0.53 |
+| embedding-RAG | 71.4% | 20 | 695,833 | $2.14 | $1.80 |
+| roust + grep (both) | 57.1% | 28 | 595,234 | $1.83 | $1.60 |
+| grep + stopping prompt | 20.0% | — | 52,576 | $0.17 | $0.18 |
+| roust + stopping prompt | 66.7% | — | 241,027 | $0.74 | $0.63 |
+
+- roust costs more per attempt than grep (308k vs 240k tokens) and wins on solve rate anyway. grep is cheap because it gives up: 73.3% of its runs hit the turn cap and produce nothing.
+- `$ / successful run` is a **lower bound** — it excludes the failed attempts paid for along the way. True cost-per-success is unmeasured ([#16](https://github.com/narehart/roust/issues/16)).
+- Giving the agent grep *alongside* roust makes it worse (93.3% → 57.1%): replace grep, don't supplement it ([#5](https://github.com/narehart/roust/issues/5)).
+
+### Localization accuracy (published protocol)
+
+| System | File-level | Metric | Free? | Source |
+|---|---|---|---|---|
+| SweRankEmbed-Large + LLM rerank | 96.0 | Acc@10 | no (trained + LLM) | arXiv:2505.07849 |
+| SweRankEmbed-Large | 94.2 | Acc@10 | no (trained) | arXiv:2505.07849 |
+| LocAgent | 94.16 | file acc | no (LLM) | arXiv:2503.09089 |
+| **roust** | 92.3 | Agentless-metric FILE | yes | `lab/results_regions/agentless_metric.json` |
+| SweRankEmbed-Small | 90.9 | Acc@10 | no (trained) | arXiv:2505.07849 |
+| OrcaLoca | 83.33 | file-match | no (LLM) | arXiv:2502.00350 |
+| Agentless GPT-4o | 69.7 | Agentless-metric FILE | no (LLM) | arXiv:2407.01489 |
+| BM25 | 61.7 | Acc@10 | yes | arXiv:2505.07849 |
+| CoSIL | 60.7 | Top-1 | no (LLM) | arXiv:2503.22424 |
+| archex | — | — | no (embeddings) | — |
+
+— = not measured by us (see gaps below).
+
+The File-level column mixes several different metrics (Acc@10 / Top-1 / file-match / Agentless-metric FILE) and is **not** comparable straight down the column — each row names its own. roust's Agentless-metric scores on Lite are FILE 92.3% / FUNCTION 44.3% (a proxy, not the exact metric) / LINE 35.7%; Agentless (GPT-4o) for comparison is 69.7 / 52.0 / 35.3.
+
+Cold index build, Rust vs Python engine: httpx 145ms vs 522ms; django 1.8s vs 7.6s — prose-only, no committed benchmark artifact ([#15](https://github.com/narehart/roust/issues/15)).
+
+### What still needs work
+
+- Line-level 35.7% and function-level 44.3% (a proxy, not the exact metric) — the weakest cells, and where the next work goes — [#2](https://github.com/narehart/roust/issues/2), [#3](https://github.com/narehart/roust/issues/3)
+- archex has never been measured by us on any of our benches — [#1](https://github.com/narehart/roust/issues/1)
+- True cost-per-success is unmeasured (needs repeat runs to get per-task success probability) — [#16](https://github.com/narehart/roust/issues/16)
+- Latency has no committed benchmark artifact — [#15](https://github.com/narehart/roust/issues/15)
+- Rust parity gate currently fails 299/300 (`sympy__sympy-21171` panics) — [#14](https://github.com/narehart/roust/issues/14)
+
+### How these were measured
+
+*Agent-loop outcomes* is our agent-loop harness (live Sonnet 4.5, each method as the agent's only tool, measured to task completion) — a partial run, 58 of 120 planned pairs, stopped at an $80 spend cap, so n=15 (14 for embedding-RAG). *Localization accuracy* is published Acc@k-style numbers from each system's own paper, on its own harness — a different protocol, not comparable to the agent-loop numbers. Full artifacts and the research log (including the retracted "95% fewer tokens than grep" claim, which came from a v1 one-shot protocol and does not hold in the agent loop — [#6](https://github.com/narehart/roust/issues/6)) are in `lab/README.md`.
 
 ## Limits
 
@@ -244,7 +277,7 @@ roust is the strongest training-free, model-free point on that curve.
 
 ## Roadmap
 
-- ~~Rust port~~ **v0.2 complete**: `roust-rs/` — feature-parity with Python v0.2 (channel-aware packing, on-disk cache with incremental updates, deterministic seed). Parity re-proven 300/300 exact on SWE-bench Lite (report in `parity/rust_gate_300_v2.json`). Cold 3.6–4.2× faster than Python (httpx 145ms vs 522ms, django 1.8s vs 7.6s); warm/incremental 2–3×. Build: `cd roust-rs && cargo build --release`. Prebuilt binaries / Homebrew: still to come.
+- ~~Rust port~~ **v0.2 complete**: `roust-rs/` — feature-parity with Python v0.2 (channel-aware packing, on-disk cache with incremental updates, deterministic seed). Parity gate currently **FAILS 299/300 exact** on SWE-bench Lite (report in `parity/rust_gate_300_v2.json`); the one failure is `sympy__sympy-21171`, which panics (`user-provided comparison function does not correctly implement a total order`) instead of returning a result. This is a regression from the prior 300/300 run — see [#14](https://github.com/narehart/roust/issues/14). Cold 3.6–4.2× faster than Python (httpx 145ms vs 522ms, django 1.8s vs 7.6s); warm/incremental 2–3×. Build: `cd roust-rs && cargo build --release`. Prebuilt binaries / Homebrew: still to come.
 - MCP server.
 - Incremental index updates (avoid full reindex on every change).
 - Publish to PyPI and Homebrew.

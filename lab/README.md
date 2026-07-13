@@ -1,9 +1,18 @@
 # bgrep lab — retrieval experiments
 
-Goal: LLM-agent code retrieval with **recall 1.00, missed-task 0.00, ≥70% fewer
-tokens than grep**, tested on the [archex](https://github.com/Mathews-Tom/archex)
-head-to-head benchmark (real repos at pinned versions, archex's own metric and
-tiktoken accounting).
+> **⚠️ RETRACTED CLAIM (see [#6](https://github.com/narehart/roust/issues/6)).** The token-savings-vs-grep figures below (95.7% / 95.2% / 94.7% mean savings) are measured correctly **under the v1 protocol** — a single deterministic retrieval pass, counting the tokens of the retrieved content set — but that protocol is **not how an agent actually uses the tool**, and the savings framing derived from it is retracted.
+>
+> Under the agent-loop protocol (tokenbench v2), where a live model decides when to stop searching, **roust uses MORE tokens per attempt than grep** (308k vs 240k mean API tokens), and wins on **success rate** (93.3% vs 26.7%) instead. grep's low token count is a symptom of it giving up: 73% of its runs hit the turn cap and produce nothing.
+>
+> The numbers below are kept as an accurate record of what v1 measured. Do not quote them as a savings claim. See the root README's Scoreboard for the current, agent-loop numbers, and [#16](https://github.com/narehart/roust/issues/16) for the unmeasured true cost-per-success.
+
+Goal: LLM-agent code retrieval with **recall 1.00, missed-task 0.00**, tested
+on the [archex](https://github.com/Mathews-Tom/archex) head-to-head benchmark
+(real repos at pinned versions, archex's own metric and tiktoken accounting).
+The original goal statement also targeted "≥70% fewer tokens than grep" as a
+retrieval-pass metric; under the agent-loop protocol that framing does not
+hold (see retraction banner above) — the current result is recall/success
+under equal agent budget, not token savings.
 
 ## Results (2026-07-10)
 
@@ -15,12 +24,12 @@ tiktoken accounting).
 | archex (embeddings, published artifacts) | 6,433 | 0.947 | 0.158 |
 | **bgrep pipeline (packed regions)** | **8,317** | **1.00** | **0.00** |
 
-- Dev set: 19/19 tasks at recall 1.00; savings vs raw grep mean 95.7%, min 76.0%.
+- Dev set: 19/19 tasks at recall 1.00; savings vs raw grep mean 95.7%, min 76.0%. **[RETRACTED as a savings claim — v1 protocol only; see #6]**
 - Held-out set (21 `loc_*` fault-localization tasks, frozen config): 21/21 at
-  recall 1.00; savings mean 95.2%, min 74.9%.
+  recall 1.00; savings mean 95.2%, min 74.9%. **[RETRACTED as a savings claim — v1 protocol only; see #6]**
 - vs the *disciplined* grep control the pipeline still saves ≥72% on every task
   (mean 94.7%) — discipline removes only ~35% of grep's cost because keyword
-  matches are everywhere in a large repo.
+  matches are everywhere in a large repo. **[RETRACTED as a savings claim — v1 protocol only; see #6]**
 
 ## The pipeline (lanes.py — pure Python, no models, no embeddings)
 
