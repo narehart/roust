@@ -1524,6 +1524,84 @@ def _hit_lines(text: str, terms: set[str]) -> list[int]:
     return hits
 
 
+# ---------------------------------------------------------------- region-level symbol-name anchoring
+#
+# Dogfood bug (query "how is the token budget enforced when packing regions
+# into the bundle" against this repo's own src/roust/core.py): the query
+# names `pack_regions` almost verbatim, yet pack_regions' region-scoring only
+# rewarded query-TERM DENSITY in a region's body -- a region whose name IS
+# the query (pack_regions) has no scoring edge over a same-file region that
+# merely happens to mention "token" a lot in its body (e.g. subtokens()).
+# extract_symbol_anchors already does rarity-gated symbol matching for FILE
+# selection; this is the same idea applied WITHIN a file's own candidate
+# regions, at the def/class/fn granularity pack_regions already works in.
+# Ported from lab/lanes2.py's pack_regions region-name-anchoring fix
+# (_def_re_for/_file_def_lines/_region_symbol/_name_score), integrated with
+# THIS module's idf-weighted gain + anchor_symbols channel-aware forcing
+# (neither of which lanes2 has).
+
+
+def _file_def_lines(text: str, def_re: re.Pattern | None) -> list[tuple[int, str]]:
+    """(line_number, symbol_name) for every def/class/fn header `def_re`
+    matches in `text`, sorted ascending by line. Line number is derived from
+    the matched GROUP's start position (m.start(i)), not the overall match's
+    start (m.start()): these regexes' leading `\\s*`/`^\\s*` is greedy and,
+    under re.M, `^` matches at the start of every line -- so the overall
+    match can begin several blank lines above the actual `def`/`class`
+    keyword, which would silently misattribute the symbol to the wrong line.
+    The captured identifier itself is always on the same physical line as
+    its keyword, so anchoring off the group's own start is correct
+    regardless of how much leading whitespace was swallowed."""
+    if def_re is None:
+        return []
+    out: list[tuple[int, str]] = []
+    for m in def_re.finditer(text):
+        for i in range(1, (m.lastindex or 0) + 1):
+            g = m.group(i)
+            if g:
+                out.append((text.count("\n", 0, m.start(i)) + 1, g))
+                break
+    out.sort()
+    return out
+
+
+def _region_symbol(def_lines: list[tuple[int, str]], a: int, b: int) -> str | None:
+    """The defining symbol whose header line falls inside span [a, b] --
+    i.e. the region's own defining symbol, if any. Picks the EARLIEST
+    matching header (the region's "primary" symbol) when more than one
+    falls in range."""
+    for line, sym in def_lines:
+        if line > b:
+            break
+        if line >= a:
+            return sym
+    return None
+
+
+def _name_score(sym: str | None, tset: set[str]) -> float:
+    """Region name-anchoring score: raw count of query-term subtokens the
+    defining symbol's own name contains, i.e.
+    |subtokens(symbol) ∩ query_terms| -- NOT normalized by the symbol's
+    subtoken count. Normalizing (e.g. dividing by len(subtokens(symbol)))
+    would score a single-subtoken symbol like `subtokens` (1/1 = 1.0) as
+    high as a two-subtoken symbol like `pack_regions` matching BOTH query
+    terms (2/2 = 1.0) -- exactly the collision this fix exists to break.
+    Raw count instead rewards multi-term exactness. A symbol whose EVERY
+    subtoken is a query term (not just some) gets a further +1 bonus -- a
+    full-name match is stronger identity evidence than a partial one even
+    at the same raw overlap count."""
+    if not sym:
+        return 0.0
+    sym_subs = set(subtokens(sym))
+    if not sym_subs:
+        return 0.0
+    overlap = sym_subs & tset
+    score = float(len(overlap))
+    if overlap and overlap == sym_subs:
+        score += 1.0
+    return score
+
+
 def pack_regions(
     corpus: Corpus,
     files: list[str],
@@ -1532,6 +1610,7 @@ def pack_regions(
     budget_tokens: int,
     count_tokens,
     anchor_symbols: dict[str, list[str]] | None = None,
+    w_name: float = 1.0,
 ) -> tuple[dict[str, list[tuple[int, int]]], str]:
     """Greedy weighted-coverage packing of regions under budget.
 
@@ -1554,6 +1633,24 @@ def pack_regions(
     query named this exact symbol, so its definition is the region least
     likely to be noise, independent of how it happens to score on term
     density.
+
+    `w_name` (default 1.0, the measured-saturating weight -- 2.0/4.0 score
+    identically) additionally rewards a region whose OWN defining symbol
+    name matches query terms (see _name_score), independent of the anchor
+    channel above: anchor_symbols only fires for files the anchor channel
+    itself promoted, whereas this term applies to every file's regions, so
+    a region like `pack_regions` can win purely on its name matching query
+    terms "pack"/"region" even when no anchor promotion happened. Applied
+    to the SELECTION METRIC (gain/tok, post-division) rather than folded
+    into `gain` pre-division: a flat additive term inside gain would be
+    diluted away for large regions by the same `/max(tok,1)` division that
+    makes them expensive, so a big true-match region (e.g. ~1800-token
+    pack_regions) could never out-rank a small merely-dense one (e.g.
+    ~260-token get_token_counter) under gain/tok alone -- adding the name
+    bonus AFTER the division keeps it undiluted by region size, since a
+    symbol-name match is identity evidence independent of how long the
+    matched definition happens to be (measured on this repo's own dogfood
+    case; see dogfood_pack_regions.py).
     Returns ({file: [spans]}, bundle_text).
     """
     tset = set(terms)
@@ -1572,6 +1669,7 @@ def pack_regions(
         hits = _hit_lines(text, tset)
         spans = _python_blocks(text) if rel.endswith(".py") else _window_blocks(text, hits)
         hitset = set(hits)
+        def_lines = _file_def_lines(text, _def_re_for(rel)) if w_name else []
         for a, b in spans:
             seg = "\n".join(lines[a - 1: b])
             seg_terms = tset & set(tokenize(seg))
@@ -1581,9 +1679,13 @@ def pack_regions(
             tok = count_tokens(seg)
             if tok == 0:
                 continue
+            name_score = _name_score(_region_symbol(def_lines, a, b), tset) if w_name else 0.0
             gain = (_weight(seg_terms) + 0.5 * n_hits) * (0.3 + scores.get(rel, 0.0))
             candidates.append(
-                {"file": rel, "span": (a, b), "tok": tok, "terms": seg_terms, "gain": gain, "text": seg}
+                {
+                    "file": rel, "span": (a, b), "tok": tok, "terms": seg_terms, "gain": gain,
+                    "text": seg, "name_score": name_score,
+                }
             )
 
     # Channel-aware forced region: for each anchor-selected file, seat its
@@ -1631,7 +1733,9 @@ def pack_regions(
         if not cands:
             continue
         forced_c = forced.get(rel)
-        best = forced_c if forced_c is not None else max(cands, key=lambda c: c["gain"] / max(c["tok"], 1))
+        best = forced_c if forced_c is not None else max(
+            cands, key=lambda c: c["gain"] / max(c["tok"], 1) + w_name * c["name_score"]
+        )
         per_file_cap = caps[rel]
         if forced_c is not None:
             per_file_cap = max(per_file_cap, min(best["tok"], anchor_cap))
@@ -1660,7 +1764,12 @@ def pack_regions(
     while remaining and spent < budget_tokens:
         def marginal(c: dict) -> float:
             new_weight = _weight(c["terms"] - covered)
-            return (new_weight + 0.25 * _weight(c["terms"]) + 0.1) * (0.3 + scores.get(c["file"], 0.0)) / max(c["tok"], 1)
+            base = (new_weight + 0.25 * _weight(c["terms"]) + 0.1) * (0.3 + scores.get(c["file"], 0.0)) / max(c["tok"], 1)
+            # same undiluted-by-size name bonus as pass 1's selection metric
+            # (see pack_regions' docstring) -- otherwise a name-anchored
+            # region too large to win pass 1 could never win pass 2's
+            # marginal race either.
+            return base + w_name * c["name_score"]
         remaining.sort(key=marginal, reverse=True)
         c = remaining.pop(0)
         if spent + c["tok"] > budget_tokens:

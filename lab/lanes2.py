@@ -1779,6 +1779,112 @@ def _rb_block_starts(text: str) -> list[int]:
     return [text.count("\n", 0, m.start()) + 1 for m in _RB_BLOCK_START_RE.finditer(text)]
 
 
+# ---------------------------------------------------------------- region-level symbol-name anchoring
+#
+# Dogfood bug (query "how is the token budget enforced when packing regions
+# into the bundle" against this repo's own src/roust/core.py): the query
+# names `pack_regions` almost verbatim, yet pack_regions' region-scoring only
+# rewarded query-TERM DENSITY in a region's body -- a region whose name IS
+# the query (pack_regions) has no scoring edge over a same-file region that
+# merely happens to mention "token" a lot in its body (e.g. subtokens()).
+# extract_symbol_anchors already does rarity-gated symbol matching for FILE
+# selection; this is the same idea applied WITHIN a file's own candidate
+# regions, at the def/class/fn granularity pack_regions already works in.
+
+_DEF_RE_BY_EXT: dict[str, re.Pattern] = {
+    ".py": _PY_DEF_RE,
+    ".go": _GO_DEF_RE,
+    ".rs": _RS_DEF_RE,
+    ".js": _JS_DEF_RE, ".ts": _JS_DEF_RE, ".jsx": _JS_DEF_RE, ".tsx": _JS_DEF_RE,
+    ".rb": _RB_DEF_RE,
+}
+
+
+def _def_re_for(rel: str) -> re.Pattern | None:
+    """Which definition-symbol regex (if any) applies to `rel`, by extension --
+    the same per-language patterns Corpus.__init__ uses to build def_index,
+    reused here so region candidates can be matched back to the symbol that
+    defines them."""
+    return _DEF_RE_BY_EXT.get(Path(rel).suffix)
+
+
+def _file_def_lines(text: str, def_re: re.Pattern | None) -> list[tuple[int, str]]:
+    """(line_number, symbol_name) for every def/class/fn header `def_re`
+    matches in `text`, sorted ascending by line. Any indentation (region
+    spans for non-Python languages are radius windows, not necessarily
+    column-0 blocks, so this deliberately doesn't require a specific
+    indent).
+
+    Line number is derived from the matched GROUP's start position
+    (m.start(i)), not the overall match's start (m.start()): these regexes'
+    leading `\\s*`/`^\\s*` is greedy and, under re.M, `^` matches at the start
+    of every line -- so the overall match can begin several blank lines
+    above the actual `def`/`class` keyword (finditer takes the earliest
+    position at which the whole pattern succeeds), which would silently
+    misattribute the symbol to the wrong line and desync it from
+    _python_blocks' span boundaries. The captured identifier itself is
+    always on the same physical line as its keyword, so anchoring off the
+    group's own start is correct regardless of how much leading whitespace
+    was swallowed."""
+    if def_re is None:
+        return []
+    out: list[tuple[int, str]] = []
+    for m in def_re.finditer(text):
+        for i in range(1, (m.lastindex or 0) + 1):
+            g = m.group(i)
+            if g:
+                out.append((text.count("\n", 0, m.start(i)) + 1, g))
+                break
+    out.sort()
+    return out
+
+
+def _region_symbol(def_lines: list[tuple[int, str]], a: int, b: int) -> str | None:
+    """The defining symbol whose header line falls inside span [a, b] --
+    i.e. the region's own defining symbol, if any. A Python top-level block
+    (see _python_blocks) always starts exactly at its def/class line, so
+    this resolves to that block's own name; a window-based region
+    (_window_blocks, any non-Python language) resolves to whichever
+    def/class/fn header the window happens to contain, or None for a
+    preamble/import-only window. Picks the EARLIEST matching header (the
+    region's "primary" symbol) when more than one falls in range."""
+    for line, sym in def_lines:
+        if line > b:
+            break
+        if line >= a:
+            return sym
+    return None
+
+
+def _name_score(sym: str | None, tset: set[str]) -> float:
+    """Region name-anchoring score: raw count of query-term subtokens the
+    defining symbol's own name contains, i.e.
+    |subtokens(symbol) ∩ query_terms| -- NOT normalized by the symbol's
+    subtoken count. Normalizing (e.g. dividing by len(subtokens(symbol)))
+    would score a single-subtoken symbol like `subtokens` (1/1 = 1.0) as
+    high as a two-subtoken symbol like `pack_regions` matching BOTH query
+    terms (2/2 = 1.0) -- exactly the collision this fix exists to break.
+    Raw count instead rewards multi-term exactness: pack_regions scores 2
+    (pack + region both hit), subtokens scores 0 here (its only subtoken,
+    "subtoken", isn't itself a query term -- "token" is a *different*
+    string). A symbol whose EVERY subtoken is a query term (not just some)
+    gets a further +1 bonus -- a full-name match is stronger identity
+    evidence than a partial one even at the same raw overlap count (e.g.
+    distinguishes `pack_regions` fully matching {pack, region} from some
+    hypothetical `pack_regions_for_bundle_token_budget` that also scores 2
+    but is mostly NOT the query)."""
+    if not sym:
+        return 0.0
+    sym_subs = set(subtokens(sym))
+    if not sym_subs:
+        return 0.0
+    overlap = sym_subs & tset
+    score = float(len(overlap))
+    if overlap and overlap == sym_subs:
+        score += 1.0
+    return score
+
+
 def pack_regions(
     corpus: Corpus,
     files: list[str],
@@ -1786,12 +1892,22 @@ def pack_regions(
     scores: dict[str, float],
     budget_tokens: int,
     count_tokens,
+    w_name: float = 0.0,
 ) -> tuple[dict[str, list[tuple[int, int]]], str]:
     """Greedy weighted-coverage packing of regions under budget.
 
     Guarantees every selected file contributes at least its header + best region
     (so the bundle genuinely represents each file), then spends remaining budget
     on regions with the highest marginal (term-coverage x file-score) gain per token.
+
+    `w_name` (default 0.0, i.e. byte-identical to the pre-fix behavior) weights
+    the region-level symbol-name-anchoring term (see _name_score): a region gets
+    +w_name * name_score added directly to its `gain` (pass-1 per-file best-region
+    selection, and hence the marginal-gain ordering pass 2 inherits via `gain`'s
+    role in tie-breaking candidate quality), on top of the existing generic
+    term-density gain -- an additive evidence term, not a post-hoc reorder, so it
+    composes with (rather than overrides) the file-score and term-density signal
+    already in `gain`.
     Returns ({file: [spans]}, bundle_text).
     """
     tset = set(terms)
@@ -1807,6 +1923,7 @@ def pack_regions(
         else:
             spans = _window_blocks(text, hits)
         hitset = set(hits)
+        def_lines = _file_def_lines(text, _def_re_for(rel)) if w_name else []
         for a, b in spans:
             seg = "\n".join(lines[a - 1: b])
             seg_terms = tset & set(tokenize(seg))
@@ -1816,9 +1933,13 @@ def pack_regions(
             tok = count_tokens(seg)
             if tok == 0:
                 continue
-            gain = (len(seg_terms) + 0.5 * n_hits) * (0.3 + scores.get(rel, 0.0))
+            name_score = _name_score(_region_symbol(def_lines, a, b), tset) if w_name else 0.0
+            gain = (len(seg_terms) + 0.5 * n_hits) * (0.3 + scores.get(rel, 0.0)) + w_name * name_score
             candidates.append(
-                {"file": rel, "span": (a, b), "tok": tok, "terms": seg_terms, "gain": gain, "text": seg}
+                {
+                    "file": rel, "span": (a, b), "tok": tok, "terms": seg_terms, "gain": gain,
+                    "text": seg, "name_score": name_score,
+                }
             )
 
     chosen: dict[str, list[dict]] = defaultdict(list)
@@ -1838,11 +1959,29 @@ def pack_regions(
         f: floor_tok + int(spare * scores.get(f, 0.0) / total_score)
         for f in files
     }
+    # Selection-key note on w_name: `gain` (per above) already carries
+    # + w_name * name_score, but pass-1/pass-2 both rank by gain/tok (a
+    # PER-TOKEN density). A flat additive term inside gain gets divided away
+    # for large regions -- measured on this repo's own dogfood case,
+    # pack_regions() is a 156-line/~1800-token region; even w_name=1000
+    # cannot out-rank a small, merely term-dense competitor like
+    # get_token_counter() (~260 tokens) under gain/tok alone, since the
+    # name bonus shrinks by the same factor that makes the region
+    # expensive. So name_score is ALSO added post-division, undiluted by
+    # region size, to both selection keys below -- a symbol-name match is
+    # identity evidence independent of how long the matched definition
+    # happens to be, unlike term-density evidence which is legitimately
+    # size-relative. This is the smallest change that satisfies the
+    # dogfood gate (see dogfood_pack_regions.py) while keeping w_name=0.0
+    # exactly byte-identical to pre-fix behavior.
+    def _select_key(c: dict) -> float:
+        return c["gain"] / max(c["tok"], 1) + w_name * c["name_score"]
+
     for rel in files:
         cands = [c for c in candidates if c["file"] == rel]
         if not cands:
             continue
-        best = max(cands, key=lambda c: c["gain"] / max(c["tok"], 1))
+        best = max(cands, key=_select_key)
         per_file_cap = caps[rel]
         if best["tok"] > per_file_cap:
             a, b = best["span"]
@@ -1869,7 +2008,11 @@ def pack_regions(
     while remaining and spent < budget_tokens:
         def marginal(c: dict) -> float:
             new_terms = len(c["terms"] - covered)
-            return (new_terms + 0.25 * len(c["terms"]) + 0.1) * (0.3 + scores.get(c["file"], 0.0)) / max(c["tok"], 1)
+            base = (new_terms + 0.25 * len(c["terms"]) + 0.1) * (0.3 + scores.get(c["file"], 0.0)) / max(c["tok"], 1)
+            # same undiluted-by-size name bonus as pass 1's _select_key (see
+            # its comment) -- otherwise a name-anchored region too large to
+            # win pass 1 could never win pass 2's marginal race either.
+            return base + w_name * c["name_score"]
         remaining.sort(key=marginal, reverse=True)
         c = remaining.pop(0)
         if spent + c["tok"] > budget_tokens:

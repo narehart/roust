@@ -1,0 +1,64 @@
+{
+  "source": {
+    "predictions": "lab/results_regions/full300_final.json",
+    "gold": "lab/swebench_lite.parquet",
+    "n_instances": 300,
+    "pipeline": "roust frozen v7, --budget 8192, confidence-scheduled packing (parity/region_eval.py Part A, no-LLM)"
+  },
+  "all_instances": {
+    "n": 300,
+    "file": {
+      "pct_correct": 92.33,
+      "n": 300,
+      "n_correct": 277
+    },
+    "function": {
+      "pct_correct_PROXY": 44.33,
+      "n": 300,
+      "n_correct_PROXY": 133,
+      "caveat": "approximate lower-bound-ish heuristic (hunk_touched==1.0), NOT the exact Agentless function-level metric -- exact computation requires roust's raw returned region spans, which were not persisted for this stored run and could not be re-derived this pass (see top-level caveats)."
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 35.67,
+      "n": 300,
+      "n_correct_all_or_nothing": 107,
+      "mean_fraction_covered": 0.4563779084265943,
+      "median_fraction_covered": 0.2608695652173913
+    }
+  },
+  "file_correct_subset": {
+    "n": 277,
+    "note": "restricted to instances where FILE-level was already correct -- isolates region/line quality from file recall (spec item 4)",
+    "file": {
+      "pct_correct": 100.0,
+      "n": 277,
+      "n_correct": 277
+    },
+    "function": {
+      "pct_correct_PROXY": 48.01,
+      "n": 277,
+      "n_correct_PROXY": 133,
+      "caveat": "approximate lower-bound-ish heuristic (hunk_touched==1.0), NOT the exact Agentless function-level metric -- exact computation requires roust's raw returned region spans, which were not persisted for this stored run and could not be re-derived this pass (see top-level caveats)."
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 38.63,
+      "n": 277,
+      "n_correct_all_or_nothing": 107,
+      "mean_fraction_covered": 0.4942721029890913,
+      "median_fraction_covered": 0.5
+    }
+  },
+  "agentless_gpt4o_published": {
+    "file": 69.7,
+    "function": 52.0,
+    "line": 35.3
+  },
+  "gold_function_context": {
+    "n_gold_functions_per_instance": {
+      "mean": 1.5166666666666666,
+      "median": 1.0
+    },
+    "n_instances_with_git_show_failures": 5,
+    "note": "AST-derived gold function counts (context only, per top-level docstring); not used in any FUNCTION-level correctness number above since the predicted side (roust's returned region spans) was not available."
+  }
+}

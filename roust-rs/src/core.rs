@@ -2183,6 +2183,100 @@ struct Candidate {
     terms: HashSet<String>,
     gain: f64,
     text: String,
+    name_score: f64,
+}
+
+// ---------------------------------------------------------------- region-level symbol-name anchoring
+//
+// Dogfood bug (query "how is the token budget enforced when packing regions
+// into the bundle" against this repo's own core.rs/core.py): the query
+// names `pack_regions` almost verbatim, yet pack_regions' region-scoring
+// only rewarded query-TERM DENSITY in a region's body -- a region whose name
+// IS the query (pack_regions) had no scoring edge over a same-file region
+// that merely happens to mention "token" a lot in its body (e.g.
+// subtokens()). Ported from lab/lanes2.py's pack_regions region-name-
+// anchoring fix, integrated with THIS module's idf-weighted gain +
+// anchor_symbols channel-aware forcing (neither of which lanes2 has).
+
+/// Which definition-symbol regex (if any) applies to `rel`, by extension --
+/// the same per-language mapping `Corpus::build` uses inline, factored out
+/// so region candidates can be matched back to the symbol that defines them.
+fn def_re_for(rel: &str) -> Option<&'static Regex> {
+    if rel.ends_with(".py") {
+        Some(&PY_DEF_RE)
+    } else if rel.ends_with(".go") {
+        Some(&GO_DEF_RE)
+    } else if rel.ends_with(".rs") {
+        Some(&RS_DEF_RE)
+    } else if rel.ends_with(".js") || rel.ends_with(".ts") || rel.ends_with(".jsx") || rel.ends_with(".tsx") {
+        Some(&JS_DEF_RE)
+    } else {
+        None
+    }
+}
+
+/// (line_number, symbol_name) for every def/class/fn header `def_re`
+/// matches in `text`, sorted ascending by line -- mirrors lanes2.py's
+/// `_file_def_lines`. Line number is derived from the matched GROUP's start
+/// byte offset, not the overall match's start: these regexes' leading
+/// `\s*`/`^\s*` is greedy and, under multi-line mode, `^` matches at the
+/// start of every line, so the overall match can begin several blank lines
+/// above the actual `def`/`class` keyword. The captured identifier itself
+/// is always on the same physical line as its keyword, so anchoring off
+/// the group's own start is correct regardless of how much leading
+/// whitespace was swallowed.
+fn file_def_lines(text: &str, def_re: Option<&'static Regex>) -> Vec<(usize, String)> {
+    let Some(re) = def_re else { return Vec::new() };
+    let mut out: Vec<(usize, String)> = Vec::new();
+    for cap in re.captures_iter(text) {
+        for gi in 1..cap.len() {
+            if let Some(g) = cap.get(gi) {
+                let line = text[..g.start()].matches('\n').count() + 1;
+                out.push((line, g.as_str().to_string()));
+                break;
+            }
+        }
+    }
+    out.sort();
+    out
+}
+
+/// The defining symbol whose header line falls inside span [a, b] -- i.e.
+/// the region's own defining symbol, if any. Picks the EARLIEST matching
+/// header (the region's "primary" symbol) when more than one falls in
+/// range. Mirrors lanes2.py's `_region_symbol`.
+fn region_symbol(def_lines: &[(usize, String)], a: usize, b: usize) -> Option<&str> {
+    for (line, sym) in def_lines {
+        if *line > b {
+            break;
+        }
+        if *line >= a {
+            return Some(sym.as_str());
+        }
+    }
+    None
+}
+
+/// Region name-anchoring score: raw count of query-term subtokens the
+/// defining symbol's own name contains, i.e.
+/// |subtokens(symbol) intersect query_terms| -- NOT normalized by the
+/// symbol's subtoken count (normalizing would score a single-subtoken
+/// symbol like `subtokens` (1/1 = 1.0) as high as a two-subtoken symbol
+/// like `pack_regions` matching BOTH query terms (2/2 = 1.0) -- exactly the
+/// collision this fix exists to break). A symbol whose EVERY subtoken is a
+/// query term gets a further +1 bonus. Mirrors lanes2.py's `_name_score`.
+fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
+    let Some(s) = sym else { return 0.0 };
+    let sym_subs: HashSet<String> = subtokens(s).into_iter().collect();
+    if sym_subs.is_empty() {
+        return 0.0;
+    }
+    let overlap_count = sym_subs.intersection(tset).count();
+    let mut score = overlap_count as f64;
+    if overlap_count > 0 && overlap_count == sym_subs.len() {
+        score += 1.0;
+    }
+    score
 }
 
 /// Greedy weighted-coverage packing of regions under budget. See
@@ -2202,6 +2296,24 @@ struct Candidate {
 /// query named this exact symbol, so its definition is the region least
 /// likely to be noise, independent of how it happens to score on term
 /// density.
+///
+/// `w_name` (default-equivalent 1.0 from all production callers -- the
+/// measured-saturating weight, 2.0/4.0 score identically) additionally
+/// rewards a region whose OWN defining symbol name matches query terms (see
+/// `name_score`), independent of the anchor channel above: `anchor_symbols`
+/// only fires for files the anchor channel itself promoted, whereas this
+/// term applies to every file's regions, so a region like `pack_regions`
+/// can win purely on its name matching query terms "pack"/"region" even
+/// when no anchor promotion happened. Applied to the SELECTION METRIC
+/// (gain/tok, post-division) rather than folded into `gain` pre-division: a
+/// flat additive term inside `gain` would be diluted away for large
+/// regions by the same `/tok` division that makes them expensive, so a big
+/// true-match region (e.g. ~1800-token `pack_regions`) could never
+/// out-rank a small merely-dense one under gain/tok alone -- adding the
+/// name bonus AFTER the division keeps it undiluted by region size, since
+/// a symbol-name match is identity evidence independent of how long the
+/// matched definition happens to be (measured via this repo's own dogfood
+/// case, see lab/dogfood_pack_regions.py).
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],
@@ -2210,6 +2322,7 @@ pub fn pack_regions(
     budget_tokens: i64,
     count_tokens: &dyn Fn(&str) -> usize,
     anchor_symbols: Option<&IndexMap<String, Vec<String>>>,
+    w_name: f64,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
@@ -2230,6 +2343,8 @@ pub fn pack_regions(
         let hits = hit_lines(text, &tset);
         let spans = if rel.ends_with(".py") { python_blocks(text) } else { window_blocks(text, &hits, 30) };
         let hitset: HashSet<usize> = hits.into_iter().collect();
+        let def_lines: Vec<(usize, String)> =
+            if w_name != 0.0 { file_def_lines(text, def_re_for(rel)) } else { Vec::new() };
         for (a, b) in spans {
             if a == 0 || b < a || a > lines.len() {
                 // guard against degenerate spans; Python's 1-indexed slicing
@@ -2258,7 +2373,8 @@ pub fn pack_regions(
                 continue;
             }
             let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
-            candidates.push(Candidate { file: rel.clone(), span: (a, b), tok, terms: seg_terms, gain, text: seg });
+            let ns = if w_name != 0.0 { name_score(region_symbol(&def_lines, a, b), &tset) } else { 0.0 };
+            candidates.push(Candidate { file: rel.clone(), span: (a, b), tok, terms: seg_terms, gain, text: seg, name_score: ns });
         }
     }
 
@@ -2333,9 +2449,10 @@ pub fn pack_regions(
             fi
         } else {
             let mut best_idx = idxs[0];
-            let mut best_ratio = candidates[best_idx].gain / (candidates[best_idx].tok.max(1) as f64);
+            let mut best_ratio = candidates[best_idx].gain / (candidates[best_idx].tok.max(1) as f64)
+                + w_name * candidates[best_idx].name_score;
             for &i in &idxs[1..] {
-                let ratio = candidates[i].gain / (candidates[i].tok.max(1) as f64);
+                let ratio = candidates[i].gain / (candidates[i].tok.max(1) as f64) + w_name * candidates[i].name_score;
                 if ratio > best_ratio {
                     best_ratio = ratio;
                     best_idx = i;
@@ -2381,7 +2498,11 @@ pub fn pack_regions(
             best_tok = tok;
         }
 
-        let cand = Candidate { file: rel.clone(), span: best_span, tok: best_tok, terms: best_terms, gain: 0.0, text: best_text };
+        let best_name_score = candidates[best_idx].name_score;
+        let cand = Candidate {
+            file: rel.clone(), span: best_span, tok: best_tok, terms: best_terms, gain: 0.0, text: best_text,
+            name_score: best_name_score,
+        };
         covered.extend(cand.terms.iter().cloned());
         spent += cand.tok as i64;
         let seg_idx = all_segments.len();
@@ -2416,7 +2537,13 @@ pub fn pack_regions(
             let c = &candidates[i];
             let diff: HashSet<String> = c.terms.difference(&covered).cloned().collect();
             let new_weight = weight(&diff);
-            (new_weight + 0.25 * weight(&c.terms) + 0.1) * (0.3 + scores.get(&c.file).copied().unwrap_or(0.0)) / (c.tok.max(1) as f64)
+            let base = (new_weight + 0.25 * weight(&c.terms) + 0.1) * (0.3 + scores.get(&c.file).copied().unwrap_or(0.0))
+                / (c.tok.max(1) as f64);
+            // same undiluted-by-size name bonus as pass 1's selection metric
+            // (see pack_regions' doc comment) -- otherwise a name-anchored
+            // region too large to win pass 1 could never win pass 2's
+            // marginal race either.
+            base + w_name * c.name_score
         };
         remaining.sort_by(|&a, &b| marginal(b).partial_cmp(&marginal(a)).unwrap());
         let i = remaining.remove(0);
@@ -2438,6 +2565,7 @@ pub fn pack_regions(
             terms: candidates[i].terms.clone(),
             gain: candidates[i].gain,
             text: candidates[i].text.clone(),
+            name_score: candidates[i].name_score,
         });
         chosen_map.entry(file).or_default().push(seg_idx);
     }
@@ -2581,6 +2709,85 @@ mod tests {
         }
     }
 
+    /// Region-name-anchoring fix: `_file_def_lines`/`_region_symbol` fixtures
+    /// generated from `lanes2._file_def_lines`/`_region_symbol` (also ported
+    /// verbatim into src/roust/core.py) via the archex venv.
+    #[test]
+    fn file_def_lines_and_region_symbol_match_python_reference() {
+        let text = "import os\n\n\ndef alpha(x):\n    return x\n\n\nclass Beta:\n    def gamma(self):\n        pass\n";
+        let def_lines = file_def_lines(text, def_re_for("mod.py"));
+        assert_eq!(
+            def_lines,
+            vec![(4, "alpha".to_string()), (8, "Beta".to_string()), (9, "gamma".to_string())]
+        );
+        assert_eq!(region_symbol(&def_lines, 1, 5), Some("alpha"));
+        assert_eq!(region_symbol(&def_lines, 8, 10), Some("Beta"));
+        assert_eq!(region_symbol(&def_lines, 9, 10), Some("gamma"));
+        assert_eq!(region_symbol(&def_lines, 20, 30), None);
+    }
+
+    /// `_name_score` fixtures generated from `lanes2._name_score` (also
+    /// ported verbatim into src/roust/core.py) via the archex venv.
+    #[test]
+    fn name_score_matches_python_reference() {
+        let full_match: HashSet<String> = ["pack".to_string(), "region".to_string()].into_iter().collect();
+        assert_eq!(name_score(Some("pack_regions"), &full_match), 3.0);
+
+        let no_overlap: HashSet<String> =
+            ["token".to_string(), "pack".to_string(), "budget".to_string()].into_iter().collect();
+        assert_eq!(name_score(Some("subtokens"), &no_overlap), 0.0);
+
+        let partial: HashSet<String> = ["pack".to_string()].into_iter().collect();
+        assert_eq!(name_score(Some("pack_regions"), &partial), 1.0);
+
+        assert_eq!(name_score(None, &full_match), 0.0);
+        assert_eq!(name_score(Some("__init__"), &full_match), 0.0);
+    }
+
+    /// Dogfood regression (see lab/dogfood_pack_regions.py): a region whose
+    /// DEFINING SYMBOL matches query terms must win pass-1 selection over a
+    /// same-file region that only has denser body term matches for a
+    /// generic term, once `w_name` is on -- and must NOT win when `w_name`
+    /// is 0.0 (byte-identical to pre-fix ranking), so this also pins the
+    /// pre-fix bug reproduction. budget_tokens=1 isolates pass-1's pick
+    /// (pass 2 never runs since `spent >= budget_tokens` immediately after
+    /// pass 1, which spends unconditionally regardless of budget).
+    #[test]
+    fn pack_regions_name_score_promotes_symbol_name_match() {
+        let tmp = std::env::temp_dir().join(format!("roust_namescore_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        // subtokens: SHORT region, dense in query terms (token/budget/enforc)
+        // -- wins on gain/tok pre-fix. pack_regions: LONG region (40 filler
+        // lines) whose only query-term evidence is its own def line
+        // ("pack"/"region" from the identifier) -- loses on density despite
+        // being the actual query target, exactly the real dogfood bug's
+        // shape (a big true-match region diluted by the /tok division).
+        let filler: String = (0..40).map(|i| format!("    x{i} = {i}\n")).collect();
+        let src = format!(
+            "def subtokens(word):\n    \"\"\"token budget enforced.\"\"\"\n    return word.split('_')\n\n\ndef pack_regions(cap):\n{filler}    return cap\n"
+        );
+        std::fs::write(tmp.join("core.py"), src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("how is the token budget enforced when packing regions", &[]);
+        let scores: IndexMap<String, f64> = [("core.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["core.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let def_lines = file_def_lines(&corpus.text["core.py"], def_re_for("core.py"));
+        let sym_of = |spans: &IndexMap<String, Vec<(usize, usize)>>| -> Option<String> {
+            spans["core.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
+        };
+
+        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0);
+        assert_eq!(sym_of(&spans_off), Some("subtokens".to_string()), "pre-fix (w_name=0.0) reproduces the bug: body term-density picks the wrong region");
+
+        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0);
+        assert_eq!(sym_of(&spans_on), Some("pack_regions".to_string()), "w_name=1.0 must select pack_regions via name-score anchoring");
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
     #[test]
     fn camel_matches_edge_cases() {
         assert_eq!(camel_matches("A"), vec!["A"]);
@@ -2629,7 +2836,7 @@ mod tests {
         assert!(files.contains(&"pkg/validators.py".to_string()));
 
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0);
         assert!(!bundle.is_empty());
         assert!(spans.contains_key("pkg/router.py"));
 
