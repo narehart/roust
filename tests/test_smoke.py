@@ -1,13 +1,14 @@
-"""End-to-end smoke test: builds a tiny synthetic repo, runs the real roust
-CLI against it via subprocess (python -m roust.cli, exercising the installed
-package exactly as a user would), and checks the three output modes."""
+"""End-to-end smoke test: builds a tiny synthetic repo, runs the real roust-rs
+CLI binary against it via subprocess, exercising it exactly as a user would,
+and checks the three output modes."""
 
 from __future__ import annotations
 
 import json
 import subprocess
-import sys
 from pathlib import Path
+
+from _roust_bin import roust_binary
 
 
 def _make_repo(tmp_path: Path) -> Path:
@@ -45,7 +46,7 @@ def _make_repo(tmp_path: Path) -> Path:
 
 def _run_cli(args: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
     return subprocess.run(
-        [sys.executable, "-m", "roust.cli", *args],
+        [str(roust_binary()), *args],
         cwd=cwd, capture_output=True, text=True, timeout=60,
     )
 
