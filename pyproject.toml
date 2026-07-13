@@ -1,22 +1,17 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["maturin>=1.5"]
+build-backend = "maturin"
 
 [project]
 name = "roust"
 version = "0.2.0"
-description = "Recall-first code retrieval for LLM coding agents — grep-level recall at ~1% of the tokens"
+description = "Recall-first code retrieval for coding agents - one ranked, token-budgeted bundle per query, no model or API key required"
 license = {text = "MIT"}
 requires-python = ">=3.10"
-dependencies = [
-    "tiktoken>=0.5",
-]
 
-[project.scripts]
-roust = "roust.cli:main"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/roust"]
+[tool.maturin]
+bindings = "bin"
+manifest-path = "roust-rs/Cargo.toml"
 
 [dependency-groups]
 dev = [

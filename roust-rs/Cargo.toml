@@ -2,7 +2,7 @@
 name = "roust"
 version = "0.2.0"
 edition = "2024"
-description = "Recall-first code retrieval for LLM coding agents - grep-level recall at ~1% of the tokens"
+description = "Recall-first code retrieval for coding agents - one ranked, token-budgeted bundle per query, no model or API key required"
 license = "MIT"
 repository = "https://github.com/narehart/roust"
 readme = "../README.md"

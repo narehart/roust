@@ -14,6 +14,7 @@ use roust::cache;
 use roust::core::{self, extract_symbol_anchors, query_terms, select_files, Corpus, SelectParams};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 const QUERIES: &[&str] = &[
     "how does the router dispatch requests to handlers",
@@ -398,6 +399,72 @@ fn reverse_import_edge_preserved_when_only_one_side_still_imports() {
     let fresh2 = Corpus::build(&repo, None, false, false);
     let fresh_edges2 = core::build_import_graph(&fresh2);
     assert_eq!(edges, fresh_edges2);
+
+    std::fs::remove_dir_all(&repo).ok();
+}
+
+fn git(repo: &Path, args: &[&str]) {
+    let status = Command::new("git")
+        .arg("-C")
+        .arg(repo)
+        .args(args)
+        .status()
+        .expect("failed to run git");
+    assert!(status.success(), "git {args:?} failed in {repo:?}");
+}
+
+/// Like `make_repo`, but a real git repo (init + commit) so
+/// `cache::scan_manifest`'s git-ls-files-first candidate enumeration is
+/// exercised rather than the raw-walk fallback the other tests in this file
+/// hit (their repos are never git-initialized). Ported from
+/// `tests/test_incremental.py`'s `_make_git_repo`.
+fn make_git_repo(base: &Path, tag: &str) -> PathBuf {
+    let repo = make_repo(base, tag);
+    git(&repo, &["init", "-q"]);
+    git(&repo, &["-c", "user.email=test@test.invalid", "-c", "user.name=test", "add", "-A"]);
+    git(
+        &repo,
+        &["-c", "user.email=test@test.invalid", "-c", "user.name=test", "commit", "-q", "-m", "test: initial commit"],
+    );
+    repo
+}
+
+/// A .gitignore'd file appearing on disk (e.g. a build artifact, or -- the
+/// motivating case -- a .venv/ package file) must never flip the cache
+/// verdict away from "unchanged": `scan_manifest` enumerates candidates via
+/// the same git-ls-files-first source `Corpus` itself indexes, so an ignored
+/// file was never a manifest entry to begin with. A subsequent edit to an
+/// actually-tracked file must still be detected and patched incrementally.
+/// Ported from `tests/test_incremental.py::test_gitignored_file_creation_does_not_trigger_rebuild`.
+#[test]
+fn gitignored_file_creation_does_not_trigger_rebuild() {
+    let base = std::env::temp_dir();
+    let repo = make_git_repo(&base, "gitignore");
+
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    assert_eq!(kind, "full");
+    assert!(corpus.files.contains(&"pkg/router.py".to_string()));
+
+    std::fs::write(repo.join(".gitignore"), "ignored_pkg/\n").unwrap();
+    std::fs::create_dir_all(repo.join("ignored_pkg")).unwrap();
+    std::fs::write(
+        repo.join("ignored_pkg/junk.py"),
+        "\"\"\"Should never be indexed -- lives under a gitignored directory.\"\"\"\n\n\ndef junk_fn():\n    return 0\n",
+    )
+    .unwrap();
+
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    assert_eq!(kind, "unchanged", "an ignored file appearing on disk must not trigger a rebuild");
+    assert!(cache_hit);
+    assert!(!corpus.files.contains(&"ignored_pkg/junk.py".to_string()));
+
+    // A tracked-file edit must still be detected and incrementally patched.
+    write_bumped(&repo, "pkg/validators.py", VALIDATORS_V2);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    assert_eq!(kind, "incremental", "a tracked-file edit must still be detected");
+    assert!(cache_hit);
+    assert!(!corpus.files.contains(&"ignored_pkg/junk.py".to_string()));
+    assert_matches_fresh_build(&repo, &corpus);
 
     std::fs::remove_dir_all(&repo).ok();
 }

@@ -24,14 +24,22 @@ jobs:
       - name: Sync dependencies
         run: uv sync
 
-      # test_parity.py is skipped in CI: it requires ROUST_PARITY_REPO to
-      # point at a real multi-hundred-file repo checkout and diffs the
-      # Rust/Python pipelines against lab/lanes2.py on it. That full parity
-      # gate (300/300 SWE-bench Lite tasks via parity/harness.py) runs
-      # locally / nightly, not on every push -- it's too slow and needs a
-      # repo fixture that isn't checked into this repo.
-      - name: Run pytest (excluding parity)
-        run: uv run pytest tests/ -k "not parity"
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: roust-rs
+
+      # The Python test suite drives the real roust-rs binary via
+      # subprocess (tests/_roust_bin.py), so it must exist before pytest
+      # runs -- otherwise every test skips.
+      - name: Build roust-rs release binary
+        run: cargo build --release
+        working-directory: roust-rs
+
+      - name: Run pytest
+        run: uv run pytest tests/
 
   rust-tests:
     name: Rust tests
