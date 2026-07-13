@@ -57,7 +57,18 @@ ARMS: dict[str, list[str]] = {
     "roust": ["roust", "read_file"],
     "roust_grep": ["roust", "run_command", "read_file"],
     "rag_grep": ["rag_search", "run_command", "read_file"],
+    # Steelman experiment (see lab/tokenbench/README.md '## Steelman:
+    # forced-stopping arms'): same toolbelts as grep/roust, but with a hard
+    # stopping directive in the system prompt AND max_turns=12 (passed via
+    # run_bench.py --max-turns for the run that includes these arms) --
+    # tests whether grep's 73% failure rate is a retrieval gap or a
+    # stopping-discipline gap.
+    "grep_forced": ["run_command", "read_file"],
+    "roust_forced": ["roust", "read_file"],
 }
+
+_FORCED_ARMS = {"grep_forced", "roust_forced"}
+_BASE_ARM_OF_FORCED = {"grep_forced": "grep", "roust_forced": "roust"}
 
 _TOOL_SCHEMAS = {
     "run_command": RUN_COMMAND_TOOL,
@@ -91,6 +102,8 @@ _OPENING_HINT = {
     "rag_grep": "Call rag_search with the issue text (or a refined query) as your first move, then use "
                 "run_command/read_file to verify hits or search for anything the retrieved chunks didn't cover.",
 }
+_OPENING_HINT["grep_forced"] = _OPENING_HINT["grep"]
+_OPENING_HINT["roust_forced"] = _OPENING_HINT["roust"]
 
 SYSTEM_PROMPT_TAIL = """
 Avoid unfocused exploration (e.g. listing every file with no filter) and avoid reading large files in full -- \
@@ -100,6 +113,28 @@ Answer with FILES: as soon as you are confident. Additional exploration costs to
 your score. Do not verify beyond what you need -- once the evidence converges on the right file(s), stop \
 investigating and answer immediately; do not spend further turns double-checking a conclusion you already \
 trust.
+
+When you are confident you have found every file that needs to change, respond with NO further tool calls, \
+and end your message with a line of exactly this form:
+
+FILES: path/to/file1.py, path/to/file2.py
+
+List repo-relative paths (as they would appear in `git diff`), comma-separated, on that one line. Only list \
+files that need to be *edited* to fix the issue; do not include files you merely inspected along the way."""
+
+# Steelman experiment (grep_forced / roust_forced, see README.md '## Steelman:
+# forced-stopping arms'): same toolbelt, same FILES: format/guardrails as the
+# base arm, but the "stop early" paragraph of SYSTEM_PROMPT_TAIL is replaced
+# with a hard, numeric stopping directive, and run_bench.py is invoked with
+# --max-turns 12 for these arms so the budget is real, not advisory.
+SYSTEM_PROMPT_TAIL_FORCED = """
+Avoid unfocused exploration (e.g. listing every file with no filter) and avoid reading large files in full -- \
+both burn turns and tokens without adding precision.
+
+You have a STRICT budget of 12 turns. You MUST emit your final FILES: answer by turn 12 at the latest, even \
+if you are not fully certain. Over-verification is a failure mode: once you have found a plausible file, \
+prefer answering over further checking. State your answer as soon as the evidence is adequate -- extra \
+verification turns do not improve your score and count against you.
 
 When you are confident you have found every file that needs to change, respond with NO further tool calls, \
 and end your message with a line of exactly this form:
@@ -119,7 +154,8 @@ def build_system_prompt(arm: str) -> str:
         "issue -- not files that are merely related or worth glancing at, but the specific files a correct "
         "patch would touch.\n\nYou have the following tools:\n" + tools_block + "\n\n" + _OPENING_HINT[arm]
     )
-    return head + SYSTEM_PROMPT_TAIL
+    tail = SYSTEM_PROMPT_TAIL_FORCED if arm in _FORCED_ARMS else SYSTEM_PROMPT_TAIL
+    return head + tail
 
 
 def build_first_user_message(problem_statement: str) -> str:

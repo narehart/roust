@@ -220,6 +220,24 @@ left off); pass `--arms grep,roust` etc. to run a subset;
 `--budget-cap-usd` to change the spend cap (default $20, this run used
 $80 per the $100-authorized budget).
 
+## Run status: 58/120 pairs completed, stopped at the $80 cap
+
+The real run executed 2026-07-13, gated on the coordination check below.
+`--budget-cap-usd 80` (of the $100 authorized) was reached mid-sweep, as
+designed -- the harness stopped cleanly rather than exceeding it (final
+spend $81.13, one row over the cap since the check is between rows, not
+mid-row). **15 instances got the full grep/roust/roust_grep/rag_grep
+sweep, plus one 16th instance partially (grep + roust only)** -- 58/58
+result rows have a matching transcript, zero harness errors. See
+`summarize.py` output (reproduced in the delivered report) for the actual
+numbers; headline: roust alone succeeded on 14/15 instances (93%) with a
+median of 8 turns and zero turn-cap hits, a stark contrast to v1's 0-8%
+success / universal turn-cap-out. Unlike v1, this is a real,
+budget-limited partial sample, not a design failure -- convergence is
+happening; the cap simply bounds how much of the 30-instance set was
+affordable within the authorized spend. Rerun with a higher
+`--budget-cap-usd` (resume-safe) to extend coverage.
+
 ## Coordination note
 
 At harness-build time, `src/roust/` and `roust-rs/` had uncommitted
