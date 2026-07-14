@@ -1,0 +1,38 @@
+{
+  "num_valid": 266,
+  "num_total": 266,
+  "final_file": {
+    "coverage": 0.6789115646258503,
+    "precision": 0.06043357151507812
+  },
+  "final_symbol": {
+    "coverage": 0.3456910569105691,
+    "precision": 0.04033084190158212
+  },
+  "final_span": {
+    "coverage": 0.2787293368373331,
+    "precision": 0.05793673831474485
+  },
+  "final_line": {
+    "coverage": 0.2738831190240686,
+    "precision": 0.05291614079650915
+  },
+  "traj_auc_file": 0.8033783885287643,
+  "traj_redundancy_file": 0.0,
+  "traj_auc_symbol": 0.4356194562591334,
+  "traj_redundancy_symbol": 0.0,
+  "traj_auc_span": 0.3586967941267624,
+  "traj_redundancy_span": 0.0,
+  "traj_auc_line": 0.35593857828154696,
+  "traj_redundancy_line": 0.0,
+  "editloc": {
+    "recall": 0.07045417078799868,
+    "precision": 0.9674589700056593
+  },
+  "roust_version": "roust 0.2.0 (c07a09d, clean)",
+  "budget": 8192,
+  "language": "python",
+  "n_predicted": 266,
+  "n_skipped": 0,
+  "n_tasks": 266
+}
