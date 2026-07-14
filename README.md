@@ -215,7 +215,7 @@ see [`lab/README.md`](lab/README.md).
 
 ## Scoreboard
 
-Given the same task and the same agent (tokenbench v2, live Sonnet 4.5, each method as the agent's only tool), roust solves **93.3%** of tasks, grep **26.7%**, embedding-RAG **71.4%** — n=15, a partial run (see below). roust is **not** the most accurate retriever available: trained retrievers (see *Localization accuracy* below) score higher on published localization benchmarks. What roust offers is the best result you can get for free — no model, no embeddings, no API key, no training.
+Given the same task and the same agent (tokenbench v2, live Sonnet 4.5, each method as the agent's only tool), roust solves **93.3%** of tasks, grep **26.7%**, embedding-RAG **80.0%** (9-trial mean) — n=15, a partial run (see below). roust is **not** the most accurate retriever available: trained retrievers (see *Localization accuracy* below) score higher on published localization benchmarks. What roust offers is the best result you can get for free — no model, no embeddings, no API key, no training.
 
 ### Agent-loop outcomes (our protocol)
 
@@ -229,7 +229,7 @@ Given the same task and the same agent (tokenbench v2, live Sonnet 4.5, each met
 | roust + stopping prompt | 66.7% | — | 241,027 | $0.74 | $0.63 |
 
 - roust costs more per attempt than grep (308k vs 240k tokens) and wins on solve rate anyway. grep is cheap because it gives up: 73.3% of its runs hit the turn cap and produce nothing.
-- `$ / successful run` is a **lower bound** — it excludes the failed attempts paid for along the way. True cost-per-success is unmeasured ([#16](https://github.com/narehart/roust/issues/16)).
+- `$ / successful run` remains a lower bound on cost-to-answer for a single attempt. The full repeat-run campaign (#16, `results_repeats.jsonl`) measured the rest: for roust and grep, failures are **stable across trials** (p≈0 — the retry term is meaningless; roust's one miss failed 10/10), while embedding-RAG's failures are genuinely stochastic, giving **E[cost to first success] = $2.50** over its solvable set (all 15 instances, per-instance p̂ 0.11–1.00).
 - Giving the agent grep *alongside* roust makes it worse (93.3% → 57.1%): replace grep, don't supplement it ([#5](https://github.com/narehart/roust/issues/5)).
 - embedding-RAG's **Solves** cell is a 9-trial mean, `lab/tokenbench/results_repeats.jsonl`; its other columns (median turns, tokens, $) are the trial-0 measurement, `lab/tokenbench/results.jsonl`.
 - Outcome volatility (measured across 9 identical trial repeats, `lab/tokenbench/results_repeats.jsonl`): embedding-RAG bounces 73.3–86.7% across 9 identical runs (mean 80.0% ± 4.4pp); roust reproduced 93.3% exactly with 0 outcome flips across all repeats, and its single failure (django-16400) failed 10/10 trials — a capability gap, not variance (p < 0.30 at 95%, rule of three). grep's failures were stable across both its trials.
