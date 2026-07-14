@@ -1,0 +1,49 @@
+15 instances x 3 arms = 45 pairs (trial=1), 0 done, 45 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$250.00, max_cost_per_pair=$10.00, already spent ~$0.00)
+[1/45] astropy__astropy-12907                       roust       OK        tiktoken_tot=210793 turns=11 tools=10 ~$0.84 cum
+[2/45] astropy__astropy-12907                       grep        OK        tiktoken_tot=109385 turns=19 tools=18 ~$1.34 cum
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 9472.11it/s]
+[3/45] astropy__astropy-12907                       rag_grep    OK        tiktoken_tot=405741 turns=24 tools=24 ~$3.01 cum
+[4/45] django__django-11039                         roust       OK        tiktoken_tot=394562 turns=13 tools=12 ~$4.58 cum
+[5/45] django__django-11039                         grep        FAIL      tiktoken_tot=124482 turns=30 tools=30 ~$5.24 cum
+[6/45] django__django-11039                         rag_grep    OK        tiktoken_tot=591431 turns=22 tools=22 ~$7.67 cum
+[7/45] django__django-11630                         roust       OK        tiktoken_tot=225800 turns=10 tools=9 ~$8.61 cum
+[8/45] django__django-11630                         grep        FAIL      tiktoken_tot=181720 turns=30 tools=30 ~$9.49 cum
+[9/45] django__django-11630                         rag_grep    OK        tiktoken_tot=641394 turns=22 tools=21 ~$12.19 cum
+[10/45] django__django-12125                         roust       OK        tiktoken_tot=339356 turns=13 tools=12 ~$13.58 cum
+[11/45] django__django-12125                         grep        FAIL      tiktoken_tot=132142 turns=30 tools=30 ~$14.27 cum
+[12/45] django__django-12125                         rag_grep    OK        tiktoken_tot=693812 turns=26 tools=27 ~$17.19 cum
+[13/45] django__django-12708                         roust       OK        tiktoken_tot=206892 turns=11 tools=10 ~$18.05 cum
+[14/45] django__django-12708                         grep        FAIL      tiktoken_tot=148953 turns=30 tools=30 ~$18.79 cum
+[15/45] django__django-12708                         rag_grep    OK        tiktoken_tot=1003973 turns=29 tools=29 ~$22.95 cum
+[16/45] django__django-13230                         roust       OK        tiktoken_tot=100116 turns=8 tools=7 ~$23.39 cum
+[17/45] django__django-13230                         grep        FAIL      tiktoken_tot=192361 turns=30 tools=30 ~$24.30 cum
+[18/45] django__django-13230                         rag_grep    OK        tiktoken_tot=412688 turns=20 tools=20 ~$26.03 cum
+[19/45] django__django-13660                         roust       OK        tiktoken_tot=32842 turns=4 tools=3 ~$26.17 cum
+[20/45] django__django-13660                         grep        OK        tiktoken_tot=48193 turns=16 tools=15 ~$26.43 cum
+[21/45] django__django-13660                         rag_grep    OK        tiktoken_tot=174687 turns=12 tools=11 ~$27.17 cum
+[22/45] django__django-14238                         roust       OK        tiktoken_tot=251932 turns=11 tools=10 ~$28.26 cum
+[23/45] django__django-14238                         grep        OK        tiktoken_tot=66329 turns=18 tools=19 ~$28.62 cum
+[24/45] django__django-14238                         rag_grep    FAIL      tiktoken_tot=370652 turns=30 tools=30 ~$30.35 cum
+[25/45] django__django-14787                         roust       OK        tiktoken_tot=102881 turns=6 tools=5 ~$30.77 cum
+[26/45] django__django-14787                         grep        FAIL      tiktoken_tot=163568 turns=30 tools=30 ~$31.56 cum
+[27/45] django__django-14787                         rag_grep    FAIL      tiktoken_tot=465258 turns=30 tools=30 ~$33.50 cum
+[28/45] django__django-15347                         roust       OK        tiktoken_tot=77778 turns=8 tools=7 ~$33.84 cum
+[29/45] django__django-15347                         grep        FAIL      tiktoken_tot=141656 turns=30 tools=30 ~$34.55 cum
+[30/45] django__django-15347                         rag_grep    OK        tiktoken_tot=463963 turns=25 tools=25 ~$36.49 cum
+[31/45] django__django-15819                         roust       OK        tiktoken_tot=231606 turns=11 tools=10 ~$37.49 cum
+[32/45] django__django-15819                         grep        FAIL      tiktoken_tot=260822 turns=30 tools=30 ~$38.69 cum
+[33/45] django__django-15819                         rag_grep    OK        tiktoken_tot=574874 turns=22 tools=22 ~$41.13 cum
+[34/45] django__django-16400                         roust       FAIL      tiktoken_tot=1070068 turns=24 tools=23 ~$45.42 cum
+[35/45] django__django-16400                         grep        FAIL      tiktoken_tot=220236 turns=30 tools=30 ~$46.45 cum
+[36/45] django__django-16400                         rag_grep    OK        tiktoken_tot=685465 turns=21 tools=20 ~$49.35 cum
+[37/45] matplotlib__matplotlib-18869                 roust       OK        tiktoken_tot=214075 turns=10 tools=9 ~$50.20 cum
+[38/45] matplotlib__matplotlib-18869                 grep        FAIL      tiktoken_tot=135510 turns=30 tools=30 ~$50.86 cum
+[39/45] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=603479 turns=27 tools=27 ~$53.25 cum
+[40/45] matplotlib__matplotlib-23987                 roust       OK        tiktoken_tot=686821 turns=21 tools=20 ~$55.90 cum
+[41/45] matplotlib__matplotlib-23987                 grep        FAIL      tiktoken_tot=234046 turns=30 tools=30 ~$56.94 cum
+[42/45] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=491596 turns=18 tools=18 ~$58.88 cum
+[43/45] matplotlib__matplotlib-25498                 roust       OK        tiktoken_tot=608780 turns=18 tools=17 ~$61.23 cum
+[44/45] matplotlib__matplotlib-25498                 grep        FAIL      tiktoken_tot=122518 turns=30 tools=30 ~$61.86 cum
+[45/45] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=608820 turns=21 tools=23 ~$64.28 cum
+done
