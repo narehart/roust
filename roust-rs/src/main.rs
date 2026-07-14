@@ -96,6 +96,12 @@ struct Args {
     /// dump the Explain diagnostic record as JSON to stderr
     #[arg(long)]
     explain: bool,
+
+    /// weight for the function-chunk lexical-match blend in region packing
+    /// (0.0 = OFF, byte-identical default; issue #4 E5 -- see
+    /// `roust::core::pack_regions`'s `chunk_rank_weight` doc comment)
+    #[arg(long, default_value_t = 0.0)]
+    chunk_rank: f64,
 }
 
 fn main() {
@@ -159,8 +165,17 @@ fn main() {
     } else {
         anchor_def_symbols(&args.query, &corpus, &anchor_files)
     };
-    let (spans, bundle) =
-        pack_regions(&corpus, &files, &terms, &scores, args.budget, &count_tokens, Some(&anchor_symbols), 0.0);
+    let (spans, bundle) = pack_regions(
+        &corpus,
+        &files,
+        &terms,
+        &scores,
+        args.budget,
+        &count_tokens,
+        Some(&anchor_symbols),
+        0.0,
+        args.chunk_rank,
+    );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
     if args.explain {

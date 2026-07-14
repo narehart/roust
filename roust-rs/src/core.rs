@@ -2216,6 +2216,120 @@ fn python_blocks(text: &str) -> Vec<(usize, usize)> {
     spans.into_iter().filter(|&(a, b)| b >= a).collect()
 }
 
+/// Trailing "gap" detection helper for `python_leaf_blocks`: the first
+/// non-blank line (0-indexed) at or below `indent`, scanning
+/// `lines[header_line + 1 .. limit]` (`limit` is the next SIBLING header's
+/// line, same convention `python_blocks` uses for its own `end`) -- i.e.
+/// where a def/class's body actually ends, as distinct from `limit`
+/// itself. Anything between this point and `limit` is code sitting at the
+/// block's OWN syntactic level that isn't itself a def/class header (a
+/// module-level assignment, a class attribute between two methods, an
+/// `if __name__ == "__main__":` guard, ...). `python_blocks` silently
+/// folds that trailing code into the PRECEDING header's span (its `end`
+/// is always the next header's line, full stop); `python_leaf_blocks`
+/// uses this to carve it out as its own candidate unit instead. Regex/
+/// indentation heuristic, not a real parse -- same caveat as the rest of
+/// this module's Python "AST" handling.
+///
+/// Cherry-picked verbatim from `e1-block-units` (commit 085f387), issue #4
+/// E5: reused here purely as a function-chunk BUILDER for the chunk-rank
+/// lexical scoring below -- E5 does NOT touch candidate-generation
+/// granularity (that's E1's `--pack-units blocks`, a separate, already-
+/// tried experiment); the default `python_blocks`/`window_blocks` candidate
+/// spans are completely untouched by this file.
+fn py_block_body_end(lines: &[&str], header_line: usize, indent: usize, limit: usize) -> usize {
+    for (j, ln) in lines.iter().enumerate().take(limit).skip(header_line + 1) {
+        if ln.trim().is_empty() {
+            continue;
+        }
+        let cur_indent = ln.chars().take_while(|c| *c == ' ' || *c == '\t').count();
+        if cur_indent <= indent {
+            return j;
+        }
+    }
+    limit
+}
+
+/// Leaf-only block spans, one candidate per INNERMOST def/class (no header
+/// nested inside it): a true "whole function/def block" unit. A container
+/// header (one WITH nested children) contributes only its own preamble
+/// span (header through the line before its first child) -- its children's
+/// own leaf spans already cover the rest of its body. Code between two
+/// children, or after the last child before the next sibling/EOF, at the
+/// container's own indentation, is picked up by the preceding leaf child's
+/// own trailing-gap detection (`py_block_body_end`), which mirrors
+/// `python_blocks`' `end` computation and so naturally cascades correctly
+/// through arbitrarily deep nesting -- see doc comment on that function.
+///
+/// Cherry-picked verbatim from `e1-block-units` (commit 085f387). E5
+/// (issue #4) repurposes this as the FUNCTION-CHUNK unit for direct
+/// lexical scoring (see `pack_regions`' `chunk_rank_weight` parameter) --
+/// distinct from E1's use of the same helper as a candidate/packing unit.
+fn python_leaf_blocks(text: &str) -> Vec<(usize, usize)> {
+    let lines = py_splitlines(text);
+    let n = lines.len();
+    let mut headers: Vec<(usize, usize)> = Vec::new();
+    for (i, ln) in lines.iter().enumerate() {
+        if let Some(caps) = PY_BLOCK_RE.captures(ln) {
+            let indent = caps.get(1).unwrap().as_str().chars().count();
+            headers.push((i, indent));
+        }
+    }
+    if headers.is_empty() {
+        return vec![(1, n)];
+    }
+
+    let mut spans: Vec<(usize, usize)> = Vec::new();
+    if headers[0].0 > 0 {
+        spans.push((1, headers[0].0)); // leading preamble (imports, module docstring)
+    }
+
+    for (idx, &(i, indent)) in headers.iter().enumerate() {
+        if lines[i].trim_start().starts_with('@') {
+            continue; // standalone decorator: folded into the following def/class's span below
+        }
+        let mut start = i;
+        let mut k = i as isize - 1;
+        while k >= 0 && lines[k as usize].trim_start().starts_with('@') {
+            start = k as usize;
+            k -= 1;
+        }
+        let mut sibling_end = n;
+        let mut first_child: Option<usize> = None;
+        for &(j, ind2) in &headers[idx + 1..] {
+            if ind2 <= indent {
+                sibling_end = j;
+                break;
+            }
+            if first_child.is_none() {
+                first_child = Some(j);
+            }
+        }
+        match first_child {
+            Some(fc) => {
+                // container: only its own preamble is a unit here -- its
+                // children emit their own leaf spans on later iterations.
+                // Always pushed, even when `fc == start + 1` (the header
+                // sits directly atop its first child, no docstring/body
+                // line of its own): a bare "class Foo:" header line is
+                // still a real line that needs SOME candidate covering it,
+                // or it silently falls into no unit at all.
+                spans.push((start + 1, fc));
+            }
+            None => {
+                // leaf: header through its real body end, plus a trailing
+                // gap unit if the body ends before the sibling boundary.
+                let end = py_block_body_end(&lines, i, indent, sibling_end);
+                spans.push((start + 1, end));
+                if end < sibling_end {
+                    spans.push((end + 1, sibling_end));
+                }
+            }
+        }
+    }
+    spans.into_iter().filter(|&(a, b)| b >= a).collect()
+}
+
 static PY_DEF_LINE_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[ \t]*(?:async def|def|class)\s+(\w+)").unwrap());
 
 /// 1-indexed line number of each class/def header's FIRST occurrence in
@@ -2413,6 +2527,64 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
 /// a symbol-name match is identity evidence independent of how long the
 /// matched definition happens to be (measured via this repo's own dogfood
 /// case, see lab/dogfood_pack_regions.py).
+///
+/// `chunk_rank_weight` (0.0 = OFF, the production default, byte-identical
+/// to pre-E5 behavior; CLI: `--chunk-rank`; issue #4 E5) is a DIFFERENT
+/// lever from `w_name`/`anchor_symbols` above: those anchor on a region's
+/// own DEFINING SYMBOL name; this one scores a region by how well the
+/// whole ENCLOSING FUNCTION/CLASS BODY it lives inside matches the query
+/// lexically, independent of whether that region happens to be named
+/// after a query term. Per file (`.py` only -- same AST-heuristic caveat
+/// as `python_blocks`/`python_leaf_blocks`; non-Python files get a 0.0
+/// chunk score in every mode), the file is partitioned into
+/// `python_leaf_blocks` function-chunk units, each chunk is scored with
+/// the SAME idf-weighted lexical `weight()` used for every candidate
+/// above (sum of matched query terms' idf over the chunk's own tokens --
+/// literally "the file-level BM25-style score, computed at chunk
+/// granularity instead of whole-file"), then min-max normalized against
+/// the file's OWN highest-scoring chunk (dividing by that file's max, not
+/// a global max, since `weight()`'s absolute scale already varies file to
+/// file by vocabulary and this blend only needs "how does this chunk
+/// compare to its file's other chunks", not a cross-file comparison --
+/// cross-file comparison is `scores.get(rel)`'s job, already folded into
+/// `gain`'s `(0.3 + scores.get(rel)...)` factor). This is precomputed
+/// ONCE per file, before any candidate is scored, into a flat
+/// `(span, normalized_score)` list -- never recomputed inside the
+/// pass-1/pass-2 selection loops.
+///
+/// Each ORIGINAL candidate span (`python_blocks`/`window_blocks`,
+/// UNCHANGED by this parameter -- E5 does not touch candidate generation,
+/// see E1 for that separate, already-tried experiment) is then blended
+/// with the MAX normalized score among every `python_leaf_blocks` chunk
+/// that OVERLAPS it at all (not strict containment either direction):
+/// `python_blocks` emits both a container's whole span (e.g. a class,
+/// spanning every method) and each child's own tighter span, so a
+/// container candidate properly CONTAINS several leaf chunks rather than
+/// being contained by one -- max-over-overlap is the one rule that
+/// handles both a leaf candidate (overlaps the 1-2 leaf chunks it was
+/// carved from) and a container candidate (correctly inherits credit from
+/// whichever child chunk is the actual lexical match) without a special
+/// case. `candidate.gain += chunk_rank_weight *
+/// max_overlapping_chunk_normalized_score`, added PRE-division (unlike
+/// `w_name`'s post-division `name_score` bonus): this chunk score is
+/// itself a same-shaped idf-weighted lexical density signal as the
+/// `weight(seg_terms)` term already inside `gain`, so it competes on the
+/// same terms as everything else `gain` already contains, rather than
+/// needing `name_score`'s special undiluted-by-size treatment (that
+/// treatment exists specifically because a symbol NAME match is identity
+/// evidence unrelated to region length; a chunk lexical-density score is
+/// not).
+///
+/// SCOPE NOTE: `.gain` (with the chunk bonus folded in) is read by pass 1's
+/// per-file `best_idx` selection (the ratio `gain/tok + w_name*name_score`)
+/// -- i.e. chunk-rank directly steers WHICH single region pass 1 seats as
+/// each file's initial pick, which is exactly the "which function does
+/// this file's region land in" narrowing step E5 targets. Pass 2's greedy
+/// marginal-coverage loop recomputes its own selection metric from
+/// `c.terms`/`c.tok`/`c.name_score` independent of `.gain` (pre-existing
+/// design, not changed here), so the chunk bonus does not additionally
+/// bias pass 2's supplementary picks -- a deliberate minimal-surface
+/// choice (see issue #4 E5 task write-up) rather than an oversight.
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],
@@ -2422,6 +2594,7 @@ pub fn pack_regions(
     count_tokens: &dyn Fn(&str) -> usize,
     anchor_symbols: Option<&IndexMap<String, Vec<String>>>,
     w_name: f64,
+    chunk_rank_weight: f64,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
@@ -2456,6 +2629,54 @@ pub fn pack_regions(
         let hitset: HashSet<usize> = hits.into_iter().collect();
         let def_lines: Vec<(usize, String)> =
             if w_name != 0.0 { file_def_lines(text, def_re_for(rel)) } else { Vec::new() };
+
+        // Chunk-rank (E5, issue #4): this file's function-chunk lexical
+        // scores, precomputed ONCE, min-max normalized against this file's
+        // own highest-scoring chunk. `.py` only (see doc comment above);
+        // 0 candidates when OFF or non-Python, so `chunk_score_for` below
+        // is a guaranteed 0.0 lookup miss in every byte-identical-default
+        // case.
+        let chunks: Vec<((usize, usize), f64)> = if chunk_rank_weight != 0.0 && rel.ends_with(".py") {
+            let mut raw: Vec<((usize, usize), f64)> = python_leaf_blocks(text)
+                .into_iter()
+                .map(|(ca, cb)| {
+                    let start = ca.saturating_sub(1).min(lines.len());
+                    let end = cb.min(lines.len());
+                    let chunk_seg: Vec<&str> = if start < end { lines[start..end].to_vec() } else { Vec::new() };
+                    let chunk_tokens: HashSet<String> = tokenize(&chunk_seg.join("\n")).into_iter().collect();
+                    let chunk_terms: HashSet<String> = tset.intersection(&chunk_tokens).cloned().collect();
+                    ((ca, cb), weight(&chunk_terms))
+                })
+                .collect();
+            let max_score = raw.iter().map(|&(_, s)| s).fold(0.0_f64, f64::max);
+            if max_score > 0.0 {
+                for r in raw.iter_mut() {
+                    r.1 /= max_score;
+                }
+            }
+            raw
+        } else {
+            Vec::new()
+        };
+        // Overlap lookup, not pure containment: `python_blocks` (the
+        // candidate spans this loop actually scores) emits BOTH a
+        // container's whole span (class header through its LAST method,
+        // i.e. spanning every child) AND each child's own tighter span --
+        // so a container candidate properly CONTAINS several leaf chunks
+        // rather than being contained by one. Taking the MAX normalized
+        // score among every `python_leaf_blocks` chunk that overlaps
+        // `[a, b]` at all handles both directions with one rule: a leaf
+        // candidate overlaps exactly the 1-2 leaf chunks it was carved
+        // from (body + possible trailing-gap chunk), and a container
+        // candidate picks up whichever child's score is highest -- i.e. a
+        // class candidate correctly inherits credit when ONE of its
+        // methods is the actual lexical match, matching this feature's
+        // stated goal ("for window candidates that overlap a high-scoring
+        // chunk").
+        let chunk_score_for = |a: usize, b: usize| -> f64 {
+            chunks.iter().filter(|&&((ca, cb), _)| a <= cb && b >= ca).map(|&(_, s)| s).fold(0.0_f64, f64::max)
+        };
+
         for (a, b) in spans {
             if a == 0 || b < a || a > lines.len() {
                 // guard against degenerate spans; Python's 1-indexed slicing
@@ -2483,7 +2704,10 @@ pub fn pack_regions(
             if tok == 0 {
                 continue;
             }
-            let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
+            let mut gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
+            if chunk_rank_weight != 0.0 {
+                gain += chunk_rank_weight * chunk_score_for(a, b);
+            }
             let ns = if w_name != 0.0 { name_score(region_symbol(&def_lines, a, b), &tset) } else { 0.0 };
             candidates.push(Candidate { file: rel.clone(), span: (a, b), tok, terms: seg_terms, gain, text: seg, name_score: ns });
         }
@@ -2928,10 +3152,10 @@ mod tests {
             spans["core.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0);
+        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0.0);
         assert_eq!(sym_of(&spans_off), Some("subtokens".to_string()), "pre-fix (w_name=0.0) reproduces the bug: body term-density picks the wrong region");
 
-        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0);
+        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0.0);
         assert_eq!(sym_of(&spans_on), Some("pack_regions".to_string()), "w_name=1.0 must select pack_regions via name-score anchoring");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -2975,8 +3199,8 @@ mod tests {
         // Large budget so pass 2's greedy loop actually runs over multiple
         // remaining candidates (pass 1 alone would only ever touch one span
         // per file).
-        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
-        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0.0);
+        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0.0);
         assert_eq!(spans1, spans2, "pack_regions must be deterministic given identical (NaN/inf-bearing) inputs");
         assert!(!spans1.is_empty(), "pack_regions should still select regions despite NaN/inf scores");
 
@@ -3025,10 +3249,10 @@ mod tests {
         // remaining candidates per iteration -- the exact scenario that
         // triggers repeated `marginal(i)` calls for the same `i` within a
         // single sort.
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0.0);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0.0);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls given many equal/near-equal marginal scores (and must never panic)"
@@ -3086,7 +3310,7 @@ mod tests {
         assert!(files.contains(&"pkg/validators.py".to_string()));
 
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0.0);
         assert!(!bundle.is_empty());
         assert!(spans.contains_key("pkg/router.py"));
 
@@ -3142,5 +3366,139 @@ mod tests {
         assert!(is_low_confidence(5.0, 0, 0));
         // Right at the boundary: not low-confidence (strict `<`, not `<=`).
         assert!(!is_low_confidence(LOW_CONFIDENCE_TOP_SCORE, 5, 5));
+    }
+
+    // ---------------------------------------------------------------- E5/issue #4: --chunk-rank
+
+    /// `chunk_rank_weight = 0.0` (the CLI default) must produce byte-
+    /// identical spans to a `pack_regions` call that never heard of this
+    /// parameter -- pinned as a literal regression fixture, mirroring
+    /// `python_blocks_windows_mode_unchanged_reference`'s role for E1.
+    #[test]
+    fn pack_regions_chunk_rank_default_off_matches_pinned_reference() {
+        let tmp = std::env::temp_dir().join(format!("roust_chunkrank_default_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        std::fs::write(
+            &tmp.join("case.py"),
+            "def alpha():\n    \"\"\"widget gadget\"\"\"\n    return 1\n\n\ndef beta():\n    return 2\n",
+        )
+        .unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("widget gadget", &[]);
+        let scores: IndexMap<String, f64> = [("case.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["case.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let (spans, bundle) =
+            pack_regions(&corpus, &files, &terms, &scores, 10_000, &count_tokens, None, 0.0, 0.0);
+        // `beta` matches neither query term and doesn't start at line 1, so
+        // it's dropped by the zero-term-overlap candidate filter -- `alpha`
+        // (with the docstring match) is the file's only surviving candidate.
+        assert_eq!(spans["case.py"], vec![(1, 5)], "0.0 must match python_blocks' own span set exactly");
+        assert!(bundle.contains("widget gadget"));
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// The core `--chunk-rank` scenario this feature exists for: a LONG
+    /// function that repeats a single generic query term on nearly every
+    /// line (many `hit_lines`, i.e. a big pre-existing `0.5 * n_hits`
+    /// credit -- see `pack_regions`'s `gain` formula) wins pass 1's
+    /// per-file selection over a short function that matches BOTH query
+    /// terms densely, purely on repetition, when chunk-rank is off.
+    /// Chunk-rank's flat per-file-normalized bonus (added pre-division,
+    /// see `pack_regions`'s doc comment) is BIGGER for the short function
+    /// (its own `python_leaf_blocks` chunk matches both terms, so it's the
+    /// file's max-scoring chunk and normalizes to 1.0, vs. the long
+    /// function's single-term chunk normalizing to a fraction of that) AND
+    /// that bonus lands on a much smaller token count -- both effects
+    /// compound to flip pass 1's per-file pick toward the short, densely
+    /// matching function.
+    #[test]
+    fn pack_regions_chunk_rank_flips_repetition_win_to_dense_match() {
+        let tmp = std::env::temp_dir().join(format!("roust_chunkrank_flip_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        // A handful of 1-token filler lines, each a bare hit on ONLY
+        // "widget" (never "gadget") -- lots of `hit_lines` credit, but the
+        // matched TERM SET (and thus the raw chunk weight) stays at just
+        // {widget}, half of focused_helper's {widget, gadget}.
+        let filler: String = (0..4).map(|_| "    #widget\n".to_string()).collect();
+        let src =
+            format!("def noisy_repeater():\n{filler}    return 1\n\n\ndef focused_helper():\n    \"\"\"widget gadget\"\"\"\n    return 2\n");
+        std::fs::write(tmp.join("m.py"), src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("widget gadget", &[]);
+        let scores: IndexMap<String, f64> = [("m.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["m.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let winner = |spans: &IndexMap<String, Vec<(usize, usize)>>| -> (usize, usize) { spans["m.py"][0] };
+
+        // Pass-1 pick's SPAN start line tells us which function won: 1 =
+        // noisy_repeater's own header line, further down = focused_helper's.
+        let (spans_off, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0.0);
+        assert_eq!(
+            winner(&spans_off).0,
+            1,
+            "chunk-rank OFF: noisy_repeater's repetition-driven n_hits bonus must win pass 1 despite being the weaker (single-term) match"
+        );
+
+        let (spans_on, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 1.5);
+        assert_ne!(
+            winner(&spans_on).0,
+            1,
+            "chunk-rank ON (1.5): the chunk bonus (bigger AND cheaper-per-token for focused_helper) must flip pass 1's pick"
+        );
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Determinism: `pack_regions` with `chunk_rank_weight > 0.0` must
+    /// still be a pure function of its inputs across repeated calls (same
+    /// determinism contract as `pack_regions_deterministic_with_many_
+    /// equal_marginal_scores`, exercised here specifically through the new
+    /// per-file chunk-score precomputation path).
+    #[test]
+    fn pack_regions_chunk_rank_deterministic_across_repeated_calls() {
+        let tmp = std::env::temp_dir().join(format!("roust_chunkrank_determinism_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let filler: String = (0..30).map(|i| format!("    # widget gadget spam spam {i}\n")).collect();
+        std::fs::write(
+            &tmp.join("m.py"),
+            format!(
+                "def noisy_repeater():\n    # widget gadget\n{filler}    return 1\n\n\ndef focused_helper():\n    \"\"\"widget gadget\"\"\"\n    return 2\n"
+            ),
+        )
+        .unwrap();
+        std::fs::write(
+            &tmp.join("n.py"),
+            "class Widget:\n    def gadget_a(self):\n        return 1\n\n    def gadget_b(self):\n        \"\"\"widget gadget\"\"\"\n        return 2\n",
+        )
+        .unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("widget gadget", &[]);
+        let scores: IndexMap<String, f64> =
+            [("m.py".to_string(), 1.0), ("n.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["m.py".to_string(), "n.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let (first, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1.5);
+        assert!(!first.is_empty());
+        for _ in 0..10 {
+            let (spans, _) =
+                pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1.5);
+            assert_eq!(
+                spans, first,
+                "pack_regions with chunk_rank_weight > 0.0 must produce byte-identical spans across repeated calls"
+            );
+        }
+
+        std::fs::remove_dir_all(&tmp).ok();
     }
 }
