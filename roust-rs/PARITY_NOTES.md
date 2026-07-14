@@ -275,3 +275,29 @@ resulting `Corpus` gives byte-identical `select_files()` file lists and
 add/remove-triggers-full-rebuild, docs-field patching, and the
 import-graph "reverse edge survives if the other side still authors it"
 case.
+
+## 15. `pack_regions`' `weight()` closure summed `HashSet` iteration order
+    -- item 7's "genuine exception" list grew a second entry
+
+Item 7 above catalogs `EdgeMap` as "the one genuine exception" to the
+insertion-ordered-`IndexMap`/pre-sorted-`set` discipline that keeps this port
+safe from hash-seed-randomization nondeterminism. `pack_regions`' `weight()`
+closure (added alongside item 13's idf-weighted region packing, i.e. after
+item 7 was written) was a second, undetected one: it summed each candidate
+segment's matched terms' idf values via `seg_terms.iter().map(...).sum()`
+over a raw `HashSet<String>`, whose iteration order depends on std's
+per-process-random `RandomState` hasher seed. Float addition is not
+associative, so the same multiset of idf floats, summed in a different
+order across two process invocations, can differ at the ULP level -- which
+then flips an EXACT gain/tok tie in the greedy packing loop nondeterministically
+(observed as cross-process-flaky region selection on astropy-14365,
+django-15347, sympy-22714). Fixed by sorting the term set lexicographically
+before summing, in both `pack_regions`' pass-1 gain computation and pass-2's
+`marginal` closure (both route through the same `weight()` closure). Note:
+unlike item 7's `EdgeMap` case, this isn't a documented "reproduce an
+undefined Python tie-break" tradeoff -- there is no Python reference left to
+compare against for this code (`roust.core`'s idf-weighted `pack_regions`
+postdates the frozen `lab/lanes2.py` snapshot per item 13, and the standalone
+Python engine itself was later removed, #12) -- so canonical (sorted)
+summation is simply the correct fix for the Rust port's OWN internal
+cross-process determinism, judged on its own terms.

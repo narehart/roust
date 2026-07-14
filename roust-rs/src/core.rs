@@ -2432,7 +2432,19 @@ pub fn pack_regions(
             (t.clone(), v)
         })
         .collect();
-    let weight = |seg_terms: &HashSet<String>| -> f64 { seg_terms.iter().map(|t| idf.get(t).copied().unwrap_or(0.0)).sum() };
+    // Sum in a canonical (lexicographically sorted) term order rather than
+    // raw HashSet iteration order: HashSet's iteration order depends on
+    // std's per-process-random hasher seed, and float addition is not
+    // associative, so summing the same IDF values in a different order can
+    // produce a different ULP-level result across processes -- which then
+    // flips exact gain/tok ties in `pack_regions` nondeterministically. This
+    // was the root cause of the observed cross-process region-selection
+    // flakiness on exact ties (see PARITY_NOTES.md / issue #14).
+    let weight = |seg_terms: &HashSet<String>| -> f64 {
+        let mut terms: Vec<&String> = seg_terms.iter().collect();
+        terms.sort();
+        terms.iter().map(|t| idf.get(*t).copied().unwrap_or(0.0)).sum()
+    };
 
     let mut candidates: Vec<Candidate> = Vec::new();
 
