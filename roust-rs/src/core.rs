@@ -2662,7 +2662,27 @@ pub fn pack_regions(
         // deterministic, non-panicking total order and agrees with
         // partial_cmp on every finite, non-NaN input, so this is a pure
         // hardening for real inputs, not a ranking change.
-        remaining.sort_by(|&a, &b| marginal(b).total_cmp(&marginal(a)));
+        //
+        // Root cause of issue #14's resurfacing (E1, blocks mode): `marginal`
+        // builds a FRESH `diff` HashSet on every call and sums IDF floats over
+        // its iteration order. A brand-new HashSet's bucket layout (and thus
+        // iteration order) is not guaranteed stable across separate
+        // instantiations, so two calls to `marginal(i)` for the very same
+        // candidate `i` within a single sort can return float-epsilon-different
+        // values. That makes the comparator not a deterministic function of
+        // its inputs, which `total_cmp` cannot fix (it only removes the NaN
+        // panic; a comparator that isn't a pure function of (a, b) can still
+        // violate transitivity/antisymmetry and trip Rust's sort's internal
+        // "does not correctly implement a total order" panic). Snapshot every
+        // remaining candidate's marginal score exactly once per greedy
+        // iteration and sort that cache instead: this also cuts evaluations
+        // from O(n log n) to O(n) per iteration.
+        let scored: Vec<(usize, f64)> = remaining.iter().map(|&i| (i, marginal(i))).collect();
+        remaining = {
+            let mut scored = scored;
+            scored.sort_by(|a, b| b.1.total_cmp(&a.1));
+            scored.into_iter().map(|(i, _)| i).collect()
+        };
         let i = remaining.remove(0);
         let tok = candidates[i].tok as i64;
         if spent + tok > budget_tokens {
@@ -2947,6 +2967,61 @@ mod tests {
         let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
         assert_eq!(spans1, spans2, "pack_regions must be deterministic given identical (NaN/inf-bearing) inputs");
         assert!(!spans1.is_empty(), "pack_regions should still select regions despite NaN/inf scores");
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Determinism regression for issue #14's TRUE root cause, which
+    /// resurfaced under the E1 blocks-mode experiment (panics on
+    /// sympy__sympy-17139 and sympy__sympy-21171): pass-2's `marginal`
+    /// closure built a FRESH `diff` HashSet on every call and summed IDF
+    /// floats over that set's iteration order. A brand-new HashSet's
+    /// bucket layout isn't guaranteed stable across separate
+    /// instantiations, so two calls to `marginal(i)` for the very same
+    /// candidate `i`, within a SINGLE sort, could return float-epsilon-
+    /// different values -- a comparator that isn't a deterministic
+    /// function of its inputs, which `total_cmp` alone cannot fix (it only
+    /// removes the NaN-panic case; a comparator that returns inconsistent
+    /// answers for the same pair can still violate transitivity and trip
+    /// sort's "does not correctly implement a total order" panic). Fifty
+    /// candidates sharing the exact same query-term content maximize the
+    /// number of equal/near-equal marginal scores pass-2 must rank in one
+    /// sort, which is the shape that exposed the bug. Assert repeated
+    /// calls with identical inputs never panic and produce byte-identical
+    /// (same file, same spans, in order) output.
+    #[test]
+    fn pack_regions_deterministic_with_many_equal_marginal_scores() {
+        let tmp = std::env::temp_dir().join(format!("roust_detfix_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        // 50 functions with identical bodies/docstrings (only the def name
+        // and return value vary): every candidate's `terms` HashSet is the
+        // same "token"/"budget"/"enforc" set, so pass-2's marginal scores
+        // for them cluster into ties/near-ties.
+        let mut src = String::new();
+        for i in 0..50 {
+            src.push_str(&format!("def fn_{i}(x):\n    \"\"\"token budget enforced.\"\"\"\n    return x + {i}\n\n\n"));
+        }
+        std::fs::write(tmp.join("many.py"), &src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("how is the token budget enforced", &[]);
+        let files = vec!["many.py".to_string()];
+        let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        // Large budget so pass 2's greedy loop actually runs over many
+        // remaining candidates per iteration -- the exact scenario that
+        // triggers repeated `marginal(i)` calls for the same `i` within a
+        // single sort.
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+        assert!(!first.is_empty());
+        for _ in 0..10 {
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+            assert_eq!(
+                spans, first,
+                "pack_regions must produce byte-identical spans across repeated calls given many equal/near-equal marginal scores (and must never panic)"
+            );
+        }
 
         std::fs::remove_dir_all(&tmp).ok();
     }
