@@ -75,9 +75,21 @@ def test_json_output(tmp_path: Path) -> None:
         f["path"].endswith("routing.py") for f in payload["files"]
     )
     stats = payload["stats"]
-    for key in ("files_indexed", "index_ms", "query_ms", "bundle_tokens", "cache"):
+    for key in (
+        "files_indexed", "index_ms", "query_ms", "bundle_tokens", "cache",
+        "top_score", "matched_query_terms", "total_query_terms",
+    ):
         assert key in stats
     assert stats["cache"] in ("hit", "miss")
+    assert stats["total_query_terms"] > 0
+    assert 0 < stats["matched_query_terms"] <= stats["total_query_terms"]
+    # NOTE: this fixture repo is only 3 tiny files, so its raw BM25F scores
+    # sit well below the calibrated low_confidence threshold (tuned against
+    # realistic-size repos -- see roust-rs/src/core.rs's LOW_CONFIDENCE_*
+    # docs) even for a fully on-topic query; a `low_confidence` flag here is
+    # therefore expected, not a regression. The "a real match isn't flagged"
+    # guarantee is exercised on a realistic-size corpus instead, by
+    # roust-rs/tests/confidence.rs.
 
 
 def test_files_only_output(tmp_path: Path) -> None:
@@ -95,6 +107,24 @@ def test_no_results_exit_code(tmp_path: Path) -> None:
     repo = _make_repo(tmp_path)
     r = _run_cli(["zzz_nonexistent_query_term_xyzzy_plugh", str(repo), "--no-cache"])
     assert r.returncode == 1, r.stderr
+    assert "no query term matched" in r.stderr
+
+
+def test_no_results_zero_match_emits_valid_json(tmp_path: Path) -> None:
+    """Issue #25: the literal zero-match case (no query term exists anywhere
+    in the indexed corpus vocabulary) must still exit 1, but with a valid,
+    parseable --json payload (empty files/regions/bundle, matched_query_terms
+    == 0) rather than nothing on stdout."""
+    repo = _make_repo(tmp_path)
+    r = _run_cli(["zzz_nonexistent_query_term_xyzzy_plugh", str(repo), "--no-cache", "--json"])
+    assert r.returncode == 1, r.stderr
+    payload = json.loads(r.stdout)
+    assert payload["files"] == []
+    assert payload["regions"] == {}
+    assert payload["bundle"] == ""
+    stats = payload["stats"]
+    assert stats["matched_query_terms"] == 0
+    assert stats["total_query_terms"] > 0
 
 
 def test_usage_error_exit_code(tmp_path: Path) -> None:

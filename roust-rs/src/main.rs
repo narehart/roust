@@ -13,10 +13,16 @@
 //! summary always goes to stderr, never stdout, so stdout stays
 //! pipeable/parseable.
 //!
-//! Exit codes: 0 = results found, 1 = no results, 2 = usage error.
+//! Exit codes: 0 = results found (including low-confidence matches, flagged
+//! via `low_confidence` in `--json` stats and a stderr warning), 1 = no
+//! query term matched anything in the indexed corpus vocabulary, 2 = usage
+//! error.
 
 use roust::cache;
-use roust::core::{anchor_def_symbols, extract_symbol_anchors, pack_regions, query_terms, select_files, SelectParams};
+use roust::core::{
+    anchor_def_symbols, extract_symbol_anchors, is_low_confidence, pack_regions, query_term_coverage, query_terms,
+    select_files, SelectParams,
+};
 use clap::Parser;
 use std::collections::HashSet;
 use std::path::PathBuf;
@@ -113,6 +119,8 @@ fn main() {
 
     let t1 = Instant::now();
     let terms = query_terms(&args.query, &[]);
+    let (matched_terms, total_terms) = query_term_coverage(&corpus, &terms);
+    let zero_match = matched_terms == 0;
     let anchors = if use_anchors { Some(extract_symbol_anchors(&args.query, &corpus)) } else { None };
     let cochange = if with_history {
         history.as_ref().map(|h| &h.cochange)
@@ -152,6 +160,21 @@ fn main() {
     let packed_files: Vec<String> = files.iter().filter(|f| spans.contains_key(f.as_str())).cloned().collect();
     let bundle_tokens = if !bundle.is_empty() { count_tokens(&bundle) } else { 0 };
     let cache_state = if cache_hit { "hit" } else { "miss" };
+    let low_confidence = is_low_confidence(explain.top_score, matched_terms, total_terms);
+
+    let mut stats = serde_json::json!({
+        "files_indexed": corpus.n_docs,
+        "index_ms": index_ms.round() as i64,
+        "query_ms": query_ms.round() as i64,
+        "bundle_tokens": bundle_tokens,
+        "cache": cache_state,
+        "top_score": explain.top_score,
+        "matched_query_terms": matched_terms,
+        "total_query_terms": total_terms,
+    });
+    if low_confidence {
+        stats["low_confidence"] = serde_json::json!(true);
+    }
 
     if !packed_files.is_empty() {
         if args.json {
@@ -173,13 +196,7 @@ fn main() {
                 "files": files_json,
                 "regions": regions_json,
                 "bundle": bundle,
-                "stats": {
-                    "files_indexed": corpus.n_docs,
-                    "index_ms": index_ms.round() as i64,
-                    "query_ms": query_ms.round() as i64,
-                    "bundle_tokens": bundle_tokens,
-                    "cache": cache_state,
-                },
+                "stats": stats,
             });
             println!("{}", serde_json::to_string(&payload).unwrap());
         } else if args.files_only {
@@ -189,19 +206,40 @@ fn main() {
         } else {
             println!("{bundle}");
         }
+    } else if zero_match && args.json {
+        // Literal zero-match case (issue #25): emit valid, parseable JSON
+        // with an empty result set rather than nothing, so callers scripting
+        // against --json never have to special-case "no stdout at all".
+        let payload = serde_json::json!({
+            "query": args.query,
+            "files": [],
+            "regions": {},
+            "bundle": "",
+            "stats": stats,
+        });
+        println!("{}", serde_json::to_string(&payload).unwrap());
     }
 
+    // zero_match gets its own dedicated stderr message instead of the
+    // generic low-confidence suffix -- it's the strictly stronger "nothing
+    // in the corpus vocabulary matched at all" signal, not merely a weak
+    // match.
+    let confidence_note = if !zero_match && low_confidence { " [low-confidence match]" } else { "" };
     eprintln!(
-        "roust: {} files, {} tokens (indexed {} files, index {}ms, query {}ms, cache {})",
+        "roust: {} files, {} tokens (indexed {} files, index {}ms, query {}ms, cache {}){}",
         packed_files.len(),
         bundle_tokens,
         corpus.n_docs,
         index_ms.round() as i64,
         query_ms.round() as i64,
         cache_state,
+        confidence_note,
     );
+    if zero_match {
+        eprintln!("roust: no query term matched anything in the indexed corpus vocabulary -- no results");
+    }
 
-    if packed_files.is_empty() {
+    if zero_match {
         std::process::exit(1);
     }
 }

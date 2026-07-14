@@ -95,7 +95,35 @@ roust "connection pooling" ~/code/httpx --no-testbridge  # test-file lexical bri
 roust "connection pooling" ~/code/httpx --explain
 ```
 
-Exit codes: `0` = results found, `1` = no results, `2` = usage error.
+Exit codes: `0` = results found (this includes low-confidence matches, see
+below -- roust still returns its best guess), `1` = no query term matched
+anything in the indexed corpus vocabulary at all, `2` = usage error.
+
+### Low-confidence matches
+
+roust always returns a budget-filled bundle for any query that matches at
+least one term somewhere in the repo -- it doesn't refuse to answer just
+because the match is weak. To make that weak-match case visible instead of
+silent, `--json` output's `stats` includes:
+
+- `top_score`: the strongest candidate file's raw (pre-normalization) BM25F
+  score for this query -- comparable across queries and repos, unlike the
+  0-1 normalized scores used for ranking.
+- `matched_query_terms` / `total_query_terms`: how many of the query's terms
+  exist anywhere in the indexed corpus vocabulary (body text, comments,
+  docs pages, commit messages, or path components).
+- `low_confidence: true`, present only when the calibrated criterion trips
+  (`top_score` below a fixed threshold, or fewer than 45% of query terms
+  found in the corpus vocabulary) -- also appended as `[low-confidence
+  match]` to the stderr summary line.
+
+The thresholds were calibrated empirically against all 300 SWE-bench Lite
+(query, repo) pairs -- 0 false trips on that real-query population is the
+hard constraint -- checked against ~30 gibberish/off-topic queries across 3
+repos. Because real BM25F scores scale with query length and repo size,
+this signal is calibrated for realistic-size repositories; a tiny
+few-file toy repo can legitimately score below the threshold even on a
+genuinely on-topic query.
 
 ## Using with coding agents
 

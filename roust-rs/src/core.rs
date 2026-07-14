@@ -231,6 +231,79 @@ pub fn query_terms(question: &str, keywords: &[String]) -> Vec<String> {
     terms
 }
 
+/// How many of `terms` exist ANYWHERE in `corpus`'s vocabulary (body,
+/// comment/NL, docs-page, commit-message, or path-token fields) -- i.e. the
+/// full set of fields `Corpus::bm25`/`docs_bm25`/`msg_bm25` ever look a term
+/// up in, not just the primary body `df`. Returns `(matched, total)`, `total`
+/// always equal to `terms.len()`. Purely diagnostic (feeds `--json`'s
+/// `matched_query_terms`/`total_query_terms` stats and the zero-match exit-1
+/// gate in `main.rs`) -- never consulted by `select_files`, so it cannot
+/// itself change ranking.
+pub fn query_term_coverage(corpus: &Corpus, terms: &[String]) -> (usize, usize) {
+    let mut path_vocab: HashSet<&str> = HashSet::new();
+    for toks in corpus.ptoks.values() {
+        for t in toks {
+            path_vocab.insert(t.as_str());
+        }
+    }
+    let matched = terms
+        .iter()
+        .filter(|t| {
+            corpus.df.contains_key(t.as_str())
+                || corpus.com_df.contains_key(t.as_str())
+                || corpus.docs_df.contains_key(t.as_str())
+                || corpus.msg_df.contains_key(t.as_str())
+                || path_vocab.contains(t.as_str())
+        })
+        .count();
+    (matched, terms.len())
+}
+
+/// Calibrated low-confidence gate (issue #25). `top_score` is the raw,
+/// pre-normalization top pooled BM25F score (`Explain::top_score`);
+/// `matched_terms`/`total_terms` come from `query_term_coverage`. Trips when
+/// EITHER the strongest candidate's raw score is below
+/// `LOW_CONFIDENCE_TOP_SCORE`, OR fewer than
+/// `LOW_CONFIDENCE_MATCH_FRACTION` of the query's terms exist anywhere in the
+/// corpus vocabulary -- either one, on its own, is evidence the match is
+/// coincidental rather than substantive.
+///
+/// Calibrated empirically (issue #25), not guessed:
+///   - Real population: all 300 SWE-bench Lite (query, repo) pairs.
+///     top_score min/p5/p25/median/p75/max = 12.04/37.44/63.07/89.98/139.18/361.99.
+///     matched-fraction min/p5/p25/median/p75/max = 0.460/0.865/0.938/0.965/1.0/1.0.
+///   - Gibberish population: 30 queries (15 random-ASCII, 10 shuffled-identifier
+///     soup, 5 plausible-but-wrong feature descriptions) x 3 repos (django,
+///     this repo, matplotlib) = 90 runs; 70/90 were literal zero-match (caught
+///     by the exit-1 gate below, not this flag). Of the remaining 20
+///     (nonzero-match) runs: top_score min/p5/p25/median/p75/max =
+///     1.26/1.44/2.66/8.48/11.94/24.75; matched-fraction min/max = 0.20/0.875.
+///
+/// The two top_score distributions OVERLAP (gibberish max 24.75 > real min
+/// 12.04) -- there is no threshold with full separation. Per the hard
+/// constraint (zero false trips on the 300 real queries), thresholds are set
+/// just under the observed real-query minima: 12.0 (vs. real min 12.04) and
+/// 0.45 (vs. real min match-fraction 0.460). At these thresholds: 0/300 real
+/// queries trip; 16/20 (80%) of the nonzero-match gibberish runs trip (all
+/// with top_score < 12.0) -- combined with the 70 caught by exit-1, 86/90
+/// (95.6%) of the full gibberish population is flagged one way or the other.
+/// The 4 gibberish queries that slip through untripped are the deliberately
+/// hardest case: plausible-but-wrong feature descriptions (e.g. "OAuth2
+/// device code flow refresh token rotation", "GraphQL subscription resolver
+/// batching") that happen to share enough real vocabulary with the target
+/// repo (auth/token/schema-adjacent terms) to score above both thresholds --
+/// an accepted, reported trade-off per the calibration spec, not a bug.
+pub const LOW_CONFIDENCE_TOP_SCORE: f64 = 12.0;
+pub const LOW_CONFIDENCE_MATCH_FRACTION: f64 = 0.45;
+
+pub fn is_low_confidence(top_score: f64, matched_terms: usize, total_terms: usize) -> bool {
+    if total_terms == 0 {
+        return true;
+    }
+    let match_fraction = matched_terms as f64 / total_terms as f64;
+    top_score < LOW_CONFIDENCE_TOP_SCORE || match_fraction < LOW_CONFIDENCE_MATCH_FRACTION
+}
+
 // ---------------------------------------------------------------- corpus + BM25
 
 pub static TESTLIKE_RE: LazyLock<Regex> = LazyLock::new(|| {
@@ -1470,6 +1543,19 @@ pub struct Explain {
     pub anchor_promotions: Vec<(String, f64, String, String)>,
     pub testbridge: Vec<(String, String, String)>,
     pub docsbridge: Vec<(String, String, i64)>,
+    /// Raw (pre-normalization) top pooled BM25F candidate score for this
+    /// query -- i.e. `max(corpus.bm25(terms).values())`, computed before
+    /// `normalize()` divides every score down to a [0,1] range and before
+    /// `pack_regions` does any budget-driven packing. Unlike the
+    /// normalized/packed scores exposed elsewhere, this is comparable
+    /// query-to-query and corpus-to-corpus, which is exactly what makes it
+    /// usable as a low-confidence calibration signal (see `main.rs`'s
+    /// `low_confidence` gate): a genuinely weak/coincidental match still
+    /// normalizes its best candidate to 1.0, but its raw top score stays
+    /// small. Zero (the `Default` value) in the true no-match case, where
+    /// `select_files` returns `Explain::default()` before this field would
+    /// otherwise be set.
+    pub top_score: f64,
 }
 
 fn normalize(scores: &IndexMap<String, f64>) -> IndexMap<String, f64> {
@@ -1768,6 +1854,7 @@ pub fn select_files(
     if bm.is_empty() {
         return (Vec::new(), IndexMap::new(), Explain::default());
     }
+    let top_score = bm.values().cloned().fold(0.0_f64, f64::max);
     let bm_n = normalize(&bm);
     let mut ranked: Vec<(String, f64)> = bm_n.iter().map(|(k, v)| (k.clone(), *v)).collect();
     ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
@@ -1803,6 +1890,7 @@ pub fn select_files(
             anchor_promotions: promotions,
             testbridge: tb_records,
             docsbridge: db_records,
+            top_score,
             ..Default::default()
         };
         return (lex_out, scores, explain);
@@ -2057,6 +2145,7 @@ pub fn select_files(
         anchor_promotions,
         testbridge: tb_records,
         docsbridge: db_records,
+        top_score,
     };
 
     (out, scores, explain)
@@ -2909,5 +2998,56 @@ mod tests {
         assert!(spans.contains_key("pkg/router.py"));
 
         std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    // ---------------------------------------------------------------- issue #25:
+    // low-confidence signal + query-term-coverage helpers
+
+    #[test]
+    fn query_term_coverage_counts_partial_match() {
+        let tmp = std::env::temp_dir().join(format!("roust_qtc_partial_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        std::fs::write(&tmp.join("widget.py"), "def widget_handler():\n    return 1\n").unwrap();
+        let corpus = Corpus::build(&tmp, None, false, false);
+
+        let terms = query_terms("widget handler zzznonexistentxyzzy", &[]);
+        let (matched, total) = query_term_coverage(&corpus, &terms);
+        assert_eq!(total, terms.len());
+        assert!(matched >= 1 && matched < total, "expected a partial match, got {matched}/{total}");
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    #[test]
+    fn query_term_coverage_zero_when_nothing_in_vocabulary() {
+        let tmp = std::env::temp_dir().join(format!("roust_qtc_zero_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        std::fs::write(&tmp.join("widget.py"), "def widget_handler():\n    return 1\n").unwrap();
+        let corpus = Corpus::build(&tmp, None, false, false);
+
+        let terms = query_terms("zzznonexistentxyzzy qqxwibblewonk", &[]);
+        let (matched, total) = query_term_coverage(&corpus, &terms);
+        assert_eq!(matched, 0);
+        assert_eq!(total, terms.len());
+        assert!(total > 0);
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    #[test]
+    fn is_low_confidence_threshold_logic() {
+        // Strong raw score + full term coverage: confident.
+        assert!(!is_low_confidence(LOW_CONFIDENCE_TOP_SCORE + 1.0, 5, 5));
+        // Weak raw score even with full coverage: low-confidence.
+        assert!(is_low_confidence(1.0, 5, 5));
+        // Strong raw score but most terms unmatched: low-confidence.
+        assert!(is_low_confidence(1000.0, 1, 10));
+        // Literal zero-match case: low-confidence (superseded by the exit-1
+        // gate in main.rs, but the predicate itself must not claim confidence).
+        assert!(is_low_confidence(0.0, 0, 5));
+        // No terms at all: low-confidence (vacuous, defensive case).
+        assert!(is_low_confidence(5.0, 0, 0));
+        // Right at the boundary: not low-confidence (strict `<`, not `<=`).
+        assert!(!is_low_confidence(LOW_CONFIDENCE_TOP_SCORE, 5, 5));
     }
 }
