@@ -290,6 +290,34 @@ The File-level column mixes several different metrics (Acc@10 / Top-1 / file-mat
 
 Cold index build, Rust vs Python engine: httpx 145ms vs 522ms; django 1.8s vs 7.6s — prose-only, no committed benchmark artifact ([#15](https://github.com/narehart/roust/issues/15)).
 
+### ContextBench (human-annotated gold context, their evaluator)
+
+[ContextBench](https://github.com/EuniAI/ContextBench) (arXiv:2602.05892) scores
+retrieved context against human-annotated "necessary context" line regions.
+roust was run one-shot (`--json --budget 8192`, single call, no model) on the
+**Python subset of their curated 500-instance Verified benchmark (266 tasks, 19
+repos, 266/266 evaluated, 0 skipped)** and scored with ContextBench's own
+evaluator, unmodified ([#3](https://github.com/narehart/roust/issues/3)):
+
+| Granularity | roust recall | roust precision | Claude Sonnet 4.5 agent recall | precision |
+|---|---|---|---|---|
+| file | **0.679** | 0.060 | 0.720 | 0.665 |
+| block | 0.346 | 0.040 | 0.449 | 0.420 |
+| line | 0.274 | 0.053 | 0.374 | 0.344 |
+
+Protocols differ and the comparison is not apples-to-apples: the published
+baselines are **multi-turn LLM agents** (read, navigate, then select context)
+on the full 500-task 8-language set; roust is a **single sub-2-second call
+with no model, no API key, and no training**, on the Python 266. Read it as:
+one free one-shot call recovers ~94% of the file-level recall of the best
+agent, and its precision is ~10x lower because roust deliberately packs a
+full 8192-token recall-first bundle rather than a minimal answer — the same
+recall-over-precision trade documented in
+[#4](https://github.com/narehart/roust/issues/4). ContextBench's efficiency
+metrics (AUC-Coverage/Redundancy) are N/A for a one-step trajectory.
+Adapter + protocol: `lab/contextbench/`; aggregate:
+`lab/contextbench/results_python.json`.
+
 ### What still needs work
 
 - ~~Line-level 35.7% and function-level 44.3% (a proxy, not the exact metric)~~ measured exactly ([#2](https://github.com/narehart/roust/issues/2)): FUNCTION 39.7% (exact, was a 44.3% proxy) and LINE 29.3% (was 35.7%) from a fresh 300-instance run of the shipped engine — both **weaker** than the old proxy/stale-engine numbers, and still the weakest cells — `lab/results_regions/agentless_metric_v2.json`, [#3](https://github.com/narehart/roust/issues/3)
