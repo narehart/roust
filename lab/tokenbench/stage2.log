@@ -1,0 +1,177 @@
+15 instances x 1 arms = 15 pairs (trial=2), 45 done, 15 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$64.28)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 16189.98it/s]
+[1/15] astropy__astropy-12907                       rag_grep    OK        tiktoken_tot=721002 turns=25 tools=25 ~$67.12 cum
+[2/15] django__django-11039                         rag_grep    OK        tiktoken_tot=657111 turns=25 tools=25 ~$69.82 cum
+[3/15] django__django-11630                         rag_grep    OK        tiktoken_tot=526201 turns=22 tools=21 ~$72.07 cum
+[4/15] django__django-12125                         rag_grep    FAIL      tiktoken_tot=757436 turns=30 tools=31 ~$75.25 cum
+[5/15] django__django-12708                         rag_grep    OK        tiktoken_tot=399347 turns=23 tools=22 ~$76.95 cum
+[6/15] django__django-13230                         rag_grep    OK        tiktoken_tot=385544 turns=19 tools=19 ~$78.56 cum
+[7/15] django__django-13660                         rag_grep    OK        tiktoken_tot=207497 turns=15 tools=14 ~$79.45 cum
+[8/15] django__django-14238                         rag_grep    OK        tiktoken_tot=326463 turns=23 tools=22 ~$80.94 cum
+[9/15] django__django-14787                         rag_grep    OK        tiktoken_tot=493317 turns=27 tools=26 ~$82.96 cum
+[10/15] django__django-15347                         rag_grep    OK        tiktoken_tot=284727 turns=17 tools=17 ~$84.16 cum
+[11/15] django__django-15819                         rag_grep    OK        tiktoken_tot=522930 turns=20 tools=20 ~$86.39 cum
+[12/15] django__django-16400                         rag_grep    FAIL      tiktoken_tot=709356 turns=26 tools=25 ~$89.43 cum
+[13/15] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=575461 turns=26 tools=26 ~$91.71 cum
+[14/15] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=535216 turns=19 tools=19 ~$93.82 cum
+[15/15] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=720261 turns=23 tools=26 ~$96.68 cum
+done
+15 instances x 1 arms = 15 pairs (trial=3), 60 done, 15 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$96.68)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 55054.58it/s]
+[1/15] astropy__astropy-12907                       rag_grep    OK        tiktoken_tot=508437 turns=20 tools=20 ~$98.70 cum
+[2/15] django__django-11039                         rag_grep    OK        tiktoken_tot=554076 turns=21 tools=21 ~$100.98 cum
+[3/15] django__django-11630                         rag_grep    OK        tiktoken_tot=550782 turns=22 tools=21 ~$103.32 cum
+[4/15] django__django-12125                         rag_grep    OK        tiktoken_tot=819828 turns=29 tools=29 ~$106.74 cum
+[5/15] django__django-12708                         rag_grep    OK        tiktoken_tot=525495 turns=30 tools=29 ~$109.01 cum
+[6/15] django__django-13230                         rag_grep    FAIL      tiktoken_tot=684070 turns=30 tools=31 ~$111.87 cum
+[7/15] django__django-13660                         rag_grep    OK        tiktoken_tot=173670 turns=13 tools=12 ~$112.61 cum
+[8/15] django__django-14238                         rag_grep    FAIL      tiktoken_tot=371258 turns=30 tools=30 ~$114.35 cum
+[9/15] django__django-14787                         rag_grep    OK        tiktoken_tot=397985 turns=19 tools=18 ~$115.95 cum
+[10/15] django__django-15347                         rag_grep    OK        tiktoken_tot=331836 turns=20 tools=20 ~$117.35 cum
+[11/15] django__django-15819                         rag_grep    OK        tiktoken_tot=491884 turns=19 tools=19 ~$119.45 cum
+[12/15] django__django-16400                         rag_grep    FAIL      tiktoken_tot=849934 turns=26 tools=25 ~$123.03 cum
+[13/15] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=398179 turns=23 tools=23 ~$124.66 cum
+[14/15] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=505432 turns=18 tools=18 ~$126.65 cum
+[15/15] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=664251 turns=20 tools=23 ~$129.26 cum
+done
+15 instances x 1 arms = 15 pairs (trial=4), 75 done, 15 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$129.26)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 15885.18it/s]
+[1/15] astropy__astropy-12907                       rag_grep    OK        tiktoken_tot=611572 turns=23 tools=23 ~$131.69 cum
+[2/15] django__django-11039                         rag_grep    OK        tiktoken_tot=455271 turns=17 tools=17 ~$133.56 cum
+[3/15] django__django-11630                         rag_grep    OK        tiktoken_tot=559285 turns=21 tools=20 ~$135.92 cum
+[4/15] django__django-12125                         rag_grep    OK        tiktoken_tot=772642 turns=27 tools=27 ~$139.17 cum
+[5/15] django__django-12708                         rag_grep    FAIL      tiktoken_tot=503113 turns=30 tools=30 ~$141.33 cum
+[6/15] django__django-13230                         rag_grep    FAIL      tiktoken_tot=634540 turns=30 tools=31 ~$144.00 cum
+[7/15] django__django-13660                         rag_grep    OK        tiktoken_tot=101201 turns=9 tools=8 ~$144.44 cum
+[8/15] django__django-14238                         rag_grep    OK        tiktoken_tot=201631 turns=18 tools=17 ~$145.37 cum
+[9/15] django__django-14787                         rag_grep    OK        tiktoken_tot=364815 turns=21 tools=20 ~$146.87 cum
+[10/15] django__django-15347                         rag_grep    OK        tiktoken_tot=190691 turns=20 tools=19 ~$147.72 cum
+[11/15] django__django-15819                         rag_grep    OK        tiktoken_tot=482709 turns=19 tools=19 ~$149.79 cum
+[12/15] django__django-16400                         rag_grep    FAIL      tiktoken_tot=425400 turns=17 tools=16 ~$151.61 cum
+[13/15] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=498393 turns=26 tools=26 ~$153.62 cum
+[14/15] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=819041 turns=27 tools=27 ~$156.86 cum
+[15/15] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=902156 turns=26 tools=33 ~$160.44 cum
+done
+15 instances x 1 arms = 15 pairs (trial=5), 90 done, 15 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$160.44)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 17646.16it/s]
+[1/15] astropy__astropy-12907                       rag_grep    OK        tiktoken_tot=492406 turns=18 tools=18 ~$162.40 cum
+[2/15] django__django-11039                         rag_grep    OK        tiktoken_tot=357167 turns=15 tools=15 ~$163.87 cum
+[3/15] django__django-11630                         rag_grep    OK        tiktoken_tot=435511 turns=18 tools=17 ~$165.72 cum
+[4/15] django__django-12125                         rag_grep    OK        tiktoken_tot=856628 turns=28 tools=27 ~$169.32 cum
+[5/15] django__django-12708                         rag_grep    FAIL      tiktoken_tot=753130 turns=30 tools=30 ~$172.46 cum
+[6/15] django__django-13230                         rag_grep    OK        tiktoken_tot=491771 turns=24 tools=24 ~$174.53 cum
+[7/15] django__django-13660                         rag_grep    OK        tiktoken_tot=169933 turns=12 tools=11 ~$175.25 cum
+[8/15] django__django-14238                         rag_grep    FAIL      tiktoken_tot=387403 turns=30 tools=30 ~$177.04 cum
+[9/15] django__django-14787                         rag_grep    FAIL      tiktoken_tot=464258 turns=30 tools=30 ~$178.98 cum
+[10/15] django__django-15347                         rag_grep    OK        tiktoken_tot=443579 turns=26 tools=26 ~$180.87 cum
+[11/15] django__django-15819                         rag_grep    OK        tiktoken_tot=394140 turns=16 tools=16 ~$182.55 cum
+[12/15] django__django-16400                         rag_grep    FAIL      tiktoken_tot=1056010 turns=30 tools=30 ~$186.97 cum
+[13/15] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=560021 turns=25 tools=25 ~$189.18 cum
+[14/15] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=619868 turns=22 tools=22 ~$191.64 cum
+[15/15] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=570550 turns=18 tools=23 ~$193.89 cum
+done
+15 instances x 1 arms = 15 pairs (trial=6), 105 done, 15 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$193.89)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 13106.40it/s]
+[1/15] astropy__astropy-12907                       rag_grep    FAIL      tiktoken_tot=461672 turns=30 tools=32 ~$195.82 cum
+[2/15] django__django-11039                         rag_grep    OK        tiktoken_tot=492270 turns=19 tools=19 ~$197.85 cum
+[3/15] django__django-11630                         rag_grep    OK        tiktoken_tot=614868 turns=22 tools=21 ~$200.44 cum
+[4/15] django__django-12125                         rag_grep    OK        tiktoken_tot=697477 turns=25 tools=25 ~$203.35 cum
+[5/15] django__django-12708                         rag_grep    OK        tiktoken_tot=603885 turns=27 tools=26 ~$205.91 cum
+[6/15] django__django-13230                         rag_grep    OK        tiktoken_tot=492562 turns=23 tools=23 ~$207.96 cum
+[7/15] django__django-13660                         rag_grep    OK        tiktoken_tot=189907 turns=14 tools=13 ~$208.78 cum
+[8/15] django__django-14238                         rag_grep    FAIL      tiktoken_tot=342534 turns=30 tools=30 ~$210.38 cum
+[9/15] django__django-14787                         rag_grep    OK        tiktoken_tot=311571 turns=22 tools=21 ~$211.68 cum
+[10/15] django__django-15347                         rag_grep    OK        tiktoken_tot=263766 turns=16 tools=16 ~$212.80 cum
+[11/15] django__django-15819                         rag_grep    OK        tiktoken_tot=413951 turns=17 tools=17 ~$214.56 cum
+[12/15] django__django-16400                         rag_grep    FAIL      tiktoken_tot=978063 turns=29 tools=28 ~$218.75 cum
+[13/15] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=571657 turns=24 tools=25 ~$221.00 cum
+[14/15] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=567556 turns=20 tools=20 ~$223.24 cum
+[15/15] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=850761 turns=29 tools=32 ~$226.63 cum
+done
+15 instances x 1 arms = 15 pairs (trial=7), 120 done, 15 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$226.63)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 25532.70it/s]
+[1/15] astropy__astropy-12907                       rag_grep    FAIL      tiktoken_tot=579428 turns=30 tools=31 ~$228.97 cum
+[2/15] django__django-11039                         rag_grep    OK        tiktoken_tot=646035 turns=24 tools=24 ~$231.63 cum
+[3/15] django__django-11630                         rag_grep    OK        tiktoken_tot=451392 turns=18 tools=17 ~$233.54 cum
+[4/15] django__django-12125                         rag_grep    FAIL      tiktoken_tot=738489 turns=30 tools=31 ~$236.64 cum
+[5/15] django__django-12708                         rag_grep    FAIL      tiktoken_tot=776783 turns=30 tools=30 ~$239.90 cum
+[6/15] django__django-13230                         rag_grep    OK        tiktoken_tot=356255 turns=18 tools=18 ~$241.40 cum
+[7/15] django__django-13660                         rag_grep    OK        tiktoken_tot=189345 turns=14 tools=13 ~$242.21 cum
+[8/15] django__django-14238                         rag_grep    OK        tiktoken_tot=338037 turns=25 tools=24 ~$243.75 cum
+[9/15] django__django-14787                         rag_grep    OK        tiktoken_tot=524741 turns=29 tools=28 ~$245.91 cum
+[10/15] django__django-15347                         rag_grep    OK        tiktoken_tot=319329 turns=20 tools=20 ~$247.27 cum
+[11/15] django__django-15819                         rag_grep    OK        tiktoken_tot=557227 turns=21 tools=21 ~$249.64 cum
+[12/15] django__django-16400                         rag_grep    FAIL      tiktoken_tot=665964 turns=23 tools=22 ~$252.52 cum
+[13/15] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=540106 turns=26 tools=26 ~$254.67 cum
+[14/15] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=646898 turns=22 tools=22 ~$257.25 cum
+[15/15] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=854802 turns=28 tools=31 ~$260.65 cum
+done
+15 instances x 1 arms = 15 pairs (trial=8), 135 done, 15 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$260.65)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 13963.84it/s]
+[1/15] astropy__astropy-12907                       rag_grep    FAIL      tiktoken_tot=550120 turns=30 tools=31 ~$262.88 cum
+[2/15] django__django-11039                         rag_grep    OK        tiktoken_tot=729343 turns=25 tools=25 ~$265.87 cum
+[3/15] django__django-11630                         rag_grep    OK        tiktoken_tot=381027 turns=16 tools=15 ~$267.48 cum
+[4/15] django__django-12125                         rag_grep    FAIL      tiktoken_tot=724835 turns=30 tools=31 ~$270.54 cum
+[5/15] django__django-12708                         rag_grep    OK        tiktoken_tot=699229 turns=25 tools=24 ~$273.46 cum
+[6/15] django__django-13230                         rag_grep    OK        tiktoken_tot=389482 turns=19 tools=19 ~$275.09 cum
+[7/15] django__django-13660                         rag_grep    OK        tiktoken_tot=156615 turns=12 tools=11 ~$275.77 cum
+[8/15] django__django-14238                         rag_grep    OK        tiktoken_tot=346444 turns=22 tools=21 ~$277.36 cum
+[9/15] django__django-14787                         rag_grep    OK        tiktoken_tot=288723 turns=20 tools=19 ~$278.56 cum
+[10/15] django__django-15347                         rag_grep    OK        tiktoken_tot=280288 turns=17 tools=17 ~$279.75 cum
+[11/15] django__django-15819                         rag_grep    OK        tiktoken_tot=726722 turns=26 tools=26 ~$282.84 cum
+[12/15] django__django-16400                         rag_grep    FAIL      tiktoken_tot=1012268 turns=30 tools=30 ~$287.13 cum
+[13/15] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=644488 turns=27 tools=27 ~$289.67 cum
+[14/15] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=632598 turns=22 tools=22 ~$292.17 cum
+[15/15] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=1108956 turns=30 tools=36 ~$296.55 cum
+done
+15 instances x 1 arms = 15 pairs (trial=9), 150 done, 15 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$296.55)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 21984.29it/s]
+[1/15] astropy__astropy-12907                       rag_grep    FAIL      tiktoken_tot=496002 turns=30 tools=31 ~$298.58 cum
+[2/15] django__django-11039                         rag_grep    OK        tiktoken_tot=890202 turns=26 tools=26 ~$302.19 cum
+[3/15] django__django-11630                         rag_grep    OK        tiktoken_tot=503665 turns=18 tools=17 ~$304.32 cum
+[4/15] django__django-12125                         rag_grep    FAIL      tiktoken_tot=530585 turns=30 tools=30 ~$306.61 cum
+[5/15] django__django-12708                         rag_grep    OK        tiktoken_tot=612732 turns=25 tools=24 ~$309.19 cum
+[6/15] django__django-13230                         rag_grep    OK        tiktoken_tot=392882 turns=19 tools=19 ~$310.83 cum
+[7/15] django__django-13660                         rag_grep    OK        tiktoken_tot=303001 turns=20 tools=19 ~$312.12 cum
+[8/15] django__django-14238                         rag_grep    OK        tiktoken_tot=387131 turns=19 tools=18 ~$313.82 cum
+[9/15] django__django-14787                         rag_grep    OK        tiktoken_tot=387890 turns=24 tools=23 ~$315.44 cum
+[10/15] django__django-15347                         rag_grep    OK        tiktoken_tot=350997 turns=20 tools=20 ~$316.91 cum
+[11/15] django__django-15819                         rag_grep    OK        tiktoken_tot=670056 turns=24 tools=24 ~$319.76 cum
+[12/15] django__django-16400                         rag_grep    FAIL      tiktoken_tot=834635 turns=27 tools=26 ~$323.33 cum
+[13/15] matplotlib__matplotlib-18869                 rag_grep    OK        tiktoken_tot=401735 turns=28 tools=30 ~$325.01 cum
+[14/15] matplotlib__matplotlib-23987                 rag_grep    OK        tiktoken_tot=600131 turns=21 tools=21 ~$327.38 cum
+[15/15] matplotlib__matplotlib-25498                 rag_grep    OK        tiktoken_tot=669737 turns=20 tools=22 ~$330.01 cum
+done
+1 instances x 1 arms = 1 pairs (trial=2), 165 done, 1 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$330.01)
+[1/1] django__django-16400                         roust       FAIL      tiktoken_tot=265498 turns=11 tools=10 ~$331.15 cum
+done
+1 instances x 1 arms = 1 pairs (trial=3), 166 done, 1 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$331.15)
+[1/1] django__django-16400                         roust       FAIL      tiktoken_tot=1295770 turns=29 tools=28 ~$336.43 cum
+done
+1 instances x 1 arms = 1 pairs (trial=4), 167 done, 1 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$336.43)
+[1/1] django__django-16400                         roust       FAIL      tiktoken_tot=837902 turns=21 tools=20 ~$339.80 cum
+done
+1 instances x 1 arms = 1 pairs (trial=5), 168 done, 1 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$339.80)
+[1/1] django__django-16400                         roust       FAIL      tiktoken_tot=393032 turns=15 tools=14 ~$341.41 cum
+done
+1 instances x 1 arms = 1 pairs (trial=6), 169 done, 1 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$341.41)
+[1/1] django__django-16400                         roust       FAIL      tiktoken_tot=349514 turns=13 tools=12 ~$342.88 cum
+done
+1 instances x 1 arms = 1 pairs (trial=7), 170 done, 1 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$342.88)
+[1/1] django__django-16400                         roust       FAIL      tiktoken_tot=1039946 turns=24 tools=23 ~$347.12 cum
+done
+1 instances x 1 arms = 1 pairs (trial=8), 171 done, 1 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$347.12)
+[1/1] django__django-16400                         roust       FAIL      tiktoken_tot=866096 turns=20 tools=19 ~$350.68 cum
+done
+1 instances x 1 arms = 1 pairs (trial=9), 172 done, 1 to run (mock=False, model=claude-sonnet-4-5-20250929, max_turns=30, budget_cap=$415.00, max_cost_per_pair=$10.00, already spent ~$350.68)
+[1/1] django__django-16400                         roust       FAIL      tiktoken_tot=801748 turns=22 tools=21 ~$353.97 cum
+done
+STAGE2_COMPLETE
