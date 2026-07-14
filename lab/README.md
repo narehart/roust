@@ -332,3 +332,23 @@ anchor-distance all killed; the theory arc that fixed caps/ordering/proximity
 would help is fully falsified). The gap is add_score's evidence quality on files
 that share neither vocabulary nor near-graph-distance with the issue — the
 genuinely semantic residual.
+
+## Exact function-level metric + refreshed baselines from the shipped engine (2026-07-14)
+
+`parity/region_eval2.py` re-ran all 300 SWE-bench Lite instances against the
+shipped `roust-rs` binary (`roust 0.2.0 (c07a09d, clean)`, the engine after
+the symbol-name weighting fix), persisting the actual returned region spans
+this time (`lab/results_regions/full300_v8.jsonl`). `lab/agentless_metric.py`
+now computes an EXACT FUNCTION-level Agentless metric from those spans
+(superseding the old `hunk_touched==1.0` proxy) and refreshes FILE/LINE/region-
+precision from the same run, so all four numbers come from one engine version
+(`lab/results_regions/agentless_metric_v2.json`). Per-instance FILE-level
+correctness is byte-identical to the old `full300_final.json` run (277/300
+both times) confirming file ranking is unchanged; LINE-level and the new exact
+FUNCTION-level came out lower than the old numbers (see root README
+Scoreboard) — a real regression in region-packing granularity, not a
+measurement artifact, per the diff of `hunk_line_recall` across the two runs.
+This does not reopen `lab/`: this directory remains a frozen Python research
+sandbox (#8) whose pipelines are not the source of truth for shipped behavior;
+the measurement above is driven entirely by the shipped `roust-rs` binary via
+`parity/`, same convention as every other post-freeze parity/region_eval run.
