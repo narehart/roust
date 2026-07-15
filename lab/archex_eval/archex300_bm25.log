@@ -1,0 +1,34 @@
+archex version: archex, version 0.19.2 (mode=bm25 (default))
+[10/300] django__django-11039                          elapsed=316s (ok) ok=10 err=0
+[20/300] django__django-11620                          elapsed=500s (ok) ok=20 err=0
+[30/300] django__django-12113                          elapsed=779s (ok) ok=30 err=0
+[40/300] django__django-12747                          elapsed=1158s (ok) ok=40 err=0
+[50/300] django__django-13220                          elapsed=1463s (ok) ok=50 err=0
+[60/300] django__django-13660                          elapsed=1825s (ok) ok=60 err=0
+[70/300] django__django-13447                          elapsed=2219s (ok) ok=70 err=0
+[80/300] django__django-13710                          elapsed=2727s (ok) ok=80 err=0
+[90/300] django__django-15320                          elapsed=3078s (ok) ok=90 err=0
+[100/300] django__django-15814                          elapsed=3313s (ok) ok=100 err=0
+[110/300] django__django-16379                          elapsed=3455s (ok) ok=110 err=0
+[120/300] django__django-17087                          elapsed=3869s (ok) ok=120 err=0
+[130/300] matplotlib__matplotlib-23987                  elapsed=4162s (ok) ok=130 err=0
+[140/300] matplotlib__matplotlib-25442                  elapsed=4517s (ok) ok=140 err=0
+[150/300] pallets__flask-5063                           elapsed=4921s (ok) ok=149 err=1
+[160/300] pydata__xarray-4493                           elapsed=4988s (ok) ok=159 err=1
+[170/300] pytest-dev__pytest-5103                       elapsed=5381s (ok) ok=168 err=2
+[180/300] pytest-dev__pytest-8365                       elapsed=5550s (ok) ok=178 err=2
+[190/300] scikit-learn__scikit-learn-12471              elapsed=5744s (ok) ok=188 err=2
+[200/300] scikit-learn__scikit-learn-14983              elapsed=6031s (ok) ok=198 err=2
+[210/300] sphinx-doc__sphinx-7975                       elapsed=6390s (ok) ok=208 err=2
+[220/300] sphinx-doc__sphinx-8801                       elapsed=6485s (ok) ok=218 err=2
+[230/300] sympy__sympy-12481                            elapsed=6687s (ok) ok=228 err=2
+[240/300] sympy__sympy-13773                            elapsed=7024s (ok) ok=238 err=2
+[250/300] sympy__sympy-15011                            elapsed=7162s (ok) ok=248 err=2
+[260/300] sympy__sympy-16988                            elapsed=7483s (ok) ok=258 err=2
+[270/300] sympy__sympy-18621                            elapsed=7881s (ok) ok=268 err=2
+[280/300] sympy__sympy-20442                            elapsed=8107s (ok) ok=278 err=2
+[290/300] sympy__sympy-22005                            elapsed=8614s (ok) ok=288 err=2
+[300/300] sympy__sympy-24909                            elapsed=9039s (ok) ok=298 err=2
+
+archex version: archex, version 0.19.2
+wrote 300 records (298 ok, 2 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/archex300_bm25_v1.jsonl

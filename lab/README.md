@@ -356,3 +356,11 @@ the measurement above is driven entirely by the shipped `roust-rs` binary via
 ## w_name sweep on the exact harness (2026-07-14)
 
 Swept `pack_regions` symbol-name weight `w_name` in {0.0, 0.5, 1.0} on the shipped engine via `parity/region_eval2.py` + `lab/agentless_metric.py` (issue #4): 0.5 and 1.0 tie (weight saturates, LINE 29.3%, line-fraction 0.3989), 0.0 wins (FUNCTION 41.0%, LINE 35.7%, line-fraction 0.4564) — the weighting, validated only on the diverged lab pipeline (#8), was net-negative on the shipped engine and is reverted; winner run `full300_v9.jsonl` (engine d250e1c) → `agentless_metric_v3.json`, losing point `full300_wname05.jsonl` (engine 842f757).
+
+## archex Agentless-metric arm (2026-07-14)
+
+archex 0.19.2, BM25 default mode (no embeddings), `--budget 8192`, measured via `lab/archex_eval/run_archex_metric.py` on all 300 SWE-bench Lite instances (298 ok, 2 timeouts counted as wrong): FILE 56.0% / FUNCTION 38.3% / LINE 25.7% (`lab/results_regions/agentless_metric_archex_bm25.json`); vector/hybrid mode measured below.
+
+## archex vector/hybrid mode measured (2026-07-15)
+
+archex 0.19.2, `--vector` (FastEmbed/ONNX) + `--strategy hybrid`, `--budget 8192`, same protocol as the BM25 run above, all 300 instances (298 ok, 2 timeouts counted as wrong): FILE 57.3% / FUNCTION 40.7% / LINE 27.7% (`lab/results_regions/agentless_metric_archex_vector.json`) — a single-digit gain over BM25 that leaves the ~35-point FILE gap to roust unchanged, and query latency is worse (12.98s median vs BM25's 9.68s) despite a much faster index (0.92s vs 5.69s mean). Steelman complete: the tokenbench agent-loop arm (#1 part (b)) is not justified at current quality.
