@@ -2418,13 +2418,21 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
 /// pre-E12 code path verbatim -- byte-identical output. When > 0, AFTER
 /// both selection passes above finish (this function never re-runs or
 /// re-scores the selection comparator for padding), every selected span is
-/// extended by `pad_lines` lines in each direction (clamped to the file's
-/// own line count), same-file padded spans that now overlap or touch are
-/// merged, and -- since padding only ever grows the bundle -- if the padded
-/// total exceeds `budget_tokens`, WHOLE padded spans are evicted (never
-/// partially truncated) lowest-gain-first until it fits again. See
-/// `pack_regions`' own eviction block below for the precise, precomputed
-/// (non-recomputed) gain metric and tie-break order.
+/// extended by up to `pad_lines` lines in each direction (clamped to the
+/// file's own line count), same-file padded spans that now overlap or touch
+/// are merged. E12b guard: since padding only ever grows the bundle, if the
+/// padded total now exceeds `budget_tokens`, padding is first DE-ESCALATED
+/// -- shrunk back toward 0, one line at a time, on the lowest-gain selected
+/// span first (fully drained before the next-lowest is touched) -- until
+/// the bundle fits again; only if it STILL doesn't fit once every span has
+/// been de-escalated all the way to 0 (i.e. even the unpadded selection
+/// exceeds budget) are WHOLE spans evicted (never partially truncated)
+/// lowest-gain-first. Because pass 2 above never seats a candidate that
+/// would itself exceed `budget_tokens`, the pad=0 bundle already fits by
+/// construction, so this guard guarantees a file present in the unpadded
+/// selection is never evicted purely because padding grew it -- see
+/// `pack_regions`' own de-escalation/eviction blocks below for the precise,
+/// precomputed (non-recomputed) gain metric and tie-break order.
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],
@@ -2764,14 +2772,14 @@ pub fn pack_regions(
     // of that near-miss mass to captured at low cost.
     //
     // Each ORIGINALLY selected span (from both passes above) is extended by
-    // `pad_lines` lines in each direction, clamped to the file's own line
-    // count (this also subsumes the pre-existing pass-1 per-file-cap-trim
-    // quirk where a reported span's end can already exceed the file's true
-    // line count -- clamping against `n_lines` here fixes that up too).
-    // Same-file padded spans that now overlap OR touch (gap 0) are merged
-    // into one, pooling their gains. `text`/`tok` are re-derived from the
-    // padded/merged span's actual file lines (the original candidate's
-    // `text` only ever covered the UNpadded lines).
+    // up to `pad_lines` lines in each direction, clamped to the file's own
+    // line count (this also subsumes the pre-existing pass-1
+    // per-file-cap-trim quirk where a reported span's end can already
+    // exceed the file's true line count -- clamping against `n_lines` here
+    // fixes that up too). Same-file padded spans that now overlap OR touch
+    // (gap 0) are merged into one, pooling their gains. `text`/`tok` are
+    // re-derived from the padded/merged span's actual file lines (the
+    // original candidate's `text` only ever covered the UNpadded lines).
     struct PaddedSpan {
         file: String,
         span: (usize, usize),
@@ -2780,55 +2788,132 @@ pub fn pack_regions(
         gain: f64,
     }
 
-    let pad = pad_lines as i64;
-    let mut padded: Vec<PaddedSpan> = Vec::new();
+    // Each originally-selected span (pass 1 or pass 2) keeps its OWN,
+    // independently adjustable pad amount -- initialized to `pad_lines` for
+    // every span, but see the de-escalation guard (E12b) below, which can
+    // shave individual spans' pads back down toward 0 before ever evicting
+    // a whole span/file.
+    struct OriginSpan {
+        span: (usize, usize),
+        gain: f64,
+        pad: i64,
+    }
+
+    let mut origins: Vec<OriginSpan> = Vec::new();
+    let mut by_file_idx: IndexMap<String, Vec<usize>> = IndexMap::new();
     for rel in files {
         let idxs = match chosen_map.get(rel) {
             Some(v) if !v.is_empty() => v,
             _ => continue,
         };
-        let full_lines = py_splitlines(&corpus.text[rel]);
-        let n_lines = full_lines.len();
-
-        let mut raw: Vec<((usize, usize), f64)> = idxs
-            .iter()
-            .map(|&i| {
-                let c = &all_segments[i];
-                let (a, b) = c.span;
-                let pa = ((a as i64 - pad).max(1)) as usize;
-                let pb = ((b as i64 + pad).min(n_lines as i64).max(1)) as usize;
-                ((pa, pb), c.gain)
-            })
-            .collect();
-        // Deterministic merge order: sort by padded start once (a single,
-        // precomputed pass -- no per-merge-iteration comparator
-        // recomputation), ties broken by padded end.
-        raw.sort_by(|a, b| a.0.cmp(&b.0));
-
-        let mut merged: Vec<((usize, usize), f64)> = Vec::new();
-        for (span, gain) in raw {
-            if let Some(last) = merged.last_mut() {
-                if span.0 <= last.0 .1 + 1 {
-                    last.0 .1 = last.0 .1.max(span.1);
-                    last.1 += gain;
-                    continue;
-                }
-            }
-            merged.push((span, gain));
-        }
-
-        for ((a, b), gain) in merged {
-            let start = a.saturating_sub(1).min(n_lines);
-            let end = b.min(n_lines);
-            let text = if start < end { full_lines[start..end].join("\n") } else { String::new() };
-            let tok = count_tokens(&text) as i64;
-            padded.push(PaddedSpan { file: rel.clone(), span: (a, b), text, tok, gain });
+        for &i in idxs {
+            let c = &all_segments[i];
+            let oi = origins.len();
+            origins.push(OriginSpan { span: c.span, gain: c.gain, pad: pad_lines as i64 });
+            by_file_idx.entry(rel.clone()).or_default().push(oi);
         }
     }
 
-    // Budget eviction: padding only ever grows the bundle, so if it now
-    // exceeds budget, drop WHOLE padded spans (never truncate one
-    // mid-way) lowest-gain-first until it fits. Eviction order is a single
+    // Pad + same-file merge, driven by each origin's CURRENT `pad` (not a
+    // single global constant): re-derivable at any point during
+    // de-escalation, so the guard loop below can call this repeatedly as it
+    // shaves individual origins' pads down. Deterministic merge order: sort
+    // by padded start once per call (a single, precomputed pass -- no
+    // per-merge-iteration comparator recomputation), ties broken by padded
+    // end.
+    let build_padded = |origins: &[OriginSpan]| -> Vec<PaddedSpan> {
+        let mut out: Vec<PaddedSpan> = Vec::new();
+        for rel in files {
+            let idxs = match by_file_idx.get(rel) {
+                Some(v) if !v.is_empty() => v,
+                _ => continue,
+            };
+            let full_lines = py_splitlines(&corpus.text[rel]);
+            let n_lines = full_lines.len();
+
+            let mut raw: Vec<((usize, usize), f64)> = idxs
+                .iter()
+                .map(|&i| {
+                    let o = &origins[i];
+                    let (a, b) = o.span;
+                    let pad = o.pad;
+                    let pa = ((a as i64 - pad).max(1)) as usize;
+                    let pb = ((b as i64 + pad).min(n_lines as i64).max(1)) as usize;
+                    ((pa, pb), o.gain)
+                })
+                .collect();
+            raw.sort_by(|a, b| a.0.cmp(&b.0));
+
+            let mut merged: Vec<((usize, usize), f64)> = Vec::new();
+            for (span, gain) in raw {
+                if let Some(last) = merged.last_mut() {
+                    if span.0 <= last.0 .1 + 1 {
+                        last.0 .1 = last.0 .1.max(span.1);
+                        last.1 += gain;
+                        continue;
+                    }
+                }
+                merged.push((span, gain));
+            }
+
+            for ((a, b), gain) in merged {
+                let start = a.saturating_sub(1).min(n_lines);
+                let end = b.min(n_lines);
+                let text = if start < end { full_lines[start..end].join("\n") } else { String::new() };
+                let tok = count_tokens(&text) as i64;
+                out.push(PaddedSpan { file: rel.clone(), span: (a, b), text, tok, gain });
+            }
+        }
+        out
+    };
+
+    let mut padded: Vec<PaddedSpan> = build_padded(&origins);
+    let mut total: i64 = padded.iter().map(|p| p.tok).sum();
+
+    // E12b guard: de-escalate padding before ever evicting a whole span.
+    //
+    // If the padded bundle exceeds budget, shrink padding one line at a
+    // time on the LOWEST-gain origin span first, fully draining it back to
+    // pad=0 before touching the next-lowest-gain one, re-measuring the
+    // total after every single-line shave (`gain` is fixed per origin --
+    // precomputed once, never recomputed here -- so this priority order is
+    // itself computed exactly once, up front, same "no comparator
+    // recomputation" discipline as pass 2's `marginal` cache and the
+    // eviction sort below). This is deliberately the coarsest-grained
+    // origin ever touched at each step: the cheapest span gives up ALL its
+    // padding before a more valuable span gives up any, which maximizes how
+    // much padding the bundle keeps overall for a given budget.
+    //
+    // INVARIANT this establishes: since pass 2 (above) never seats a
+    // candidate that would push `spent` over `budget_tokens`, the pad=0
+    // bundle (every origin's own unpadded span, merged only where two
+    // spans were already touching/overlapping pre-padding) already fits
+    // budget by construction. De-escalating every origin's pad to 0 is
+    // therefore guaranteed to converge to a fitting bundle -- so a file
+    // present in the pad=0 selection is NEVER evicted here purely from
+    // padding growth; the eviction fallback below only fires in the
+    // (pathological / by-construction-impossible-in-practice) case where
+    // the bundle exceeds budget even with every origin fully unpadded.
+    if total > budget_tokens && !origins.is_empty() {
+        let mut order: Vec<usize> = (0..origins.len()).collect();
+        order.sort_by(|&i, &j| origins[i].gain.total_cmp(&origins[j].gain).then(i.cmp(&j)));
+        'deescalate: for oi in order {
+            while origins[oi].pad > 0 {
+                origins[oi].pad -= 1;
+                padded = build_padded(&origins);
+                total = padded.iter().map(|p| p.tok).sum();
+                if total <= budget_tokens {
+                    break 'deescalate;
+                }
+            }
+        }
+    }
+
+    // Fallback eviction: only reached if the bundle STILL exceeds budget
+    // once every origin span has been de-escalated all the way to pad=0
+    // (i.e. even the unpadded selection doesn't fit -- see the invariant
+    // above). Drop WHOLE padded spans (never truncate one mid-way)
+    // lowest-gain-first until it fits. Eviction order is a single
     // precomputed sort over the (already precomputed, unchanging) per-span
     // `gain` -- exactly the "no comparator recomputation" pass-2's
     // `marginal` closure had to be hardened against (see above): here
@@ -2837,7 +2922,6 @@ pub fn pack_regions(
     // for the same NaN/inf-hardening reason as every other score sort in
     // this function. Ties keep `padded`'s own build order (files' order,
     // then ascending span-start within a file) via `sort_by`'s stability.
-    let mut total: i64 = padded.iter().map(|p| p.tok).sum();
     let mut evicted = vec![false; padded.len()];
     if total > budget_tokens {
         let mut order: Vec<usize> = (0..padded.len()).collect();
@@ -3302,6 +3386,131 @@ mod tests {
         assert!(!spans.contains_key("lo.py"), "lower-gain lo.py span must be evicted WHOLLY (key absent), not truncated");
         assert!(spans.contains_key("hi.py"), "higher-gain hi.py span must survive eviction");
         assert_eq!(spans["hi.py"], vec![(1, 3)], "surviving span must be the full, untruncated 3-line span");
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E12b guard invariant: the SET OF FILES returned with `pad_lines=N`
+    /// (guard active) must equal the set returned at `pad_lines=0`, even on
+    /// a fixture that -- under the old (unguarded) E12 policy -- would have
+    /// evicted a whole lower-gain file purely because padding grew it past
+    /// budget. Two files share an identical body: a short `needle` function
+    /// (matches every query term) preceded by an unrelated, unselected
+    /// `other_stuff` block whose two filler lines sit a few lines above
+    /// `needle` and carry real token mass. `hi.py` scores 5.0, `lo.py`
+    /// scores 0.0, so `lo.py`'s selected span has the strictly lower `gain`
+    /// and is the guard's first de-escalation target. `budget_tokens` is
+    /// sized to fit both files' UNPADDED `needle` spans comfortably, but
+    /// not both files' FULLY padded spans (which reach all the way back to
+    /// the filler lines) -- so the guard must actually fire to avoid
+    /// exceeding budget, and (per the invariant) must do so WITHOUT ever
+    /// evicting a whole file.
+    #[test]
+    fn pack_regions_pad_lines_guard_preserves_unpadded_file_set() {
+        let tmp = std::env::temp_dir().join(format!("roust_pad_guard_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let src = "def other_stuff():\n    filler line one aaaa bbbb cccc dddd eeee ffff gggg hhhh\n    filler line two iiii jjjj kkkk llll mmmm nnnn oooo pppp\n    return 1\n\n\ndef needle(x):\n    \"\"\"token budget marker phrase evict guard test words needle\"\"\"\n    return x\n";
+        std::fs::write(tmp.join("hi.py"), src).unwrap();
+        std::fs::write(tmp.join("lo.py"), src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("token budget marker phrase evict guard test words needle", &[]);
+        let scores: IndexMap<String, f64> =
+            [("hi.py".to_string(), 5.0), ("lo.py".to_string(), 0.0)].into_iter().collect();
+        let files = vec!["hi.py".to_string(), "lo.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        // needle's own unpadded span is lines 7-9 (1-indexed): "def
+        // needle(x):" through "return x".
+        let lines: Vec<&str> = src.lines().collect();
+        let needle_text = lines[6..9].join("\n");
+        let t_needle = count_tokens(&needle_text) as i64;
+        let whole_file_tok = count_tokens(src.trim_end()) as i64;
+
+        let budget = 2 * t_needle + 3;
+        assert!(
+            budget < 2 * whole_file_tok,
+            "budget must be too small for both files' FULLY padded (whole-file) spans, so the guard actually has to fire"
+        );
+
+        // pad=0 baseline: both files' own needle spans are seated
+        // unconditionally by pass 1 and comfortably fit budget on their own.
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0);
+        assert!(
+            spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
+            "pad_lines=0 baseline must select both files"
+        );
+        let baseline: HashSet<&String> = spans0.keys().collect();
+
+        for pad in [2usize, 6, 15] {
+            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad);
+            let got: HashSet<&String> = spans.keys().collect();
+            assert_eq!(
+                got, baseline,
+                "pad_lines={pad}+guard must return the SAME file set as pad_lines=0 -- no file may be evicted purely from padding growth"
+            );
+            // Budget accounting mirrors pack_regions' own internal `total`
+            // (sum of each returned span's OWN text token count) -- not the
+            // pretty-printed `### file\n...` bundle string, which carries a
+            // fixed per-file header overhead that pack_regions' budget
+            // check never counted against, pre-E12 or post-.
+            let total_tok: i64 = spans
+                .iter()
+                .map(|(rel, ranges)| {
+                    let full_lines: Vec<&str> = corpus.text[rel].lines().collect();
+                    ranges
+                        .iter()
+                        .map(|&(a, b)| {
+                            let start = a.saturating_sub(1).min(full_lines.len());
+                            let end = b.min(full_lines.len());
+                            let text = if start < end { full_lines[start..end].join("\n") } else { String::new() };
+                            count_tokens(&text) as i64
+                        })
+                        .sum::<i64>()
+                })
+                .sum();
+            assert!(
+                total_tok <= budget,
+                "guarded bundle at pad_lines={pad} must respect budget_tokens ({total_tok} > {budget})"
+            );
+        }
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Determinism of the guard itself: repeated calls on the fixture above
+    /// (at a pad_lines value large enough to force full de-escalation, i.e.
+    /// the guard's own iterative loop runs to completion) must produce
+    /// byte-identical spans every time.
+    #[test]
+    fn pack_regions_pad_lines_guard_deterministic_across_repeated_calls() {
+        let tmp = std::env::temp_dir().join(format!("roust_pad_guard_det_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let src = "def other_stuff():\n    filler line one aaaa bbbb cccc dddd eeee ffff gggg hhhh\n    filler line two iiii jjjj kkkk llll mmmm nnnn oooo pppp\n    return 1\n\n\ndef needle(x):\n    \"\"\"token budget marker phrase evict guard test words needle\"\"\"\n    return x\n";
+        std::fs::write(tmp.join("hi.py"), src).unwrap();
+        std::fs::write(tmp.join("lo.py"), src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("token budget marker phrase evict guard test words needle", &[]);
+        let scores: IndexMap<String, f64> =
+            [("hi.py".to_string(), 5.0), ("lo.py".to_string(), 0.0)].into_iter().collect();
+        let files = vec!["hi.py".to_string(), "lo.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let lines: Vec<&str> = src.lines().collect();
+        let needle_text = lines[6..9].join("\n");
+        let t_needle = count_tokens(&needle_text) as i64;
+        let budget = 2 * t_needle + 3;
+
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15);
+        assert!(!first.is_empty());
+        for _ in 0..10 {
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15);
+            assert_eq!(
+                spans, first,
+                "pack_regions with the E12b guard active must produce byte-identical spans across repeated calls"
+            );
+        }
 
         std::fs::remove_dir_all(&tmp).ok();
     }

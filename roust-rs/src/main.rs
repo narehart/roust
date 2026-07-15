@@ -100,8 +100,11 @@ struct Args {
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): 0 (default) = OFF, byte-identical
-    /// output to pre-E12. If padding pushes the bundle over --budget, whole
-    /// lowest-gain padded spans are dropped (never truncated) until it fits.
+    /// output to pre-E12. If padding pushes the bundle over --budget, padding
+    /// is first de-escalated (shrunk back toward 0) on the lowest-gain spans
+    /// before any whole span is dropped (E12b guard): a file present in the
+    /// unpadded (--pad-lines 0) selection is never evicted purely because
+    /// padding grew it over budget.
     #[arg(long, default_value_t = 0)]
     pad_lines: usize,
 }
