@@ -62,13 +62,19 @@ def engine_version_string() -> str:
     return proc.stdout.strip() or proc.stderr.strip()
 
 
-def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0) -> tuple[dict | None, str | None]:
+def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
+              len_exp: float = 1.0) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
     if pad_lines != 0:
         # only appended for non-default values -- default invocation (no
         # flag) stays byte-identical to pre-E12 argv, see roust-rs/src/
         # main.rs's own `0` default for `--pad-lines`.
         argv += ["--pad-lines", str(pad_lines)]
+    if len_exp != 1.0:
+        # only appended for non-default values -- default invocation (no
+        # flag) stays byte-identical to pre-E14 argv, see roust-rs/src/
+        # main.rs's own `1.0` default for `--len-exp`.
+        argv += ["--len-exp", str(len_exp)]
     try:
         proc = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
@@ -115,7 +121,7 @@ def load_lite_rows(limit: int) -> list[dict]:
     return rows
 
 
-def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0) -> dict:
+def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: float = 1.0) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -141,7 +147,7 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0) -> dict:
         rec["error"] = f"checkout failed: {exc}"
         return rec
 
-    obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines)
+    obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp)
     if err:
         rec["error"] = err
         return rec
@@ -198,6 +204,8 @@ def main() -> None:
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--pad-lines", type=int, default=0,
                      help="passthrough to roust's --pad-lines (E12); 0 (default) matches roust's own default (off)")
+    ap.add_argument("--len-exp", type=float, default=1.0,
+                     help="passthrough to roust's --len-exp (E14/issue #14); 1.0 (default) matches roust's own default (off, byte-identical to pre-E14)")
     args = ap.parse_args()
 
     if not ROUST_BIN.exists():
@@ -218,7 +226,7 @@ def main() -> None:
     t0 = time.time()
     with args.report.open("w") as fh:
         for i, row in enumerate(rows, 1):
-            rec = eval_lite_instance(row, args.timeout, args.pad_lines)
+            rec = eval_lite_instance(row, args.timeout, args.pad_lines, args.len_exp)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

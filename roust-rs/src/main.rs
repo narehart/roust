@@ -52,11 +52,13 @@ struct Args {
     #[arg(default_value = ".")]
     path: String,
 
-    /// token budget for the packed bundle
+    /// token budget for the packed bundle (default 8192, sized for LLM
+    /// context; humans reading by hand may prefer 2048)
     #[arg(long, default_value_t = 8192)]
     budget: i64,
 
-    /// cap the number of returned files, 0 = no cap
+    /// cap the number of returned files, 0 = no cap (humans reading by hand
+    /// may prefer --k 8 for a tighter, scannable list)
     #[arg(long, default_value_t = 0)]
     k: i64,
 
@@ -107,6 +109,16 @@ struct Args {
     /// padding grew it over budget.
     #[arg(long, default_value_t = 0)]
     pad_lines: usize,
+
+    /// exponent applied to the token-count denominator of pack_regions'
+    /// region-selection metric (E14/issue #14 case mining): `gain /
+    /// tok^len_exp` in place of the flat `gain / tok`. 1.0 (default) =
+    /// the original linear length penalty, byte-identical to pre-E14.
+    /// Values < 1.0 sub-linearly discount region length, letting long
+    /// real-fix functions compete against short lucky-match stubs instead
+    /// of being crushed by the token-count division.
+    #[arg(long, default_value_t = 1.0)]
+    len_exp: f64,
 }
 
 fn main() {
@@ -118,6 +130,10 @@ fn main() {
     }
     if args.k < 0 {
         eprintln!("roust: error: --k must be >= 0");
+        std::process::exit(2);
+    }
+    if !args.len_exp.is_finite() {
+        eprintln!("roust: error: --len-exp must be finite");
         std::process::exit(2);
     }
 
@@ -180,6 +196,7 @@ fn main() {
         Some(&anchor_symbols),
         0.0,
         args.pad_lines,
+        args.len_exp,
     );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
