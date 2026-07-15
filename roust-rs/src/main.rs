@@ -98,6 +98,16 @@ struct Args {
     /// dump the Explain diagnostic record as JSON to stderr
     #[arg(long)]
     explain: bool,
+
+    /// exponent applied to the token-count denominator of pack_regions'
+    /// region-selection metric (E14/issue #14 case mining): `gain /
+    /// tok^len_exp` in place of the flat `gain / tok`. 1.0 (default) =
+    /// the original linear length penalty, byte-identical to pre-E14.
+    /// Values < 1.0 sub-linearly discount region length, letting long
+    /// real-fix functions compete against short lucky-match stubs instead
+    /// of being crushed by the token-count division.
+    #[arg(long, default_value_t = 1.0)]
+    len_exp: f64,
 }
 
 fn main() {
@@ -109,6 +119,10 @@ fn main() {
     }
     if args.k < 0 {
         eprintln!("roust: error: --k must be >= 0");
+        std::process::exit(2);
+    }
+    if !args.len_exp.is_finite() {
+        eprintln!("roust: error: --len-exp must be finite");
         std::process::exit(2);
     }
 
@@ -161,8 +175,17 @@ fn main() {
     } else {
         anchor_def_symbols(&args.query, &corpus, &anchor_files)
     };
-    let (spans, bundle) =
-        pack_regions(&corpus, &files, &terms, &scores, args.budget, &count_tokens, Some(&anchor_symbols), 0.0);
+    let (spans, bundle) = pack_regions(
+        &corpus,
+        &files,
+        &terms,
+        &scores,
+        args.budget,
+        &count_tokens,
+        Some(&anchor_symbols),
+        0.0,
+        args.len_exp,
+    );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
     if args.explain {

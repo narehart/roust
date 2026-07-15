@@ -2277,6 +2277,17 @@ struct Candidate {
     gain: f64,
     text: String,
     name_score: f64,
+    // `tok.max(1) as f64` raised to the E14 length-normalization exponent
+    // (`len_exp`), precomputed exactly once per candidate at construction
+    // time. Both selection-metric comparators (pass-1 `best_ratio` and
+    // pass-2 `marginal`) divide by this field instead of calling `.powf()`
+    // inline -- a determinism requirement, not just an optimization: `tok`
+    // never changes after construction, but re-deriving `tok_pow` on every
+    // comparator call (rather than reading a value computed once) would
+    // reintroduce exactly the kind of "not a pure function of a stable
+    // snapshot" hazard that the pass-2 `marginal` closure's own doc comment
+    // (see below) documents as the root cause of issue #14's nondeterminism.
+    tok_pow: f64,
 }
 
 // ---------------------------------------------------------------- region-level symbol-name anchoring
@@ -2413,6 +2424,25 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
 /// a symbol-name match is identity evidence independent of how long the
 /// matched definition happens to be (measured via this repo's own dogfood
 /// case, see lab/dogfood_pack_regions.py).
+///
+/// `len_exp` (E14/issue #14 case mining -- 1.0 from the production caller,
+/// i.e. the exact pre-E14 `gain/tok` ranking, BYTE-IDENTICAL): the exponent
+/// applied to the token-count denominator of the selection metric in both
+/// passes, i.e. `gain / tok.max(1)^len_exp` (pass 1) and the analogous
+/// `.../tok.max(1)^len_exp` marginal-coverage density (pass 2), rather than
+/// the flat `gain/tok` linear-length penalty. Motivation: mining E13's
+/// mismatch cases found the `/tok` objective systematically crushes long
+/// real-fix functions in favor of short lucky stubs that happen to contain a
+/// query term (gold region >3x longer than the chosen one in 22/26 mined
+/// cases). `len_exp < 1.0` softens (sub-linearly discounts) the length
+/// penalty, letting a region's raw `gain` (term-density salience) compete
+/// more on its own terms against a merely-shorter rival; `len_exp == 1.0`
+/// reproduces the original linear penalty exactly; `len_exp > 1.0` would
+/// sharpen it further (steeper preference for short regions, untested by
+/// E14). Only the density DENOMINATOR changes -- the post-division `w_name`
+/// bonus terms stay undiluted by region size exactly as before (see the
+/// `w_name` doc above), since those are identity evidence, not term-density
+/// evidence, and E14 doesn't touch that distinction.
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],
@@ -2422,6 +2452,7 @@ pub fn pack_regions(
     count_tokens: &dyn Fn(&str) -> usize,
     anchor_symbols: Option<&IndexMap<String, Vec<String>>>,
     w_name: f64,
+    len_exp: f64,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
@@ -2485,7 +2516,10 @@ pub fn pack_regions(
             }
             let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
             let ns = if w_name != 0.0 { name_score(region_symbol(&def_lines, a, b), &tset) } else { 0.0 };
-            candidates.push(Candidate { file: rel.clone(), span: (a, b), tok, terms: seg_terms, gain, text: seg, name_score: ns });
+            let tok_pow = (tok.max(1) as f64).powf(len_exp);
+            candidates.push(Candidate {
+                file: rel.clone(), span: (a, b), tok, terms: seg_terms, gain, text: seg, name_score: ns, tok_pow,
+            });
         }
     }
 
@@ -2569,10 +2603,10 @@ pub fn pack_regions(
             fi
         } else {
             let mut best_idx = idxs[0];
-            let mut best_ratio = candidates[best_idx].gain / (candidates[best_idx].tok.max(1) as f64)
-                + w_name * candidates[best_idx].name_score;
+            let mut best_ratio =
+                candidates[best_idx].gain / candidates[best_idx].tok_pow + w_name * candidates[best_idx].name_score;
             for &i in &idxs[1..] {
-                let ratio = candidates[i].gain / (candidates[i].tok.max(1) as f64) + w_name * candidates[i].name_score;
+                let ratio = candidates[i].gain / candidates[i].tok_pow + w_name * candidates[i].name_score;
                 if ratio > best_ratio {
                     best_ratio = ratio;
                     best_idx = i;
@@ -2619,9 +2653,16 @@ pub fn pack_regions(
         }
 
         let best_name_score = candidates[best_idx].name_score;
+        // Re-derived here (not copied from `candidates[best_idx].tok_pow`)
+        // because `best_tok` may have just been overwritten above by the
+        // per-file-cap trim -- this candidate is output-only (never fed back
+        // into a ranking comparator), so recomputing once, off the trimmed
+        // `best_tok`, is exact and doesn't touch the determinism concern
+        // that applies to the comparator hot paths.
+        let best_tok_pow = (best_tok.max(1) as f64).powf(len_exp);
         let cand = Candidate {
             file: rel.clone(), span: best_span, tok: best_tok, terms: best_terms, gain: 0.0, text: best_text,
-            name_score: best_name_score,
+            name_score: best_name_score, tok_pow: best_tok_pow,
         };
         covered.extend(cand.terms.iter().cloned());
         spent += cand.tok as i64;
@@ -2658,7 +2699,7 @@ pub fn pack_regions(
             let diff: HashSet<String> = c.terms.difference(&covered).cloned().collect();
             let new_weight = weight(&diff);
             let base = (new_weight + 0.25 * weight(&c.terms) + 0.1) * (0.3 + scores.get(&c.file).copied().unwrap_or(0.0))
-                / (c.tok.max(1) as f64);
+                / c.tok_pow;
             // same undiluted-by-size name bonus as pass 1's selection metric
             // (see pack_regions' doc comment) -- otherwise a name-anchored
             // region too large to win pass 1 could never win pass 2's
@@ -2715,6 +2756,7 @@ pub fn pack_regions(
             gain: candidates[i].gain,
             text: candidates[i].text.clone(),
             name_score: candidates[i].name_score,
+            tok_pow: candidates[i].tok_pow,
         });
         chosen_map.entry(file).or_default().push(seg_idx);
     }
@@ -2928,11 +2970,77 @@ mod tests {
             spans["core.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0);
+        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 1.0);
         assert_eq!(sym_of(&spans_off), Some("subtokens".to_string()), "pre-fix (w_name=0.0) reproduces the bug: body term-density picks the wrong region");
 
-        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0);
+        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 1.0);
         assert_eq!(sym_of(&spans_on), Some("pack_regions".to_string()), "w_name=1.0 must select pack_regions via name-score anchoring");
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E14 directional fixture: a 3-line stub (`stub_widget`, one query
+    /// term hit -- "widget") competes against a 30-line real function
+    /// (`real_gadget_sprocket_cog_lever`, all 4 query terms present and
+    /// repeated throughout the body) in the SAME file, so pass 1's per-file
+    /// `max` fold picks between them directly. `budget_tokens=1` isolates
+    /// pass 1 (mirrors `pack_regions_name_score_promotes_symbol_name_match`
+    /// above): pass 1 always spends unconditionally, so `spent >=
+    /// budget_tokens` immediately afterward and pass 2 never runs.
+    ///
+    /// At `len_exp=1.0` (default, pre-E14 `gain/tok` ranking) the stub wins
+    /// -- exactly the E13 case-mining failure mode this experiment targets
+    /// (a short lucky-term-match stub outranks a long real, densely-
+    /// on-topic function purely because of the linear `/tok` length
+    /// penalty). At `len_exp=0.7`, softening that penalty lets the real
+    /// function's 4x term coverage win instead. The actual crossover for
+    /// this fixture (probed empirically) falls between len_exp=0.79 (real
+    /// wins) and len_exp=0.80 (stub still wins).
+    #[test]
+    fn pack_regions_len_exp_shifts_selection_toward_longer_real_function() {
+        let tmp = std::env::temp_dir().join(format!("roust_e14_crossover_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let stub = "def stub_widget(x):\n    # widget\n    return x\n";
+        let mut real = String::new();
+        real.push_str("def real_gadget_sprocket_cog_lever(a, b, c, d):\n");
+        real.push_str("    \"\"\"widget gadget sprocket cog\"\"\"\n");
+        real.push_str("    widget = a\n");
+        real.push_str("    gadget = b\n");
+        real.push_str("    sprocket = c\n");
+        real.push_str("    cog = d\n");
+        for i in 0..23 {
+            let term = ["widget", "gadget", "sprocket", "cog"][i % 4];
+            real.push_str(&format!("    tmp_{i} = {term} + {i}\n"));
+        }
+        real.push_str("    return widget + gadget + sprocket + cog\n");
+        assert_eq!(real.lines().count(), 30, "fixture must be a 30-line real function");
+        let src = format!("{stub}\n\n{real}");
+        std::fs::write(tmp.join("mod.py"), &src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("widget gadget sprocket cog", &[]);
+        let scores: IndexMap<String, f64> = [("mod.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["mod.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let def_lines = file_def_lines(&corpus.text["mod.py"], def_re_for("mod.py"));
+        let sym_of = |spans: &IndexMap<String, Vec<(usize, usize)>>| -> Option<String> {
+            spans["mod.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
+        };
+
+        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 1.0);
+        assert_eq!(
+            sym_of(&spans_linear),
+            Some("stub_widget".to_string()),
+            "len_exp=1.0 (pre-E14 linear gain/tok) must reproduce the crushed-long-fix failure mode: stub wins"
+        );
+
+        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0.7);
+        assert_eq!(
+            sym_of(&spans_softened),
+            Some("real_gadget_sprocket_cog_lever".to_string()),
+            "len_exp=0.7 must flip the pick to the longer, more densely on-topic real function"
+        );
 
         std::fs::remove_dir_all(&tmp).ok();
     }
@@ -2975,8 +3083,8 @@ mod tests {
         // Large budget so pass 2's greedy loop actually runs over multiple
         // remaining candidates (pass 1 alone would only ever touch one span
         // per file).
-        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
-        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1.0);
+        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1.0);
         assert_eq!(spans1, spans2, "pack_regions must be deterministic given identical (NaN/inf-bearing) inputs");
         assert!(!spans1.is_empty(), "pack_regions should still select regions despite NaN/inf scores");
 
@@ -3025,13 +3133,78 @@ mod tests {
         // remaining candidates per iteration -- the exact scenario that
         // triggers repeated `marginal(i)` calls for the same `i` within a
         // single sort.
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1.0);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1.0);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls given many equal/near-equal marginal scores (and must never panic)"
+            );
+        }
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E14 golden test: `len_exp=1.0` is documented as reproducing the
+    /// exact pre-E14 `gain/tok` ranking, byte-identical -- pin the FULL
+    /// output (both the `spans` map AND the packed bundle text, not just a
+    /// selected symbol name) on a small fixture as an explicit snapshot, so
+    /// any future change to the division sites this experiment touched
+    /// would have to also touch this literal expected value.
+    #[test]
+    fn pack_regions_len_exp_default_is_byte_identical_golden() {
+        let tmp = std::env::temp_dir().join(format!("roust_e14_golden_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        std::fs::write(tmp.join("a.py"), "def alpha_widget(x):\n    return x + 1\n").unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("widget", &[]);
+        let scores: IndexMap<String, f64> = [("a.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["a.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 1.0);
+
+        let expected_spans: IndexMap<String, Vec<(usize, usize)>> =
+            [("a.py".to_string(), vec![(1usize, 2usize)])].into_iter().collect();
+        assert_eq!(spans, expected_spans, "len_exp=1.0 must pin the exact pre-E14 span selection");
+        assert_eq!(
+            bundle, "### a.py\ndef alpha_widget(x):\n    return x + 1",
+            "len_exp=1.0 must pin the exact pre-E14 bundle text"
+        );
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E14 determinism test: 10 repeated calls at a NON-default `len_exp`
+    /// (0.7, i.e. actually exercising the new `tok_pow` division sites, not
+    /// just the `len_exp=1.0` identity path) must produce byte-identical
+    /// spans, on the same many-near-tied-candidates fixture that pins issue
+    /// #14's determinism contract above.
+    #[test]
+    fn pack_regions_deterministic_with_len_exp_below_one() {
+        let tmp = std::env::temp_dir().join(format!("roust_e14_det_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let mut src = String::new();
+        for i in 0..50 {
+            src.push_str(&format!("def fn_{i}(x):\n    \"\"\"token budget enforced.\"\"\"\n    return x + {i}\n\n\n"));
+        }
+        std::fs::write(tmp.join("many.py"), &src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("how is the token budget enforced", &[]);
+        let files = vec!["many.py".to_string()];
+        let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0.7);
+        assert!(!first.is_empty());
+        for _ in 0..10 {
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0.7);
+            assert_eq!(
+                spans, first,
+                "pack_regions must produce byte-identical spans across repeated calls at len_exp=0.7"
             );
         }
 
@@ -3086,7 +3259,7 @@ mod tests {
         assert!(files.contains(&"pkg/validators.py".to_string()));
 
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 1.0);
         assert!(!bundle.is_empty());
         assert!(spans.contains_key("pkg/router.py"));
 
