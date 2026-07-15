@@ -3,7 +3,7 @@
 //!     roust [--json] [--files-only] [--budget N=8192] [--k N]
 //!              [--no-cache] [--reindex]
 //!              [--no-history] [--no-docs] [--no-anchors] [--no-testbridge]
-//!              [--explain] QUERY PATH
+//!              [--explain] [--include-preamble N] QUERY PATH
 //!
 //! Runs the frozen-v7 retrieval pipeline (roust::core, roust::cache,
 //! roust::history) against a repo and prints a token-budgeted,
@@ -98,6 +98,13 @@ struct Args {
     /// dump the Explain diagnostic record as JSON to stderr
     #[arg(long)]
     explain: bool,
+
+    /// force-include each returned file's module preamble (imports,
+    /// module-level constants, docstring -- up to N lines, capped at the
+    /// line before its first top-level def/class) alongside its selected
+    /// region(s); 0 (default) is OFF, byte-identical output (E15)
+    #[arg(long, default_value_t = 0)]
+    include_preamble: i64,
 }
 
 fn main() {
@@ -109,6 +116,10 @@ fn main() {
     }
     if args.k < 0 {
         eprintln!("roust: error: --k must be >= 0");
+        std::process::exit(2);
+    }
+    if args.include_preamble < 0 {
+        eprintln!("roust: error: --include-preamble must be >= 0");
         std::process::exit(2);
     }
 
@@ -161,8 +172,17 @@ fn main() {
     } else {
         anchor_def_symbols(&args.query, &corpus, &anchor_files)
     };
-    let (spans, bundle) =
-        pack_regions(&corpus, &files, &terms, &scores, args.budget, &count_tokens, Some(&anchor_symbols), 0.0);
+    let (spans, bundle) = pack_regions(
+        &corpus,
+        &files,
+        &terms,
+        &scores,
+        args.budget,
+        &count_tokens,
+        Some(&anchor_symbols),
+        0.0,
+        args.include_preamble as usize,
+    );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
     if args.explain {
