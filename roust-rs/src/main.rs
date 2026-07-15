@@ -96,6 +96,14 @@ struct Args {
     /// dump the Explain diagnostic record as JSON to stderr
     #[arg(long)]
     explain: bool,
+
+    /// pad every selected region by N lines in each direction (clamped to
+    /// file bounds), merging spans that end up overlapping or adjacent
+    /// (E12/span-padding experiment): 0 (default) = OFF, byte-identical
+    /// output to pre-E12. If padding pushes the bundle over --budget, whole
+    /// lowest-gain padded spans are dropped (never truncated) until it fits.
+    #[arg(long, default_value_t = 0)]
+    pad_lines: usize,
 }
 
 fn main() {
@@ -159,8 +167,17 @@ fn main() {
     } else {
         anchor_def_symbols(&args.query, &corpus, &anchor_files)
     };
-    let (spans, bundle) =
-        pack_regions(&corpus, &files, &terms, &scores, args.budget, &count_tokens, Some(&anchor_symbols), 0.0);
+    let (spans, bundle) = pack_regions(
+        &corpus,
+        &files,
+        &terms,
+        &scores,
+        args.budget,
+        &count_tokens,
+        Some(&anchor_symbols),
+        0.0,
+        args.pad_lines,
+    );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
     if args.explain {
