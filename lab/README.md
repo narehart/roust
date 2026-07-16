@@ -364,3 +364,52 @@ archex 0.19.2, BM25 default mode (no embeddings), `--budget 8192`, measured via 
 ## archex vector/hybrid mode measured (2026-07-15)
 
 archex 0.19.2, `--vector` (FastEmbed/ONNX) + `--strategy hybrid`, `--budget 8192`, same protocol as the BM25 run above, all 300 instances (298 ok, 2 timeouts counted as wrong): FILE 57.3% / FUNCTION 40.7% / LINE 27.7% (`lab/results_regions/agentless_metric_archex_vector.json`) — a single-digit gain over BM25 that leaves the ~35-point FILE gap to roust unchanged, and query latency is worse (12.98s median vs BM25's 9.68s) despite a much faster index (0.92s vs 5.69s mean). Steelman complete: the tokenbench agent-loop arm (#1 part (b)) is not justified at current quality.
+
+## Guarded padding + length normalization adopted as engine defaults; re-validated under true isolation (2026-07-16)
+
+`--pad-lines 5 --len-exp 0.85` (comboA from the #4 autopsy campaign) shipped as
+`roust-rs`'s own defaults (`73b435e`). Re-validation of this adoption hit an
+infra hazard worth recording: `lab/swebench_repos` is a **symlink shared
+across every worktree** of this repo, so any two worktrees running the parity
+harness or `region_eval2.py` concurrently race `git checkout -f` against the
+same physical clones. An earlier nondeterminism claim on `django-13710`
+(cold-cache run2 != run3) traced to exactly this — a repro that ran through
+the shared symlink during concurrent activity elsewhere, not a genuine engine
+bug. Re-tested properly: this worktree's `lab/swebench_repos` was replaced
+in-place with a private, exclusively-owned copy (`cp -R` of the shared clones,
+integrity-checked afterward — a first copy attempt overlapped with a stray
+concurrent `harness.py` run against the shared symlink and was discarded and
+redone once that process exited and no eval process was running anywhere).
+Under true isolation, zero concurrent eval processes, 3x cold-cache
+(`.roust` deleted between runs) `django-13710` repro with the pre-adoption
+formula explicit (`--pad-lines 0 --len-exp 1.0`): all three JSON outputs
+byte-identical modulo timing fields (`cache: miss` confirmed cold every time,
+`engine_sha: 73b435e` / clean). **Verdict: deterministic** — the earlier
+report was the shared-symlink race artifact, not an engine defect. (Separately,
+`roust-rs/PARITY_NOTES.md` item 15 already fixed one genuine `HashSet`-
+iteration-order nondeterminism source in `pack_regions`' `weight()` closure
+before this adoption branched; that fix is present here too and is not what
+this section is about.)
+
+With isolation established, both binding gates were re-run against the
+private repos and PASS: `parity/harness.py --suite lite --gate exact` is
+300/300 exact-match, 0 errors (`parity/rust_gate_300_v5.json`) — file ranking
+is unchanged by the padding/length-normalization adoption, as the root
+README's "Verified — gate confirms" sentence claims. `parity/region_eval2.py`
+(no `--pad-lines`/`--len-exp` flags, i.e. the shipped defaults) → the
+Agentless metric is FILE 92.33% / FUNCTION 53.33% / LINE 42.67% / mean-fraction
+0.51683 (`lab/results_regions/full300_v11.jsonl` →
+`lab/results_regions/agentless_metric_v5.json`, also saved as
+`agentless_metric_v11.json` for prediction-file-number provenance) —
+identical (`all_instances` and `file_correct_subset` blocks byte-for-byte) to
+the e-combo worktree's earlier `agentless_metric_combo_p5l085.json`, which
+used explicit `--pad-lines 5 --len-exp 0.85` flags against a different engine
+commit (`841ef73`) pre-dating this adoption — confirming the "adopt as
+defaults" change is behavior-preserving relative to the explicit-flags combo
+arm, on top of confirming full cross-isolation reproducibility.
+
+**Follow-up recommended** (not fixed here, out of scope for this adoption):
+`lab/swebench_repos` being a symlink shared across every git worktree of this
+repo is a standing hazard for any future concurrent parity/region-eval work
+— a repo-level fix (e.g. per-worktree private clones, or a lock/queue around
+checkouts of the shared clones) should get its own issue.
