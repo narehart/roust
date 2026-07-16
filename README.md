@@ -306,7 +306,7 @@ Given the same task and the same agent (tokenbench v2, live Sonnet 4.5, each met
 | SweRankEmbed-Large + LLM rerank | 96.0 | Acc@10 | no (trained + LLM) | arXiv:2505.07849 |
 | SweRankEmbed-Large | 94.2 | Acc@10 | no (trained) | arXiv:2505.07849 |
 | LocAgent | 94.16 | file acc | no (LLM) | arXiv:2503.09089 |
-| **roust** | 92.3 | Agentless-metric FILE | yes | `lab/results_regions/agentless_metric_v3.json` |
+| **roust** | 92.3 | Agentless-metric FILE | yes | `lab/results_regions/agentless_metric_v5.json` |
 | SweRankEmbed-Small | 90.9 | Acc@10 | no (trained) | arXiv:2505.07849 |
 | OrcaLoca | 83.33 | file-match | no (LLM) | arXiv:2502.00350 |
 | Agentless GPT-4o | 69.7 | Agentless-metric FILE | no (LLM) | arXiv:2407.01489 |
@@ -317,7 +317,7 @@ Given the same task and the same agent (tokenbench v2, live Sonnet 4.5, each met
 
 — = not measured by us (see gaps below). archex has two rows: its default retrieval mode (BM25+graph, no embeddings) and its optional vector/hybrid mode (FastEmbed/ONNX + graph) — both are now measured, see [#1](https://github.com/narehart/roust/issues/1).
 
-The File-level column mixes several different metrics (Acc@10 / Top-1 / file-match / Agentless-metric FILE) and is **not** comparable straight down the column — each row names its own. roust's Agentless-metric scores on Lite are FILE 92.3% / FUNCTION 41.0% (exact) / LINE 35.7%; Agentless (GPT-4o) for comparison is 69.7 / 52.0 / 35.3; archex (BM25 default) is 56.0 / 38.3 / 25.7 (`lab/results_regions/agentless_metric_archex_bm25.json`, 2 of 300 instances timed out and count as wrong); archex (vector/hybrid) is 57.3 / 40.7 / 27.7 (`lab/results_regions/agentless_metric_archex_vector.json`, same 2 timeouts) — a single-digit gain over BM25 that leaves the ~35-point FILE gap to roust unchanged. Region precision (gold lines returned / total lines returned, i.e. "how much of the packed context is actually the fix") is 0.45% mean — roust trades precision for recall by design, packing ~1,150 lines of surrounding context per instance under the 8192-token budget ([#4](https://github.com/narehart/roust/issues/4)).
+The File-level column mixes several different metrics (Acc@10 / Top-1 / file-match / Agentless-metric FILE) and is **not** comparable straight down the column — each row names its own. roust's Agentless-metric scores on Lite are FILE 92.3% / FUNCTION 53.3% (exact) / LINE 42.7% (`lab/results_regions/agentless_metric_v5.json`) — training-free roust now *exceeds* Agentless GPT-4o at function level (53.3 vs 52.0) and line level (42.7 vs 35.3), closing what was this table's weakest cell; Agentless (GPT-4o) for comparison is 69.7 / 52.0 / 35.3; archex (BM25 default) is 56.0 / 38.3 / 25.7 (`lab/results_regions/agentless_metric_archex_bm25.json`, 2 of 300 instances timed out and count as wrong); archex (vector/hybrid) is 57.3 / 40.7 / 27.7 (`lab/results_regions/agentless_metric_archex_vector.json`, same 2 timeouts) — a single-digit gain over BM25 that leaves the ~35-point FILE gap to roust unchanged. LINE mean-fraction-covered (a continuity metric with prior reporting, distinct from the strict all-or-nothing LINE % above) rose 0.4564 → 0.5168 with the same change. Region precision (gold lines returned / total lines returned, i.e. "how much of the packed context is actually the fix") rose from 0.4486% to 0.5399% mean (+20% relative) — roust still trades precision for recall by design, packing ~1,124 lines of surrounding context per instance under the 8192-token budget (down slightly from ~1,150 pre-adoption). These gains are the additive stack of two measured changes from the #4 campaign (autopsy-driven), now the shipped engine defaults: guarded span padding (`--pad-lines`, default 5) and sub-linear length normalization (`--len-exp`, default 0.85) — run `roust --help` for the exact flags that reproduce the pre-adoption engine, or see [#4](https://github.com/narehart/roust/issues/4).
 
 ### Latency (measured, `lab/latency/latency_v1.json`)
 
@@ -385,7 +385,7 @@ Adapter + protocol: `lab/contextbench/`; aggregate:
 
 ### What still needs work
 
-- ~~Line-level 35.7% and function-level 44.3% (a proxy, not the exact metric)~~ measured exactly ([#2](https://github.com/narehart/roust/issues/2)): FUNCTION 39.7% (exact, was a 44.3% proxy) and LINE 29.3% (was 35.7%) from a fresh 300-instance run of the shipped engine; a `w_name` sweep on the exact harness ([#4](https://github.com/narehart/roust/issues/4)) then showed the symbol-name weighting itself caused the LINE drop — reverting it (w_name=0.0) restores FUNCTION 41.0% (exact) and LINE 35.7% (`lab/results_regions/agentless_metric_v3.json`). FUNCTION is still the weakest cell vs Agentless GPT-4o's 52.0 — [#3](https://github.com/narehart/roust/issues/3)
+- ~~Line-level 35.7% and function-level 44.3% (a proxy, not the exact metric)~~ measured exactly ([#2](https://github.com/narehart/roust/issues/2)): FUNCTION 39.7% (exact, was a 44.3% proxy) and LINE 29.3% (was 35.7%) from a fresh 300-instance run of the shipped engine; a `w_name` sweep on the exact harness ([#4](https://github.com/narehart/roust/issues/4)) then showed the symbol-name weighting itself caused the LINE drop — reverting it (w_name=0.0) restores FUNCTION 41.0% (exact) and LINE 35.7% (`lab/results_regions/agentless_metric_v3.json`). ~~FUNCTION is still the weakest cell vs Agentless GPT-4o's 52.0~~ closed ([#4](https://github.com/narehart/roust/issues/4)): the campaign's autopsy on the FUNCTION/LINE misses found the padding/length-normalization mechanism (comboA — guarded span padding + sub-linear length normalization) and it's now adopted as the shipped engine defaults (`--pad-lines 5 --len-exp 0.85`), raising FUNCTION 41.0→53.3% and LINE 35.7→42.7% (fraction 0.4564→0.5168) — roust now exceeds Agentless GPT-4o at both FUNCTION (53.3 vs 52.0) and LINE (42.7 vs 35.3) (`lab/results_regions/agentless_metric_v5.json`); gains measured on Lite (the tuning set) — held-out region validation is follow-up work, see the Limits note below
 - ~~archex has never been measured by us on any of our benches~~ both Agentless-metric arms measured ([#1](https://github.com/narehart/roust/issues/1)): archex 0.19.2 BM25 default mode is FILE 56.0 / FUNCTION 38.3 / LINE 25.7 (`lab/results_regions/agentless_metric_archex_bm25.json`); vector/hybrid mode is FILE 57.3 / FUNCTION 40.7 / LINE 27.7 (`lab/results_regions/agentless_metric_archex_vector.json`), a single-digit gain over BM25 with worse latency (12.98s vs 9.68s query median) that leaves the ~35-point FILE gap to roust unchanged — steelman complete; the tokenbench agent-loop arm is not justified at current quality
 - ~~True cost-per-success~~ measured via repeat runs ([#16](https://github.com/narehart/roust/issues/16)): roust solves 14/15 deterministically at ~$1/answer with one real capability gap (django-16400, 0/10); embedding-RAG reaches everything eventually at $2.50/first-success — see `results_repeats.jsonl`
 - ~~Latency has no committed benchmark artifact~~ measured ([#15](https://github.com/narehart/roust/issues/15)): cold/warm index + query p50/p95 across four repo sizes (66–2,131 files indexed), `lab/latency/latency_v1.json`
@@ -401,6 +401,17 @@ Adapter + protocol: `lab/contextbench/`; aggregate:
 - **@1 precision is the measured weak spot.** Top-1 file accuracy on the
   held-out SWE-bench Verified set is .354 -- if you need "the one file",
   read further down the ranked list, don't trust rank 1 alone.
+- **Region-level gains are Lite-only evidence.** The held-out SWE-bench
+  Verified FILE numbers (79.4 File@10 / 92.1 all-gold, `lab/README.md`'s
+  held-out validation section) are unaffected by the guarded-padding +
+  length-normalization adoption above -- file-selection code is untouched by
+  padding/length-normalization, which only reshape the region spans within
+  already-selected files, and the 300/300 file-level parity gate
+  (`parity/rust_gate_300_v5.json`) confirms file ranking is unchanged. But
+  region-level metrics (FUNCTION/LINE/fraction) on the held-out set have
+  never been measured -- there's no gold-hunk-region plumbing for Verified
+  yet -- so the FUNCTION/LINE gains reported above are Lite (the tuning set)
+  only; held-out region validation is follow-up work.
 - **Natural-language issues with no identifiers are the hard class.** Every
   non-semantic retrieval method (roust included) leans on identifiers, paths,
   and error strings as anchors; a vague prose description with none of those

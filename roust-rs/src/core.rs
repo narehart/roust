@@ -2425,8 +2425,10 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
 /// matched definition happens to be (measured via this repo's own dogfood
 /// case, see lab/dogfood_pack_regions.py).
 ///
-/// `len_exp` (E14/issue #14 case mining -- 1.0 from the production caller,
-/// i.e. the exact pre-E14 `gain/tok` ranking, BYTE-IDENTICAL): the exponent
+/// `len_exp` (E14/issue #14 case mining -- 1.0 reproduces the exact pre-E14
+/// `gain/tok` ranking, BYTE-IDENTICAL; the production caller (main.rs)
+/// defaulted to 1.0 pre-adoption and now defaults to 0.85, the comboA
+/// campaign result, see #4): the exponent
 /// applied to the token-count denominator of the selection metric in both
 /// passes, i.e. `gain / tok.max(1)^len_exp` (pass 1) and the analogous
 /// `.../tok.max(1)^len_exp` marginal-coverage density (pass 2), rather than
@@ -2444,8 +2446,10 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
 /// `w_name` doc above), since those are identity evidence, not term-density
 /// evidence, and E14 doesn't touch that distinction.
 ///
-/// `pad_lines` (E12/issue "span padding"): 0 (default) is OFF and takes the
-/// pre-E12 code path verbatim -- byte-identical output. When > 0, AFTER
+/// `pad_lines` (E12/issue "span padding"): 0 is OFF and takes the pre-E12
+/// code path verbatim -- byte-identical output. The production caller
+/// (main.rs) defaulted to 0 pre-adoption and now defaults to 5, the comboA
+/// campaign result (see #4). When > 0, AFTER
 /// both selection passes above finish (this function never re-runs or
 /// re-scores the selection comparator for padding), every selected span is
 /// extended by up to `pad_lines` lines in each direction (clamped to the

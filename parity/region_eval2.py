@@ -66,14 +66,21 @@ def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
               len_exp: float = 1.0) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
     if pad_lines != 0:
-        # only appended for non-default values -- default invocation (no
-        # flag) stays byte-identical to pre-E12 argv, see roust-rs/src/
-        # main.rs's own `0` default for `--pad-lines`.
+        # only appended for non-default (0) values here -- 0 is this
+        # script's own "flags off" sentinel, kept distinct from roust-rs/
+        # src/main.rs's own `--pad-lines` default (5, post-adoption). Not
+        # passing `--pad-lines` at all (this script's default invocation)
+        # lets the roust binary fall back to ITS OWN default, i.e. the
+        # shipped-engine default of the moment (5 post-adoption, 0 pre-).
         argv += ["--pad-lines", str(pad_lines)]
     if len_exp != 1.0:
-        # only appended for non-default values -- default invocation (no
-        # flag) stays byte-identical to pre-E14 argv, see roust-rs/src/
-        # main.rs's own `1.0` default for `--len-exp`.
+        # only appended for non-default (1.0) values here -- 1.0 is this
+        # script's own "flags off" sentinel, kept distinct from roust-rs/
+        # src/main.rs's own `--len-exp` default (0.85, post-adoption). Not
+        # passing `--len-exp` at all (this script's default invocation) lets
+        # the roust binary fall back to ITS OWN default, i.e. the
+        # shipped-engine default of the moment (0.85 post-adoption, 1.0
+        # pre-).
         argv += ["--len-exp", str(len_exp)]
     try:
         proc = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
@@ -203,9 +210,17 @@ def main() -> None:
     ap.add_argument("--report", type=Path, required=True, help="JSONL output path")
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--pad-lines", type=int, default=0,
-                     help="passthrough to roust's --pad-lines (E12); 0 (default) matches roust's own default (off)")
+                     help="passthrough to roust's --pad-lines (E12); 0 (default, and the only "
+                          "value this script treats as 'omit the flag') means the roust binary "
+                          "uses ITS OWN default (5 post-adoption); any other value is forwarded "
+                          "as-is (there is no way to force an explicit `--pad-lines 0` through "
+                          "this script's CLI -- invoke the roust binary directly for that)")
     ap.add_argument("--len-exp", type=float, default=1.0,
-                     help="passthrough to roust's --len-exp (E14/issue #14); 1.0 (default) matches roust's own default (off, byte-identical to pre-E14)")
+                     help="passthrough to roust's --len-exp (E14/issue #14); 1.0 (default, and "
+                          "the only value this script treats as 'omit the flag') means the roust "
+                          "binary uses ITS OWN default (0.85 post-adoption); any other value is "
+                          "forwarded as-is (there is no way to force an explicit `--len-exp 1.0` "
+                          "through this script's CLI -- invoke the roust binary directly for that)")
     args = ap.parse_args()
 
     if not ROUST_BIN.exists():

@@ -101,23 +101,27 @@ struct Args {
 
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
-    /// (E12/span-padding experiment): 0 (default) = OFF, byte-identical
-    /// output to pre-E12. If padding pushes the bundle over --budget, padding
-    /// is first de-escalated (shrunk back toward 0) on the lowest-gain spans
-    /// before any whole span is dropped (E12b guard): a file present in the
-    /// unpadded (--pad-lines 0) selection is never evicted purely because
-    /// padding grew it over budget.
-    #[arg(long, default_value_t = 0)]
+    /// (E12/span-padding experiment): default 5, adopted from the comboA
+    /// campaign result (guarded padding + length norm, see #4). If padding
+    /// pushes the bundle over --budget, padding is first de-escalated
+    /// (shrunk back toward 0) on the lowest-gain spans before any whole span
+    /// is dropped (E12b guard): a file present in the unpadded (--pad-lines
+    /// 0) selection is never evicted purely because padding grew it over
+    /// budget. Pass `--pad-lines 0` (together with `--len-exp 1.0`) to
+    /// reproduce the pre-adoption (byte-identical pre-E12/E14) engine.
+    #[arg(long, default_value_t = 5)]
     pad_lines: usize,
 
     /// exponent applied to the token-count denominator of pack_regions'
     /// region-selection metric (E14/issue #14 case mining): `gain /
-    /// tok^len_exp` in place of the flat `gain / tok`. 1.0 (default) =
-    /// the original linear length penalty, byte-identical to pre-E14.
-    /// Values < 1.0 sub-linearly discount region length, letting long
-    /// real-fix functions compete against short lucky-match stubs instead
-    /// of being crushed by the token-count division.
-    #[arg(long, default_value_t = 1.0)]
+    /// tok^len_exp` in place of the flat `gain / tok`. Default 0.85,
+    /// adopted from the comboA campaign result (see #4): sub-linearly
+    /// discounts region length, letting long real-fix functions compete
+    /// against short lucky-match stubs instead of being crushed by the
+    /// token-count division. Pass `--len-exp 1.0` (together with
+    /// `--pad-lines 0`) to reproduce the pre-adoption (byte-identical
+    /// pre-E12/E14) engine, where 1.0 is the original linear length penalty.
+    #[arg(long, default_value_t = 0.85)]
     len_exp: f64,
 }
 
