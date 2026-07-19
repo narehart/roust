@@ -30,7 +30,7 @@ CONVENTION NOTE (2026-07 hardening pass): errors now count as WRONG at every
 level -- FILE, FUNCTION, and LINE all share the same denominator (n = all
 loaded records). Previously FUNCTION excluded engine errors and git_show
 failures from its denominator while FILE/LINE counted them as wrong; the two
-conventions differ by <=0.11pp on every published run, so published artifacts
+conventions differ by <=0.12pp on every published roust run (and <=0.41pp on the archex baseline artifacts, where the old exclusion favored the baseline), so published artifacts
 were deliberately NOT regenerated -- the report's `convention` field records
 which convention an artifact was scored under (artifacts without the field
 predate the unification and used the old FUNCTION exclusion). The excluded
@@ -239,7 +239,7 @@ def compute_function_level_exact(records: list[dict], patch_by_id: dict[str, str
         conservative, self-penalizing resolution of that ambiguity.
     (Old convention, used by artifacts that predate the report-level
     `convention` field: both classes were EXCLUDED from the FUNCTION
-    denominator. Shift <=0.11pp on every published run; artifacts not
+    denominator. Shift <=0.12pp on every published roust run, <=0.41pp on the archex baseline artifacts; none
     regenerated -- see module docstring.)
 
     Flagged assumption: an instance whose (complete, ast_ok) gold function
@@ -405,7 +405,7 @@ def main() -> None:
                       "git_show failures count as WRONG and are reported separately "
                       "(*_counted_wrong / n_engine_errors keys). Artifacts without this field "
                       "predate the unification and scored FUNCTION with errors EXCLUDED from "
-                      "the denominator (<=0.11pp difference on every published run).",
+                      "the denominator (<=0.12pp difference on every published roust run; <=0.41pp on the archex baseline artifacts).",
         "source": {
             "predictions": str(args.predictions.relative_to(REPO_ROOT))
             if args.predictions.is_absolute() else str(args.predictions),
