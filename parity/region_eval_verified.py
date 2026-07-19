@@ -78,9 +78,17 @@ def engine_version_string() -> str:
 
 
 def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int,
-              len_exp: float) -> tuple[dict | None, str | None]:
+              len_exp: float, include_preamble: int = 0,
+              preamble_top_k: int = 3) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path),
             "--pad-lines", str(pad_lines), "--len-exp", str(len_exp)]
+    if include_preamble != 0:
+        # only appended for non-default (0) values -- 0 matches roust's own
+        # `--include-preamble` default (off, byte-identical). Always passed
+        # TOGETHER with --preamble-top-k (E15b): --preamble-top-k is
+        # meaningless on its own (roust ignores it when --include-preamble
+        # == 0), so there is no separate "top-k only" branch here.
+        argv += ["--include-preamble", str(include_preamble), "--preamble-top-k", str(preamble_top_k)]
     try:
         proc = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
@@ -131,7 +139,8 @@ def load_verified_rows(gold_parquet: Path, limit: int) -> list[dict]:
     return rows
 
 
-def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: float) -> dict:
+def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: float,
+                           include_preamble: int = 0, preamble_top_k: int = 3) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -160,7 +169,8 @@ def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: f
         rec["error"] = f"checkout failed: {exc}"
         return rec
 
-    obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp)
+    obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp,
+                         include_preamble, preamble_top_k)
     if err:
         rec["error"] = err
         return rec
@@ -227,6 +237,13 @@ def main() -> None:
                      help=f"passthrough to roust's --len-exp (E14); always forwarded "
                           f"(default {DEFAULT_LEN_EXP}, the current engine default); pass "
                           f"`--len-exp 1.0` to reproduce the pre-adoption old formula")
+    ap.add_argument("--include-preamble", type=int, default=0,
+                     help="passthrough to roust's --include-preamble (E15b); 0 (default) matches "
+                          "roust's own default (off, byte-identical)")
+    ap.add_argument("--preamble-top-k", type=int, default=3,
+                     help="passthrough to roust's --preamble-top-k (E15b); only meaningful when "
+                          "--include-preamble > 0, always passed together with it; 3 (default) "
+                          "matches roust's own default")
     args = ap.parse_args()
 
     if not ROUST_BIN.exists():
@@ -239,7 +256,9 @@ def main() -> None:
     version = engine_version_string()
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
-    print(f"pad_lines={args.pad_lines} len_exp={args.len_exp}", file=sys.stderr)
+    print(f"pad_lines={args.pad_lines} len_exp={args.len_exp} "
+          f"include_preamble={args.include_preamble} preamble_top_k={args.preamble_top_k}",
+          file=sys.stderr)
 
     rows = load_verified_rows(args.gold_parquet, args.limit)
     args.report.parent.mkdir(parents=True, exist_ok=True)
@@ -249,7 +268,8 @@ def main() -> None:
     t0 = time.time()
     with args.report.open("w") as fh:
         for i, row in enumerate(rows, 1):
-            rec = eval_verified_instance(row, args.timeout, args.pad_lines, args.len_exp)
+            rec = eval_verified_instance(row, args.timeout, args.pad_lines, args.len_exp,
+                                         args.include_preamble, args.preamble_top_k)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:
