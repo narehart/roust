@@ -15,8 +15,18 @@
 //!
 //! Exit codes: 0 = results found (including low-confidence matches, flagged
 //! via `low_confidence` in `--json` stats and a stderr warning), 1 = no
-//! query term matched anything in the indexed corpus vocabulary, 2 = usage
-//! error.
+//! results, 2 = usage error.
+//!
+//! "No results" (exit 1) covers BOTH empty-result cases, matching the
+//! README's "1 = no results" contract: (a) literal zero-match -- no query
+//! term matched anything in the indexed corpus vocabulary at all -- and (b)
+//! terms matched somewhere in the vocabulary (e.g. only in docs pages, which
+//! are query-able vocabulary but not packable code files) yet the packed
+//! result set came out empty. Under `--json` both cases emit the same valid,
+//! parseable empty-payload JSON on stdout (`files: []`, `regions: {}`,
+//! `bundle: ""`, real `stats`), so `--json` callers ALWAYS get exactly one
+//! JSON document on stdout regardless of outcome; the two cases remain
+//! distinguishable by the stderr note and by `matched_query_terms` in stats.
 
 use roust::cache;
 use roust::core::{
@@ -259,10 +269,15 @@ fn main() {
         } else {
             println!("{bundle}");
         }
-    } else if zero_match && args.json {
-        // Literal zero-match case (issue #25): emit valid, parseable JSON
-        // with an empty result set rather than nothing, so callers scripting
-        // against --json never have to special-case "no stdout at all".
+    } else if args.json {
+        // Empty result set under --json (issue #25, hardened): emit valid,
+        // parseable JSON with an empty result set rather than nothing, so
+        // callers scripting against --json never have to special-case "no
+        // stdout at all". This fires for ANY empty `packed_files`, not just
+        // the literal zero-match case -- query terms can match the corpus
+        // vocabulary (docs pages, commit messages, path components) while
+        // still selecting no packable code file, and that case must honor
+        // the same "--json always prints exactly one JSON document" contract.
         let payload = serde_json::json!({
             "query": args.query,
             "files": [],
@@ -290,9 +305,17 @@ fn main() {
     );
     if zero_match {
         eprintln!("roust: no query term matched anything in the indexed corpus vocabulary -- no results");
+    } else if packed_files.is_empty() {
+        eprintln!("roust: query terms matched the corpus vocabulary but no packable file was selected -- no results");
     }
 
-    if zero_match {
+    // Exit contract (see module doc / README): 1 = no results, covering both
+    // literal zero-match AND an empty packed result set with vocabulary
+    // matches. Applies uniformly across output modes -- exit codes must not
+    // depend on whether --json/--files-only was passed. (`zero_match` is
+    // kept in the condition even though it should always imply an empty
+    // result set, so the pre-hardening exit-1 guarantee can never regress.)
+    if zero_match || packed_files.is_empty() {
         std::process::exit(1);
     }
 }

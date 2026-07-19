@@ -208,7 +208,13 @@ fn save(repo_path: &Path, key: &str, corpus: &Corpus, edges: &EdgeMap, history: 
     }
     let payload = CachePayloadRef { version: CACHE_VERSION, key, corpus, edges, history, manifest };
     let final_path = cache_path(repo_path);
-    let tmp_path = cache_dir.join(format!("{INDEX_FILENAME}.tmp"));
+    // Per-pid tmp name: two concurrent roust processes saving the cache of
+    // the same repo must not interleave writes into ONE shared tmp file
+    // (yielding a corrupt rename into place); each writes its own tmp and
+    // the final atomic rename settles last-writer-wins on the real path. A
+    // crashed process can orphan its pid-suffixed tmp, which is harmless
+    // (never read; `load` only opens the final path) and tiny.
+    let tmp_path = cache_dir.join(format!("{INDEX_FILENAME}.{}.tmp", std::process::id()));
     let write_result: std::io::Result<()> = (|| {
         let file = std::fs::File::create(&tmp_path)?;
         let writer = std::io::BufWriter::new(file);

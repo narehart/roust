@@ -24,11 +24,14 @@ pub fn is_code_file(rel: &str) -> bool {
 
 fn has_code_suffix(rel: &str) -> bool {
     // Matches Python's `p.suffix in CODE_EXTENSIONS` (last dotted component
-    // only, NOT `endswith`) used by the Corpus file walk.
-    match rel.rfind('.') {
-        Some(idx) => CODE_EXTENSIONS.contains(&&rel[idx..]),
-        None => false,
-    }
+    // only, NOT `endswith`) used by the Corpus file walk. Delegates to
+    // `suffix_of` -- the SAME predicate `cache.rs`'s manifest scan uses --
+    // so the corpus walk and the cache's change detection can never
+    // disagree about which files are code. (The previous hand-rolled
+    // version also searched the last '.' across the WHOLE rel path and
+    // accepted extension-only hidden names like `a/.py`, which Python's
+    // `Path.suffix` -- and `suffix_of` -- correctly reject.)
+    CODE_EXTENSIONS.contains(&suffix_of(rel))
 }
 
 pub(crate) fn suffix_of(rel: &str) -> &str {
@@ -848,6 +851,15 @@ impl Corpus {
             new_toks.insert(rel.clone(), toks);
         }
 
+        // Corpus-order position of every indexed file. `build` fills each
+        // `def_index` symbol's definer list by pushing files in
+        // `self.files` walk order, so an incremental re-add must re-insert
+        // the updated file at its files-order slot -- NOT push it to the
+        // end, which would leave a multi-definer symbol's list permuted
+        // versus a fresh `--reindex` build (and anchor resolution consumes
+        // `def_index[s]` in list order, so the permutation is observable).
+        let file_pos: HashMap<String, usize> = self.files.iter().enumerate().map(|(i, f)| (f.clone(), i)).collect();
+
         for rel in rels {
             // --- subtract old contributions (self.text[rel] is still old here)
             if let Some(old_tf) = self.tf.get(rel) {
@@ -904,8 +916,21 @@ impl Corpus {
                 }
             }
             if let Some(re) = def_re {
+                // Ordered re-insert (see `file_pos` above): place `rel`
+                // before the first already-listed definer that comes AFTER
+                // it in corpus order, keeping every list byte-identical to
+                // what a fresh `build` would produce. The removal pass
+                // above already `retain`ed `rel` out, and `def_syms`
+                // returns a de-duplicated set, so no duplicate check is
+                // needed here.
+                let rp = file_pos.get(rel).copied().unwrap_or(usize::MAX);
                 for sym in Self::def_syms(re, &new_text[rel]) {
-                    self.def_index.entry(sym).or_default().push(rel.clone());
+                    let lst = self.def_index.entry(sym).or_default();
+                    let ins = lst
+                        .iter()
+                        .position(|f| file_pos.get(f).copied().unwrap_or(usize::MAX) > rp)
+                        .unwrap_or(lst.len());
+                    lst.insert(ins, rel.clone());
                 }
             }
         }
@@ -1249,7 +1274,7 @@ fn py_module_index(files: &[String]) -> HashMap<String, String> {
 
 /// Undirected import graph. Adjacency sets use `BTreeSet` (sorted
 /// iteration) as the deliberate, documented deterministic stand-in for
-/// Python's raw `set[str]` (see PARITY_NOTES.md item 2: `edges[s]`'s
+/// Python's raw `set[str]` (see PARITY_NOTES.md item 7: `edges[s]`'s
 /// iteration order is the one genuinely hash-randomization-exposed spot in
 /// the whole pipeline).
 pub type EdgeMap = HashMap<String, BTreeSet<String>>;
@@ -1843,7 +1868,7 @@ impl<'a> Default for SelectParams<'a> {
 /// direct translation; the one deliberate behavioral choice (not a
 /// deviation, a documented tie-break for an underlying Python
 /// nondeterminism) is noted at the `edges.get(s)` call below. See
-/// PARITY_NOTES.md item 2.
+/// PARITY_NOTES.md item 7.
 pub fn select_files(
     corpus: &Corpus,
     terms: &[String],
@@ -1944,7 +1969,7 @@ pub fn select_files(
         let co_partners: Option<&IndexMap<String, i64>> = params.cochange.and_then(|c| c.get(s));
 
         let mut neighbors: Vec<String> = Vec::new();
-        // NOTE (PARITY_NOTES.md item 2): `edges.get(s)` is a Python `set`
+        // NOTE (PARITY_NOTES.md item 7): `edges.get(s)` is a Python `set`
         // in the reference; CPython's default hash randomization makes its
         // iteration order (and thus tie-breaks fed by it, downstream) not
         // reproducibly deterministic even between two runs of the *Python*
@@ -2460,13 +2485,17 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
 /// span first (fully drained before the next-lowest is touched) -- until
 /// the bundle fits again; only if it STILL doesn't fit once every span has
 /// been de-escalated all the way to 0 (i.e. even the unpadded selection
-/// exceeds budget) are WHOLE spans evicted (never partially truncated)
-/// lowest-gain-first. Because pass 2 above never seats a candidate that
-/// would itself exceed `budget_tokens`, the pad=0 bundle already fits by
-/// construction, so this guard guarantees a file present in the unpadded
-/// selection is never evicted purely because padding grew it -- see
-/// `pack_regions`' own de-escalation/eviction blocks below for the precise,
-/// precomputed (non-recomputed) gain metric and tie-break order. Applied
+/// exceeds budget, which pass 1's unconditional one-span-per-file seating
+/// makes possible at small budgets) are WHOLE spans evicted (never
+/// partially truncated) lowest-gain-first -- and only ever pass-2 spans:
+/// pass-1 origin spans (one per selected file, anchor-forced ones included)
+/// are exempt from eviction, so the guard's invariant -- a file present in
+/// the unpadded (pad=0) selection is never evicted purely because padding
+/// grew the bundle -- holds at every budget. If nothing evictable remains,
+/// the bundle is returned over budget, matching the pad=0 path's own
+/// overshoot behavior on the same input -- see `pack_regions`' own
+/// de-escalation/eviction blocks below for the precise, precomputed
+/// (non-recomputed) gain metric and tie-break order. Applied
 /// AFTER `len_exp`-based selection: padding operates on whichever spans the
 /// (possibly len_exp-adjusted) selection passes chose, and re-derives each
 /// padded span's own `tok`/`text` from the file directly rather than
@@ -2708,6 +2737,13 @@ pub fn pack_regions(
         chosen_map.entry(rel.clone()).or_default().push(seg_idx);
     }
 
+    // Boundary between pass-1 and pass-2 segments: every all_segments index
+    // below this was seated by pass 1 (exactly one span per file, seated
+    // UNCONDITIONALLY -- note `spent += cand.tok` above has no budget
+    // check), everything at/after it by pass 2 (budget-checked). The E12b
+    // eviction guard below keys its pass-1 exemption off this boundary.
+    let pass1_seg_count = all_segments.len();
+
     // pass 2: greedy marginal coverage over the ORIGINAL candidates minus
     // whichever became the pass-1 pick per file (Python compares dicts by
     // identity/equality against the `chosen` accumulator; here we track by
@@ -2839,6 +2875,10 @@ pub fn pack_regions(
         text: String,
         tok: i64,
         gain: f64,
+        /// True if any origin merged into this padded span was a pass-1
+        /// pick: such spans are EXEMPT from the fallback whole-span
+        /// eviction below (see the guard's invariant comment).
+        pass1: bool,
     }
 
     // Each originally-selected span (pass 1 or pass 2) keeps its OWN,
@@ -2850,6 +2890,10 @@ pub fn pack_regions(
         span: (usize, usize),
         gain: f64,
         pad: i64,
+        /// Seated by pass 1 (one unconditional span per file, which includes
+        /// every anchor-forced span -- `forced` only ever feeds pass-1
+        /// picks). Pass-1 origins are exempt from whole-span eviction.
+        pass1: bool,
     }
 
     let mut origins: Vec<OriginSpan> = Vec::new();
@@ -2862,7 +2906,7 @@ pub fn pack_regions(
         for &i in idxs {
             let c = &all_segments[i];
             let oi = origins.len();
-            origins.push(OriginSpan { span: c.span, gain: c.gain, pad: pad_lines as i64 });
+            origins.push(OriginSpan { span: c.span, gain: c.gain, pad: pad_lines as i64, pass1: i < pass1_seg_count });
             by_file_idx.entry(rel.clone()).or_default().push(oi);
         }
     }
@@ -2884,7 +2928,7 @@ pub fn pack_regions(
             let full_lines = py_splitlines(&corpus.text[rel]);
             let n_lines = full_lines.len();
 
-            let mut raw: Vec<((usize, usize), f64)> = idxs
+            let mut raw: Vec<((usize, usize), f64, bool)> = idxs
                 .iter()
                 .map(|&i| {
                     let o = &origins[i];
@@ -2892,29 +2936,33 @@ pub fn pack_regions(
                     let pad = o.pad;
                     let pa = ((a as i64 - pad).max(1)) as usize;
                     let pb = ((b as i64 + pad).min(n_lines as i64).max(1)) as usize;
-                    ((pa, pb), o.gain)
+                    ((pa, pb), o.gain, o.pass1)
                 })
                 .collect();
             raw.sort_by(|a, b| a.0.cmp(&b.0));
 
-            let mut merged: Vec<((usize, usize), f64)> = Vec::new();
-            for (span, gain) in raw {
+            let mut merged: Vec<((usize, usize), f64, bool)> = Vec::new();
+            for (span, gain, pass1) in raw {
                 if let Some(last) = merged.last_mut() {
                     if span.0 <= last.0 .1 + 1 {
                         last.0 .1 = last.0 .1.max(span.1);
                         last.1 += gain;
+                        // A merged span containing ANY pass-1 origin
+                        // inherits the eviction exemption -- evicting the
+                        // merge would drop pass-1 content with it.
+                        last.2 |= pass1;
                         continue;
                     }
                 }
-                merged.push((span, gain));
+                merged.push((span, gain, pass1));
             }
 
-            for ((a, b), gain) in merged {
+            for ((a, b), gain, pass1) in merged {
                 let start = a.saturating_sub(1).min(n_lines);
                 let end = b.min(n_lines);
                 let text = if start < end { full_lines[start..end].join("\n") } else { String::new() };
                 let tok = count_tokens(&text) as i64;
-                out.push(PaddedSpan { file: rel.clone(), span: (a, b), text, tok, gain });
+                out.push(PaddedSpan { file: rel.clone(), span: (a, b), text, tok, gain, pass1 });
             }
         }
         out
@@ -2937,16 +2985,20 @@ pub fn pack_regions(
     // padding before a more valuable span gives up any, which maximizes how
     // much padding the bundle keeps overall for a given budget.
     //
-    // INVARIANT this establishes: since pass 2 (above) never seats a
-    // candidate that would push `spent` over `budget_tokens`, the pad=0
-    // bundle (every origin's own unpadded span, merged only where two
-    // spans were already touching/overlapping pre-padding) already fits
-    // budget by construction. De-escalating every origin's pad to 0 is
-    // therefore guaranteed to converge to a fitting bundle -- so a file
-    // present in the pad=0 selection is NEVER evicted here purely from
-    // padding growth; the eviction fallback below only fires in the
-    // (pathological / by-construction-impossible-in-practice) case where
-    // the bundle exceeds budget even with every origin fully unpadded.
+    // INVARIANT (E12b, hardened): the guard promises that the FILE SET
+    // never shrinks versus the pad=0 selection. Note the pad=0 bundle does
+    // NOT necessarily fit budget by construction -- pass 1 seats one span
+    // per file UNCONDITIONALLY (no budget check on its `spent +=`; only
+    // pass 2 is budget-checked), so with enough files even the fully
+    // unpadded bundle can exceed `budget_tokens` (e.g. 25 files at budget
+    // 800), exactly as the pre-E12 pad=0 path could overshoot. De-escalation
+    // therefore is NOT guaranteed to converge to a fitting bundle; when it
+    // doesn't, the fallback below may evict pass-2 spans, but pass-1 origin
+    // spans (one per selected file, including every anchor-forced span) are
+    // structurally EXEMPT from eviction -- which is what actually enforces
+    // the file-set invariant at every budget. If the bundle still exceeds
+    // budget once every pad is drained and every evictable pass-2 span is
+    // gone, it overshoots, exactly as the pad=0 path always has.
     if total > budget_tokens && !origins.is_empty() {
         let mut order: Vec<usize> = (0..origins.len()).collect();
         order.sort_by(|&i, &j| origins[i].gain.total_cmp(&origins[j].gain).then(i.cmp(&j)));
@@ -2964,17 +3016,25 @@ pub fn pack_regions(
 
     // Fallback eviction: only reached if the bundle STILL exceeds budget
     // once every origin span has been de-escalated all the way to pad=0
-    // (i.e. even the unpadded selection doesn't fit -- see the invariant
-    // above). Drop WHOLE padded spans (never truncate one mid-way)
-    // lowest-gain-first until it fits. Eviction order is a single
-    // precomputed sort over the (already precomputed, unchanging) per-span
-    // `gain` -- exactly the "no comparator recomputation" pass-2's
-    // `marginal` closure had to be hardened against (see above): here
-    // there is nothing to recompute per eviction, `gain` was fixed the
-    // moment each span was built. `total_cmp` (not `partial_cmp().unwrap()`)
-    // for the same NaN/inf-hardening reason as every other score sort in
-    // this function. Ties keep `padded`'s own build order (files' order,
-    // then ascending span-start within a file) via `sort_by`'s stability.
+    // (i.e. even the unpadded selection doesn't fit -- possible, since
+    // pass 1 seats unconditionally; see the invariant comment above). Drop
+    // WHOLE evictable padded spans (never truncate one mid-way)
+    // lowest-gain-first until it fits, where "evictable" excludes any span
+    // containing a pass-1 origin: pass-1 spans are the pad=0 file set
+    // (every selected file has exactly one, and anchor-forced spans are
+    // pass-1 picks too), so exempting them is what makes the guard's
+    // file-set invariant hold at every budget. If only exempt spans remain
+    // and the bundle is still over budget, it is returned overshooting --
+    // the same overshoot the pad=0 path (and the pre-adoption engine)
+    // produces on such inputs. Eviction order is a single precomputed sort
+    // over the (already precomputed, unchanging) per-span `gain` -- exactly
+    // the "no comparator recomputation" pass-2's `marginal` closure had to
+    // be hardened against (see above): here there is nothing to recompute
+    // per eviction, `gain` was fixed the moment each span was built.
+    // `total_cmp` (not `partial_cmp().unwrap()`) for the same
+    // NaN/inf-hardening reason as every other score sort in this function.
+    // Ties keep `padded`'s own build order (files' order, then ascending
+    // span-start within a file) via `sort_by`'s stability.
     let mut evicted = vec![false; padded.len()];
     if total > budget_tokens {
         let mut order: Vec<usize> = (0..padded.len()).collect();
@@ -2982,6 +3042,9 @@ pub fn pack_regions(
         for i in order {
             if total <= budget_tokens {
                 break;
+            }
+            if padded[i].pass1 {
+                continue;
             }
             total -= padded[i].tok;
             evicted[i] = true;
@@ -3460,19 +3523,24 @@ mod tests {
         std::fs::remove_dir_all(&tmp).ok();
     }
 
-    /// Budget eviction: two files with byte-identical bodies (so identical
-    /// token counts and identical `weight(seg_terms)`/`n_hits` contribution
-    /// to `gain`) but different caller-supplied `scores` -- `hi.py` scores
-    /// 5.0, `lo.py` scores 0.0 -- so `hi.py`'s span has a strictly higher
-    /// `gain` (`gain = (weight + 0.5*n_hits) * (0.3 + score)`) purely from
-    /// that difference. `budget_tokens` is set (dynamically, from the
+    /// Pass-1 eviction exemption (the E12b guard's actual enforcement
+    /// mechanism, hardened): two files with byte-identical bodies (so
+    /// identical token counts and identical `weight(seg_terms)`/`n_hits`
+    /// contribution to `gain`) but different caller-supplied `scores` --
+    /// `hi.py` scores 5.0, `lo.py` scores 0.0 -- so `lo.py`'s span has the
+    /// strictly lower `gain`. `budget_tokens` is set (dynamically, from the
     /// fixture's own real token count) to fit exactly ONE span but not
-    /// both, forcing the padding-eviction step to run. Assert: (1) the
-    /// LOWER-gain `lo.py` span is dropped WHOLLY (its file key is entirely
-    /// absent from `spans`, not shortened), and (2) the surviving `hi.py`
-    /// span is untruncated (full 3-line span, not a partial slice).
+    /// both. Both spans are PASS-1 picks (one per file, seated
+    /// unconditionally), so even though the fully de-escalated (pad=0)
+    /// bundle exceeds budget, NEITHER may be evicted: the pad=0 path
+    /// returns both files (overshooting budget), and the guard's invariant
+    /// is precisely that padding never shrinks that file set. Pre-fix, this
+    /// exact shape evicted `lo.py` (the reviewer's 25-file/budget-800
+    /// repro, minimized): the padded path returned fewer files than pad=0.
+    /// Assert: both files survive at pad>0, with full untruncated spans,
+    /// same as the pad=0 baseline.
     #[test]
-    fn pack_regions_pad_lines_budget_eviction_drops_whole_lowest_gain_span() {
+    fn pack_regions_pad_lines_pass1_spans_exempt_from_eviction() {
         let tmp = std::env::temp_dir().join(format!("roust_pad_evict_{}", std::process::id()));
         std::fs::create_dir_all(&tmp).unwrap();
         let body = "def needle(x):\n    \"\"\"token budget marker phrase evict here now.\"\"\"\n    return x\n";
@@ -3497,14 +3565,72 @@ mod tests {
 
         // Tiny `budget_tokens` passed to pack_regions itself doesn't matter
         // for WHICH pass-1 picks get made (pass 1 spends unconditionally,
-        // ignoring budget) -- it only gates pass 2 and (new) the post-
-        // padding eviction step, so both hi.py and lo.py's pass-1 spans are
-        // seated before padding/eviction ever runs.
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0);
+        // ignoring budget) -- it only gates pass 2 and the post-padding
+        // de-escalation/eviction step, so both hi.py and lo.py's pass-1
+        // spans are seated before padding/eviction ever runs.
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0);
+        assert!(
+            spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
+            "pad=0 baseline seats BOTH pass-1 spans (unconditionally), overshooting budget"
+        );
 
-        assert!(!spans.contains_key("lo.py"), "lower-gain lo.py span must be evicted WHOLLY (key absent), not truncated");
-        assert!(spans.contains_key("hi.py"), "higher-gain hi.py span must survive eviction");
-        assert_eq!(spans["hi.py"], vec![(1, 3)], "surviving span must be the full, untruncated 3-line span");
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0);
+        let got: HashSet<&String> = spans.keys().collect();
+        let baseline: HashSet<&String> = spans0.keys().collect();
+        assert_eq!(
+            got, baseline,
+            "pass-1 spans are eviction-exempt: the padded file set must equal the pad=0 file set even when the unpadded bundle itself exceeds budget"
+        );
+        assert_eq!(spans["hi.py"], vec![(1, 3)], "hi.py span must be the full, untruncated 3-line span");
+        assert_eq!(spans["lo.py"], vec![(1, 3)], "lo.py span must survive whole (pre-fix it was evicted here), not truncated");
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// The reviewer's live repro, as a fixture: 25 files whose pass-1 spans
+    /// alone exceed budget 800 even fully unpadded (pass 1 seats one span
+    /// per file unconditionally). Pre-fix, the padded path's fallback
+    /// eviction then dropped whole low-gain files, so `--pad-lines 5`
+    /// returned FEWER files than `--pad-lines 0` at the same budget --
+    /// violating the guard's stated invariant. Post-fix, pass-1 spans are
+    /// eviction-exempt: pad=5 must return the same 25 files as pad=0, with
+    /// the bundle overshooting budget exactly as the pad=0 path does.
+    #[test]
+    fn pack_regions_pad_guard_holds_at_small_budget_25_files() {
+        let tmp = std::env::temp_dir().join(format!("roust_pad_guard25_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let mut files: Vec<String> = Vec::new();
+        for i in 0..25 {
+            // ~40 whitespace tokens per selected span so 25 unpadded spans
+            // total ~1000 tokens, comfortably past budget 800. Each file
+            // matches the query so every one of the 25 is selected.
+            let body = format!(
+                "def handler_{i}(request):\n    \"\"\"widget frobnicate dispatch pathway number {i} extra filler words alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron pi rho sigma tau upsilon phi chi psi omega\"\"\"\n    return {i}\n"
+            );
+            let rel = format!("mod_{i:02}.py");
+            std::fs::write(tmp.join(&rel), body).unwrap();
+            files.push(rel);
+        }
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("widget frobnicate dispatch pathway", &[]);
+        // Distinct scores so per-span gains are strictly ordered -- the
+        // pre-fix eviction had an unambiguous lowest-gain victim.
+        let scores: IndexMap<String, f64> =
+            files.iter().enumerate().map(|(i, f)| (f.clone(), 0.1 + i as f64 * 0.05)).collect();
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+        let budget: i64 = 800;
+
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 0.85);
+        assert_eq!(spans0.len(), 25, "pad=0 baseline must select all 25 files (pass 1 seats unconditionally)");
+
+        let (spans5, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 5, 0.85);
+        let got: HashSet<&String> = spans5.keys().collect();
+        let baseline: HashSet<&String> = spans0.keys().collect();
+        assert_eq!(
+            got, baseline,
+            "pad_lines=5 at budget 800 must return the SAME 25 files as pad_lines=0 (pre-fix it evicted low-gain files)"
+        );
 
         std::fs::remove_dir_all(&tmp).ok();
     }
