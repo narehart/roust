@@ -2,11 +2,12 @@
 
 Every Python-semantics trap the Rust port had to reproduce byte-for-byte
 against `lab/lanes2.py` + `lab/history.py` (the frozen v7 pipeline), plus how
-each was resolved in `src/`. **15 numbered traps** (items 1-12 from the
-original port, 13-15 added as later subsystems were ported), ordered roughly
-by where you'd hit them reading the pipeline top to bottom: filesystem walk
--> tokenization -> corpus/BM25 -> import graph -> select_files -> history
-mining -> region packing.
+each was resolved in `src/`. **15 numbered traps** (items 1-15 below; the
+original twelve from the port itself, plus items 13-15 added post-port as
+region packing v2, the on-disk cache, and the `weight()` determinism fix
+landed), ordered roughly by where you'd hit them reading the pipeline top to
+bottom: filesystem walk -> tokenization -> corpus/BM25 -> import graph ->
+select_files -> history mining -> region packing.
 
 Validated by:
 - `parity/shim_reference.py` micro-parity on 5 hand-picked httpx queries
@@ -165,7 +166,11 @@ nothing about the program's behavior signals the failure.
 `pathlib.Path.suffix`: the last dotted component of the *final path segment*
 only -- a file named `a.b.py` has suffix `.py`, and a dotfile like
 `.gitignore` has suffix `""`). `has_code_suffix`/`suffix_of` in `core.rs`
-replicate this exactly, distinct from `is_code_file`'s simpler
+replicate this exactly (`has_code_suffix` now DELEGATES to `suffix_of`, the
+same predicate the cache manifest scan uses; its earlier hand-rolled version
+searched the last `.` across the whole rel path and wrongly accepted
+extension-only hidden names like `a/.py` that `Path.suffix` rejects),
+distinct from `is_code_file`'s simpler
 `rel.ends_with(ext)` check used by the (separate, `swebench_driver2.py`
 -mirroring) `list_current_files` pre-filter in `main.rs`, which the Python
 reference (`shim_reference.py::_list_current_files`) also implements via

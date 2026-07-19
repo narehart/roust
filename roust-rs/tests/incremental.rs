@@ -281,6 +281,54 @@ fn incremental_property() {
     std::fs::remove_dir_all(&repo).ok();
 }
 
+/// Reviewer-flagged gap: the fixtures above only ever exercise
+/// single-definer symbols, so a `def_index` ORDER divergence between the
+/// incremental path and a fresh rebuild was invisible to them. A symbol
+/// defined in TWO files must keep its definer list in corpus
+/// (`Corpus::files`) order when the EARLIER-ordered definer is edited:
+/// pre-fix, `update_files` re-appended the edited file at the END of each
+/// of its symbols' lists, permuting them versus a fresh `--reindex` build
+/// (observable -- anchor resolution consumes `def_index[s]` in list order).
+#[test]
+fn multi_definer_symbol_keeps_corpus_order_on_incremental_update() {
+    let base = std::env::temp_dir();
+    let repo = base.join(format!("repo_multidef_{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&repo);
+    std::fs::create_dir_all(repo.join("pkg")).unwrap();
+    std::fs::write(repo.join("pkg/__init__.py"), INIT).unwrap();
+    let config_v1 = "\"\"\"Config, defines the shared probe helper too.\"\"\"\n\n\ndef shared_probe():\n    return \"config\"\n\n\ndef load_config():\n    return {\"timeout\": 30}\n";
+    let config_v2 = "\"\"\"Config, defines the shared probe helper too -- edited.\"\"\"\n\n\ndef shared_probe():\n    return \"config edited\"\n\n\ndef load_config():\n    return {\"timeout\": 60}\n";
+    let utils = "\"\"\"Utils, defines its own shared probe.\"\"\"\n\n\ndef shared_probe():\n    return \"utils\"\n";
+    std::fs::write(repo.join("pkg/config.py"), config_v1).unwrap();
+    std::fs::write(repo.join("pkg/utils.py"), utils).unwrap();
+
+    // Corpus walk order sorts pkg/config.py before pkg/utils.py, so the
+    // fresh-built definer list for `shared_probe` is [config, utils].
+    let expect = vec!["pkg/config.py".to_string(), "pkg/utils.py".to_string()];
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    assert_eq!(kind, "full");
+    assert_eq!(corpus.def_index.get("shared_probe"), Some(&expect));
+
+    // Edit the EARLIER-ordered definer; the incremental patch must
+    // re-insert it at its corpus-order slot, not append it to the end.
+    write_bumped(&repo, "pkg/config.py", config_v2);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    assert_eq!(kind, "incremental", "editing one definer must patch, not rebuild");
+    assert!(cache_hit);
+    assert_eq!(
+        corpus.def_index.get("shared_probe"),
+        Some(&expect),
+        "definer list must stay in corpus order after the earlier-ordered definer is edited (pre-fix: [utils, config])"
+    );
+
+    // Byte-equality with what --reindex would produce.
+    let fresh = Corpus::build(&repo, None, false, false);
+    assert_eq!(corpus.def_index.get("shared_probe"), fresh.def_index.get("shared_probe"));
+    assert_matches_fresh_build(&repo, &corpus);
+
+    std::fs::remove_dir_all(&repo).ok();
+}
+
 #[test]
 fn add_file_triggers_full_rebuild() {
     let base = std::env::temp_dir();
