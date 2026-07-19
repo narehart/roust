@@ -123,6 +123,19 @@ struct Args {
     /// pre-E12/E14) engine, where 1.0 is the original linear length penalty.
     #[arg(long, default_value_t = 0.85)]
     len_exp: f64,
+
+    /// weight of the E8 repo-history association bonus in pack_regions'
+    /// region-selection metric (experiment E8, issue #4 campaign): the
+    /// repo's own past fixes are mined at index time as (commit-message
+    /// terms -> (file, enclosing-function) hunk locations) pairs, and at
+    /// query time each candidate region gets `history_boost * normalized
+    /// association of the query's terms with that region's own function`
+    /// -- additive, post-division, the w_name/E16 pattern. Default 0.0 =
+    /// OFF: byte-identical to the pre-E8 engine (and skips all association
+    /// work at query time). Requires history (on by default; --no-history
+    /// disables the table and this flag becomes a no-op).
+    #[arg(long, default_value_t = 0.0)]
+    history_boost: f64,
 }
 
 fn main() {
@@ -138,6 +151,10 @@ fn main() {
     }
     if !args.len_exp.is_finite() {
         eprintln!("roust: error: --len-exp must be finite");
+        std::process::exit(2);
+    }
+    if !args.history_boost.is_finite() {
+        eprintln!("roust: error: --history-boost must be finite");
         std::process::exit(2);
     }
 
@@ -190,6 +207,10 @@ fn main() {
     } else {
         anchor_def_symbols(&args.query, &corpus, &anchor_files)
     };
+    // E8: the association table rides HistoryData, so --no-history also
+    // disables it (there is nothing to look up); history_boost=0.0 (the
+    // default) short-circuits inside pack_regions regardless.
+    let history_assoc = if with_history { history.as_ref().map(|h| &h.assoc) } else { None };
     let (spans, bundle) = pack_regions(
         &corpus,
         &files,
@@ -201,6 +222,8 @@ fn main() {
         0.0,
         args.pad_lines,
         args.len_exp,
+        args.history_boost,
+        history_assoc,
     );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 

@@ -46,13 +46,17 @@
 //! repo is therefore always safe -- each maintains its own cache entry.
 
 use crate::core::{self, build_import_graph, update_import_graph_for_files, Corpus, EdgeMap};
-use crate::history::{mine_history, HistoryData};
+use crate::history::{mine_history, mine_history_assoc, HistoryData};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
-pub const CACHE_VERSION: i64 = 3;
+// v3 -> v4: HistoryData grew the E8 `assoc` field (repo-history
+// association table, mined by `history::mine_history_assoc`); bumping
+// invalidates pre-E8 payloads so a cached history is never missing the
+// table when `--history-boost` asks for it.
+pub const CACHE_VERSION: i64 = 4;
 pub const CACHE_DIRNAME: &str = ".roust";
 const INDEX_FILENAME: &str = "rust-index.bin";
 
@@ -295,7 +299,15 @@ fn try_incremental_update(corpus: &mut Corpus, edges: &mut EdgeMap, modified: &[
 fn build_fresh(repo_path: &Path, with_history: bool, with_docs: bool) -> (Corpus, EdgeMap, Option<HistoryData>) {
     let history = if with_history {
         let current_files = collect_current_code_files(repo_path);
-        Some(mine_history(repo_path, 5000, Some(&current_files)))
+        let mut h = mine_history(repo_path, 5000, Some(&current_files));
+        // E8: association mining is a SECOND, separately bounded git-log
+        // walk (`-p` over the last HISTORY_ASSOC_COMMITS commits) rather
+        // than a widening of mine_history's 5000-commit --name-only walk --
+        // `-p` output is far larger per commit, so the two walks are
+        // bounded independently. Leak safety: like mine_history, this sees
+        // only ancestors of the current HEAD (see mine_history_assoc's doc).
+        h.assoc = mine_history_assoc(repo_path, crate::history::HISTORY_ASSOC_COMMITS, Some(&current_files));
+        Some(h)
     } else {
         None
     };

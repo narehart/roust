@@ -5,6 +5,7 @@
 //! required a deliberate, documented translation choice rather than a
 //! literal one.
 
+use crate::history::AssocTable;
 use crate::pyutil::{normpath_join, path_join_simple, path_sort_key, py_lower, py_parent, py_parent_name, py_splitlines};
 use indexmap::IndexMap;
 use regex::Regex;
@@ -2288,6 +2289,13 @@ struct Candidate {
     // snapshot" hazard that the pass-2 `marginal` closure's own doc comment
     // (see below) documents as the root cause of issue #14's nondeterminism.
     tok_pow: f64,
+    // E8 normalized repo-history association score for this region's own
+    // defining symbol (see `file_assoc_scores` + pack_regions'
+    // `history_boost` doc) -- precomputed once at candidate construction,
+    // exactly like `name_score`/`tok_pow`, so neither comparator ever
+    // recomputes it (the issue-#14 determinism discipline). 0.0 whenever
+    // the E8 channel is off or the region has no associated symbol.
+    hist_score: f64,
 }
 
 // ---------------------------------------------------------------- region-level symbol-name anchoring
@@ -2383,6 +2391,47 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
     score
 }
 
+/// E8: per-file normalized repo-history association scores, `func_name ->
+/// score in (0, 1]`, precomputed ONCE per file before its candidates are
+/// built (the determinism rule: comparators only ever read precomputed
+/// per-candidate fields, see `Candidate::hist_score`). For each function
+/// name the association table knows for `rel`:
+///
+///   raw(func) = sum over query terms t of idf(t) * assoc[t][rel][func]
+///
+/// summed in canonical (lexicographically sorted) term order -- same
+/// canonical-summation discipline as pack_regions' `weight` closure, and
+/// for the same reason: float addition is not associative, so a stray
+/// iteration-order dependence here would flip exact comparator ties across
+/// processes. Normalized by the per-file max raw score (the established
+/// per-file-normalization pattern), so the best-associated function in a
+/// file scores exactly 1.0 regardless of how commit-heavy the repo's
+/// history is -- `history_boost` then has the same magnitude meaning as
+/// `w_name` (both add a bounded, size-undiluted bonus post-division).
+fn file_assoc_scores(
+    assoc: &AssocTable,
+    rel: &str,
+    sorted_terms: &[&String],
+    idf: &HashMap<String, f64>,
+) -> HashMap<String, f64> {
+    let mut raw: IndexMap<String, f64> = IndexMap::new();
+    for t in sorted_terms {
+        if let Some(by_file) = assoc.get(t.as_str()) {
+            if let Some(by_func) = by_file.get(rel) {
+                let w = idf.get(t.as_str()).copied().unwrap_or(0.0);
+                for (func, cnt) in by_func {
+                    *raw.entry(func.clone()).or_insert(0.0) += w * (*cnt as f64);
+                }
+            }
+        }
+    }
+    let max = raw.values().fold(0.0_f64, |m, &v| if v > m { v } else { m });
+    if max <= 0.0 || !max.is_finite() {
+        return HashMap::new();
+    }
+    raw.into_iter().map(|(k, v)| (k, v / max)).collect()
+}
+
 /// Greedy weighted-coverage packing of regions under budget. See
 /// lanes2.py's `pack_regions` docstring.
 ///
@@ -2472,6 +2521,27 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
 /// padded span's own `tok`/`text` from the file directly rather than
 /// touching `tok_pow` (a selection-time-only field), so the two experiments
 /// compose without either one reaching into the other's fields.
+/// `history_boost` + `history_assoc` (E8, issue #4 campaign -- 0.0 is OFF
+/// and reproduces the pre-E8 engine BYTE-IDENTICALLY; the production caller
+/// (main.rs) defaults to 0.0): the campaign's first NON-LEXICAL signal. The
+/// repo's own past fixes are (description -> location) training pairs,
+/// mined at index time into `history_assoc` (see
+/// `history::mine_history_assoc`: term -> file -> enclosing-function-name
+/// -> count, from commit messages + git hunk-header contexts). At query
+/// time each candidate region resolves its own defining symbol (the same
+/// `region_symbol` machinery `w_name` uses) and receives `history_boost *
+/// hist_score`, where `hist_score` is `file_assoc_scores`' per-file-max-
+/// normalized, idf-weighted association of the query's terms with that
+/// (file, function) -- i.e. the issue's terms vote for the functions their
+/// ancestor-fixes touched. ADDITIVE and POST-DIVISION on the selection
+/// metric, the exact `w_name`/E16 pattern and for the same reason: an
+/// association is identity evidence about WHICH function past fixes for
+/// this vocabulary landed in, independent of how long that function
+/// happens to be, so folding it into `gain` pre-division would let the
+/// `/tok^len_exp` denominator dilute it away for precisely the large
+/// real-fix regions it exists to rescue. Scores are precomputed per file
+/// (`file_assoc_scores`) and stored per candidate (`Candidate::hist_score`)
+/// before any comparator runs -- the issue-#14 determinism rule.
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],
@@ -2483,6 +2553,8 @@ pub fn pack_regions(
     w_name: f64,
     pad_lines: usize,
     len_exp: f64,
+    history_boost: f64,
+    history_assoc: Option<&AssocTable>,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
@@ -2507,6 +2579,16 @@ pub fn pack_regions(
         terms.iter().map(|t| idf.get(*t).copied().unwrap_or(0.0)).sum()
     };
 
+    // E8 guard: `history_boost == 0.0` (the production default) must be
+    // byte-identical to the pre-E8 engine AND pay zero cost -- no def-line
+    // scan, no association lookups (mirrors the `w_name != 0.0` guards).
+    let use_hist = history_boost != 0.0 && history_assoc.is_some();
+    let sorted_terms: Vec<&String> = {
+        let mut v: Vec<&String> = tset.iter().collect();
+        v.sort();
+        v
+    };
+
     let mut candidates: Vec<Candidate> = Vec::new();
 
     for rel in files {
@@ -2516,7 +2598,15 @@ pub fn pack_regions(
         let spans = if rel.ends_with(".py") { python_blocks(text) } else { window_blocks(text, &hits, 30) };
         let hitset: HashSet<usize> = hits.into_iter().collect();
         let def_lines: Vec<(usize, String)> =
-            if w_name != 0.0 { file_def_lines(text, def_re_for(rel)) } else { Vec::new() };
+            if w_name != 0.0 || use_hist { file_def_lines(text, def_re_for(rel)) } else { Vec::new() };
+        // E8: per-file precomputation (determinism rule -- see
+        // `file_assoc_scores`' doc; every candidate below only ever READS
+        // this map, never recomputes an association).
+        let hist_by_func: HashMap<String, f64> = if use_hist {
+            file_assoc_scores(history_assoc.unwrap(), rel, &sorted_terms, &idf)
+        } else {
+            HashMap::new()
+        };
         for (a, b) in spans {
             if a == 0 || b < a || a > lines.len() {
                 // guard against degenerate spans; Python's 1-indexed slicing
@@ -2545,10 +2635,13 @@ pub fn pack_regions(
                 continue;
             }
             let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
-            let ns = if w_name != 0.0 { name_score(region_symbol(&def_lines, a, b), &tset) } else { 0.0 };
+            let sym = if w_name != 0.0 || use_hist { region_symbol(&def_lines, a, b) } else { None };
+            let ns = if w_name != 0.0 { name_score(sym, &tset) } else { 0.0 };
+            let hs = if use_hist { sym.and_then(|s| hist_by_func.get(s)).copied().unwrap_or(0.0) } else { 0.0 };
             let tok_pow = (tok.max(1) as f64).powf(len_exp);
             candidates.push(Candidate {
                 file: rel.clone(), span: (a, b), tok, terms: seg_terms, gain, text: seg, name_score: ns, tok_pow,
+                hist_score: hs,
             });
         }
     }
@@ -2633,10 +2726,13 @@ pub fn pack_regions(
             fi
         } else {
             let mut best_idx = idxs[0];
-            let mut best_ratio =
-                candidates[best_idx].gain / candidates[best_idx].tok_pow + w_name * candidates[best_idx].name_score;
+            let mut best_ratio = candidates[best_idx].gain / candidates[best_idx].tok_pow
+                + w_name * candidates[best_idx].name_score
+                + history_boost * candidates[best_idx].hist_score;
             for &i in &idxs[1..] {
-                let ratio = candidates[i].gain / candidates[i].tok_pow + w_name * candidates[i].name_score;
+                let ratio = candidates[i].gain / candidates[i].tok_pow
+                    + w_name * candidates[i].name_score
+                    + history_boost * candidates[i].hist_score;
                 if ratio > best_ratio {
                     best_ratio = ratio;
                     best_idx = i;
@@ -2700,6 +2796,7 @@ pub fn pack_regions(
         let cand = Candidate {
             file: rel.clone(), span: best_span, tok: best_tok, terms: best_terms, gain: candidates[best_idx].gain,
             text: best_text, name_score: best_name_score, tok_pow: best_tok_pow,
+            hist_score: candidates[best_idx].hist_score,
         };
         covered.extend(cand.terms.iter().cloned());
         spent += cand.tok as i64;
@@ -2737,11 +2834,11 @@ pub fn pack_regions(
             let new_weight = weight(&diff);
             let base = (new_weight + 0.25 * weight(&c.terms) + 0.1) * (0.3 + scores.get(&c.file).copied().unwrap_or(0.0))
                 / c.tok_pow;
-            // same undiluted-by-size name bonus as pass 1's selection metric
-            // (see pack_regions' doc comment) -- otherwise a name-anchored
-            // region too large to win pass 1 could never win pass 2's
-            // marginal race either.
-            base + w_name * c.name_score
+            // same undiluted-by-size name/history bonuses as pass 1's
+            // selection metric (see pack_regions' doc comment) -- otherwise
+            // a name- or history-anchored region too large to win pass 1
+            // could never win pass 2's marginal race either.
+            base + w_name * c.name_score + history_boost * c.hist_score
         };
         // total_cmp, not partial_cmp().unwrap(): `marginal` folds in
         // `scores.get(&c.file)`, an externally-supplied score that isn't
@@ -2794,6 +2891,7 @@ pub fn pack_regions(
             text: candidates[i].text.clone(),
             name_score: candidates[i].name_score,
             tok_pow: candidates[i].tok_pow,
+            hist_score: candidates[i].hist_score,
         });
         chosen_map.entry(file).or_default().push(seg_idx);
     }
@@ -3201,10 +3299,10 @@ mod tests {
             spans["core.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
         assert_eq!(sym_of(&spans_off), Some("subtokens".to_string()), "pre-fix (w_name=0.0) reproduces the bug: body term-density picks the wrong region");
 
-        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0, 1.0);
+        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0, 1.0, 0.0, None);
         assert_eq!(sym_of(&spans_on), Some("pack_regions".to_string()), "w_name=1.0 must select pack_regions via name-score anchoring");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -3259,19 +3357,146 @@ mod tests {
             spans["mod.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
         assert_eq!(
             sym_of(&spans_linear),
             Some("stub_widget".to_string()),
             "len_exp=1.0 (pre-E14 linear gain/tok) must reproduce the crushed-long-fix failure mode: stub wins"
         );
 
-        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 0.7);
+        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 0.7, 0.0, None);
         assert_eq!(
             sym_of(&spans_softened),
             Some("real_gadget_sprocket_cog_lever".to_string()),
             "len_exp=0.7 must flip the pick to the longer, more densely on-topic real function"
         );
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E8 directional fixture (mirrors the w_name/E14 dogfood shape): a
+    /// short stub (`stub_widget`) dense in the query term competes against
+    /// a long function (`deep_target_func`) in the SAME file that mentions
+    /// the term only once -- so on pure density (`gain/tok`) the stub wins.
+    /// An association table recording that past fixes for this vocabulary
+    /// landed in `deep_target_func` must flip the pick once
+    /// `history_boost` is on, and must change NOTHING at boost 0.0 (the
+    /// byte-identical default). `budget_tokens=1` isolates pass 1 exactly
+    /// as the neighboring w_name/E14 tests do.
+    #[test]
+    fn pack_regions_history_boost_promotes_associated_function() {
+        let tmp = std::env::temp_dir().join(format!("roust_e8_boost_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let stub = "def stub_widget(x):\n    # widget widget\n    return x\n";
+        let mut deep = String::new();
+        deep.push_str("def deep_target_func(a):\n");
+        deep.push_str("    val = a  # widget\n");
+        for i in 0..28 {
+            deep.push_str(&format!("    tmp_{i} = {i}\n"));
+        }
+        deep.push_str("    return val\n");
+        std::fs::write(tmp.join("mod.py"), format!("{stub}\n\n{deep}")).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("widget", &[]);
+        assert_eq!(terms.len(), 1, "fixture expects a single query term");
+        let scores: IndexMap<String, f64> = [("mod.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["mod.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        // association table: the query's (stemmed) term -> mod.py ->
+        // deep_target_func, as if mined from past fixes' hunk headers.
+        let mut assoc: crate::history::AssocTable = IndexMap::new();
+        assoc
+            .entry(terms[0].clone())
+            .or_default()
+            .entry("mod.py".to_string())
+            .or_default()
+            .insert("deep_target_func".to_string(), 3);
+
+        let def_lines = file_def_lines(&corpus.text["mod.py"], def_re_for("mod.py"));
+        let sym_of = |spans: &IndexMap<String, Vec<(usize, usize)>>| -> Option<String> {
+            spans["mod.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
+        };
+
+        // boost off: density picks the stub (pins the pre-E8 behavior).
+        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, 0.0, Some(&assoc));
+        assert_eq!(sym_of(&spans_off), Some("stub_widget".to_string()), "boost=0.0 must reproduce pure-density selection");
+
+        // boost off must also be BYTE-IDENTICAL to not passing a table at all.
+        let (spans_none, bundle_none) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
+        let (spans_zero, bundle_zero) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, 0.0, Some(&assoc));
+        assert_eq!(spans_none, spans_zero, "history_boost=0.0 with a table must equal the no-table default (spans)");
+        assert_eq!(bundle_none, bundle_zero, "history_boost=0.0 with a table must equal the no-table default (bundle)");
+
+        // boost on: the associated function wins.
+        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, 5.0, Some(&assoc));
+        assert_eq!(
+            sym_of(&spans_on),
+            Some("deep_target_func".to_string()),
+            "history_boost must promote the function the repo's past fixes associate with the query's terms"
+        );
+
+        // an association for a DIFFERENT function must not promote this one.
+        let mut assoc_other: crate::history::AssocTable = IndexMap::new();
+        assoc_other
+            .entry(terms[0].clone())
+            .or_default()
+            .entry("mod.py".to_string())
+            .or_default()
+            .insert("unrelated_func".to_string(), 3);
+        let (spans_other, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, 5.0, Some(&assoc_other));
+        assert_eq!(
+            sym_of(&spans_other),
+            Some("stub_widget".to_string()),
+            "an association naming a function absent from every candidate must leave selection unchanged"
+        );
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E8 determinism: 10 repeated pack_regions runs with the boost ON (and
+    /// a multi-term, multi-file assoc table exercising `file_assoc_scores`'
+    /// canonical-summation path) must produce identical spans and bundles.
+    #[test]
+    fn pack_regions_history_boost_deterministic_10x() {
+        let tmp = std::env::temp_dir().join(format!("roust_e8_det_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let filler: String = (0..15).map(|i| format!("    y{i} = {i}\n")).collect();
+        std::fs::write(
+            tmp.join("a.py"),
+            format!("def alpha_widget():\n{filler}    return 1\n\n\ndef beta_gadget():\n{filler}    return 2\n"),
+        )
+        .unwrap();
+        std::fs::write(
+            tmp.join("b.py"),
+            format!("def gamma_widget():\n{filler}    return 3\n\n\ndef delta_gadget():\n{filler}    return 4\n"),
+        )
+        .unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("widget gadget", &[]);
+        let scores: IndexMap<String, f64> = [("a.py".to_string(), 1.0), ("b.py".to_string(), 0.5)].into_iter().collect();
+        let files = vec!["a.py".to_string(), "b.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let mut assoc: crate::history::AssocTable = IndexMap::new();
+        for t in &terms {
+            let by_file = assoc.entry(t.clone()).or_default();
+            by_file.entry("a.py".to_string()).or_default().insert("alpha_widget".to_string(), 2);
+            by_file.entry("a.py".to_string()).or_default().insert("beta_gadget".to_string(), 1);
+            by_file.entry("b.py".to_string()).or_default().insert("delta_gadget".to_string(), 3);
+        }
+
+        let (first_spans, first_bundle) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, 1.0, Some(&assoc));
+        assert!(!first_spans.is_empty());
+        for _ in 0..9 {
+            let (spans, bundle) =
+                pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, 1.0, Some(&assoc));
+            assert_eq!(first_spans, spans, "history_boost path must be deterministic (spans)");
+            assert_eq!(first_bundle, bundle, "history_boost path must be deterministic (bundle)");
+        }
 
         std::fs::remove_dir_all(&tmp).ok();
     }
@@ -3314,8 +3539,8 @@ mod tests {
         // Large budget so pass 2's greedy loop actually runs over multiple
         // remaining candidates (pass 1 alone would only ever touch one span
         // per file).
-        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
-        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
+        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
         assert_eq!(spans1, spans2, "pack_regions must be deterministic given identical (NaN/inf-bearing) inputs");
         assert!(!spans1.is_empty(), "pack_regions should still select regions despite NaN/inf scores");
 
@@ -3364,10 +3589,10 @@ mod tests {
         // remaining candidates per iteration -- the exact scenario that
         // triggers repeated `marginal(i)` calls for the same `i` within a
         // single sort.
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls given many equal/near-equal marginal scores (and must never panic)"
@@ -3404,7 +3629,7 @@ mod tests {
         let files = vec!["needles.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
         let got = &spans["needles.py"];
         assert_eq!(got, &vec![(1, 5), (6, 8)], "pad_lines=0 must keep the two naturally-adjacent spans as separate, unmerged entries (pre-E12 behavior)");
 
@@ -3429,7 +3654,7 @@ mod tests {
         let files = vec!["needles.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1, 1.0);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1, 1.0, 0.0, None);
         let got = &spans["needles.py"];
         assert_eq!(got, &vec![(1, 8)], "pad_lines=1 must merge the two adjacent spans into one (1,8) covering the whole file");
         // merged text must be the FULL file content, not a truncated slice.
@@ -3454,7 +3679,7 @@ mod tests {
         let files = vec!["tiny.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 500, 1.0);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 500, 1.0, 0.0, None);
         assert_eq!(spans["tiny.py"], vec![(1, 3)], "pad_lines far exceeding the file's own length must clamp to (1, n_lines)");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -3500,7 +3725,7 @@ mod tests {
         // ignoring budget) -- it only gates pass 2 and (new) the post-
         // padding eviction step, so both hi.py and lo.py's pass-1 spans are
         // seated before padding/eviction ever runs.
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0, 0.0, None);
 
         assert!(!spans.contains_key("lo.py"), "lower-gain lo.py span must be evicted WHOLLY (key absent), not truncated");
         assert!(spans.contains_key("hi.py"), "higher-gain hi.py span must survive eviction");
@@ -3554,7 +3779,7 @@ mod tests {
 
         // pad=0 baseline: both files' own needle spans are seated
         // unconditionally by pass 1 and comfortably fit budget on their own.
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
         assert!(
             spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
             "pad_lines=0 baseline must select both files"
@@ -3562,7 +3787,7 @@ mod tests {
         let baseline: HashSet<&String> = spans0.keys().collect();
 
         for pad in [2usize, 6, 15] {
-            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad, 1.0);
+            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad, 1.0, 0.0, None);
             let got: HashSet<&String> = spans.keys().collect();
             assert_eq!(
                 got, baseline,
@@ -3621,10 +3846,10 @@ mod tests {
         let t_needle = count_tokens(&needle_text) as i64;
         let budget = 2 * t_needle + 3;
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, 0.0, None);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, 0.0, None);
             assert_eq!(
                 spans, first,
                 "pack_regions with the E12b guard active must produce byte-identical spans across repeated calls"
@@ -3654,10 +3879,10 @@ mod tests {
         let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, 0.0, None);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, 0.0, None);
             assert_eq!(
                 spans, first,
                 "pack_regions with pad_lines>0 must produce byte-identical spans across repeated calls"
@@ -3688,7 +3913,7 @@ mod tests {
         let files = vec!["a.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 0, 1.0, 0.0, None);
 
         let expected_spans: IndexMap<String, Vec<(usize, usize)>> =
             [("a.py".to_string(), vec![(1usize, 2usize)])].into_iter().collect();
@@ -3722,10 +3947,10 @@ mod tests {
         let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, 0.0, None);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, 0.0, None);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls at len_exp=0.7"
@@ -3783,7 +4008,7 @@ mod tests {
         assert!(files.contains(&"pkg/validators.py".to_string()));
 
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0, 1.0);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0, 1.0, 0.0, None);
         assert!(!bundle.is_empty());
         assert!(spans.contains_key("pkg/router.py"));
 
