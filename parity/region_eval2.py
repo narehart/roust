@@ -149,8 +149,22 @@ def check_engine_provenance(allow_stale: bool) -> str:
 
 
 def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
-              len_exp: float = 1.0) -> tuple[dict | None, str | None]:
+              len_exp: float = 1.0, family_enum: bool = False, sibling_sim: float = 0.0,
+              max_siblings: int = 0) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
+    if family_enum:
+        # E19 (campaign #4 wave 5): def-name-family sibling enumeration.
+        # Omitted (the default) -> the binary's own default (off).
+        argv += ["--family-enum"]
+    if sibling_sim != 0.0:
+        # E18: identifier-bag similarity siblings; 0.0 (default) is this
+        # script's "omit the flag" sentinel, matching the binary's own
+        # disabled default.
+        argv += ["--sibling-sim", str(sibling_sim)]
+    if max_siblings != 0:
+        # 0 (default) omits the flag -> the binary's own default (3); only
+        # meaningful together with --sibling-sim.
+        argv += ["--max-siblings", str(max_siblings)]
     if pad_lines != 0:
         # only appended for non-default (0) values here -- 0 is this
         # script's own "flags off" sentinel, kept distinct from roust-rs/
@@ -214,7 +228,9 @@ def load_lite_rows(limit: int) -> list[dict]:
     return rows
 
 
-def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: float = 1.0) -> dict:
+def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: float = 1.0,
+                       family_enum: bool = False, sibling_sim: float = 0.0,
+                       max_siblings: int = 0, repos_dir: Path | None = None) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -233,14 +249,15 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
         rec["error"] = "no old-file hunk lines in gold patch (pure file creation(s) only)"
         return rec
 
-    repo_path = LITE_REPOS / row["repo"].replace("/", "__")
+    repo_path = (repos_dir if repos_dir is not None else LITE_REPOS) / row["repo"].replace("/", "__")
     try:
         checkout(repo_path, row["base_commit"])
     except (RuntimeError, OSError) as exc:
         rec["error"] = f"checkout failed: {exc}"
         return rec
 
-    obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp)
+    obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp,
+                         family_enum, sibling_sim, max_siblings)
     if err:
         rec["error"] = err
         return rec
@@ -307,6 +324,22 @@ def main() -> None:
                           "binary uses ITS OWN default (0.85 post-adoption); any other value is "
                           "forwarded as-is (there is no way to force an explicit `--len-exp 1.0` "
                           "through this script's CLI -- invoke the roust binary directly for that)")
+    ap.add_argument("--family-enum", action="store_true",
+                     help="passthrough to roust's --family-enum (E19 def-name-family sibling "
+                          "enumeration); omitted by default (binary default: off)")
+    ap.add_argument("--sibling-sim", type=float, default=0.0,
+                     help="passthrough to roust's --sibling-sim (E18 identifier-bag similarity "
+                          "siblings); 0.0 (default, and the only value this script treats as "
+                          "'omit the flag') matches the binary's own disabled default")
+    ap.add_argument("--max-siblings", type=int, default=0,
+                     help="passthrough to roust's --max-siblings (E18 cap); 0 (default) omits "
+                          "the flag, i.e. the binary's own default (3)")
+    ap.add_argument("--repos-dir", type=Path, default=None,
+                     help="override the SWE-bench clones directory (default lab/swebench_repos). "
+                          "This script MUTATES the clones (checkout -f + clean -fdq per "
+                          "instance): per issue #41, concurrent use of the shared clones "
+                          "corrupts results -- point this at a PRIVATE cp -R copy when anything "
+                          "else might touch them.")
     ap.add_argument("--allow-stale-engine", action="store_true",
                      help="override the blocking engine-provenance guard (logs a loud warning "
                           "instead of refusing) when the roust binary's embedded sha/dirty state "
@@ -332,7 +365,9 @@ def main() -> None:
     t0 = time.time()
     with args.report.open("w") as fh:
         for i, row in enumerate(rows, 1):
-            rec = eval_lite_instance(row, args.timeout, args.pad_lines, args.len_exp)
+            rec = eval_lite_instance(row, args.timeout, args.pad_lines, args.len_exp,
+                                     args.family_enum, args.sibling_sim, args.max_siblings,
+                                     args.repos_dir)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

@@ -2408,6 +2408,113 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
     score
 }
 
+// ---------------------------------------------------------------- E18/E19 sibling expansion helpers
+//
+// Campaign #4 wave-5 (E17 case mining + the wave5 sweep-localization survey):
+// post-adoption D-class mass is dominated by multi-function "sweep" patches
+// (11/30 top-D cases have no majority owner function), which no single-pick
+// ranking mechanism can capture. Given pass-1's pick in a file (the seed),
+// these helpers let `pack_regions` deterministically add SIBLING spans as
+// extra depth for that file:
+//
+//   E19 (`family_enum`): def-name-family members -- same method name across
+//   sibling classes in the file, or a shared def-name prefix/suffix segment
+//   family with >= FAMILY_MIN_AFFIX members (the "18 sibling constructors"
+//   shape). The seed must itself BE a family member; membership is derived
+//   from ITS name only.
+//
+//   E18 (`sibling_sim` > 0): spans whose identifier-token-bag overlap with
+//   the seed is >= the threshold (SourcererCC-style: multiset intersection
+//   over max bag size; Type-2 rename-only clone recall is 97-98% at 0.7),
+//   top `max_siblings` by overlap. Keywords are excluded from the bags;
+//   operators never match IDENT_RE in the first place.
+//
+// Explicitly NOT a re-rank: E16's rejected density boost re-weighted the
+// query-density metric for class members and regressed monotonically.
+// Similarity-to-seed / name-family membership are signals the density metric
+// does not contain, and the added spans are DEPTH (extra pass-2-style,
+// budget-checked, evictable seats) -- the existing ranking is never touched.
+
+/// Max family members E19 will queue per seed (guards against huge visitor
+/// classes / mega-families; nearest-to-seed members win).
+const FAMILY_CAP: usize = 8;
+/// Minimum family size for the prefix/suffix segment families (exact-name
+/// method families need only 2: the seed + one sibling).
+const FAMILY_MIN_AFFIX: usize = 4;
+
+static PY_FAMILY_DEF_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^([ \t]*)(async[ \t]+def|def|class)[ \t]+(\w+)").unwrap());
+
+/// One `def`/`class` header line of a Python file, for E19 family grouping.
+struct DefEntry {
+    /// 1-indexed header line number.
+    line: usize,
+    is_class: bool,
+    name: String,
+}
+
+/// Every def/class header in `text`, ascending by line (Python only).
+fn py_family_def_entries(text: &str) -> Vec<DefEntry> {
+    let mut out = Vec::new();
+    for (i, ln) in py_splitlines(text).iter().enumerate() {
+        if let Some(caps) = PY_FAMILY_DEF_RE.captures(ln) {
+            out.push(DefEntry {
+                line: i + 1,
+                is_class: caps.get(2).unwrap().as_str() == "class",
+                name: caps.get(3).unwrap().as_str().to_string(),
+            });
+        }
+    }
+    out
+}
+
+/// Raw lowercase name segments (underscore + camelCase split), WITHOUT the
+/// stemming/stopword/length filtering `subtokens` applies -- family keys are
+/// literal affix identity (`_print_X` -> ["print", "x"],
+/// `ArcsinDistribution` -> ["arcsin", "distribution"]), so a segment must
+/// survive even when it is short or a stopword.
+fn name_segments(name: &str) -> Vec<String> {
+    let mut parts: Vec<String> = Vec::new();
+    for chunk in name.split('_') {
+        if chunk.is_empty() {
+            continue;
+        }
+        for m in camel_matches(chunk) {
+            parts.push(py_lower(&m));
+        }
+    }
+    parts
+}
+
+/// Identifier-token bag (multiset) of a span's text for E18 similarity:
+/// `tokenize` output (identifiers only -- stems + subtokens, stopwords and
+/// <=2-char tokens already dropped) minus the stemmed keyword-exclusion set.
+fn sibling_token_bag(text: &str, kw_excl: &HashSet<String>) -> HashMap<String, usize> {
+    let mut bag: HashMap<String, usize> = HashMap::new();
+    for t in tokenize(text) {
+        if !kw_excl.contains(&t) {
+            *bag.entry(t).or_insert(0) += 1;
+        }
+    }
+    bag
+}
+
+/// SourcererCC-style bag overlap: multiset intersection size over the larger
+/// bag's size. Pure integer arithmetic until the single final division, so
+/// the value is exactly reproducible regardless of hash-map iteration order.
+fn sibling_bag_overlap(a: &HashMap<String, usize>, b: &HashMap<String, usize>) -> f64 {
+    let na: usize = a.values().sum();
+    let nb: usize = b.values().sum();
+    if na == 0 || nb == 0 {
+        return 0.0;
+    }
+    // usize addition is associative/commutative: iteration order of `a`
+    // cannot change this sum (no float accumulation here -- see the
+    // canonical-summation discipline in pack_regions' weight()).
+    let inter: usize = a.iter().map(|(k, &ca)| ca.min(b.get(k).copied().unwrap_or(0))).sum();
+    inter as f64 / na.max(nb) as f64
+}
+
 /// Greedy weighted-coverage packing of regions under budget. See
 /// lanes2.py's `pack_regions` docstring.
 ///
@@ -2501,6 +2608,18 @@ fn name_score(sym: Option<&str>, tset: &HashSet<String>) -> f64 {
 /// padded span's own `tok`/`text` from the file directly rather than
 /// touching `tok_pow` (a selection-time-only field), so the two experiments
 /// compose without either one reaching into the other's fields.
+///
+/// `family_enum` / `sibling_sim` / `max_siblings` (E18/E19 sibling
+/// expansion, campaign #4 wave 5 -- see the helper block above
+/// `pack_regions` for the mechanism and rationale): defaults
+/// (`false`/`0.0`/any) are OFF and BYTE-IDENTICAL to the pre-E18/E19
+/// engine -- the sibling block is skipped entirely and no other code path
+/// reads these parameters. When enabled, sibling spans are seated BETWEEN
+/// pass 1 and pass 2 (depth for the files pass 1 anchored, ahead of the
+/// generic marginal race), budget-checked like pass-2 seats (a sibling
+/// that does not fit is skipped, never force-seated), and marked as
+/// pass-2 spans for the E12b guard (evictable; a file's pass-1 span --
+/// its last-span guarantee -- is never displaced by a sibling).
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],
@@ -2512,6 +2631,9 @@ pub fn pack_regions(
     w_name: f64,
     pad_lines: usize,
     len_exp: f64,
+    family_enum: bool,
+    sibling_sim: f64,
+    max_siblings: usize,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
@@ -2537,6 +2659,15 @@ pub fn pack_regions(
     };
 
     let mut candidates: Vec<Candidate> = Vec::new();
+    // E18/E19 only (empty and never read otherwise): spans the zero-query-
+    // term filter below drops from `candidates`, kept as SIBLING-ONLY
+    // material -- a sweep-family member (e.g. one of 18 near-identical
+    // constructors) need not contain a single query term, so it must still
+    // be reachable by the sibling block even though the ranked passes never
+    // see it. Collected only when a sibling flag is on: the default path
+    // does not even pay the `count_tokens` cost, let alone change behavior.
+    let sibling_flags_on = family_enum || sibling_sim > 0.0;
+    let mut extra_cands: Vec<Candidate> = Vec::new();
 
     for rel in files {
         let text = &corpus.text[rel];
@@ -2567,6 +2698,21 @@ pub fn pack_regions(
             let seg_terms: HashSet<String> = tset.intersection(&seg_tokens).cloned().collect();
             let n_hits = (a..=b).filter(|l| hitset.contains(l)).count();
             if seg_terms.is_empty() && n_hits == 0 && a > 1 {
+                if sibling_flags_on {
+                    let tok = count_tokens(&seg);
+                    if tok > 0 {
+                        // gain is exactly what the formula below yields for
+                        // empty terms + zero hits: 0.0 -- so if seated by
+                        // the sibling block, such a span is the first to be
+                        // de-escalated/evicted by the E12b guard.
+                        let ns = if w_name != 0.0 { name_score(region_symbol(&def_lines, a, b), &tset) } else { 0.0 };
+                        let tok_pow = (tok.max(1) as f64).powf(len_exp);
+                        extra_cands.push(Candidate {
+                            file: rel.clone(), span: (a, b), tok, terms: seg_terms, gain: 0.0, text: seg,
+                            name_score: ns, tok_pow,
+                        });
+                    }
+                }
                 continue;
             }
             let tok = count_tokens(&seg);
@@ -2615,6 +2761,12 @@ pub fn pack_regions(
     let mut chosen_map: IndexMap<String, Vec<usize>> = IndexMap::new(); // file -> indices into all_segments
     let mut spent: i64 = 0;
     let mut covered: HashSet<String> = HashSet::new();
+    // (file, ORIGINAL candidate index of its pass-1 pick), in files order --
+    // the E18/E19 sibling block below uses the untrimmed original candidate
+    // as each file's seed. Recorded unconditionally (a plain index copy, no
+    // scoring): with the sibling flags off nothing ever reads it, so the
+    // default path is untouched.
+    let mut pass1_orig_idx: Vec<(String, usize)> = Vec::new();
 
     let n_files = files.len().max(1) as i64;
     let floor_tok: i64 = 120;
@@ -2735,6 +2887,7 @@ pub fn pack_regions(
         let seg_idx = all_segments.len();
         all_segments.push(cand);
         chosen_map.entry(rel.clone()).or_default().push(seg_idx);
+        pass1_orig_idx.push((rel.clone(), best_idx));
     }
 
     // Boundary between pass-1 and pass-2 segments: every all_segments index
@@ -2744,11 +2897,198 @@ pub fn pack_regions(
     // eviction guard below keys its pass-1 exemption off this boundary.
     let pass1_seg_count = all_segments.len();
 
+    // ---------------------------------------------------------------- E18/E19: sibling expansion
+    //
+    // Flag-gated (defaults skip the whole block: byte-identical output).
+    // Seated here -- after `pass1_seg_count` is fixed, before pass 2 -- so
+    // sibling spans (a) count as pass-2 spans for the E12b guard
+    // (evictable, never displacing a file's pass-1 last-span guarantee),
+    // (b) get depth priority over pass 2's generic marginal race, and
+    // (c) are excluded from pass 2's `remaining` pool via the chosen-keys
+    // set built below, exactly like pass-1 picks. See the helper block
+    // above `pack_regions` for the mechanism/rationale.
+    if family_enum || sibling_sim > 0.0 {
+        // Stemmed exclusion set for E18's identifier bags: Python keywords +
+        // ubiquitous receiver names, run through the SAME `tokenize` as the
+        // bags themselves so the exclusion matches post-stemming forms.
+        let kw_excl: HashSet<String> = if sibling_sim > 0.0 {
+            tokenize(
+                "def class return yield lambda import from raise except finally global \
+                 nonlocal assert while break continue pass else elif for with try del \
+                 not and await async self cls none true false",
+            )
+            .into_iter()
+            .collect()
+        } else {
+            HashSet::new()
+        };
+
+        for (rel, si) in &pass1_orig_idx {
+            let seed = &candidates[*si];
+            let seed_span = seed.span;
+            // Spans already seated for this file (seed + accepted siblings):
+            // a queued sibling overlapping any of them is skipped -- nested
+            // python_blocks spans (class + its own methods) would otherwise
+            // double-seat the same lines.
+            let mut occupied: Vec<(usize, usize)> = vec![seed_span];
+
+            // Same-file sibling pool: the ranked candidates (minus the seed)
+            // plus this file's sibling-only `extra_cands` (zero-query-term
+            // spans the ranked passes never see). Order is deterministic:
+            // construction order of each vector, ranked candidates first.
+            let pool: Vec<&Candidate> = candidates
+                .iter()
+                .enumerate()
+                .filter(|(i, c)| i != si && &c.file == rel)
+                .map(|(_, c)| c)
+                .chain(extra_cands.iter().filter(|c| &c.file == rel))
+                .collect();
+            if pool.is_empty() {
+                continue;
+            }
+
+            // Ordered additions: E19 family members first (nameable-family
+            // membership is the higher-precision signal), then E18's
+            // similarity ranking over whatever E19 didn't already queue.
+            let mut queue: Vec<usize> = Vec::new();
+
+            if family_enum && rel.ends_with(".py") {
+                let entries = py_family_def_entries(&corpus.text[rel]);
+                // A span's primary def entry: the FIRST header line falling
+                // inside it (same "earliest header wins" rule as
+                // `region_symbol`) -- a class span maps to the class header,
+                // a method span to its own def.
+                let primary = |a: usize, b: usize| entries.iter().position(|e| e.line >= a && e.line <= b);
+                if let Some(sei) = primary(seed_span.0, seed_span.1) {
+                    let se = &entries[sei];
+                    let segs = name_segments(&se.name);
+                    // Family definitions, all requiring the seed to BE a member:
+                    //   exact: same def name elsewhere in the file (method
+                    //          sweeps across sibling classes), >= 2 total;
+                    //   prefix/suffix: shared first/last name segment
+                    //          (>= 3 chars), >= FAMILY_MIN_AFFIX members.
+                    let exact_ok = !se.is_class
+                        && entries.iter().filter(|e| !e.is_class && e.name == se.name).count() >= 2;
+                    let prefix_key: Option<String> =
+                        segs.first().filter(|s| s.chars().count() >= 3).cloned();
+                    let suffix_key: Option<String> = if segs.len() >= 2 {
+                        segs.last().filter(|s| s.chars().count() >= 3).cloned()
+                    } else {
+                        None
+                    };
+                    let affix_count = |is_prefix: bool, key: &str| {
+                        entries
+                            .iter()
+                            .filter(|e| {
+                                let s = name_segments(&e.name);
+                                if is_prefix {
+                                    s.first().map(|x| x == key).unwrap_or(false)
+                                } else {
+                                    s.len() >= 2 && s.last().map(|x| x == key).unwrap_or(false)
+                                }
+                            })
+                            .count()
+                    };
+                    let prefix_ok = prefix_key
+                        .as_deref()
+                        .map(|k| affix_count(true, k) >= FAMILY_MIN_AFFIX)
+                        .unwrap_or(false);
+                    let suffix_ok = suffix_key
+                        .as_deref()
+                        .map(|k| affix_count(false, k) >= FAMILY_MIN_AFFIX)
+                        .unwrap_or(false);
+
+                    if exact_ok || prefix_ok || suffix_ok {
+                        // (pool idx, |start distance to seed|): nearest
+                        // members win the FAMILY_CAP, ties by ascending start.
+                        let mut fam: Vec<(usize, usize)> = Vec::new();
+                        for (ci, c) in pool.iter().enumerate() {
+                            let (a, b) = c.span;
+                            if let Some(pi) = primary(a, b) {
+                                if pi == sei {
+                                    continue; // another span of the seed's own def
+                                }
+                                let e = &entries[pi];
+                                let member = (exact_ok && !e.is_class && e.name == se.name)
+                                    || (prefix_ok
+                                        && name_segments(&e.name).first() == prefix_key.as_ref())
+                                    || (suffix_ok && {
+                                        let s = name_segments(&e.name);
+                                        s.len() >= 2 && s.last() == suffix_key.as_ref()
+                                    });
+                                if member {
+                                    let d = (a as i64 - seed_span.0 as i64).unsigned_abs() as usize;
+                                    fam.push((ci, d));
+                                }
+                            }
+                        }
+                        fam.sort_by(|x, y| {
+                            x.1.cmp(&y.1).then(pool[x.0].span.0.cmp(&pool[y.0].span.0))
+                        });
+                        queue.extend(fam.into_iter().take(FAMILY_CAP).map(|(ci, _)| ci));
+                    }
+                }
+            }
+
+            if sibling_sim > 0.0 {
+                let seed_bag = sibling_token_bag(&seed.text, &kw_excl);
+                if !seed_bag.is_empty() {
+                    // Precompute every similarity exactly once, then sort the
+                    // snapshot (total_cmp) -- same "no comparator
+                    // recomputation" discipline as pass 2's marginal cache.
+                    let mut scored: Vec<(usize, f64)> = Vec::new();
+                    for (ci, c) in pool.iter().enumerate() {
+                        if queue.contains(&ci) {
+                            continue;
+                        }
+                        let sim = sibling_bag_overlap(&seed_bag, &sibling_token_bag(&c.text, &kw_excl));
+                        if sim >= sibling_sim {
+                            scored.push((ci, sim));
+                        }
+                    }
+                    scored.sort_by(|a, b| {
+                        b.1.total_cmp(&a.1).then(pool[a.0].span.0.cmp(&pool[b.0].span.0))
+                    });
+                    queue.extend(scored.into_iter().take(max_siblings).map(|(ci, _)| ci));
+                }
+            }
+
+            for ci in queue {
+                let c = pool[ci];
+                if occupied.iter().any(|o| c.span.0 <= o.1 && o.0 <= c.span.1) {
+                    continue;
+                }
+                if spent + c.tok as i64 > budget_tokens {
+                    continue; // budget-checked like pass 2: skip, never force-seat
+                }
+                spent += c.tok as i64;
+                covered.extend(c.terms.iter().cloned());
+                occupied.push(c.span);
+                let seg_idx = all_segments.len();
+                all_segments.push(Candidate {
+                    file: c.file.clone(),
+                    span: c.span,
+                    tok: c.tok,
+                    terms: c.terms.clone(),
+                    gain: c.gain,
+                    text: c.text.clone(),
+                    name_score: c.name_score,
+                    tok_pow: c.tok_pow,
+                });
+                chosen_map.entry(rel.clone()).or_default().push(seg_idx);
+            }
+        }
+    }
+
     // pass 2: greedy marginal coverage over the ORIGINAL candidates minus
     // whichever became the pass-1 pick per file (Python compares dicts by
     // identity/equality against the `chosen` accumulator; here we track by
     // (file, span) identity, which uniquely determines a Python candidate
     // dict too since span+file is the natural key for this list).
+    // NOTE: despite the historical name, this set now covers every span
+    // seated so far -- pass-1 picks AND (when the E18/E19 flags are on)
+    // sibling-expansion seats, both of which must be excluded from the
+    // pass-2 pool. With the flags off it is exactly the pass-1 pick set.
     let pass1_keys: HashSet<(String, (usize, usize))> = chosen_map
         .iter()
         .flat_map(|(f, idxs)| idxs.iter().map(|&i| (f.clone(), all_segments[i].span)))
@@ -3264,10 +3604,10 @@ mod tests {
             spans["core.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
         assert_eq!(sym_of(&spans_off), Some("subtokens".to_string()), "pre-fix (w_name=0.0) reproduces the bug: body term-density picks the wrong region");
 
-        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0, 1.0);
+        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3);
         assert_eq!(sym_of(&spans_on), Some("pack_regions".to_string()), "w_name=1.0 must select pack_regions via name-score anchoring");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -3322,14 +3662,14 @@ mod tests {
             spans["mod.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
         assert_eq!(
             sym_of(&spans_linear),
             Some("stub_widget".to_string()),
             "len_exp=1.0 (pre-E14 linear gain/tok) must reproduce the crushed-long-fix failure mode: stub wins"
         );
 
-        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 0.7);
+        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3);
         assert_eq!(
             sym_of(&spans_softened),
             Some("real_gadget_sprocket_cog_lever".to_string()),
@@ -3377,8 +3717,8 @@ mod tests {
         // Large budget so pass 2's greedy loop actually runs over multiple
         // remaining candidates (pass 1 alone would only ever touch one span
         // per file).
-        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
-        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
         assert_eq!(spans1, spans2, "pack_regions must be deterministic given identical (NaN/inf-bearing) inputs");
         assert!(!spans1.is_empty(), "pack_regions should still select regions despite NaN/inf scores");
 
@@ -3427,10 +3767,10 @@ mod tests {
         // remaining candidates per iteration -- the exact scenario that
         // triggers repeated `marginal(i)` calls for the same `i` within a
         // single sort.
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls given many equal/near-equal marginal scores (and must never panic)"
@@ -3467,7 +3807,7 @@ mod tests {
         let files = vec!["needles.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
         let got = &spans["needles.py"];
         assert_eq!(got, &vec![(1, 5), (6, 8)], "pad_lines=0 must keep the two naturally-adjacent spans as separate, unmerged entries (pre-E12 behavior)");
 
@@ -3492,7 +3832,7 @@ mod tests {
         let files = vec!["needles.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1, 1.0);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1, 1.0, false, 0.0, 3);
         let got = &spans["needles.py"];
         assert_eq!(got, &vec![(1, 8)], "pad_lines=1 must merge the two adjacent spans into one (1,8) covering the whole file");
         // merged text must be the FULL file content, not a truncated slice.
@@ -3517,7 +3857,7 @@ mod tests {
         let files = vec!["tiny.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 500, 1.0);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 500, 1.0, false, 0.0, 3);
         assert_eq!(spans["tiny.py"], vec![(1, 3)], "pad_lines far exceeding the file's own length must clamp to (1, n_lines)");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -3568,13 +3908,13 @@ mod tests {
         // ignoring budget) -- it only gates pass 2 and the post-padding
         // de-escalation/eviction step, so both hi.py and lo.py's pass-1
         // spans are seated before padding/eviction ever runs.
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
         assert!(
             spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
             "pad=0 baseline seats BOTH pass-1 spans (unconditionally), overshooting budget"
         );
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0, false, 0.0, 3);
         let got: HashSet<&String> = spans.keys().collect();
         let baseline: HashSet<&String> = spans0.keys().collect();
         assert_eq!(
@@ -3621,10 +3961,10 @@ mod tests {
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
         let budget: i64 = 800;
 
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 0.85);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 0.85, false, 0.0, 3);
         assert_eq!(spans0.len(), 25, "pad=0 baseline must select all 25 files (pass 1 seats unconditionally)");
 
-        let (spans5, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 5, 0.85);
+        let (spans5, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 5, 0.85, false, 0.0, 3);
         let got: HashSet<&String> = spans5.keys().collect();
         let baseline: HashSet<&String> = spans0.keys().collect();
         assert_eq!(
@@ -3680,7 +4020,7 @@ mod tests {
 
         // pad=0 baseline: both files' own needle spans are seated
         // unconditionally by pass 1 and comfortably fit budget on their own.
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
         assert!(
             spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
             "pad_lines=0 baseline must select both files"
@@ -3688,7 +4028,7 @@ mod tests {
         let baseline: HashSet<&String> = spans0.keys().collect();
 
         for pad in [2usize, 6, 15] {
-            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad, 1.0);
+            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad, 1.0, false, 0.0, 3);
             let got: HashSet<&String> = spans.keys().collect();
             assert_eq!(
                 got, baseline,
@@ -3747,10 +4087,10 @@ mod tests {
         let t_needle = count_tokens(&needle_text) as i64;
         let budget = 2 * t_needle + 3;
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3);
             assert_eq!(
                 spans, first,
                 "pack_regions with the E12b guard active must produce byte-identical spans across repeated calls"
@@ -3780,10 +4120,10 @@ mod tests {
         let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3);
             assert_eq!(
                 spans, first,
                 "pack_regions with pad_lines>0 must produce byte-identical spans across repeated calls"
@@ -3814,7 +4154,7 @@ mod tests {
         let files = vec!["a.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 0, 1.0);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
 
         let expected_spans: IndexMap<String, Vec<(usize, usize)>> =
             [("a.py".to_string(), vec![(1usize, 2usize)])].into_iter().collect();
@@ -3848,10 +4188,10 @@ mod tests {
         let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls at len_exp=0.7"
@@ -3909,7 +4249,7 @@ mod tests {
         assert!(files.contains(&"pkg/validators.py".to_string()));
 
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0, 1.0);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3);
         assert!(!bundle.is_empty());
         assert!(spans.contains_key("pkg/router.py"));
 
@@ -3965,5 +4305,192 @@ mod tests {
         assert!(is_low_confidence(5.0, 0, 0));
         // Right at the boundary: not low-confidence (strict `<`, not `<=`).
         assert!(!is_low_confidence(LOW_CONFIDENCE_TOP_SCORE, 5, 5));
+    }
+
+    // ------------------------------------------------------------ E18/E19 sibling expansion
+
+    /// Shared fixture for the E19 method-family tests: three sibling classes
+    /// each defining a `transform` method. Only `Alpha.transform` carries
+    /// query-term evidence -- the sibling `transform`s are deliberately
+    /// query-term-FREE, so (a) they are not even ranked candidates (the
+    /// zero-term filter drops them into the sibling-only pool) and (b) no
+    /// amount of pass-2 budget could ever seat them without E19.
+    fn family_fixture_src() -> String {
+        let mut src = String::new();
+        src.push_str("class Alpha:\n    def transform(self, frobnicate_budget):\n        \"\"\"frobnicate the widget budget\"\"\"\n        return frobnicate_budget\n\n");
+        src.push_str("class Beta:\n    def transform(self, qq):\n        zz = qq\n        return zz\n\n");
+        src.push_str("class Gamma:\n    def transform(self, mm):\n        nn = mm\n        return nn\n\n");
+        src.push_str("class Delta:\n    def unrelated_thing(self, pp):\n        return pp\n");
+        src
+    }
+
+    /// E19: with `--family-enum`, the seed method's exact-name family
+    /// (same def name across sibling classes) is added as depth; with the
+    /// flags off (defaults) those query-term-free siblings must be absent --
+    /// the default path is the unchanged engine.
+    #[test]
+    fn pack_regions_family_enum_adds_method_family_across_classes() {
+        let tmp = std::env::temp_dir().join(format!("roust_e19_family_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        std::fs::write(tmp.join("mod.py"), family_fixture_src()).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("frobnicate the widget budget", &[]);
+        let scores: IndexMap<String, f64> = [("mod.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["mod.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        // Beta.transform's span starts at its def line (7); Gamma's at 12.
+        // Delta.unrelated_thing (17) is NOT family.
+        let (spans_off, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let starts_off: Vec<usize> = spans_off["mod.py"].iter().map(|s| s.0).collect();
+        assert!(
+            !starts_off.contains(&7) && !starts_off.contains(&12),
+            "defaults (family off): query-term-free sibling transforms must be absent, got {starts_off:?}"
+        );
+
+        let (spans_on, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3);
+        let starts_on: Vec<usize> = spans_on["mod.py"].iter().map(|s| s.0).collect();
+        assert!(
+            starts_on.contains(&7) && starts_on.contains(&12),
+            "family-enum must add Beta.transform (7) and Gamma.transform (12), got {starts_on:?}"
+        );
+        assert!(
+            !starts_on.contains(&17),
+            "Delta.unrelated_thing (17) is not a family member and must not be added, got {starts_on:?}"
+        );
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E19 suffix-segment family: four module-level `*_handler` defs share
+    /// the trailing name segment; seeding on one must pull in the other
+    /// three (>= FAMILY_MIN_AFFIX members, seed included). A def NOT
+    /// sharing the segment stays out.
+    #[test]
+    fn pack_regions_family_enum_suffix_segment_family() {
+        let tmp = std::env::temp_dir().join(format!("roust_e19_suffix_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let src = "\
+def alpha_handler(x):
+    \"\"\"frobnicate the widget budget\"\"\"
+    return x
+
+def beta_handler(qq):
+    return qq
+
+def gamma_handler(mm):
+    return mm
+
+def delta_handler(nn):
+    return nn
+
+def omega_worker(pp):
+    return pp
+";
+        std::fs::write(tmp.join("handlers.py"), src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("frobnicate the widget budget", &[]);
+        let scores: IndexMap<String, f64> = [("handlers.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["handlers.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let (spans, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3);
+        let starts: Vec<usize> = spans["handlers.py"].iter().map(|s| s.0).collect();
+        for (start, who) in [(5usize, "beta_handler"), (8, "gamma_handler"), (11, "delta_handler")] {
+            assert!(starts.contains(&start), "suffix family must add {who} (line {start}), got {starts:?}");
+        }
+        assert!(!starts.contains(&14), "omega_worker (14) shares no name segment and must stay out, got {starts:?}");
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E18: rename-only (Type-2) clones of the seed pass the 0.7 bag-overlap
+    /// threshold and are added (capped at --max-siblings, best overlap
+    /// first); a lexically unrelated function in the same file does not.
+    #[test]
+    fn pack_regions_sibling_sim_adds_type2_clones_capped() {
+        let tmp = std::env::temp_dir().join(format!("roust_e18_sim_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        // Seed carries the query terms in a docstring; the clones share its
+        // body verbatim (rename-only at the def line) but have no query
+        // terms at all. `weird_other` shares nothing.
+        let body = "    total_marmalade = accumulate_marmalade(jar_registry)\n    sticky_ledger = reconcile_ledger(total_marmalade)\n    return sticky_ledger\n";
+        let src = format!(
+            "def seed_fn(jar_registry):\n    \"\"\"frobnicate the widget budget\"\"\"\n{body}\ndef clone_one(jar_registry):\n{body}\ndef clone_two(jar_registry):\n{body}\ndef weird_other(zz):\n    qq = zz + 1\n    return qq\n"
+        );
+        std::fs::write(tmp.join("clones.py"), src).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("frobnicate the widget budget", &[]);
+        let scores: IndexMap<String, f64> = [("clones.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["clones.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        // Layout: seed_fn at 1 (body 3-5), clone_one at 7 (body 8-10),
+        // clone_two at 12 (body 13-15), weird_other at 17.
+        let (spans_off, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let starts_off: Vec<usize> = spans_off["clones.py"].iter().map(|s| s.0).collect();
+        assert!(
+            !starts_off.contains(&7) && !starts_off.contains(&12),
+            "defaults (sim off): term-free clones must be absent, got {starts_off:?}"
+        );
+
+        let (spans_on, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 3);
+        let starts_on: Vec<usize> = spans_on["clones.py"].iter().map(|s| s.0).collect();
+        assert!(
+            starts_on.contains(&7) && starts_on.contains(&12),
+            "sim=0.7 must add clone_one (7) and clone_two (12), got {starts_on:?}"
+        );
+        assert!(
+            !starts_on.contains(&17),
+            "weird_other (17) is lexically unrelated and must stay out, got {starts_on:?}"
+        );
+
+        // --max-siblings 1 caps the additions to the single best-overlap
+        // sibling; equal-overlap ties break by ascending span start
+        // (clone_one before clone_two).
+        let (spans_cap, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 1);
+        let starts_cap: Vec<usize> = spans_cap["clones.py"].iter().map(|s| s.0).collect();
+        assert!(
+            starts_cap.contains(&7) && !starts_cap.contains(&12),
+            "max-siblings=1 must keep only clone_one (7), got {starts_cap:?}"
+        );
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Sibling seats are budget-checked (skip, never force-seat): at
+    /// budget=1 pass 1 seats the seed unconditionally (its historical
+    /// overshoot behavior) but no sibling can ever be added on top.
+    #[test]
+    fn pack_regions_siblings_budget_checked_never_force_seated() {
+        let tmp = std::env::temp_dir().join(format!("roust_e18_budget_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        std::fs::write(tmp.join("mod.py"), family_fixture_src()).unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("frobnicate the widget budget", &[]);
+        let scores: IndexMap<String, f64> = [("mod.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["mod.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let (spans, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, true, 0.7, 3);
+        assert_eq!(
+            spans["mod.py"].len(),
+            1,
+            "budget=1: the unconditional pass-1 seed must be the file's ONLY span (siblings skipped), got {:?}",
+            spans["mod.py"]
+        );
+
+        std::fs::remove_dir_all(&tmp).ok();
     }
 }
