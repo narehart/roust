@@ -56,6 +56,103 @@ DEFAULT_OUT = REPO_ROOT / "lab" / "results_regions" / "agentless_metric_verified
 # arXiv:2407.01489) -- for side-by-side reporting only, not reproduced here.
 AGENTLESS_GPT4O = {"file": 69.7, "function": 52.0, "line": 35.3}
 
+# E23 harness twin (campaign #4 wave 5): tree-sitter function spans for the
+# JS/TS family, fixing the vacuous Multi-SWE FUNCTION metric (99.83 with
+# n_gold_functions: 0 everywhere -- the extraction below was Python-AST-only,
+# so every JS/TS gold set was empty and the subset condition held vacuously).
+#
+# FLAG-GATED, default OFF: with TS_FUNCTIONS False this module is
+# byte-identical to the pre-E23 scorer on every input (the dispatch reduces
+# to the old `endswith(".py")` test), so Lite/Verified artifacts and the
+# v12 no-regression gate are untouched even if a stray .js file appears in
+# a Python-instance bundle. Enable via agentless_metric_full.py
+# --ts-functions (the Multi-SWE scoring entry point).
+#
+# Span definition mirrors the Python side's: function/method IMPLEMENTATIONS
+# only (no bare class/interface/enum bodies, no abstract/overload
+# signatures), span start hoisted to the enclosing declaration statement /
+# export wrapper (the JS analogue of including decorator lines), end = the
+# hoisted node's end line. Gold and predicted sides share this one
+# extractor, so the (path, start, end) identities are comparable by
+# construction. Grammar versions are pinned to the SAME grammars the engine
+# vendors (tree-sitter-javascript 0.25.0, tree-sitter-typescript 0.23.2);
+# run under: uv run --with pandas --with pyarrow --with tree-sitter==0.26.0 \
+#   --with tree-sitter-javascript==0.25.0 --with tree-sitter-typescript==0.23.2
+TS_FUNCTIONS = False
+TS_EXTS = (".js", ".jsx", ".ts", ".tsx")
+
+_TS_FUNCTION_KINDS = {"function_declaration", "generator_function_declaration",
+                      "method_definition"}
+_TS_FUNCTION_VALUE_KINDS = {"arrow_function", "function_expression", "function",
+                            "generator_function"}
+_TS_BOUND_KINDS = {"variable_declarator", "pair", "field_definition",
+                   "public_field_definition"}
+_TS_HOIST_KINDS = {"lexical_declaration", "variable_declaration",
+                   "export_statement", "ambient_declaration"}
+
+_ts_parsers: dict[str, object] = {}
+
+
+def _ts_parser(path: str):
+    """Parser for `path`'s grammar, cached. Import is lazy so the scorer
+    only needs the tree-sitter wheels when --ts-functions is actually on
+    AND a JS/TS file is actually encountered."""
+    key = "tsx" if path.endswith(".tsx") else ("ts" if path.endswith(".ts") else "js")
+    if key not in _ts_parsers:
+        import tree_sitter
+        if key == "js":
+            import tree_sitter_javascript as g
+            lang = tree_sitter.Language(g.language())
+        else:
+            import tree_sitter_typescript as g
+            lang = tree_sitter.Language(
+                g.language_tsx() if key == "tsx" else g.language_typescript())
+        _ts_parsers[key] = tree_sitter.Parser(lang)
+    return _ts_parsers[key]
+
+
+def ts_function_spans(source: str, path: str) -> list[tuple[int, int]]:
+    """JS/TS analogue of `function_spans`: [(start, end_inclusive), ...]
+    (1-indexed) for every function/method implementation -- declarations,
+    class/object-literal methods, and declarator/pair/class-field-bound
+    arrow or function expressions (the expression-level shapes a regex
+    cannot enumerate). Iterative walk (no recursion limit on minified JS)."""
+    parser = _ts_parser(path)
+    tree = parser.parse(source.encode("utf-8", errors="replace"))
+    spans: list[tuple[int, int]] = []
+    stack = [tree.root_node]
+    while stack:
+        node = stack.pop()
+        stack.extend(node.children)
+        kind = node.type
+        emit = kind in _TS_FUNCTION_KINDS or (
+            kind in _TS_BOUND_KINDS
+            and (v := node.child_by_field_name("value")) is not None
+            and v.type in _TS_FUNCTION_VALUE_KINDS
+        )
+        if not emit:
+            continue
+        top = node
+        for _ in range(2):  # declarator -> declaration -> export wrapper
+            parent = top.parent
+            if parent is not None and parent.type in _TS_HOIST_KINDS:
+                top = parent
+            else:
+                break
+        spans.append((top.start_point[0] + 1, top.end_point[0] + 1))
+    return spans
+
+
+def function_spans_for_path(path: str, source: str) -> list[tuple[int, int]] | None:
+    """Extension dispatch shared by the gold and predicted walks. None means
+    "unsupported extension, skip the file" -- exactly the pre-E23 behavior
+    for every non-.py path when TS_FUNCTIONS is off (the default)."""
+    if path.endswith(".py"):
+        return function_spans(source)
+    if TS_FUNCTIONS and path.endswith(TS_EXTS):
+        return ts_function_spans(source, path)
+    return None
+
 
 def mean_median(values: list[float]) -> tuple[float | None, float | None]:
     if not values:
@@ -114,16 +211,18 @@ def gold_function_spans_for_instance(repo_slug: str, base_commit: str,
     spans_out: set[tuple[str, int, int]] = set()
     ast_ok = True
     for path, ranges in gold_hunks.items():
-        if not path.endswith(".py"):
-            continue
-        src = git_show(repo_slug, base_commit, path)
+        src = None
+        if path.endswith(".py") or (TS_FUNCTIONS and path.endswith(TS_EXTS)):
+            src = git_show(repo_slug, base_commit, path)
+            if src is None:
+                ast_ok = False
+                continue
         if src is None:
-            ast_ok = False
-            continue
+            continue  # unsupported extension (pre-E23 behavior for non-.py)
         line_set: set[int] = set()
         for s, e in ranges:
             line_set.update(range(s, e + 1))
-        for fs, fe in function_spans(src):
+        for fs, fe in function_spans_for_path(path, src) or []:
             if any(fs <= ln <= fe for ln in line_set):
                 spans_out.add((path, fs, fe))
     return spans_out, ast_ok
@@ -142,13 +241,13 @@ def predicted_function_spans_for_instance(repo_slug: str, base_commit: str,
     spans_out: set[tuple[str, int, int]] = set()
     ast_ok = True
     for path, region_spans in regions.items():
-        if not path.endswith(".py"):
-            continue
+        if not (path.endswith(".py") or (TS_FUNCTIONS and path.endswith(TS_EXTS))):
+            continue  # unsupported extension (pre-E23 behavior for non-.py)
         src = git_show(repo_slug, base_commit, path)
         if src is None:
             ast_ok = False
             continue
-        for fs, fe in function_spans(src):
+        for fs, fe in function_spans_for_path(path, src) or []:
             if any(fs <= e and s <= fe for s, e in region_spans):
                 spans_out.add((path, fs, fe))
     return spans_out, ast_ok
