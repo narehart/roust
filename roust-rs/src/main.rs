@@ -133,6 +133,30 @@ struct Args {
     /// pre-E12/E14) engine, where 1.0 is the original linear length penalty.
     #[arg(long, default_value_t = 0.85)]
     len_exp: f64,
+
+    /// E19 (campaign #4 wave 5): for each packed file, also include spans of
+    /// the pass-1 pick's def-name family -- same method name across sibling
+    /// classes in the file, or a shared def-name prefix/suffix segment
+    /// family with >= 4 members (multi-function "sweep" patches; capped at
+    /// 8 members, nearest to the seed first). Default OFF: byte-identical
+    /// to the engine without this flag. Added spans are budget-checked
+    /// depth; they never displace a file's pass-1 span (E12b guard).
+    #[arg(long)]
+    family_enum: bool,
+
+    /// E18 (campaign #4 wave 5): identifier-token-bag overlap threshold
+    /// (SourcererCC-style, multiset intersection / max bag size) at or
+    /// above which a same-file span counts as a sibling of the pass-1 pick
+    /// and is added as budget-checked depth (top --max-siblings by
+    /// overlap). 0 (default) disables: byte-identical to the engine
+    /// without this flag.
+    #[arg(long, default_value_t = 0.0)]
+    sibling_sim: f64,
+
+    /// max E18 similarity-siblings added per file (only meaningful with
+    /// --sibling-sim > 0)
+    #[arg(long, default_value_t = 3)]
+    max_siblings: usize,
 }
 
 fn main() {
@@ -148,6 +172,10 @@ fn main() {
     }
     if !args.len_exp.is_finite() {
         eprintln!("roust: error: --len-exp must be finite");
+        std::process::exit(2);
+    }
+    if !args.sibling_sim.is_finite() || !(0.0..=1.0).contains(&args.sibling_sim) {
+        eprintln!("roust: error: --sibling-sim must be in [0, 1]");
         std::process::exit(2);
     }
 
@@ -211,6 +239,9 @@ fn main() {
         0.0,
         args.pad_lines,
         args.len_exp,
+        args.family_enum,
+        args.sibling_sim,
+        args.max_siblings,
     );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 

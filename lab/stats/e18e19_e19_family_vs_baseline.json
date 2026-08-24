@@ -1,0 +1,78 @@
+{
+  "n": 300,
+  "n_boot": 10000,
+  "seed": 20260718,
+  "metrics": {
+    "file": {
+      "mean_a": 92.3333,
+      "mean_b": 92.3333,
+      "delta": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "units": "percentage points",
+      "mcnemar": {
+        "n01_a_wrong_b_correct": 0,
+        "n10_a_correct_b_wrong": 0,
+        "p_exact_two_sided": 1.0
+      }
+    },
+    "function": {
+      "mean_a": 53.3333,
+      "mean_b": 27.6667,
+      "delta": -25.6667,
+      "ci95": [
+        -31.3333,
+        -19.3333
+      ],
+      "units": "percentage points",
+      "mcnemar": {
+        "n01_a_wrong_b_correct": 13,
+        "n10_a_correct_b_wrong": 90,
+        "p_exact_two_sided": 2.4570971290651306e-15
+      }
+    },
+    "line": {
+      "mean_a": 42.6667,
+      "mean_b": 18.0,
+      "delta": -24.6667,
+      "ci95": [
+        -30.3333,
+        -19.0
+      ],
+      "units": "percentage points",
+      "mcnemar": {
+        "n01_a_wrong_b_correct": 10,
+        "n10_a_correct_b_wrong": 84,
+        "p_exact_two_sided": 1.032699183755085e-15
+      }
+    },
+    "fraction": {
+      "mean_a": 0.5168,
+      "mean_b": 0.2504,
+      "delta": -0.2664,
+      "ci95": [
+        -0.3208,
+        -0.2091
+      ],
+      "units": "fraction"
+    }
+  },
+  "source": {
+    "a": {
+      "label": "baseline",
+      "predictions": [
+        "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e18e19_baseline.jsonl"
+      ],
+      "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/agentless_metric_e18e19_baseline.json"
+    },
+    "b": {
+      "label": "e19_family",
+      "predictions": [
+        "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e19_family.jsonl"
+      ],
+      "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/agentless_metric_e19_family.json"
+    }
+  }
+}

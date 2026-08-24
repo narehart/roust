@@ -234,12 +234,38 @@ def main() -> None:
                      help=f"passthrough to roust's --len-exp (E14); always forwarded "
                           f"(default {DEFAULT_LEN_EXP}, the current engine default); pass "
                           f"`--len-exp 1.0` to reproduce the pre-adoption old formula")
+    ap.add_argument("--family-enum", action="store_true",
+                     help="passthrough to roust's --family-enum (E19 def-name-family sibling "
+                          "enumeration); omitted by default (binary default: off)")
+    ap.add_argument("--sibling-sim", type=float, default=0.0,
+                     help="passthrough to roust's --sibling-sim (E18 identifier-bag similarity "
+                          "siblings); 0.0 (default) omits the flag (binary default: disabled)")
+    ap.add_argument("--max-siblings", type=int, default=0,
+                     help="passthrough to roust's --max-siblings (E18 cap); 0 (default) omits "
+                          "the flag (binary default: 3)")
+    ap.add_argument("--repos-dir", type=Path, default=None,
+                     help="override the SWE-bench clones directory (default lab/swebench_repos). "
+                          "This script MUTATES the clones (checkout -f + clean -fdq per "
+                          "instance): per issue #41, point this at a PRIVATE cp -R copy when "
+                          "anything else might touch the shared clones.")
     ap.add_argument("--allow-stale-engine", action="store_true",
                      help="override the blocking engine-provenance guard (logs a loud warning "
                           "instead of refusing) when the roust binary's embedded sha/dirty state "
                           "does not match this worktree's roust-rs/ HEAD/dirty state -- NOT "
                           "recommended for real results")
     args = ap.parse_args()
+
+    # E18/E19 passthrough rides the same EXTRA_ENGINE_FLAGS mechanism
+    # region_eval_full.py uses for its BM25 arm.
+    global SWEBENCH_REPOS
+    if args.family_enum:
+        EXTRA_ENGINE_FLAGS.append("--family-enum")
+    if args.sibling_sim != 0.0:
+        EXTRA_ENGINE_FLAGS.extend(["--sibling-sim", str(args.sibling_sim)])
+    if args.max_siblings != 0:
+        EXTRA_ENGINE_FLAGS.extend(["--max-siblings", str(args.max_siblings)])
+    if args.repos_dir is not None:
+        SWEBENCH_REPOS = args.repos_dir
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
