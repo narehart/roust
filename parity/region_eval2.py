@@ -151,7 +151,8 @@ def check_engine_provenance(allow_stale: bool) -> str:
 def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
               len_exp: float = 1.0, family_enum: bool = False, sibling_sim: float = 0.0,
               max_siblings: int = 0, route: bool = False,
-              route_test_penalty: float = 0.0) -> tuple[dict | None, str | None]:
+              route_test_penalty: float = 0.0, lexboost: float = 0.0,
+              lexboost_graph: str = "", trace_boost: bool = False) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
     if route:
         # E11 (campaign #4 wave 5): structure-aware query routing. Omitted
@@ -161,6 +162,19 @@ def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
         # 0.0 (default) is this script's "omit the flag" sentinel -> the
         # binary's own default (0.85); only meaningful together with --route.
         argv += ["--route-test-penalty", str(route_test_penalty)]
+    if lexboost != 0.0:
+        # E20 (campaign #4 wave 5): LexBoost neighbor score smoothing.
+        # 0.0 (default) is this script's "omit the flag" sentinel, matching
+        # the binary's own disabled default.
+        argv += ["--lexboost", str(lexboost)]
+    if lexboost_graph:
+        # "" (default) omits the flag -> the binary's own default (import);
+        # only meaningful together with --lexboost.
+        argv += ["--lexboost-graph", lexboost_graph]
+    if trace_boost:
+        # E11b (campaign #4 wave 5): trace-frame FILE boost only, query
+        # text byte-untouched. Omitted (default) -> binary default (off).
+        argv += ["--trace-boost"]
     if family_enum:
         # E19 (campaign #4 wave 5): def-name-family sibling enumeration.
         # Omitted (the default) -> the binary's own default (off).
@@ -240,7 +254,9 @@ def load_lite_rows(limit: int) -> list[dict]:
 def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: float = 1.0,
                        family_enum: bool = False, sibling_sim: float = 0.0,
                        max_siblings: int = 0, repos_dir: Path | None = None,
-                       route: bool = False, route_test_penalty: float = 0.0) -> dict:
+                       route: bool = False, route_test_penalty: float = 0.0,
+                       lexboost: float = 0.0, lexboost_graph: str = "",
+                       trace_boost: bool = False) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -267,7 +283,8 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
         return rec
 
     obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp,
-                         family_enum, sibling_sim, max_siblings, route, route_test_penalty)
+                         family_enum, sibling_sim, max_siblings, route, route_test_penalty,
+                         lexboost, lexboost_graph, trace_boost)
     if err:
         rec["error"] = err
         return rec
@@ -283,6 +300,11 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
     # resolved trace files) -- present only when --route was passed; None
     # otherwise. Consumed by the class-conditional scoring step.
     rec["route"] = stats.get("route")
+    # E20/E11b diagnostics -- present only when the corresponding flag was
+    # passed; None otherwise. Consumed by the gate's flip itemization
+    # (lexboost: direct-vs-neighbor anatomy; trace_boost: frame files/ranks).
+    rec["lexboost"] = stats.get("lexboost")
+    rec["trace_boost"] = stats.get("trace_boost")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]
@@ -351,6 +373,17 @@ def main() -> None:
     ap.add_argument("--route", action="store_true",
                      help="passthrough to roust's --route (E11 structure-aware query routing); "
                           "omitted by default (binary default: off)")
+    ap.add_argument("--lexboost", type=float, default=0.0,
+                     help="passthrough to roust's --lexboost (E20 LexBoost neighbor score "
+                          "smoothing lambda); 0.0 (default) omits the flag, i.e. the binary's "
+                          "own disabled default")
+    ap.add_argument("--lexboost-graph", type=str, default="",
+                     help="passthrough to roust's --lexboost-graph (E20 graph substrate: "
+                          "import|knn); empty (default) omits the flag, i.e. the binary's own "
+                          "default (import); only meaningful with --lexboost")
+    ap.add_argument("--trace-boost", action="store_true",
+                     help="passthrough to roust's --trace-boost (E11b trace-frame FILE boost, "
+                          "query text untouched); omitted by default (binary default: off)")
     ap.add_argument("--route-test-penalty", type=float, default=0.0,
                      help="passthrough to roust's --route-test-penalty (E11 conditional "
                           "test-path downweight); 0.0 (default) omits the flag, i.e. the "
@@ -388,7 +421,8 @@ def main() -> None:
         for i, row in enumerate(rows, 1):
             rec = eval_lite_instance(row, args.timeout, args.pad_lines, args.len_exp,
                                      args.family_enum, args.sibling_sim, args.max_siblings,
-                                     args.repos_dir, args.route, args.route_test_penalty)
+                                     args.repos_dir, args.route, args.route_test_penalty,
+                                     args.lexboost, args.lexboost_graph, args.trace_boost)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

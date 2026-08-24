@@ -30,8 +30,9 @@
 
 use roust::cache;
 use roust::core::{
-    anchor_def_symbols, extract_symbol_anchors, is_low_confidence, pack_regions, query_term_coverage, query_terms,
-    route_query, select_files, RoutedQuery, SelectParams,
+    anchor_def_symbols, extract_symbol_anchors, is_low_confidence, lexboost_hubs, lexboost_import_neighbors,
+    lexboost_knn_neighbors, pack_regions, query_term_coverage, query_terms, route_query, select_files, trace_frame_files,
+    RoutedQuery, SelectParams,
 };
 use clap::Parser;
 use std::collections::HashSet;
@@ -177,6 +178,33 @@ struct Args {
     /// prose or trace-dominated queries). Only meaningful with --route.
     #[arg(long, default_value_t = 0.85)]
     route_test_penalty: f64,
+
+    /// E11b (campaign #4 wave 5): trace-frame FILE boost ONLY -- the E11
+    /// sub-mechanism that survived the dual gate. Files named in the
+    /// issue's traceback frames (resolved into the repo) receive the
+    /// rank-decayed additive FILE boost (1/rank for the top-10 frames,
+    /// raise-site first; 0.1 deeper; 0.1 import spillover). The query TEXT
+    /// is byte-untouched -- no term mining, no discarding (unlike --route,
+    /// with which this flag is mutually exclusive). Default OFF:
+    /// byte-identical to the engine without this flag.
+    #[arg(long)]
+    trace_boost: bool,
+
+    /// E20 (campaign #4 wave 5): LexBoost neighbor score smoothing lambda
+    /// (arXiv:2409.05882). Final file score = lambda*S + (1-lambda)*
+    /// prior*mean(neighbor S) over the graph chosen by --lexboost-graph,
+    /// with top-decile-in-degree hub exclusion. 0 (default) = OFF,
+    /// byte-identical to the engine without this flag; the paper's default
+    /// is 0.7.
+    #[arg(long, default_value_t = 0.0)]
+    lexboost: f64,
+
+    /// E20 graph substrate for --lexboost: "import" (undirected import
+    /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
+    /// files by content similarity, computed from the cached index at
+    /// query time).
+    #[arg(long, default_value = "import")]
+    lexboost_graph: String,
 }
 
 fn main() {
@@ -202,6 +230,18 @@ fn main() {
         eprintln!("roust: error: --route-test-penalty must be in [0, 1]");
         std::process::exit(2);
     }
+    if !args.lexboost.is_finite() || !(0.0..=1.0).contains(&args.lexboost) {
+        eprintln!("roust: error: --lexboost must be in [0, 1]");
+        std::process::exit(2);
+    }
+    if args.lexboost_graph != "import" && args.lexboost_graph != "knn" {
+        eprintln!("roust: error: --lexboost-graph must be 'import' or 'knn'");
+        std::process::exit(2);
+    }
+    if args.route && args.trace_boost {
+        eprintln!("roust: error: --route and --trace-boost are mutually exclusive (--route already applies the trace-frame boost)");
+        std::process::exit(2);
+    }
 
     let repo_path = PathBuf::from(&args.path);
     if !repo_path.is_dir() {
@@ -216,9 +256,27 @@ fn main() {
 
     let t0 = Instant::now();
 
-    let (corpus, _edges, history, cache_hit) =
+    let (corpus, edges, history, cache_hit) =
         cache::load_or_build(&repo_path, with_history, with_docs, !args.no_cache, args.reindex);
     let index_ms = t0.elapsed().as_secs_f64() * 1000.0;
+
+    // E20 LexBoost graph (flag-gated; defaults build nothing): neighbor
+    // lists + hub set from the chosen substrate. The import graph is free
+    // (already built and cached for every query); the kNN graph is computed
+    // here from the cached corpus statistics, and its cost is reported as
+    // `lexboost_graph_ms` (an adoption consideration, per the latency
+    // story).
+    let t_graph = Instant::now();
+    let lexboost_nbrs: Option<roust::core::NeighborMap> = if args.lexboost > 0.0 {
+        Some(match args.lexboost_graph.as_str() {
+            "knn" => lexboost_knn_neighbors(&corpus, 16),
+            _ => lexboost_import_neighbors(&edges),
+        })
+    } else {
+        None
+    };
+    let lexboost_hub_set = lexboost_nbrs.as_ref().map(lexboost_hubs);
+    let lexboost_graph_ms = t_graph.elapsed().as_secs_f64() * 1000.0;
 
     let t1 = Instant::now();
     // E11 routing (--route): structure-aware query treatment. The default
@@ -229,6 +287,11 @@ fn main() {
         Some(rq) => rq.terms.clone(),
         None => query_terms(&args.query, &[]),
     };
+    // E11b (--trace-boost): trace-frame FILE extraction only; `terms` above
+    // is untouched (byte-identical query text). Mutually exclusive with
+    // --route (validated at startup).
+    let boost_files: Vec<String> =
+        if args.trace_boost { trace_frame_files(&args.query, &corpus) } else { Vec::new() };
     let (matched_terms, total_terms) = query_term_coverage(&corpus, &terms);
     let zero_match = matched_terms == 0;
     let anchors = if use_anchors { Some(extract_symbol_anchors(&args.query, &corpus)) } else { None };
@@ -246,11 +309,15 @@ fn main() {
         trace_files: routed
             .as_ref()
             .filter(|rq| !rq.trace_files.is_empty())
-            .map(|rq| rq.trace_files.as_slice()),
+            .map(|rq| rq.trace_files.as_slice())
+            .or(if args.trace_boost && !boost_files.is_empty() { Some(boost_files.as_slice()) } else { None }),
         test_penalty: match &routed {
             Some(rq) if rq.fence_dominant => args.route_test_penalty,
             _ => 1.0,
         },
+        lexboost: args.lexboost,
+        lexboost_nbrs: lexboost_nbrs.as_ref(),
+        lexboost_hubs: lexboost_hub_set.as_ref(),
         ..Default::default()
     };
     let (mut files, scores, explain) = select_files(&corpus, &terms, true, &params);
@@ -321,6 +388,29 @@ fn main() {
             "n_prose_terms": rq.n_prose_terms,
             "n_trace_terms": rq.n_trace_terms,
             "n_fence_terms": rq.n_fence_terms,
+        });
+    }
+    if args.trace_boost {
+        // Present only under --trace-boost (defaults stay byte-identical):
+        // the resolved frame files that received the E11b FILE boost,
+        // raise-site first -- consumed by the gate's flip itemization
+        // (frame rank per flip).
+        stats["trace_boost"] = serde_json::json!({
+            "trace_files": boost_files,
+        });
+    }
+    if args.lexboost > 0.0 {
+        // Present only under --lexboost (defaults stay byte-identical):
+        // graph shape + cost + the top-of-ranking smoothing anatomy
+        // `(file, smoothed, direct, neighbor_mean, is_hub)`, consumed by
+        // the E20 gate's flip itemization (direct-vs-neighbor anatomy).
+        stats["lexboost"] = serde_json::json!({
+            "lambda": args.lexboost,
+            "graph": args.lexboost_graph,
+            "graph_ms": lexboost_graph_ms.round() as i64,
+            "n_files_in_graph": lexboost_nbrs.as_ref().map(|m| m.len()).unwrap_or(0),
+            "n_hubs": lexboost_hub_set.as_ref().map(|h| h.len()).unwrap_or(0),
+            "top": &explain.lexboost_top,
         });
     }
 
