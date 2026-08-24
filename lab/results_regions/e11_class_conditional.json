@@ -1,0 +1,760 @@
+{
+ "n": 300,
+ "classes": {
+  "prose": {
+   "n": 79,
+   "baseline": {
+    "file": 94.94,
+    "function": 59.49,
+    "line": 43.04,
+    "fraction": 0.56402
+   },
+   "route085": {
+    "file": 94.94,
+    "function": 59.49,
+    "line": 43.04,
+    "fraction": 0.56402
+   },
+   "route070": {
+    "file": 94.94,
+    "function": 59.49,
+    "line": 43.04,
+    "fraction": 0.56402
+   },
+   "route085_vs_baseline": {
+    "file": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "line": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "route070_vs_baseline": {
+    "file": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "line": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "trace": {
+   "n": 7,
+   "baseline": {
+    "file": 85.71,
+    "function": 71.43,
+    "line": 71.43,
+    "fraction": 0.71429
+   },
+   "route085": {
+    "file": 100.0,
+    "function": 71.43,
+    "line": 71.43,
+    "fraction": 0.71429
+   },
+   "route070": {
+    "file": 100.0,
+    "function": 71.43,
+    "line": 71.43,
+    "fraction": 0.71429
+   },
+   "route085_vs_baseline": {
+    "file": {
+     "delta": 14.29,
+     "ci95": [
+      0.0,
+      42.86
+     ],
+     "n01": 1,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": 0.0,
+     "ci95": [
+      -42.86,
+      42.86
+     ],
+     "n01": 1,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "line": {
+     "delta": 0.0,
+     "ci95": [
+      -42.86,
+      42.86
+     ],
+     "n01": 1,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": 0.0,
+     "ci95": [
+      -0.42857,
+      0.42857
+     ]
+    }
+   },
+   "route070_vs_baseline": {
+    "file": {
+     "delta": 14.29,
+     "ci95": [
+      0.0,
+      42.86
+     ],
+     "n01": 1,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": 0.0,
+     "ci95": [
+      -42.86,
+      42.86
+     ],
+     "n01": 1,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "line": {
+     "delta": 0.0,
+     "ci95": [
+      -42.86,
+      42.86
+     ],
+     "n01": 1,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": 0.0,
+     "ci95": [
+      -0.42857,
+      0.42857
+     ]
+    }
+   }
+  },
+  "fence": {
+   "n": 166,
+   "baseline": {
+    "file": 90.36,
+    "function": 46.39,
+    "line": 39.16,
+    "fraction": 0.46011
+   },
+   "route085": {
+    "file": 90.96,
+    "function": 43.98,
+    "line": 37.95,
+    "fraction": 0.44797
+   },
+   "route070": {
+    "file": 90.96,
+    "function": 43.98,
+    "line": 37.95,
+    "fraction": 0.44797
+   },
+   "route085_vs_baseline": {
+    "file": {
+     "delta": 0.6,
+     "ci95": [
+      -1.2,
+      3.01
+     ],
+     "n01": 2,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": -2.41,
+     "ci95": [
+      -6.63,
+      1.81
+     ],
+     "n01": 4,
+     "n10": 8,
+     "mcnemar_p": 0.3876953125
+    },
+    "line": {
+     "delta": -1.2,
+     "ci95": [
+      -4.82,
+      1.81
+     ],
+     "n01": 3,
+     "n10": 5,
+     "mcnemar_p": 0.7265625
+    },
+    "fraction": {
+     "delta": -0.01214,
+     "ci95": [
+      -0.04684,
+      0.02193
+     ]
+    }
+   },
+   "route070_vs_baseline": {
+    "file": {
+     "delta": 0.6,
+     "ci95": [
+      -1.2,
+      3.01
+     ],
+     "n01": 2,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": -2.41,
+     "ci95": [
+      -6.63,
+      1.81
+     ],
+     "n01": 4,
+     "n10": 8,
+     "mcnemar_p": 0.3876953125
+    },
+    "line": {
+     "delta": -1.2,
+     "ci95": [
+      -4.82,
+      1.81
+     ],
+     "n01": 3,
+     "n10": 5,
+     "mcnemar_p": 0.7265625
+    },
+    "fraction": {
+     "delta": -0.01214,
+     "ci95": [
+      -0.04684,
+      0.02193
+     ]
+    }
+   }
+  },
+  "trace+fence": {
+   "n": 48,
+   "baseline": {
+    "file": 95.83,
+    "function": 64.58,
+    "line": 50.0,
+    "fraction": 0.60652
+   },
+   "route085": {
+    "file": 97.92,
+    "function": 70.83,
+    "line": 64.58,
+    "fraction": 0.73182
+   },
+   "route070": {
+    "file": 97.92,
+    "function": 70.83,
+    "line": 64.58,
+    "fraction": 0.73182
+   },
+   "route085_vs_baseline": {
+    "file": {
+     "delta": 2.08,
+     "ci95": [
+      0.0,
+      6.25
+     ],
+     "n01": 1,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": 6.25,
+     "ci95": [
+      -2.08,
+      14.58
+     ],
+     "n01": 4,
+     "n10": 1,
+     "mcnemar_p": 0.375
+    },
+    "line": {
+     "delta": 14.58,
+     "ci95": [
+      6.25,
+      25.0
+     ],
+     "n01": 7,
+     "n10": 0,
+     "mcnemar_p": 0.015625
+    },
+    "fraction": {
+     "delta": 0.1253,
+     "ci95": [
+      0.04717,
+      0.21905
+     ]
+    }
+   },
+   "route070_vs_baseline": {
+    "file": {
+     "delta": 2.08,
+     "ci95": [
+      0.0,
+      6.25
+     ],
+     "n01": 1,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": 6.25,
+     "ci95": [
+      -2.08,
+      14.58
+     ],
+     "n01": 4,
+     "n10": 1,
+     "mcnemar_p": 0.375
+    },
+    "line": {
+     "delta": 14.58,
+     "ci95": [
+      6.25,
+      25.0
+     ],
+     "n01": 7,
+     "n10": 0,
+     "mcnemar_p": 0.015625
+    },
+    "fraction": {
+     "delta": 0.1253,
+     "ci95": [
+      0.04717,
+      0.21905
+     ]
+    }
+   }
+  }
+ },
+ "aggregate": {
+  "n": 300,
+  "baseline": {
+   "file": 92.33,
+   "function": 53.33,
+   "line": 42.67,
+   "fraction": 0.51683
+  },
+  "route085": {
+   "file": 93.33,
+   "function": 53.0,
+   "line": 44.33,
+   "fraction": 0.53016
+  },
+  "route070": {
+   "file": 93.33,
+   "function": 53.0,
+   "line": 44.33,
+   "fraction": 0.53016
+  },
+  "route085_vs_baseline": {
+   "file": {
+    "delta": 1.0,
+    "ci95": [
+     -0.33,
+     2.67
+    ],
+    "n01": 4,
+    "n10": 1,
+    "mcnemar_p": 0.375
+   },
+   "function": {
+    "delta": -0.33,
+    "ci95": [
+     -3.33,
+     2.67
+    ],
+    "n01": 9,
+    "n10": 10,
+    "mcnemar_p": 1.0
+   },
+   "line": {
+    "delta": 1.67,
+    "ci95": [
+     -1.0,
+     4.33
+    ],
+    "n01": 11,
+    "n10": 6,
+    "mcnemar_p": 0.332305908203125
+   },
+   "fraction": {
+    "delta": 0.01333,
+    "ci95": [
+     -0.01247,
+     0.03962
+    ]
+   }
+  },
+  "route070_vs_baseline": {
+   "file": {
+    "delta": 1.0,
+    "ci95": [
+     -0.33,
+     2.67
+    ],
+    "n01": 4,
+    "n10": 1,
+    "mcnemar_p": 0.375
+   },
+   "function": {
+    "delta": -0.33,
+    "ci95": [
+     -3.33,
+     2.67
+    ],
+    "n01": 9,
+    "n10": 10,
+    "mcnemar_p": 1.0
+   },
+   "line": {
+    "delta": 1.67,
+    "ci95": [
+     -1.0,
+     4.33
+    ],
+    "n01": 11,
+    "n10": 6,
+    "mcnemar_p": 0.332305908203125
+   },
+   "fraction": {
+    "delta": 0.01333,
+    "ci95": [
+     -0.01247,
+     0.03962
+    ]
+   }
+  }
+ },
+ "file_flips": {
+  "route085": [
+   {
+    "instance_id": "astropy__astropy-14182",
+    "direction": "gained",
+    "class": "trace+fence",
+    "n_trace_files": 5,
+    "fence_dominant": false,
+    "files_added": [
+     "astropy/io/ascii/mrt.py",
+     "astropy/io/ascii/rst.py",
+     "astropy/io/fits/util.py",
+     "astropy/io/registry/core.py",
+     "astropy/modeling/core.py",
+     "astropy/table/connect.py",
+     "astropy/table/info.py",
+     "astropy/table/row.py"
+    ],
+    "files_removed": [
+     "astropy/__init__.py",
+     "astropy/io/ascii/basic.py",
+     "astropy/io/ascii/daophot.py",
+     "astropy/io/ascii/qdp.py",
+     "astropy/io/fits/connect.py",
+     "astropy/io/registry/interface.py",
+     "astropy/utils/data.py",
+     "astropy/wcs/docstrings.py"
+    ]
+   },
+   {
+    "instance_id": "django__django-12113",
+    "direction": "gained",
+    "class": "trace",
+    "n_trace_files": 11,
+    "fence_dominant": false,
+    "files_added": [
+     "django/apps/registry.py",
+     "django/db/backends/base/base.py",
+     "django/db/backends/mysql/base.py",
+     "django/db/backends/mysql/operations.py",
+     "django/db/backends/oracle/features.py",
+     "django/db/backends/postgresql/operations.py",
+     "django/db/backends/postgresql/schema.py",
+     "django/db/backends/sqlite3/base.py"
+    ],
+    "files_removed": [
+     "django/contrib/admin/sites.py",
+     "django/contrib/auth/admin.py",
+     "django/contrib/auth/backends.py",
+     "django/contrib/auth/base_user.py",
+     "django/contrib/auth/forms.py",
+     "django/contrib/auth/migrations/0001_initial.py",
+     "django/contrib/contenttypes/fields.py",
+     "django/core/management/base.py"
+    ]
+   },
+   {
+    "instance_id": "pylint-dev__pylint-7080",
+    "direction": "gained",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "pylint/__init__.py",
+     "pylint/checkers/__init__.py",
+     "pylint/checkers/base/name_checker/__init__.py",
+     "pylint/checkers/base_checker.py",
+     "pylint/checkers/spelling.py",
+     "pylint/checkers/typecheck.py",
+     "pylint/checkers/unsupported_version.py",
+     "pylint/checkers/utils.py"
+    ],
+    "files_removed": [
+     "pylint/__pkginfo__.py",
+     "pylint/checkers/base/basic_checker.py",
+     "pylint/checkers/classes/class_checker.py",
+     "pylint/checkers/design_analysis.py",
+     "pylint/checkers/refactoring/refactoring_checker.py",
+     "pylint/checkers/similar.py",
+     "pylint/checkers/stdlib.py",
+     "pylint/config/__init__.py"
+    ]
+   },
+   {
+    "instance_id": "pytest-dev__pytest-9359",
+    "direction": "lost",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "src/_pytest/assertion/truncate.py",
+     "src/_pytest/logging.py",
+     "src/_pytest/pytester_assertions.py",
+     "src/_pytest/tmpdir.py"
+    ],
+    "files_removed": [
+     "setup.py",
+     "src/_pytest/_code/source.py",
+     "src/_pytest/mark/__init__.py",
+     "src/_pytest/mark/structures.py"
+    ]
+   },
+   {
+    "instance_id": "sympy__sympy-13915",
+    "direction": "gained",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "sympy/calculus/util.py",
+     "sympy/codegen/ast.py",
+     "sympy/core/add.py",
+     "sympy/core/mul.py",
+     "sympy/core/power.py",
+     "sympy/core/relational.py",
+     "sympy/functions/elementary/piecewise.py",
+     "sympy/integrals/heurisch.py"
+    ],
+    "files_removed": [
+     "isympy.py",
+     "setup.py",
+     "sympy/__init__.py",
+     "sympy/core/__init__.py",
+     "sympy/core/compatibility.py",
+     "sympy/core/numbers.py",
+     "sympy/external/__init__.py",
+     "sympy/interactive/__init__.py"
+    ]
+   }
+  ],
+  "route070": [
+   {
+    "instance_id": "astropy__astropy-14182",
+    "direction": "gained",
+    "class": "trace+fence",
+    "n_trace_files": 5,
+    "fence_dominant": false,
+    "files_added": [
+     "astropy/io/ascii/mrt.py",
+     "astropy/io/ascii/rst.py",
+     "astropy/io/fits/util.py",
+     "astropy/io/registry/core.py",
+     "astropy/modeling/core.py",
+     "astropy/table/connect.py",
+     "astropy/table/info.py",
+     "astropy/table/row.py"
+    ],
+    "files_removed": [
+     "astropy/__init__.py",
+     "astropy/io/ascii/basic.py",
+     "astropy/io/ascii/daophot.py",
+     "astropy/io/ascii/qdp.py",
+     "astropy/io/fits/connect.py",
+     "astropy/io/registry/interface.py",
+     "astropy/utils/data.py",
+     "astropy/wcs/docstrings.py"
+    ]
+   },
+   {
+    "instance_id": "django__django-12113",
+    "direction": "gained",
+    "class": "trace",
+    "n_trace_files": 11,
+    "fence_dominant": false,
+    "files_added": [
+     "django/apps/registry.py",
+     "django/db/backends/base/base.py",
+     "django/db/backends/mysql/base.py",
+     "django/db/backends/mysql/operations.py",
+     "django/db/backends/oracle/features.py",
+     "django/db/backends/postgresql/operations.py",
+     "django/db/backends/postgresql/schema.py",
+     "django/db/backends/sqlite3/base.py"
+    ],
+    "files_removed": [
+     "django/contrib/admin/sites.py",
+     "django/contrib/auth/admin.py",
+     "django/contrib/auth/backends.py",
+     "django/contrib/auth/base_user.py",
+     "django/contrib/auth/forms.py",
+     "django/contrib/auth/migrations/0001_initial.py",
+     "django/contrib/contenttypes/fields.py",
+     "django/core/management/base.py"
+    ]
+   },
+   {
+    "instance_id": "pylint-dev__pylint-7080",
+    "direction": "gained",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "pylint/__init__.py",
+     "pylint/checkers/__init__.py",
+     "pylint/checkers/base/name_checker/__init__.py",
+     "pylint/checkers/base_checker.py",
+     "pylint/checkers/spelling.py",
+     "pylint/checkers/typecheck.py",
+     "pylint/checkers/unsupported_version.py",
+     "pylint/checkers/utils.py"
+    ],
+    "files_removed": [
+     "pylint/__pkginfo__.py",
+     "pylint/checkers/base/basic_checker.py",
+     "pylint/checkers/classes/class_checker.py",
+     "pylint/checkers/design_analysis.py",
+     "pylint/checkers/refactoring/refactoring_checker.py",
+     "pylint/checkers/similar.py",
+     "pylint/checkers/stdlib.py",
+     "pylint/config/__init__.py"
+    ]
+   },
+   {
+    "instance_id": "pytest-dev__pytest-9359",
+    "direction": "lost",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "src/_pytest/assertion/truncate.py",
+     "src/_pytest/logging.py",
+     "src/_pytest/pytester_assertions.py",
+     "src/_pytest/tmpdir.py"
+    ],
+    "files_removed": [
+     "setup.py",
+     "src/_pytest/_code/source.py",
+     "src/_pytest/mark/__init__.py",
+     "src/_pytest/mark/structures.py"
+    ]
+   },
+   {
+    "instance_id": "sympy__sympy-13915",
+    "direction": "gained",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "sympy/calculus/util.py",
+     "sympy/codegen/ast.py",
+     "sympy/core/add.py",
+     "sympy/core/mul.py",
+     "sympy/core/power.py",
+     "sympy/core/relational.py",
+     "sympy/functions/elementary/piecewise.py",
+     "sympy/integrals/heurisch.py"
+    ],
+    "files_removed": [
+     "isympy.py",
+     "setup.py",
+     "sympy/__init__.py",
+     "sympy/core/__init__.py",
+     "sympy/core/compatibility.py",
+     "sympy/core/numbers.py",
+     "sympy/external/__init__.py",
+     "sympy/interactive/__init__.py"
+    ]
+   }
+  ]
+ }
+}
