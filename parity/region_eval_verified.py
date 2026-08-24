@@ -179,6 +179,8 @@ def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: f
     stats = obj.get("stats", {})
     rec["engine_sha"] = stats.get("engine_sha")
     rec["engine_dirty"] = stats.get("engine_dirty")
+    # E11: routing diagnostics (present only under --route; None otherwise).
+    rec["route"] = stats.get("route")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]
@@ -243,6 +245,13 @@ def main() -> None:
     ap.add_argument("--max-siblings", type=int, default=0,
                      help="passthrough to roust's --max-siblings (E18 cap); 0 (default) omits "
                           "the flag (binary default: 3)")
+    ap.add_argument("--route", action="store_true",
+                     help="passthrough to roust's --route (E11 structure-aware query routing); "
+                          "omitted by default (binary default: off)")
+    ap.add_argument("--route-test-penalty", type=float, default=0.0,
+                     help="passthrough to roust's --route-test-penalty (E11 conditional "
+                          "test-path downweight); 0.0 (default) omits the flag, i.e. the "
+                          "binary's own default (0.85); only meaningful with --route")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -264,6 +273,11 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.extend(["--sibling-sim", str(args.sibling_sim)])
     if args.max_siblings != 0:
         EXTRA_ENGINE_FLAGS.extend(["--max-siblings", str(args.max_siblings)])
+    # E11 passthrough, same EXTRA_ENGINE_FLAGS mechanism.
+    if args.route:
+        EXTRA_ENGINE_FLAGS.append("--route")
+    if args.route_test_penalty != 0.0:
+        EXTRA_ENGINE_FLAGS.extend(["--route-test-penalty", str(args.route_test_penalty)])
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 

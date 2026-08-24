@@ -31,7 +31,7 @@
 use roust::cache;
 use roust::core::{
     anchor_def_symbols, extract_symbol_anchors, is_low_confidence, pack_regions, query_term_coverage, query_terms,
-    select_files, SelectParams,
+    route_query, select_files, RoutedQuery, SelectParams,
 };
 use clap::Parser;
 use std::collections::HashSet;
@@ -157,6 +157,26 @@ struct Args {
     /// --sibling-sim > 0)
     #[arg(long, default_value_t = 3)]
     max_siblings: usize,
+
+    /// E11 (campaign #4 wave 5): deterministic structure-aware query
+    /// routing. Partitions the issue text into {traceback, code-fence,
+    /// prose} channels: traceback blocks are mined for frame files /
+    /// function names / exception + message (frame-named files get a
+    /// rank-decayed additive FILE boost, BRTracer-style, with 0.1 import
+    /// spillover) and the raw block is dropped as bulk text; fenced/REPL/
+    /// indented code blocks are mined for identifiers then dropped
+    /// (mine-then-discard); prose-only queries are byte-identical to the
+    /// unrouted engine. Default OFF: byte-identical to the engine without
+    /// this flag.
+    #[arg(long)]
+    route: bool,
+
+    /// E11 conditional test/example-path downweight (Kim & Lee): multiplier
+    /// applied to test/docs/example-shaped file paths ONLY when the query's
+    /// fence-mined terms are a strict majority of its term list (never for
+    /// prose or trace-dominated queries). Only meaningful with --route.
+    #[arg(long, default_value_t = 0.85)]
+    route_test_penalty: f64,
 }
 
 fn main() {
@@ -178,6 +198,10 @@ fn main() {
         eprintln!("roust: error: --sibling-sim must be in [0, 1]");
         std::process::exit(2);
     }
+    if !args.route_test_penalty.is_finite() || !(0.0..=1.0).contains(&args.route_test_penalty) {
+        eprintln!("roust: error: --route-test-penalty must be in [0, 1]");
+        std::process::exit(2);
+    }
 
     let repo_path = PathBuf::from(&args.path);
     if !repo_path.is_dir() {
@@ -197,7 +221,14 @@ fn main() {
     let index_ms = t0.elapsed().as_secs_f64() * 1000.0;
 
     let t1 = Instant::now();
-    let terms = query_terms(&args.query, &[]);
+    // E11 routing (--route): structure-aware query treatment. The default
+    // path calls query_terms directly and never constructs a RoutedQuery,
+    // keeping defaults byte-identical to the pre-E11 engine.
+    let routed: Option<RoutedQuery> = if args.route { Some(route_query(&args.query, &corpus)) } else { None };
+    let terms = match &routed {
+        Some(rq) => rq.terms.clone(),
+        None => query_terms(&args.query, &[]),
+    };
     let (matched_terms, total_terms) = query_term_coverage(&corpus, &terms);
     let zero_match = matched_terms == 0;
     let anchors = if use_anchors { Some(extract_symbol_anchors(&args.query, &corpus)) } else { None };
@@ -212,6 +243,14 @@ fn main() {
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,
+        trace_files: routed
+            .as_ref()
+            .filter(|rq| !rq.trace_files.is_empty())
+            .map(|rq| rq.trace_files.as_slice()),
+        test_penalty: match &routed {
+            Some(rq) if rq.fence_dominant => args.route_test_penalty,
+            _ => 1.0,
+        },
         ..Default::default()
     };
     let (mut files, scores, explain) = select_files(&corpus, &terms, true, &params);
@@ -268,6 +307,21 @@ fn main() {
     });
     if low_confidence {
         stats["low_confidence"] = serde_json::json!(true);
+    }
+    if let Some(rq) = &routed {
+        // Present only under --route (defaults stay byte-identical): the
+        // per-query class + channel term counts + resolved trace files +
+        // whether the conditional test penalty fired, for the E11 gate's
+        // smoke checks and class-conditional scoring.
+        stats["route"] = serde_json::json!({
+            "class": rq.class(),
+            "fence_dominant": rq.fence_dominant,
+            "test_penalty_applied": rq.fence_dominant,
+            "trace_files": rq.trace_files,
+            "n_prose_terms": rq.n_prose_terms,
+            "n_trace_terms": rq.n_trace_terms,
+            "n_fence_terms": rq.n_fence_terms,
+        });
     }
 
     if !packed_files.is_empty() {

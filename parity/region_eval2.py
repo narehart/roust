@@ -150,8 +150,17 @@ def check_engine_provenance(allow_stale: bool) -> str:
 
 def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
               len_exp: float = 1.0, family_enum: bool = False, sibling_sim: float = 0.0,
-              max_siblings: int = 0) -> tuple[dict | None, str | None]:
+              max_siblings: int = 0, route: bool = False,
+              route_test_penalty: float = 0.0) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
+    if route:
+        # E11 (campaign #4 wave 5): structure-aware query routing. Omitted
+        # (the default) -> the binary's own default (off).
+        argv += ["--route"]
+    if route_test_penalty != 0.0:
+        # 0.0 (default) is this script's "omit the flag" sentinel -> the
+        # binary's own default (0.85); only meaningful together with --route.
+        argv += ["--route-test-penalty", str(route_test_penalty)]
     if family_enum:
         # E19 (campaign #4 wave 5): def-name-family sibling enumeration.
         # Omitted (the default) -> the binary's own default (off).
@@ -230,7 +239,8 @@ def load_lite_rows(limit: int) -> list[dict]:
 
 def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: float = 1.0,
                        family_enum: bool = False, sibling_sim: float = 0.0,
-                       max_siblings: int = 0, repos_dir: Path | None = None) -> dict:
+                       max_siblings: int = 0, repos_dir: Path | None = None,
+                       route: bool = False, route_test_penalty: float = 0.0) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -257,7 +267,7 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
         return rec
 
     obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp,
-                         family_enum, sibling_sim, max_siblings)
+                         family_enum, sibling_sim, max_siblings, route, route_test_penalty)
     if err:
         rec["error"] = err
         return rec
@@ -269,6 +279,10 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
     stats = obj.get("stats", {})
     rec["engine_sha"] = stats.get("engine_sha")
     rec["engine_dirty"] = stats.get("engine_dirty")
+    # E11: per-query routing diagnostics (class, channel term counts,
+    # resolved trace files) -- present only when --route was passed; None
+    # otherwise. Consumed by the class-conditional scoring step.
+    rec["route"] = stats.get("route")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]
@@ -334,6 +348,13 @@ def main() -> None:
     ap.add_argument("--max-siblings", type=int, default=0,
                      help="passthrough to roust's --max-siblings (E18 cap); 0 (default) omits "
                           "the flag, i.e. the binary's own default (3)")
+    ap.add_argument("--route", action="store_true",
+                     help="passthrough to roust's --route (E11 structure-aware query routing); "
+                          "omitted by default (binary default: off)")
+    ap.add_argument("--route-test-penalty", type=float, default=0.0,
+                     help="passthrough to roust's --route-test-penalty (E11 conditional "
+                          "test-path downweight); 0.0 (default) omits the flag, i.e. the "
+                          "binary's own default (0.85); only meaningful with --route")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -367,7 +388,7 @@ def main() -> None:
         for i, row in enumerate(rows, 1):
             rec = eval_lite_instance(row, args.timeout, args.pad_lines, args.len_exp,
                                      args.family_enum, args.sibling_sim, args.max_siblings,
-                                     args.repos_dir)
+                                     args.repos_dir, args.route, args.route_test_penalty)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

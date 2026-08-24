@@ -262,6 +262,436 @@ pub fn query_term_coverage(corpus: &Corpus, terms: &[String]) -> (usize, usize) 
     (matched, terms.len())
 }
 
+// ---------------------------------------------------------------- E11 query routing
+
+// Traceback channel (BLIZZARD BR_ST / BRTracer, campaign #4 E11): the block
+// classifier is line-based and purely regex-driven -- no heuristics that
+// depend on surrounding markdown. Python tracebacks only (the SWE-bench
+// corpus is Python; other languages fall through to prose, today's
+// treatment).
+static TB_HEADER_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^\s*Traceback \(most recent call last\):\s*$").unwrap());
+static TB_CHAIN_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r"^\s*(?:During handling of the above exception, another exception occurred:|The above exception was the direct cause of the following exception:)\s*$",
+    )
+    .unwrap()
+});
+static TB_FRAME_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r#"^\s*File "([^"]+)", line \d+(?:, in (\S.*))?\s*$"#).unwrap());
+// Exception line: `Name: message`, `pkg.mod.Name: message`, or a bare
+// exception name. Anchored on the conventional exception-class suffixes plus
+// the stdlib's suffix-less builtins, so ordinary prose ("Note: ..." etc.)
+// never matches.
+static TB_EXC_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r"^\s*(?:[A-Za-z_][\w.]*\.)?([A-Za-z_]\w*(?:Error|Exception|Warning)|KeyboardInterrupt|SystemExit|StopIteration|StopAsyncIteration|GeneratorExit)\b:?\s*(.*)$",
+    )
+    .unwrap()
+});
+
+// Code-fence channel (Chaparro part-selection / BLIZZARD BR_PE): markdown
+// fences, doctest/REPL lines, and 4-space/tab-indented code runs.
+static FENCE_DELIM_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*(?:```|~~~)").unwrap());
+static REPL_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*>>>").unwrap());
+static REPL_CONT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*\.\.\.(?:\s|$)").unwrap());
+static INDENT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^(?:\t| {4,})").unwrap());
+// First line of an indented run must look like code, not an indented quote /
+// list continuation, before the run is claimed for the fence channel.
+static INDENT_CODE_START_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r#"^\s*(?:from\s+\S+\s+import\s|import\s+\w|(?:async\s+)?def\s+\w|class\s+\w|@\w|[A-Za-z_][\w.\[\]'"]*\s*=[^=]|[A-Za-z_][\w.]*\(|with\s+\w|for\s+\w|if\s+\w|try\s*:|while\s+\w|return\s|raise\s|print\()"#,
+    )
+    .unwrap()
+});
+
+// Identifier mining inside structured blocks (mine-then-discard): only
+// tokens in code-identifier POSITIONS survive -- def/class/import names,
+// call targets, attribute accesses, assignment LHS. Bulk fence text
+// (comments, string literals, output values, plain words) is dropped.
+static MINE_DEF_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?:^|\s)(?:async\s+def|def|class)\s+([A-Za-z_]\w*)").unwrap());
+static MINE_IMPORT_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?:^|\s)(?:from|import)\s+([A-Za-z_][\w.]*)").unwrap());
+static MINE_CALL_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([A-Za-z_]\w*)\s*\(").unwrap());
+static MINE_ATTR_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\.([A-Za-z_]\w*)").unwrap());
+static MINE_ASSIGN_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?:^|[\s,(])([A-Za-z_]\w*)\s*=[^=]").unwrap());
+
+/// Python keywords + ubiquitous builtins excluded from mined identifiers
+/// (raw, pre-tokenize names -- distinct from the stemmed STOP set, which
+/// still applies downstream via `tokenize`).
+static ROUTE_KW: LazyLock<HashSet<&'static str>> = LazyLock::new(|| {
+    [
+        "and", "or", "not", "if", "else", "elif", "for", "while", "def", "class", "return",
+        "import", "from", "with", "as", "try", "except", "finally", "raise", "lambda", "pass",
+        "break", "continue", "global", "nonlocal", "assert", "yield", "del", "in", "is", "None",
+        "True", "False", "self", "cls", "print", "len", "range", "isinstance", "super", "object",
+        "async", "await",
+    ]
+    .into_iter()
+    .collect()
+});
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum Chan {
+    Prose,
+    Trace,
+    Fence,
+}
+
+/// E11 routed query: per-class query treatment plus the trace-frame file
+/// channel. Produced only under `--route`; the default pipeline never calls
+/// this.
+#[derive(Debug, Default)]
+pub struct RoutedQuery {
+    /// Deduped query terms, assembled prose-first, then trace-mined, then
+    /// fence-mined (provenance = first channel that contributed the term).
+    pub terms: Vec<String>,
+    /// Repo-relative files resolved from traceback frames, deduped, best
+    /// rank first (rank 1 = the raise site, i.e. Python's LAST frame --
+    /// BRTracer's top-of-stack semantics transposed to Python frame order).
+    pub trace_files: Vec<String>,
+    pub trace_bearing: bool,
+    pub fence_bearing: bool,
+    /// Kim & Lee conditional: fence-mined terms are a strict majority of the
+    /// deduped query-term list. Gates the test-path penalty in
+    /// `select_files`; never true for prose-only or trace-dominated queries.
+    pub fence_dominant: bool,
+    pub n_prose_terms: usize,
+    pub n_trace_terms: usize,
+    pub n_fence_terms: usize,
+}
+
+impl RoutedQuery {
+    pub fn class(&self) -> &'static str {
+        match (self.trace_bearing, self.fence_bearing) {
+            (true, true) => "trace+fence",
+            (true, false) => "trace",
+            (false, true) => "fence",
+            (false, false) => "prose",
+        }
+    }
+}
+
+/// Line-channel partition: traceback blocks claimed first (precedence per
+/// block type -- a traceback inside a fence is treated as trace), then
+/// fenced blocks / REPL lines / indented code runs.
+fn partition_channels(lines: &[&str]) -> Vec<Chan> {
+    let n = lines.len();
+    let mut chan = vec![Chan::Prose; n];
+
+    // Pass 1: traceback blocks.
+    let mut i = 0;
+    while i < n {
+        if !(TB_HEADER_RE.is_match(&lines[i]) || TB_FRAME_RE.is_match(&lines[i])) {
+            i += 1;
+            continue;
+        }
+        chan[i] = Chan::Trace;
+        let mut context_left = if TB_FRAME_RE.is_match(&lines[i]) { 2usize } else { 0 };
+        let mut j = i + 1;
+        while j < n {
+            let lj = &lines[j];
+            if TB_FRAME_RE.is_match(lj) {
+                chan[j] = Chan::Trace;
+                context_left = 2;
+                j += 1;
+                continue;
+            }
+            if TB_HEADER_RE.is_match(lj) || TB_CHAIN_RE.is_match(lj) {
+                chan[j] = Chan::Trace;
+                context_left = 0;
+                j += 1;
+                continue;
+            }
+            if lj.trim().is_empty() {
+                // Blank lines separate chained tracebacks; consume them only
+                // when the next non-blank line continues the trace.
+                let mut k = j;
+                while k < n && lines[k].trim().is_empty() {
+                    k += 1;
+                }
+                if k < n && (TB_HEADER_RE.is_match(&lines[k]) || TB_CHAIN_RE.is_match(&lines[k])) {
+                    for m in j..k {
+                        chan[m] = Chan::Trace;
+                    }
+                    context_left = 0;
+                    j = k;
+                    continue;
+                }
+                break;
+            }
+            if TB_EXC_RE.is_match(lj) && !lj.starts_with(' ') && !lj.starts_with('\t') {
+                // Exception line at the block's own indentation ends it.
+                chan[j] = Chan::Trace;
+                j += 1;
+                break;
+            }
+            if context_left > 0 && (lj.starts_with(' ') || lj.starts_with('\t')) {
+                // Source-context line under a frame (plus a possible py3.11+
+                // `~~~^^^` marker line); bounded so a partial frame paste
+                // can't swallow a following code block.
+                chan[j] = Chan::Trace;
+                context_left -= 1;
+                j += 1;
+                continue;
+            }
+            break;
+        }
+        i = j;
+    }
+
+    // Pass 2: fenced blocks (toggle), REPL lines, indented code runs.
+    let mut in_fence = false;
+    let mut prev_repl = false;
+    let mut i = 0;
+    while i < n {
+        if chan[i] == Chan::Trace {
+            // A trace block inside a fence: the fence stays open across it.
+            prev_repl = false;
+            i += 1;
+            continue;
+        }
+        let l = &lines[i];
+        if FENCE_DELIM_RE.is_match(l) {
+            chan[i] = Chan::Fence;
+            in_fence = !in_fence;
+            prev_repl = false;
+            i += 1;
+            continue;
+        }
+        if in_fence {
+            chan[i] = Chan::Fence;
+            i += 1;
+            continue;
+        }
+        if REPL_RE.is_match(l) || (prev_repl && REPL_CONT_RE.is_match(l)) {
+            chan[i] = Chan::Fence;
+            prev_repl = true;
+            i += 1;
+            continue;
+        }
+        prev_repl = false;
+        if INDENT_RE.is_match(l) && INDENT_CODE_START_RE.is_match(l.trim_start()) {
+            // Indented code run: claim while lines stay indented (interior
+            // blank lines allowed when followed by another indented line).
+            chan[i] = Chan::Fence;
+            let mut j = i + 1;
+            while j < n && chan[j] != Chan::Trace {
+                if INDENT_RE.is_match(&lines[j]) {
+                    chan[j] = Chan::Fence;
+                    j += 1;
+                } else if lines[j].trim().is_empty()
+                    && j + 1 < n
+                    && chan[j + 1] != Chan::Trace
+                    && INDENT_RE.is_match(&lines[j + 1])
+                {
+                    chan[j] = Chan::Fence;
+                    j += 1;
+                } else {
+                    break;
+                }
+            }
+            i = j;
+            continue;
+        }
+        i += 1;
+    }
+
+    chan
+}
+
+/// Mine code identifiers from structured-block text, in document order,
+/// deduped, keyword-filtered. The bulk text is then DISCARDED as query
+/// material (Chaparro/BLIZZARD mine-then-discard).
+fn mine_code_identifiers(text: &str) -> Vec<String> {
+    let mut seen: HashSet<String> = HashSet::new();
+    let mut out: Vec<String> = Vec::new();
+    let push = |name: &str, seen: &mut HashSet<String>, out: &mut Vec<String>| {
+        if name.is_empty() || ROUTE_KW.contains(name) {
+            return;
+        }
+        if seen.insert(name.to_string()) {
+            out.push(name.to_string());
+        }
+    };
+    for line in py_splitlines(text) {
+        for cap in MINE_DEF_RE.captures_iter(&line) {
+            push(cap.get(1).unwrap().as_str(), &mut seen, &mut out);
+        }
+        for cap in MINE_IMPORT_RE.captures_iter(&line) {
+            push(cap.get(1).unwrap().as_str(), &mut seen, &mut out);
+        }
+        for cap in MINE_CALL_RE.captures_iter(&line) {
+            push(cap.get(1).unwrap().as_str(), &mut seen, &mut out);
+        }
+        for cap in MINE_ATTR_RE.captures_iter(&line) {
+            push(cap.get(1).unwrap().as_str(), &mut seen, &mut out);
+        }
+        for cap in MINE_ASSIGN_RE.captures_iter(&line) {
+            push(cap.get(1).unwrap().as_str(), &mut seen, &mut out);
+        }
+    }
+    out
+}
+
+/// Resolve a traceback frame path to a repo-relative corpus file by longest
+/// trailing-path-component match (>= 2 shared components, or an exact
+/// relative-path match). Ties broken by longest rel, then lexicographically
+/// smallest. Returns None for paths outside the repo (user repro scripts,
+/// stdlib frames).
+fn resolve_frame_path(frame_path: &str, corpus: &Corpus) -> Option<String> {
+    let norm = frame_path.replace('\\', "/");
+    let fparts: Vec<&str> = norm.split('/').filter(|p| !p.is_empty()).collect();
+    if fparts.is_empty() {
+        return None;
+    }
+    let mut best: Option<(usize, &String)> = None; // (shared components, rel)
+    for rel in &corpus.files {
+        let rparts: Vec<&str> = rel.split('/').collect();
+        let mut shared = 0usize;
+        while shared < rparts.len()
+            && shared < fparts.len()
+            && rparts[rparts.len() - 1 - shared] == fparts[fparts.len() - 1 - shared]
+        {
+            shared += 1;
+        }
+        let full_rel_match = shared == rparts.len();
+        if !(full_rel_match || shared >= 2) {
+            continue;
+        }
+        let better = match best {
+            None => true,
+            Some((bs, brel)) => {
+                shared > bs
+                    || (shared == bs
+                        && (rel.len() > brel.len() || (rel.len() == brel.len() && rel < brel)))
+            }
+        };
+        if better {
+            best = Some((shared, rel));
+        }
+    }
+    best.map(|(_, rel)| rel.clone())
+}
+
+/// E11 (campaign #4): deterministic structure-aware query routing.
+/// Partitions the issue text into {traceback, code-fence, prose} channels,
+/// applies per-class treatment (trace: extract frame identifiers +
+/// exception + message, resolve frame files for the FILE boost, discard the
+/// block as bulk text; fence: mine identifiers, discard the body; prose:
+/// byte-identical to `query_terms`). A query with neither structured
+/// channel returns EXACTLY `query_terms(question, &[])`.
+pub fn route_query(question: &str, corpus: &Corpus) -> RoutedQuery {
+    let lines = py_splitlines(question);
+    let chan = partition_channels(&lines);
+    let trace_bearing = chan.iter().any(|c| *c == Chan::Trace);
+    let fence_bearing = chan.iter().any(|c| *c == Chan::Fence);
+
+    if !trace_bearing && !fence_bearing {
+        let terms = query_terms(question, &[]);
+        let n = terms.len();
+        return RoutedQuery {
+            terms,
+            n_prose_terms: n,
+            ..Default::default()
+        };
+    }
+
+    // Channel texts.
+    let mut prose_lines: Vec<&str> = Vec::new();
+    let mut trace_lines: Vec<&str> = Vec::new();
+    let mut fence_lines: Vec<&str> = Vec::new();
+    for (i, l) in lines.iter().enumerate() {
+        match chan[i] {
+            Chan::Prose => prose_lines.push(*l),
+            Chan::Trace => trace_lines.push(*l),
+            Chan::Fence => fence_lines.push(*l),
+        }
+    }
+    let prose_text = prose_lines.join("\n");
+    let fence_text = fence_lines.join("\n");
+
+    // Trace treatment: frames in document order; extracted query material =
+    // frame function names + frame module basenames + exception names +
+    // error messages. The raw trace body is otherwise dropped.
+    let mut frame_paths: Vec<String> = Vec::new();
+    let mut trace_material: Vec<String> = Vec::new();
+    for l in &trace_lines {
+        if let Some(cap) = TB_FRAME_RE.captures(l) {
+            let path = cap.get(1).unwrap().as_str().to_string();
+            // Module-basename terms only for frames that resolve INTO the
+            // repo -- unresolved frames (user repro scripts, stdlib) would
+            // contribute junk tokens ("repro", "tmp", ...).
+            if resolve_frame_path(&path, corpus).is_some() {
+                if let Some(base) = path.replace('\\', "/").rsplit('/').next() {
+                    let stem_name = base.strip_suffix(".py").unwrap_or(base);
+                    trace_material.push(stem_name.to_string());
+                }
+            }
+            if let Some(func) = cap.get(2) {
+                let f = func.as_str().trim();
+                if f != "<module>" {
+                    trace_material.push(f.to_string());
+                }
+            }
+            frame_paths.push(path);
+        } else if let Some(cap) = TB_EXC_RE.captures(l) {
+            trace_material.push(cap.get(1).unwrap().as_str().to_string());
+            let msg = cap.get(2).map(|m| m.as_str()).unwrap_or("");
+            if !msg.is_empty() {
+                trace_material.push(msg.to_string());
+            }
+        }
+    }
+    let trace_text = trace_material.join(" ");
+
+    // Frame-file resolution, raise-site-first (reversed document order),
+    // deduped keeping best (earliest post-reversal) rank.
+    let mut trace_files: Vec<String> = Vec::new();
+    let mut seen_files: HashSet<String> = HashSet::new();
+    for path in frame_paths.iter().rev() {
+        if let Some(rel) = resolve_frame_path(path, corpus) {
+            if seen_files.insert(rel.clone()) {
+                trace_files.push(rel);
+            }
+        }
+    }
+
+    // Fence treatment: mine-then-discard.
+    let mined = mine_code_identifiers(&fence_text);
+    let mined_text = mined.join(" ");
+
+    // Term assembly: prose first, then trace, then fence; dedupe with
+    // first-channel provenance; same length/STOP gates as `query_terms`.
+    let mut seen: HashSet<String> = HashSet::new();
+    let mut terms: Vec<String> = Vec::new();
+    let mut counts = [0usize; 3];
+    for (ci, text) in [(0usize, prose_text.as_str()), (1, trace_text.as_str()), (2, mined_text.as_str())] {
+        for t in tokenize(text) {
+            if !seen.contains(&t) && t.chars().count() > 2 && !STOP.contains(t.as_str()) {
+                seen.insert(t.clone());
+                terms.push(t);
+                counts[ci] += 1;
+            }
+        }
+    }
+    let total = counts[0] + counts[1] + counts[2];
+    let fence_dominant = fence_bearing && total > 0 && counts[2] * 2 > total;
+
+    RoutedQuery {
+        terms,
+        trace_files,
+        trace_bearing,
+        fence_bearing,
+        fence_dominant,
+        n_prose_terms: counts[0],
+        n_trace_terms: counts[1],
+        n_fence_terms: counts[2],
+    }
+}
+
 /// Calibrated low-confidence gate (issue #25). `top_score` is the raw,
 /// pre-normalization top pooled BM25F score (`Explain::top_score`);
 /// `matched_terms`/`total_terms` come from `query_term_coverage`. Trips when
@@ -1846,6 +2276,14 @@ pub struct SelectParams<'a> {
     pub anchors: Option<&'a [(String, f64)]>,
     pub use_testbridge: bool,
     pub use_docsbridge: bool,
+    /// E11 trace-frame FILE channel: repo-relative files resolved from
+    /// traceback frames, best rank first (see `RoutedQuery::trace_files`).
+    /// None (default) = channel absent, byte-identical to pre-E11 ranking.
+    pub trace_files: Option<&'a [String]>,
+    /// E11 conditional test/example-path downweight (Kim & Lee): multiplies
+    /// the fused file score of TESTLIKE_RE-matching paths. 1.0 (default) =
+    /// off; the caller sets it < 1.0 ONLY for fence-dominant queries.
+    pub test_penalty: f64,
 }
 
 impl<'a> Default for SelectParams<'a> {
@@ -1858,6 +2296,8 @@ impl<'a> Default for SelectParams<'a> {
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
+            trace_files: None,
+            test_penalty: 1.0,
         }
     }
 }
@@ -1880,7 +2320,56 @@ pub fn select_files(
         return (Vec::new(), IndexMap::new(), Explain::default());
     }
     let top_score = bm.values().cloned().fold(0.0_f64, f64::max);
-    let bm_n = normalize(&bm);
+    let mut bm_n = normalize(&bm);
+
+    // E11 trace-frame FILE boost (BRTracer): rank-decayed additive channel
+    // on the NORMALIZED lexical score -- 1/rank for the top-10 frame files
+    // (rank 1 = raise site), 0.1 deeper, 0.1 spillover to files the frame
+    // files' own text imports (`file_import_targets`, directed). A frame
+    // file absent from the BM25 pool is INSERTED (score = boost alone):
+    // this is the one mechanism here that can rescue files with zero
+    // initial lexical presence. Iteration/insertion order is canonical
+    // (frame rank order, then sorted spillover set), and each file receives
+    // exactly one addition, so no float-summation order ambiguity exists.
+    if let Some(tfs) = params.trace_files {
+        if !tfs.is_empty() {
+            let pyidx = py_module_index(&corpus.files);
+            let fileset: HashSet<&String> = corpus.files.iter().collect();
+            let direct: HashSet<&str> = tfs.iter().map(|s| s.as_str()).collect();
+            let mut spill: BTreeSet<String> = BTreeSet::new();
+            for f in tfs.iter() {
+                if let Some(text) = corpus.text.get(f) {
+                    for t in file_import_targets(f, text, &pyidx, &fileset) {
+                        if !direct.contains(t.as_str()) {
+                            spill.insert(t);
+                        }
+                    }
+                }
+            }
+            for (i, f) in tfs.iter().enumerate() {
+                let b = if i < 10 { 1.0 / (i as f64 + 1.0) } else { 0.1 };
+                *bm_n.entry(f.clone()).or_insert(0.0) += b;
+            }
+            for f in spill {
+                *bm_n.entry(f).or_insert(0.0) += 0.1;
+            }
+        }
+    }
+
+    // E11 conditional test/example-path downweight (Kim & Lee): fires only
+    // when the caller set test_penalty < 1.0 (fence-dominant queries).
+    // Directly trace-boosted files are exempt -- the trace channel names
+    // them explicitly, which outranks the path-shape prior.
+    if params.test_penalty < 1.0 {
+        let direct: HashSet<&str> =
+            params.trace_files.map(|tfs| tfs.iter().map(|s| s.as_str()).collect()).unwrap_or_default();
+        for (f, v) in bm_n.iter_mut() {
+            if TESTLIKE_RE.is_match(f) && !direct.contains(f.as_str()) {
+                *v *= params.test_penalty;
+            }
+        }
+    }
+
     let mut ranked: Vec<(String, f64)> = bm_n.iter().map(|(k, v)| (k.clone(), *v)).collect();
     ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
     let best = ranked[0].1;
@@ -4491,6 +4980,186 @@ def omega_worker(pp):
             spans["mod.py"]
         );
 
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    // ------------------------------------------------------------ E11 routing
+
+    fn e11_corpus(tag: &str) -> (std::path::PathBuf, Corpus) {
+        let tmp = std::env::temp_dir().join(format!("roust_e11_{tag}_{}", std::process::id()));
+        std::fs::create_dir_all(tmp.join("pkg/sub")).unwrap();
+        std::fs::create_dir_all(tmp.join("tests")).unwrap();
+        // pkg/sub/engine.py: the trace-frame target; imports pkg/util.py.
+        std::fs::write(
+            tmp.join("pkg/sub/engine.py"),
+            "from pkg.util import helper_widget\n\ndef run_engine(payload):\n    return helper_widget(payload)\n",
+        )
+        .unwrap();
+        std::fs::write(
+            tmp.join("pkg/util.py"),
+            "def helper_widget(payload):\n    return payload\n",
+        )
+        .unwrap();
+        // A lexical decoy that mentions generic query vocabulary heavily.
+        std::fs::write(
+            tmp.join("pkg/decoy.py"),
+            "def crash_report_analysis():\n    crash = 'crash crash crash report report'\n    return crash\n",
+        )
+        .unwrap();
+        // Test-shaped file dense in fence-ish identifiers.
+        std::fs::write(
+            tmp.join("tests/test_widget.py"),
+            "def test_widget_frobnicate():\n    frobnicate_widget = 1\n    return frobnicate_widget\n",
+        )
+        .unwrap();
+        // Production file for the fence class.
+        std::fs::write(
+            tmp.join("pkg/widget.py"),
+            "def frobnicate_widget(x):\n    return x\n",
+        )
+        .unwrap();
+        let corpus = Corpus::build(&tmp, None, false, false);
+        (tmp, corpus)
+    }
+
+    /// Prose-only queries must return EXACTLY query_terms(question) -- the
+    /// routed path is a no-op for the unstructured class.
+    #[test]
+    fn route_prose_only_matches_query_terms_exactly() {
+        let (tmp, corpus) = e11_corpus("prose");
+        let q = "The engine crashes when the payload widget is empty.\nPlease fix the crash in the report path.";
+        let rq = route_query(q, &corpus);
+        assert_eq!(rq.terms, query_terms(q, &[]));
+        assert_eq!(rq.class(), "prose");
+        assert!(rq.trace_files.is_empty());
+        assert!(!rq.fence_dominant);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Traceback treatment: frame files resolved raise-site-first by
+    /// trailing-component match; function names + exception + message kept
+    /// as terms; raw trace bulk (site-packages path junk, context code)
+    /// dropped.
+    #[test]
+    fn route_traceback_extracts_frames_and_drops_bulk() {
+        let (tmp, corpus) = e11_corpus("trace");
+        let q = concat!(
+            "Engine explodes on empty payload.\n",
+            "\n",
+            "Traceback (most recent call last):\n",
+            "  File \"/home/user/repro_zzqx.py\", line 3, in <module>\n",
+            "    run_engine(None)\n",
+            "  File \"/usr/lib/python3.9/site-packages/pkg/sub/engine.py\", line 4, in run_engine\n",
+            "    return helper_widget(payload)\n",
+            "ValueError: payload frobnality must not be empty\n",
+        );
+        let rq = route_query(q, &corpus);
+        assert_eq!(rq.class(), "trace");
+        // raise-site frame resolved (2+ trailing components), repro script skipped
+        assert_eq!(rq.trace_files, vec!["pkg/sub/engine.py".to_string()]);
+        // exception name + message + frame function terms present
+        assert!(rq.terms.contains(&stem("valueerror")), "exception name kept: {:?}", rq.terms);
+        assert!(rq.terms.iter().any(|t| t.starts_with("frobnal")), "message kept: {:?}", rq.terms);
+        assert!(rq.terms.contains(&"run_engin".to_string()), "frame function kept: {:?}", rq.terms);
+        // trace bulk dropped: the repro filename token appears nowhere
+        assert!(!rq.terms.iter().any(|t| t.contains("zzqx")), "trace bulk dropped: {:?}", rq.terms);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Fence treatment: identifiers mined (call targets, attributes,
+    /// assignment LHS), bulk fence text (comments/strings) discarded;
+    /// fence_dominant flips when mined terms are a strict majority.
+    #[test]
+    fn route_fence_mines_identifiers_discards_bulk() {
+        let (tmp, corpus) = e11_corpus("fence");
+        let q = concat!(
+            "Crash here.\n",
+            "```python\n",
+            "w = frobnicate_widget(3)\n",
+            "w.payload_slot = 1  # some ordinary commentary vocabulary garbanzo\n",
+            "```\n",
+        );
+        let rq = route_query(q, &corpus);
+        assert_eq!(rq.class(), "fence");
+        assert!(rq.terms.iter().any(|t| t.contains("frobnic")), "call target mined: {:?}", rq.terms);
+        assert!(rq.terms.iter().any(|t| t.contains("payload_slot") || t.contains("slot")), "attr mined: {:?}", rq.terms);
+        // comment bulk dropped
+        assert!(!rq.terms.iter().any(|t| t.contains("garbanzo")), "fence bulk dropped: {:?}", rq.terms);
+        assert!(rq.fence_dominant, "fence terms are the majority here");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// REPL (>>>) lines are fence-channel even without markdown fences.
+    #[test]
+    fn route_repl_lines_are_fence_channel() {
+        let (tmp, corpus) = e11_corpus("repl");
+        let q = "Wrong result:\n>>> frobnicate_widget(2).payload_slot\n0\n";
+        let rq = route_query(q, &corpus);
+        assert!(rq.fence_bearing);
+        assert!(rq.terms.iter().any(|t| t.contains("frobnic")), "{:?}", rq.terms);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// The trace FILE boost must rescue a frame-named file with ZERO
+    /// query-term overlap (E-class rescue) and rank it first; the import
+    /// spillover must pull the frame file's own import target into the pool.
+    #[test]
+    fn select_files_trace_boost_rescues_and_spills() {
+        let (tmp, corpus) = e11_corpus("boost");
+        // Query terms deliberately match ONLY the decoy.
+        let terms = query_terms("crash report analysis", &[]);
+        let baseline = select_files(&corpus, &terms, true, &SelectParams::default());
+        assert_eq!(baseline.0.first().map(String::as_str), Some("pkg/decoy.py"));
+
+        let tfs = vec!["pkg/sub/engine.py".to_string()];
+        let params = SelectParams { trace_files: Some(&tfs), ..Default::default() };
+        let (files, scores, _) = select_files(&corpus, &terms, true, &params);
+        // Rescue semantics: a zero-lexical-overlap frame file gets boost
+        // 1/1 = 1.0, TYING the normalized lexical max (additive-on-
+        // normalized, BRTracer); presence in the top of the ranked list is
+        // the rescue, strict rank-1 is not guaranteed.
+        let pos = files.iter().position(|f| f == "pkg/sub/engine.py");
+        assert!(pos.is_some_and(|p| p < 2), "frame file rescued into top-2: {files:?}");
+        // spillover: engine.py imports pkg/util.py -> present in the pool
+        assert!(scores.contains_key("pkg/util.py"), "import spillover scored: {:?}", scores.keys().collect::<Vec<_>>());
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// The conditional test penalty fires only when test_penalty < 1.0 and
+    /// only on TESTLIKE paths.
+    #[test]
+    fn select_files_test_penalty_downweights_testlike_paths() {
+        let (tmp, corpus) = e11_corpus("penalty");
+        let terms = query_terms("frobnicate widget payload", &[]);
+        let off = select_files(&corpus, &terms, true, &SelectParams::default());
+        let on = select_files(
+            &corpus,
+            &terms,
+            true,
+            &SelectParams { test_penalty: 0.5, ..Default::default() },
+        );
+        let s_off = off.1.get("tests/test_widget.py").copied().unwrap();
+        let s_on = on.1.get("tests/test_widget.py").copied().unwrap();
+        assert!((s_on - s_off * 0.5).abs() < 1e-12, "testlike path halved: {s_off} -> {s_on}");
+        let p_off = off.1.get("pkg/widget.py").copied().unwrap();
+        let p_on = on.1.get("pkg/widget.py").copied().unwrap();
+        assert_eq!(p_off, p_on, "non-test path untouched");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Frame-path resolution: >= 2 trailing components required, src/
+    /// layout mismatches still resolve via the components that DO align.
+    #[test]
+    fn resolve_frame_path_component_semantics() {
+        let (tmp, corpus) = e11_corpus("resolve");
+        assert_eq!(
+            resolve_frame_path("/x/site-packages/pkg/sub/engine.py", &corpus),
+            Some("pkg/sub/engine.py".to_string())
+        );
+        // 1 shared component only -> unresolved
+        assert_eq!(resolve_frame_path("/somewhere/else/engine.py", &corpus), None);
+        // exact relative path -> resolved
+        assert_eq!(resolve_frame_path("pkg/util.py", &corpus), Some("pkg/util.py".to_string()));
         std::fs::remove_dir_all(&tmp).ok();
     }
 }
