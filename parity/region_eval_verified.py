@@ -255,8 +255,11 @@ def main() -> None:
                      help="passthrough to roust's --lexboost-graph (import|knn); empty (default) "
                           "omits the flag (binary default: import); only meaningful with --lexboost")
     ap.add_argument("--trace-boost", action="store_true",
-                     help="passthrough to roust's --trace-boost (E11b trace-frame FILE boost, "
-                          "query text untouched); omitted by default (binary default: off)")
+                     help="passthrough to roust's --trace-boost (E11b trace-frame FILE boost); "
+                          "ADOPTED as the binary default (PR #52), redundant-but-accepted")
+    ap.add_argument("--no-trace-boost", action="store_true",
+                     help="passthrough to roust's --no-trace-boost (disable the adopted E11b "
+                          "boost; reproduces the pre-PR-#52 engine byte-identically)")
     ap.add_argument("--route", action="store_true",
                      help="passthrough to roust's --route (E11 structure-aware query routing); "
                           "omitted by default (binary default: off)")
@@ -296,6 +299,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.extend(["--lexboost-graph", args.lexboost_graph])
     if args.trace_boost:
         EXTRA_ENGINE_FLAGS.append("--trace-boost")
+    if args.no_trace_boost:
+        EXTRA_ENGINE_FLAGS.append("--no-trace-boost")
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 

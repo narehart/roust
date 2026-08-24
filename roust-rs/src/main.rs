@@ -179,16 +179,23 @@ struct Args {
     #[arg(long, default_value_t = 0.85)]
     route_test_penalty: f64,
 
-    /// E11b (campaign #4 wave 5): trace-frame FILE boost ONLY -- the E11
-    /// sub-mechanism that survived the dual gate. Files named in the
-    /// issue's traceback frames (resolved into the repo) receive the
+    /// E11b trace-frame FILE boost -- ADOPTED as the engine default
+    /// (campaign #4 wave 5, PR #52, user-approved 2026-08-24). Files named
+    /// in the issue's traceback frames (resolved into the repo) receive the
     /// rank-decayed additive FILE boost (1/rank for the top-10 frames,
     /// raise-site first; 0.1 deeper; 0.1 import spillover). The query TEXT
-    /// is byte-untouched -- no term mining, no discarding (unlike --route,
-    /// with which this flag is mutually exclusive). Default OFF:
-    /// byte-identical to the engine without this flag.
+    /// is byte-untouched -- no term mining, no discarding. ON by default;
+    /// passing this flag explicitly is accepted-but-redundant (kept for
+    /// harness compatibility). Disable with --no-trace-boost. Mutually
+    /// exclusive with --route, which applies its own trace handling.
     #[arg(long)]
     trace_boost: bool,
+
+    /// disable the E11b trace-frame FILE boost (reproduces the
+    /// pre-adoption engine byte-identically; also implied by --route,
+    /// whose rejected-experiment pipeline supplies its own trace channel)
+    #[arg(long)]
+    no_trace_boost: bool,
 
     /// E20 (campaign #4 wave 5): LexBoost neighbor score smoothing lambda
     /// (arXiv:2409.05882). Final file score = lambda*S + (1-lambda)*
@@ -242,6 +249,13 @@ fn main() {
         eprintln!("roust: error: --route and --trace-boost are mutually exclusive (--route already applies the trace-frame boost)");
         std::process::exit(2);
     }
+    if args.trace_boost && args.no_trace_boost {
+        eprintln!("roust: error: --trace-boost and --no-trace-boost are mutually exclusive");
+        std::process::exit(2);
+    }
+    // Trace boost is ON by default (adopted); --no-trace-boost disables it,
+    // and --route implies it off (route's own pipeline supplies trace_files).
+    let use_trace_boost = !args.no_trace_boost && !args.route;
 
     let repo_path = PathBuf::from(&args.path);
     if !repo_path.is_dir() {
@@ -287,11 +301,11 @@ fn main() {
         Some(rq) => rq.terms.clone(),
         None => query_terms(&args.query, &[]),
     };
-    // E11b (--trace-boost): trace-frame FILE extraction only; `terms` above
-    // is untouched (byte-identical query text). Mutually exclusive with
-    // --route (validated at startup).
+    // E11b trace-frame FILE extraction (adopted default; see
+    // use_trace_boost above); `terms` above is untouched (byte-identical
+    // query text).
     let boost_files: Vec<String> =
-        if args.trace_boost { trace_frame_files(&args.query, &corpus) } else { Vec::new() };
+        if use_trace_boost { trace_frame_files(&args.query, &corpus) } else { Vec::new() };
     let (matched_terms, total_terms) = query_term_coverage(&corpus, &terms);
     let zero_match = matched_terms == 0;
     let anchors = if use_anchors { Some(extract_symbol_anchors(&args.query, &corpus)) } else { None };
@@ -310,7 +324,7 @@ fn main() {
             .as_ref()
             .filter(|rq| !rq.trace_files.is_empty())
             .map(|rq| rq.trace_files.as_slice())
-            .or(if args.trace_boost && !boost_files.is_empty() { Some(boost_files.as_slice()) } else { None }),
+            .or(if use_trace_boost && !boost_files.is_empty() { Some(boost_files.as_slice()) } else { None }),
         test_penalty: match &routed {
             Some(rq) if rq.fence_dominant => args.route_test_penalty,
             _ => 1.0,
@@ -390,11 +404,11 @@ fn main() {
             "n_fence_terms": rq.n_fence_terms,
         });
     }
-    if args.trace_boost {
-        // Present only under --trace-boost (defaults stay byte-identical):
-        // the resolved frame files that received the E11b FILE boost,
-        // raise-site first -- consumed by the gate's flip itemization
-        // (frame rank per flip).
+    if use_trace_boost {
+        // Adopted default: the resolved frame files that received the E11b
+        // FILE boost, raise-site first -- consumed by the eval harness's
+        // flip itemization (frame rank per flip). Absent under
+        // --no-trace-boost / --route.
         stats["trace_boost"] = serde_json::json!({
             "trace_files": boost_files,
         });

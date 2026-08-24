@@ -165,7 +165,8 @@ adoption blocker, but a real per-query tax at django scale.
   hub handling that does not zero gold-heavy central files, e.g.
   degree-capped mean instead of exclusion) would need its own full dual
   gate.
-- **E11b trace-boost — ADOPT-RECOMMEND (weak, clean).** Passes both gates
+- **E11b trace-boost — ADOPTED (user-approved 2026-08-24; was
+  ADOPT-RECOMMEND).** Passes both gates
   as specified: Lite is positive with guardrails intact (FUNCTION +1.33,
   4G/0L; LINE +0.67; fraction +.0083 with CI lower bound +.0000; FILE
   zero discordants), and Verified is non-negative in every cell with the
@@ -181,13 +182,42 @@ adoption blocker, but a real per-query tax at django scale.
   measured downside beyond two mild partial-line displacements, strictly
   additive, fires on only ~10–12% of instances (trace-bearing), provably
   byte-identical elsewhere, and zero query-time cost (a regex scan).
-  **Default-on change if adopted (NOT flipped in this branch):**
-  `--trace-boost` default true (or fold into the engine unconditionally,
-  keeping `--no-trace-boost` as the escape hatch; `--route` stays
-  rejected/off and mutually exclusive). Scoreboard deltas: Lite FUNCTION
-  53.33→54.67, LINE 42.67→43.33, fraction .5168→.5251, FILE unchanged
-  92.33; Verified FILE 92.14→92.38, LINE 35.38→35.63, fraction
+  **Default-on change (SHIPPED in this branch after user approval):**
+  trace boost is now the engine default; `--no-trace-boost` is the escape
+  hatch (reproduces the pre-adoption engine byte-identically);
+  `--trace-boost` remains accepted-but-redundant for harness
+  compatibility; `--route` stays rejected/off and implies the boost off
+  (its own pipeline supplies trace_files). Scoreboard deltas: Lite
+  FUNCTION 53.33→54.67, LINE 42.67→43.33, fraction .5168→.5251, FILE
+  unchanged 92.33; Verified FILE 92.14→92.38, LINE 35.38→35.63, fraction
   .4752→.4781, FUNCTION unchanged 47.17.
+
+## Adoption + v12 rebaseline (user-approved 2026-08-24)
+
+- **Default flip proof** (14 instances = one per repo x12 + django-12113 +
+  astropy-14182, md5 over files+regions+bundle, two runs per config):
+  (A) new-default binary == old default-off binary with explicit
+  `--trace-boost`, 14/14; (B) new binary `--no-trace-boost` == main
+  (`69aa161`) baseline binary, 14/14. The 12 non-trace instances hash
+  identically across ALL four configurations (the boost is a provable
+  no-op without resolvable frames).
+- **New engine reference (v12)**: `e20_traceboost.jsonl` /
+  `e20_verified_traceboost.jsonl` and their metric artifacts
+  (`agentless_metric_e20_traceboost.json`,
+  `agentless_metric_e20_verified_traceboost.json`) are the adopted-engine
+  reference going forward — **Lite 92.33 / 54.67 / 43.33 / .52510;
+  Verified 92.38 / 47.17 / 35.63 / .47810**. Future campaign rounds must
+  reproduce THESE numbers as their defaults baseline (superseding the
+  92.33/53.33/42.67/.51683 and 92.14/47.17/35.38/.47522 references).
+- **File@10 (depth-aligned)**: measured post-adoption over the 46
+  trace-firing Lite instances under both configs (all other instances are
+  byte-identical by the no-op proof): +2 gains
+  (matplotlib__matplotlib-23476, sympy__sympy-17630), 0 losses —
+  **File@10 82.7 (248/300, frozen v7) → 83.3 (250/300)**. Still below
+  SweRankEmbed-Small's 90.9 Acc@10; the scoreboard's conservative-framing
+  note is unchanged.
+- Region precision: .005399 → .005522 mean (packed lines/instance
+  ~1124→~1123, `agentless_metric_e20_traceboost.json`).
 
 ## Campaign notes
 
