@@ -16,6 +16,15 @@ regex = "1.13.0"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.150"
 tiktoken-rs = "0.6"
+# E23 (campaign #4 wave 5): tree-sitter structural blocks for the JS/TS
+# family (--ts-blocks, default OFF). Versions are PINNED EXACTLY: the
+# tree-sitter ecosystem's documented failure mode is core/grammar ABI drift
+# (tree-sitter#3095, zed#24632), and the field mitigation is pin-and-vendor
+# (difftastic) or a pinned pack (aider). Grammar updates are gated
+# dependency bumps, not routine upgrades.
+tree-sitter = "=0.26.13"
+tree-sitter-javascript = "=0.25.0"
+tree-sitter-typescript = "=0.23.2"
 
 [dev-dependencies]
 filetime = "0.2.29"

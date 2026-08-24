@@ -206,6 +206,16 @@ struct Args {
     #[arg(long, default_value_t = 0.0)]
     lexboost: f64,
 
+    /// E23 (campaign #4 wave 5): tree-sitter structural blocks for the
+    /// JS/TS family. With this flag, .js/.jsx/.ts/.tsx files get CST-walk
+    /// block candidates (functions, methods, classes, declarator-bound
+    /// arrow functions; same nested class-span + member-span shape
+    /// python_blocks emits for .py) in place of the fixed +/-30-line
+    /// windows. Python files are untouched. Default OFF: byte-identical
+    /// to the engine without this flag.
+    #[arg(long)]
+    ts_blocks: bool,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -362,6 +372,7 @@ fn main() {
         args.family_enum,
         args.sibling_sim,
         args.max_siblings,
+        args.ts_blocks,
     );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
