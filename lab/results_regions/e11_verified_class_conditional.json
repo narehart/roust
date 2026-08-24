@@ -1,0 +1,752 @@
+{
+ "n": 407,
+ "classes": {
+  "prose": {
+   "n": 122,
+   "baseline": {
+    "file": 93.44,
+    "function": 63.11,
+    "line": 45.08,
+    "fraction": 0.57897
+   },
+   "route085": {
+    "file": 93.44,
+    "function": 63.11,
+    "line": 45.08,
+    "fraction": 0.57897
+   },
+   "route070": {
+    "file": 93.44,
+    "function": 63.11,
+    "line": 45.08,
+    "fraction": 0.57897
+   },
+   "route085_vs_baseline": {
+    "file": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "line": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "route070_vs_baseline": {
+    "file": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "line": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "trace": {
+   "n": 4,
+   "baseline": {
+    "file": 100.0,
+    "function": 25.0,
+    "line": 25.0,
+    "fraction": 0.25
+   },
+   "route085": {
+    "file": 100.0,
+    "function": 0.0,
+    "line": 0.0,
+    "fraction": 0.0
+   },
+   "route070": {
+    "file": 100.0,
+    "function": 0.0,
+    "line": 0.0,
+    "fraction": 0.0
+   },
+   "route085_vs_baseline": {
+    "file": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": -25.0,
+     "ci95": [
+      -75.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "line": {
+     "delta": -25.0,
+     "ci95": [
+      -75.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": -0.25,
+     "ci95": [
+      -0.75,
+      0.0
+     ]
+    }
+   },
+   "route070_vs_baseline": {
+    "file": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 0,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": -25.0,
+     "ci95": [
+      -75.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "line": {
+     "delta": -25.0,
+     "ci95": [
+      -75.0,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": -0.25,
+     "ci95": [
+      -0.75,
+      0.0
+     ]
+    }
+   }
+  },
+  "fence": {
+   "n": 244,
+   "baseline": {
+    "file": 92.21,
+    "function": 38.93,
+    "line": 29.51,
+    "fraction": 0.4155
+   },
+   "route085": {
+    "file": 91.8,
+    "function": 37.3,
+    "line": 29.51,
+    "fraction": 0.41164
+   },
+   "route070": {
+    "file": 91.8,
+    "function": 37.3,
+    "line": 29.51,
+    "fraction": 0.41164
+   },
+   "route085_vs_baseline": {
+    "file": {
+     "delta": -0.41,
+     "ci95": [
+      -1.64,
+      0.82
+     ],
+     "n01": 1,
+     "n10": 2,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": -1.64,
+     "ci95": [
+      -4.51,
+      1.23
+     ],
+     "n01": 4,
+     "n10": 8,
+     "mcnemar_p": 0.3876953125
+    },
+    "line": {
+     "delta": 0.0,
+     "ci95": [
+      -2.05,
+      2.46
+     ],
+     "n01": 4,
+     "n10": 4,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": -0.00385,
+     "ci95": [
+      -0.02686,
+      0.01882
+     ]
+    }
+   },
+   "route070_vs_baseline": {
+    "file": {
+     "delta": -0.41,
+     "ci95": [
+      -1.64,
+      0.82
+     ],
+     "n01": 1,
+     "n10": 2,
+     "mcnemar_p": 1.0
+    },
+    "function": {
+     "delta": -1.64,
+     "ci95": [
+      -4.51,
+      1.23
+     ],
+     "n01": 4,
+     "n10": 8,
+     "mcnemar_p": 0.3876953125
+    },
+    "line": {
+     "delta": 0.0,
+     "ci95": [
+      -2.05,
+      2.46
+     ],
+     "n01": 4,
+     "n10": 4,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": -0.00385,
+     "ci95": [
+      -0.02686,
+      0.01882
+     ]
+    }
+   }
+  },
+  "trace+fence": {
+   "n": 37,
+   "baseline": {
+    "file": 86.49,
+    "function": 51.35,
+    "line": 43.24,
+    "fraction": 0.55127
+   },
+   "route085": {
+    "file": 91.89,
+    "function": 40.54,
+    "line": 40.54,
+    "fraction": 0.50714
+   },
+   "route070": {
+    "file": 91.89,
+    "function": 40.54,
+    "line": 40.54,
+    "fraction": 0.50714
+   },
+   "route085_vs_baseline": {
+    "file": {
+     "delta": 5.41,
+     "ci95": [
+      0.0,
+      13.51
+     ],
+     "n01": 2,
+     "n10": 0,
+     "mcnemar_p": 0.5
+    },
+    "function": {
+     "delta": -10.81,
+     "ci95": [
+      -21.62,
+      -2.7
+     ],
+     "n01": 0,
+     "n10": 4,
+     "mcnemar_p": 0.125
+    },
+    "line": {
+     "delta": -2.7,
+     "ci95": [
+      -8.11,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": -0.04412,
+     "ci95": [
+      -0.12065,
+      0.01681
+     ]
+    }
+   },
+   "route070_vs_baseline": {
+    "file": {
+     "delta": 5.41,
+     "ci95": [
+      0.0,
+      13.51
+     ],
+     "n01": 2,
+     "n10": 0,
+     "mcnemar_p": 0.5
+    },
+    "function": {
+     "delta": -10.81,
+     "ci95": [
+      -21.62,
+      -2.7
+     ],
+     "n01": 0,
+     "n10": 4,
+     "mcnemar_p": 0.125
+    },
+    "line": {
+     "delta": -2.7,
+     "ci95": [
+      -8.11,
+      0.0
+     ],
+     "n01": 0,
+     "n10": 1,
+     "mcnemar_p": 1.0
+    },
+    "fraction": {
+     "delta": -0.04412,
+     "ci95": [
+      -0.12065,
+      0.01681
+     ]
+    }
+   }
+  }
+ },
+ "aggregate": {
+  "n": 407,
+  "baseline": {
+   "file": 92.14,
+   "function": 47.17,
+   "line": 35.38,
+   "fraction": 0.47522
+  },
+  "route085": {
+   "file": 92.38,
+   "function": 44.96,
+   "line": 34.89,
+   "fraction": 0.46644
+  },
+  "route070": {
+   "file": 92.38,
+   "function": 44.96,
+   "line": 34.89,
+   "fraction": 0.46644
+  },
+  "route085_vs_baseline": {
+   "file": {
+    "delta": 0.25,
+    "ci95": [
+     -0.74,
+     1.23
+    ],
+    "n01": 3,
+    "n10": 2,
+    "mcnemar_p": 1.0
+   },
+   "function": {
+    "delta": -2.21,
+    "ci95": [
+     -4.18,
+     -0.25
+    ],
+    "n01": 4,
+    "n10": 13,
+    "mcnemar_p": 0.049041748046875
+   },
+   "line": {
+    "delta": -0.49,
+    "ci95": [
+     -1.97,
+     0.98
+    ],
+    "n01": 4,
+    "n10": 6,
+    "mcnemar_p": 0.75390625
+   },
+   "fraction": {
+    "delta": -0.00878,
+    "ci95": [
+     -0.02527,
+     0.00697
+    ]
+   }
+  },
+  "route070_vs_baseline": {
+   "file": {
+    "delta": 0.25,
+    "ci95": [
+     -0.74,
+     1.23
+    ],
+    "n01": 3,
+    "n10": 2,
+    "mcnemar_p": 1.0
+   },
+   "function": {
+    "delta": -2.21,
+    "ci95": [
+     -4.18,
+     -0.25
+    ],
+    "n01": 4,
+    "n10": 13,
+    "mcnemar_p": 0.049041748046875
+   },
+   "line": {
+    "delta": -0.49,
+    "ci95": [
+     -1.97,
+     0.98
+    ],
+    "n01": 4,
+    "n10": 6,
+    "mcnemar_p": 0.75390625
+   },
+   "fraction": {
+    "delta": -0.00878,
+    "ci95": [
+     -0.02527,
+     0.00697
+    ]
+   }
+  }
+ },
+ "file_flips": {
+  "route085": [
+   {
+    "instance_id": "pylint-dev__pylint-8898",
+    "direction": "gained",
+    "class": "trace+fence",
+    "n_trace_files": 5,
+    "fence_dominant": false,
+    "files_added": [
+     "pylint/checkers/similar.py",
+     "pylint/checkers/variables.py",
+     "pylint/config/exceptions.py",
+     "pylint/constants.py",
+     "pylint/typing.py",
+     "pylint/utils/__init__.py"
+    ],
+    "files_removed": [
+     "pylint/checkers/base/basic_checker.py",
+     "pylint/checkers/base/name_checker/checker.py",
+     "pylint/checkers/imports.py",
+     "pylint/config/_pylint_config/help_message.py",
+     "pylint/extensions/no_self_use.py",
+     "pylint/extensions/private_import.py",
+     "pylint/lint/expand_modules.py",
+     "pylint/lint/message_state_handler.py"
+    ]
+   },
+   {
+    "instance_id": "sphinx-doc__sphinx-7440",
+    "direction": "lost",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "sphinx/environment/collectors/__init__.py",
+     "sphinx/environment/collectors/metadata.py",
+     "sphinx/errors.py",
+     "sphinx/ext/intersphinx.py",
+     "sphinx/locale/__init__.py",
+     "sphinx/project.py",
+     "sphinx/setup_command.py",
+     "sphinx/themes/basic/static/underscore.js"
+    ],
+    "files_removed": [
+     "sphinx/builders/latex/__init__.py",
+     "sphinx/cmd/make_mode.py",
+     "sphinx/directives/__init__.py",
+     "sphinx/directives/other.py",
+     "sphinx/domains/std.py",
+     "sphinx/ext/autosectionlabel.py",
+     "sphinx/ext/napoleon/iterators.py",
+     "sphinx/util/docutils.py"
+    ]
+   },
+   {
+    "instance_id": "sphinx-doc__sphinx-8621",
+    "direction": "lost",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "sphinx/errors.py",
+     "sphinx/ext/autosummary/generate.py",
+     "sphinx/util/nodes.py"
+    ],
+    "files_removed": [
+     "sphinx/builders/html/transforms.py",
+     "sphinx/directives/__init__.py",
+     "sphinx/ext/doctest.py",
+     "sphinx/parsers.py",
+     "sphinx/transforms/__init__.py"
+    ]
+   },
+   {
+    "instance_id": "sympy__sympy-16450",
+    "direction": "gained",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "sympy/assumptions/__init__.py",
+     "sympy/calculus/finite_diff.py",
+     "sympy/calculus/util.py",
+     "sympy/functions/combinatorial/factorials.py",
+     "sympy/integrals/integrals.py",
+     "sympy/series/fourier.py",
+     "sympy/simplify/simplify.py"
+    ],
+    "files_removed": [
+     "sympy/assumptions/handlers/matrices.py",
+     "sympy/concrete/summations.py",
+     "sympy/core/basic.py",
+     "sympy/functions/elementary/trigonometric.py",
+     "sympy/integrals/rationaltools.py",
+     "sympy/matrices/matrices.py",
+     "sympy/series/order.py"
+    ]
+   },
+   {
+    "instance_id": "sympy__sympy-20438",
+    "direction": "gained",
+    "class": "trace+fence",
+    "n_trace_files": 3,
+    "fence_dominant": false,
+    "files_added": [
+     "sympy/categories/baseclasses.py",
+     "sympy/concrete/products.py",
+     "sympy/concrete/summations.py",
+     "sympy/core/logic.py",
+     "sympy/core/mul.py",
+     "sympy/geometry/entity.py",
+     "sympy/sets/conditionset.py",
+     "sympy/sets/handlers/comparison.py"
+    ],
+    "files_removed": [
+     "release/compare_tar_against_git.py",
+     "release/fabfile.py",
+     "release/github_release.py",
+     "release/update_docs.py",
+     "sympy/assumptions/ask.py",
+     "sympy/codegen/ast.py",
+     "sympy/core/compatibility.py",
+     "sympy/core/evalf.py"
+    ]
+   }
+  ],
+  "route070": [
+   {
+    "instance_id": "pylint-dev__pylint-8898",
+    "direction": "gained",
+    "class": "trace+fence",
+    "n_trace_files": 5,
+    "fence_dominant": false,
+    "files_added": [
+     "pylint/checkers/similar.py",
+     "pylint/checkers/variables.py",
+     "pylint/config/exceptions.py",
+     "pylint/constants.py",
+     "pylint/typing.py",
+     "pylint/utils/__init__.py"
+    ],
+    "files_removed": [
+     "pylint/checkers/base/basic_checker.py",
+     "pylint/checkers/base/name_checker/checker.py",
+     "pylint/checkers/imports.py",
+     "pylint/config/_pylint_config/help_message.py",
+     "pylint/extensions/no_self_use.py",
+     "pylint/extensions/private_import.py",
+     "pylint/lint/expand_modules.py",
+     "pylint/lint/message_state_handler.py"
+    ]
+   },
+   {
+    "instance_id": "sphinx-doc__sphinx-7440",
+    "direction": "lost",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "sphinx/environment/collectors/__init__.py",
+     "sphinx/environment/collectors/metadata.py",
+     "sphinx/errors.py",
+     "sphinx/ext/intersphinx.py",
+     "sphinx/locale/__init__.py",
+     "sphinx/project.py",
+     "sphinx/setup_command.py",
+     "sphinx/themes/basic/static/underscore.js"
+    ],
+    "files_removed": [
+     "sphinx/builders/latex/__init__.py",
+     "sphinx/cmd/make_mode.py",
+     "sphinx/directives/__init__.py",
+     "sphinx/directives/other.py",
+     "sphinx/domains/std.py",
+     "sphinx/ext/autosectionlabel.py",
+     "sphinx/ext/napoleon/iterators.py",
+     "sphinx/util/docutils.py"
+    ]
+   },
+   {
+    "instance_id": "sphinx-doc__sphinx-8621",
+    "direction": "lost",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "sphinx/errors.py",
+     "sphinx/ext/autosummary/generate.py",
+     "sphinx/util/nodes.py"
+    ],
+    "files_removed": [
+     "sphinx/builders/html/transforms.py",
+     "sphinx/directives/__init__.py",
+     "sphinx/ext/doctest.py",
+     "sphinx/parsers.py",
+     "sphinx/transforms/__init__.py"
+    ]
+   },
+   {
+    "instance_id": "sympy__sympy-16450",
+    "direction": "gained",
+    "class": "fence",
+    "n_trace_files": 0,
+    "fence_dominant": false,
+    "files_added": [
+     "sympy/assumptions/__init__.py",
+     "sympy/calculus/finite_diff.py",
+     "sympy/calculus/util.py",
+     "sympy/functions/combinatorial/factorials.py",
+     "sympy/integrals/integrals.py",
+     "sympy/series/fourier.py",
+     "sympy/simplify/simplify.py"
+    ],
+    "files_removed": [
+     "sympy/assumptions/handlers/matrices.py",
+     "sympy/concrete/summations.py",
+     "sympy/core/basic.py",
+     "sympy/functions/elementary/trigonometric.py",
+     "sympy/integrals/rationaltools.py",
+     "sympy/matrices/matrices.py",
+     "sympy/series/order.py"
+    ]
+   },
+   {
+    "instance_id": "sympy__sympy-20438",
+    "direction": "gained",
+    "class": "trace+fence",
+    "n_trace_files": 3,
+    "fence_dominant": false,
+    "files_added": [
+     "sympy/categories/baseclasses.py",
+     "sympy/concrete/products.py",
+     "sympy/concrete/summations.py",
+     "sympy/core/logic.py",
+     "sympy/core/mul.py",
+     "sympy/geometry/entity.py",
+     "sympy/sets/conditionset.py",
+     "sympy/sets/handlers/comparison.py"
+    ],
+    "files_removed": [
+     "release/compare_tar_against_git.py",
+     "release/fabfile.py",
+     "release/github_release.py",
+     "release/update_docs.py",
+     "sympy/assumptions/ask.py",
+     "sympy/codegen/ast.py",
+     "sympy/core/compatibility.py",
+     "sympy/core/evalf.py"
+    ]
+   }
+  ]
+ }
+}

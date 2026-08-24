@@ -16,10 +16,13 @@ from paired_tests import (load_predictions, load_function_detail,
                           paired_bootstrap_ci)
 
 OUT = REPO / "lab" / "results_regions"
+# `--verified` switches every input/output name from the Lite set
+# (e11_*.jsonl) to the Verified set (e11_verified_*.jsonl).
+_VER = "verified_" if "--verified" in sys.argv[1:] else ""
 ARMS = {
-    "baseline": ("e11_baseline.jsonl", "agentless_metric_e11_baseline.json"),
-    "route085": ("e11_route085.jsonl", "agentless_metric_e11_route085.json"),
-    "route070": ("e11_route070.jsonl", "agentless_metric_e11_route070.json"),
+    "baseline": (f"e11_{_VER}baseline.jsonl", f"agentless_metric_e11_{_VER}baseline.json"),
+    "route085": (f"e11_{_VER}route085.jsonl", f"agentless_metric_e11_{_VER}route085.json"),
+    "route070": (f"e11_{_VER}route070.jsonl", f"agentless_metric_e11_{_VER}route070.json"),
 }
 
 preds = {a: load_predictions([OUT / p]) for a, (p, _) in ARMS.items()}
@@ -96,7 +99,7 @@ for arm in ("route085", "route070"):
         })
     report["file_flips"][arm] = flips
 
-out_path = OUT / "e11_class_conditional.json"
+out_path = OUT / f"e11_{_VER}class_conditional.json"
 out_path.write_text(json.dumps(report, indent=1))
 print(json.dumps({"aggregate": report["aggregate"],
                   "class_n": {c: report["classes"][c]["n"] for c in report["classes"]}}, indent=1))

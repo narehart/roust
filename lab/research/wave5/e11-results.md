@@ -177,18 +177,116 @@ should confirm or kill is the trace treatment (classifier + frame
 extraction + FILE boost + spillover), which on Lite is 8G/1L on LINE across
 its 55 trace-bearing instances and never fires on anything else.
 
-## Verified-407 (dual gate)
+## Verified-407 (dual gate; all arms 407/407 ok)
 
-TBD — arms running (`e11_verified_{baseline,route085,route070}.jsonl`);
-reference baseline FUNCTION 47.0 / LINE 35.4.
+| arm | FILE | FUNCTION | LINE | mean fraction |
+|---|---|---|---|---|
+| baseline (defaults) | 375/407 (92.14) | 47.17 | 35.38 | .47522 |
+| route (0.85 = 0.7) | 376/407 (92.38) | 44.96 | 34.89 | .46644 |
+
+Baseline reproduces the committed Verified reference
+(`agentless_metric_verified_new.json`) to within one instance: LINE exact
+(35.38 = 35.38), FUNCTION 192 vs 191 correct (47.17 vs 47.04), FILE 375 vs
+374 (92.14 vs 91.89), fraction .47522 vs .47413 — a one-instance drift
+consistent with clone-state differences vs the older artifact's run, and
+immaterial to the gate: all paired deltas below are computed against THIS
+round's own baseline, same harness, same session, same clones. Both route
+arms again **byte-identical on all 407** — the
+penalty component is inert on both datasets (0 differing outputs across all
+707 routed runs). Aggregate paired deltas: FILE +0.25 (3G/2L), FUNCTION
+**−2.21 [−3.93, −0.74]** (4G/13L, McNemar p=.049), LINE −0.49 (4G/6L),
+fraction −.0088.
+
+Engine provenance note: the Verified baseline arm started under binary
+`2a81d78` and finished under `4c27958` (rebuilt mid-run after the Lite
+artifact commit moved HEAD; `roust-rs/` diff between the two commits is
+EMPTY, so the binaries are logic-identical — only the embedded sha
+differs). Route arms ran wholly under `4c27958`.
+
+### Verified class-conditional (route vs baseline)
+
+| class | n | FILE Δ | FUNCTION Δ | LINE Δ | fraction Δ [CI95] |
+|---|---|---|---|---|---|
+| prose | 122 | **0.00** | **0.00** | **0.00** | **.0000 [0, 0]** (zero discordants) |
+| trace | 4 | 0.00 | −25.0 (0G/1L) | −25.0 (0G/1L) | −.250 [−.75, 0] |
+| fence | 244 | −0.41 (1G/2L) | −1.64 (4G/8L) | 0.00 (4G/4L) | −.0039 [−.027, +.019] |
+| trace+fence | 37 | **+5.41 (2G/0L)** | **−10.81 (0G/4L) [−21.6, −2.7]** | −2.70 (0G/1L) | −.0441 [−.121, +.017] |
+
+**Lite's region-level trace win did NOT replicate.** Lite trace-bearing
+pooled: FUNCTION 5G/2L, LINE 8G/1L. Verified trace-bearing pooled: FUNCTION
+0G/5L, LINE 0G/2L — a clean sign flip on held-out data, with the
+trace+fence FUNCTION delta's CI excluding zero on the wrong side. The fence
+class is mildly negative on BOTH datasets (FUNCTION 4G/8L on each —
+identical discordant counts, a faithful out-of-sample replication of the
+fence-treatment cost). Prose: zero discordant pairs out of 201 prose
+instances across both datasets — the routing scope guarantee held
+everywhere.
+
+**What DID replicate: the FILE-level trace boost.** Trace-attributed FILE
+flips are 2 gained / 0 lost on Lite (django-12113, astropy-14182) and 2
+gained / 0 lost on Verified (pylint-8898, sympy-20438) — four FILE rescues,
+zero FILE losses, on frame-resolved instances across both datasets.
+trace+fence FILE +5.41 is the one positive Verified class cell.
+
+**Loss anatomy (all 5 Verified trace-bearing FUNCTION losses):** in every
+case the gold file is STILL retrieved (FILE unchanged, 1→1) but the
+fraction collapses (1.00→0.00 django-12663, 1.00→0.00 sympy-19954,
+0.39→0.00 matplotlib-20859, 0.46→0.00 requests-1724) — the regions moved
+off the gold lines *within* a still-selected file. Two confounded
+sub-mechanisms both act here: (i) mine-then-discard REPLACED the trace
+block's raw text (frame context lines contain the gold function's own body
+identifiers, which were feeding within-file region gain), and (ii)
+boost-inserted frame files consumed bundle budget, shrinking the gold
+file's span allocation (files_same=False in every loss). sympy-23824
+(tf=0, no boost possible) shows mechanism (i) acting alone.
+
+## Final verdict: package REJECT; E11b trace-only promotion WITHHELD (mixed
+evidence, verdict "c")
+
+- **The `--route` package fails the dual gate**: Lite mildly positive
+  (FILE +1.0, LINE +1.67, fraction +.013), Verified negative (FUNCTION
+  −2.21, p=.049; trace+fence FUNCTION −10.81 with CI excluding zero). Not
+  adoptable.
+- **A trace-only E11b "just drop the fence treatment" is NOT supported
+  either**: the trace treatment itself is what regressed Verified's
+  trace-bearing regions (0G/5L FUNCTION) — the Lite 8G/1L LINE win was
+  Lite-local. Under case-mining discipline the promote recommendation is
+  withheld.
+- **The surviving signal for a future E11b** is narrow and specific: the
+  rank-decayed FILE boost from resolved traceback frames (+4 FILE rescues,
+  0 FILE losses, both datasets — never once lost a file). The clean
+  follow-up is **boost-only routing**: keep the query text BYTE-UNTOUCHED
+  (no mine-then-discard anywhere, no term replacement) and add ONLY the
+  additive frame-file boost + import spillover to file scoring. That
+  isolates the one sub-mechanism with consistent cross-dataset evidence
+  from the two that hurt (term replacement; budget displacement is then the
+  remaining risk to watch at region level). Needs its own full dual gate;
+  expected effect is FILE-level only and small (2/300-scale), so it should
+  ride along with a stronger FILE-thread experiment (wave5 #2 LexBoost)
+  rather than run alone.
+- **Deterministic findings worth keeping regardless**: (i) the test-path
+  penalty NEVER fires effectively — fence-dominant queries do not put
+  test-shaped files anywhere near the packed set in this engine (impl-prior
+  and ranking already handle them); Kim & Lee's prior is already priced in.
+  (ii) The classifier + per-record `route` stats are cheap, correct
+  telemetry (201/201 prose no-ops) and E11b can reuse them unchanged.
+  (iii) BLIZZARD's class asymmetry replicated in *shape* (ST-treatment
+  strongest, PE weakest) but not in sign at region granularity — evidence
+  that its Java-era gains do not transplant to an engine that already does
+  corpus-wide identifier splitting + within-file region packing.
 
 ### Artifacts
 
 - Predictions: `lab/results_regions/e11_{baseline,route085,route070}.jsonl`,
   `lab/results_regions/e11_verified_{baseline,route085,route070}.jsonl`
-- Scores: `lab/results_regions/agentless_metric_e11_{baseline,route085,route070}.json`
-- Paired stats: `lab/stats/e11_{route085,route070}_vs_baseline.json`
-- Class-conditional + flip itemization: `lab/results_regions/e11_class_conditional.json`
+- Scores: `lab/results_regions/agentless_metric_e11_{baseline,route085,route070}.json`,
+  `lab/results_regions/agentless_metric_e11_verified_{baseline,route085,route070}.json`
+- Paired stats: `lab/stats/e11_{route085,route070}_vs_baseline.json`,
+  `lab/stats/e11_verified_{route085,route070}_vs_baseline.json`
+- Class-conditional + flip itemization:
+  `lab/results_regions/e11_class_conditional.json`,
+  `lab/results_regions/e11_verified_class_conditional.json`
+  (generator: `lab/stats/class_conditional_e11.py`)
 - Byte-identity proof: 12/12 sampled instances vs main-built 0e017c1 binary
   (scratchpad `byte_identity_check_e11.py`; not committed)
 - Private repos copy used throughout (issue #41); `lab/swebench_repos`
