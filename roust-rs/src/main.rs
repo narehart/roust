@@ -218,7 +218,12 @@ struct Args {
     /// accumulation; "chunk-max" = the content channel is scored per packer
     /// chunk (python_blocks / window fallback) and aggregated per file by
     /// MAX chunk score (BRTracer segmentation, hub-attractor defense);
-    /// "chunk-top2" = mean of the top-2 chunk scores.
+    /// "chunk-top2" = mean of the top-2 chunk scores. E21b decoupled
+    /// modes: "chunk-rank" / "chunk-top2-rank" = the chunk aggregate
+    /// decides file selection and order ONLY, while pack_regions receives
+    /// the original accumulation-normalized score map for budget
+    /// allocation (the E21 gate showed the chunk map's damped scores
+    /// shrink central gold files' packed budgets).
     #[arg(long, default_value = "accum")]
     file_score: String,
 
@@ -268,8 +273,10 @@ fn main() {
         "accum" => roust::core::FileScoreMode::Accum,
         "chunk-max" => roust::core::FileScoreMode::ChunkMax,
         "chunk-top2" => roust::core::FileScoreMode::ChunkTop2,
+        "chunk-rank" => roust::core::FileScoreMode::ChunkRankMax,
+        "chunk-top2-rank" => roust::core::FileScoreMode::ChunkRankTop2,
         _ => {
-            eprintln!("roust: error: --file-score must be 'accum', 'chunk-max', or 'chunk-top2'");
+            eprintln!("roust: error: --file-score must be 'accum', 'chunk-max', 'chunk-top2', 'chunk-rank', or 'chunk-top2-rank'");
             std::process::exit(2);
         }
     };

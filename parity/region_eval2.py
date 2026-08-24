@@ -417,7 +417,7 @@ def main() -> None:
                           "binary's own default (0.85); only meaningful with --route")
     ap.add_argument("--file-score", type=str, default="",
                      help="passthrough to roust's --file-score (E21 chunk-aggregated FILE "
-                          "scoring: accum|chunk-max|chunk-top2); empty (default) omits the "
+                          "scoring: accum|chunk-max|chunk-top2|chunk-rank|chunk-top2-rank); empty (default) omits the "
                           "flag, i.e. the binary's own default (accum)")
     ap.add_argument("--test-bridge", type=float, default=0.0,
                      help="passthrough to roust's --test-bridge (E22 static test-bridge FILE "
