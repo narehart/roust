@@ -181,6 +181,9 @@ def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: f
     rec["engine_dirty"] = stats.get("engine_dirty")
     # E11: routing diagnostics (present only under --route; None otherwise).
     rec["route"] = stats.get("route")
+    # E20/E11b diagnostics (present only under --lexboost / --trace-boost).
+    rec["lexboost"] = stats.get("lexboost")
+    rec["trace_boost"] = stats.get("trace_boost")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]
@@ -245,6 +248,18 @@ def main() -> None:
     ap.add_argument("--max-siblings", type=int, default=0,
                      help="passthrough to roust's --max-siblings (E18 cap); 0 (default) omits "
                           "the flag (binary default: 3)")
+    ap.add_argument("--lexboost", type=float, default=0.0,
+                     help="passthrough to roust's --lexboost (E20 LexBoost neighbor score "
+                          "smoothing lambda); 0.0 (default) omits the flag (binary default: off)")
+    ap.add_argument("--lexboost-graph", type=str, default="",
+                     help="passthrough to roust's --lexboost-graph (import|knn); empty (default) "
+                          "omits the flag (binary default: import); only meaningful with --lexboost")
+    ap.add_argument("--trace-boost", action="store_true",
+                     help="passthrough to roust's --trace-boost (E11b trace-frame FILE boost); "
+                          "ADOPTED as the binary default (PR #52), redundant-but-accepted")
+    ap.add_argument("--no-trace-boost", action="store_true",
+                     help="passthrough to roust's --no-trace-boost (disable the adopted E11b "
+                          "boost; reproduces the pre-PR-#52 engine byte-identically)")
     ap.add_argument("--route", action="store_true",
                      help="passthrough to roust's --route (E11 structure-aware query routing); "
                           "omitted by default (binary default: off)")
@@ -278,6 +293,14 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--route")
     if args.route_test_penalty != 0.0:
         EXTRA_ENGINE_FLAGS.extend(["--route-test-penalty", str(args.route_test_penalty)])
+    if args.lexboost != 0.0:
+        EXTRA_ENGINE_FLAGS.extend(["--lexboost", str(args.lexboost)])
+    if args.lexboost_graph:
+        EXTRA_ENGINE_FLAGS.extend(["--lexboost-graph", args.lexboost_graph])
+    if args.trace_boost:
+        EXTRA_ENGINE_FLAGS.append("--trace-boost")
+    if args.no_trace_boost:
+        EXTRA_ENGINE_FLAGS.append("--no-trace-boost")
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 

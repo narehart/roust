@@ -9,7 +9,7 @@ use crate::pyutil::{normpath_join, path_join_simple, path_sort_key, py_lower, py
 use indexmap::IndexMap;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::LazyLock;
 
@@ -690,6 +690,266 @@ pub fn route_query(question: &str, corpus: &Corpus) -> RoutedQuery {
         n_trace_terms: counts[1],
         n_fence_terms: counts[2],
     }
+}
+
+/// E11b (campaign #4 wave 5): trace-frame FILE extraction ONLY -- the one
+/// E11 sub-mechanism that survived the dual gate (4 FILE rescues / 0 losses
+/// across Lite + Verified). Unlike `route_query`, this touches NOTHING about
+/// the query text: it scans every line for CPython traceback frame lines
+/// (`File "X", line N, in f`), resolves the frame paths into the corpus
+/// (`resolve_frame_path`, >= 2 trailing components), and returns the
+/// resolved repo-relative files raise-site-first (Python's LAST frame =
+/// rank 1, BRTracer top-of-stack semantics), deduped keeping best rank.
+///
+/// Equivalence note: this produces EXACTLY `route_query(q, corpus)
+/// .trace_files` -- `partition_channels` pass 1 claims every
+/// `TB_FRAME_RE`-matching line as trace-channel (a traceback inside a
+/// markdown fence included), so scanning all lines directly is the same
+/// frame set in the same order (proven by `trace_frame_files_matches_route_query`).
+pub fn trace_frame_files(question: &str, corpus: &Corpus) -> Vec<String> {
+    let lines = py_splitlines(question);
+    let mut frame_paths: Vec<String> = Vec::new();
+    for l in &lines {
+        if let Some(cap) = TB_FRAME_RE.captures(l) {
+            frame_paths.push(cap.get(1).unwrap().as_str().to_string());
+        }
+    }
+    let mut out: Vec<String> = Vec::new();
+    let mut seen: HashSet<String> = HashSet::new();
+    for path in frame_paths.iter().rev() {
+        if let Some(rel) = resolve_frame_path(path, corpus) {
+            if seen.insert(rel.clone()) {
+                out.push(rel);
+            }
+        }
+    }
+    out
+}
+
+// ---------------------------------------------------------------- E20 LexBoost
+//
+// LexBoost (Kulkarni et al., DocEng 2024, arXiv:2409.05882), campaign #4
+// wave 5 transplant #2: smooth each file's channel-fused lexical score with
+// the MEAN score of its corpus-graph neighbors --
+//
+//     S'(f) = lambda * S(f) + (1 - lambda) * impl_prior(f) * mean_{n in N(f)} S(n)
+//
+// so a gold file with weak direct overlap is promoted when its neighborhood
+// scores well (the E-class "gold file never returned" shape). Two graph
+// substrates, both deterministic and model-free (the paper's own graphs are
+// dense-encoder-built; the fully lexical variant is roust's experiment):
+//   - import: the existing undirected import graph (`build_import_graph`,
+//     free -- it is already built and cached for every query);
+//   - knn: BM25 k-nearest-neighbor files (K=16, the paper's construction),
+//     computed from the cached corpus statistics at query time.
+// MEAN aggregation (not sum) is load-bearing per the paper -- a hub with
+// many weak neighbors must not accumulate. Two roust-specific guards on
+// top: (1) hub protection -- files whose graph IN-degree (how many files
+// list them as a neighbor) is in the corpus's top decile receive NO
+// neighbor term (their smoothed score is `lambda * S(f)`, the same as a
+// file whose neighbors all score zero -- NOT their raw score, which would
+// hand hubs a relative advantage over every smoothed file); (2) the
+// neighbor term is multiplied by `impl_prior(f)`, so a test/example-shaped
+// file cannot ride neighbor support past the damping its direct score
+// already receives (the paper has no document priors; without this a test
+// file adjacent to hot production files would be inserted un-damped).
+//
+// A file with S(f) = 0 but a positive neighbor term is INSERTED into the
+// candidate map -- like the E11 trace boost, this is an E-class rescue
+// mechanism, able to surface files with zero direct lexical presence.
+
+/// Neighbor lists for LexBoost smoothing: `{file: sorted neighbor files}`.
+/// `BTreeMap` + sorted `Vec` values = fully canonical iteration and
+/// summation order everywhere downstream.
+pub type NeighborMap = BTreeMap<String, Vec<String>>;
+
+/// Import-graph neighbor lists: each file's undirected import adjacency
+/// (`build_import_graph` edges), sorted. Files with no import edges are
+/// absent (no neighbors -> no smoothing term).
+pub fn lexboost_import_neighbors(edges: &EdgeMap) -> NeighborMap {
+    let mut out: NeighborMap = BTreeMap::new();
+    for (f, adj) in edges {
+        if !adj.is_empty() {
+            out.insert(f.clone(), adj.iter().cloned().collect());
+        }
+    }
+    out
+}
+
+/// BM25-kNN neighbor lists (the LexBoost paper's construction, K nearest
+/// files by BM25 similarity of file content, lexical variant): each file's
+/// top-`k` most-similar OTHER files, where similarity = Okapi BM25
+/// (k1=1.2, b=0.75, content field only -- no path/comment channels, no
+/// impl_prior: this is doc-doc similarity, not query relevance) of the
+/// candidate against the source file's top-`KNN_QUERY_TERMS` tf-idf terms.
+///
+/// Determinism: query-term selection sorts by (weight desc, term asc);
+/// per-candidate accumulation follows that canonical term order; the final
+/// top-k sorts by (score desc via total_cmp, path asc); the returned
+/// neighbor list is re-sorted by path (the mean is order-insensitive
+/// mathematically, path order makes the summation canonical too).
+/// Cost guard: terms with df > KNN_MAX_DF are skipped as query terms
+/// (their idf makes them near-useless for similarity anyway), bounding the
+/// posting-scan cost on large corpora.
+pub const KNN_QUERY_TERMS: usize = 32;
+pub const KNN_MAX_DF: u32 = 512;
+
+pub fn lexboost_knn_neighbors(corpus: &Corpus, k: usize) -> NeighborMap {
+    let n = corpus.files.len();
+    if n < 2 || k == 0 {
+        return BTreeMap::new();
+    }
+    let n_docs = corpus.n_docs as f64;
+    let idf_of = |dfv: u32| -> f64 { (1.0 + (n_docs - dfv as f64 + 0.5) / (dfv as f64 + 0.5)).ln() };
+
+    // Per-file top query terms by tf*idf (canonical order).
+    let mut file_qterms: Vec<Vec<String>> = Vec::with_capacity(n);
+    let mut term_union: BTreeSet<String> = BTreeSet::new();
+    for rel in &corpus.files {
+        let mut weighted: Vec<(String, f64)> = Vec::new();
+        if let Some(tf_map) = corpus.tf.get(rel) {
+            for (t, &tfv) in tf_map {
+                let dfv = *corpus.df.get(t).unwrap_or(&1);
+                if dfv > KNN_MAX_DF {
+                    continue;
+                }
+                weighted.push((t.clone(), tfv as f64 * idf_of(dfv)));
+            }
+        }
+        weighted.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+        let qterms: Vec<String> = weighted.into_iter().take(KNN_QUERY_TERMS).map(|(t, _)| t).collect();
+        term_union.extend(qterms.iter().cloned());
+        file_qterms.push(qterms);
+    }
+
+    // Postings for the selected-term union, in corpus.files order.
+    let mut postings: HashMap<&str, Vec<(u32, u32)>> = HashMap::new(); // term -> [(file idx, tf)]
+    for (i, rel) in corpus.files.iter().enumerate() {
+        if let Some(tf_map) = corpus.tf.get(rel) {
+            for (t, &tfv) in tf_map {
+                if let Some(t_key) = term_union.get(t.as_str()) {
+                    postings.entry(t_key.as_str()).or_default().push((i as u32, tfv));
+                }
+            }
+        }
+    }
+
+    let (k1, b) = (1.2_f64, 0.75_f64);
+    let mut out: NeighborMap = BTreeMap::new();
+    for (i, rel) in corpus.files.iter().enumerate() {
+        let mut acc: HashMap<u32, f64> = HashMap::new();
+        for t in &file_qterms[i] {
+            let dfv = *corpus.df.get(t).unwrap_or(&1);
+            let idf = idf_of(dfv);
+            if let Some(plist) = postings.get(t.as_str()) {
+                for &(j, tfv) in plist {
+                    if j as usize == i {
+                        continue;
+                    }
+                    let dl = *corpus.doclen.get(&corpus.files[j as usize]).unwrap_or(&0) as f64;
+                    let tfv = tfv as f64;
+                    let denom = tfv + k1 * (1.0 - b + b * dl / corpus.avg_len);
+                    *acc.entry(j).or_insert(0.0) += idf * (tfv * (k1 + 1.0) / denom);
+                }
+            }
+        }
+        if acc.is_empty() {
+            continue;
+        }
+        let mut cands: Vec<(u32, f64)> = acc.into_iter().collect();
+        cands.sort_by(|a, b| {
+            b.1.total_cmp(&a.1).then_with(|| corpus.files[a.0 as usize].cmp(&corpus.files[b.0 as usize]))
+        });
+        let mut nbrs: Vec<String> =
+            cands.into_iter().take(k).map(|(j, _)| corpus.files[j as usize].clone()).collect();
+        nbrs.sort();
+        out.insert(rel.clone(), nbrs);
+    }
+    out
+}
+
+/// Hub set for the LexBoost high-degree guard: files whose IN-degree under
+/// the neighbor relation (the number of OTHER files listing them as a
+/// neighbor) is STRICTLY ABOVE the 90th-percentile in-degree of all files
+/// with in-degree >= 1. Strict `>` (not `>=`) so a corpus where every
+/// in-degree ties (tiny repos, uniform graphs) marks NO hubs rather than
+/// all files. For the undirected import graph, in-degree equals adjacency
+/// size; for the kNN graph it is the "how many files consider me near"
+/// count -- exactly the sense in which `sympy/core/expr.py`-style
+/// attractors are hubs.
+pub fn lexboost_hubs(nbrs: &NeighborMap) -> HashSet<String> {
+    let mut indeg: BTreeMap<&str, usize> = BTreeMap::new();
+    for (f, nb) in nbrs {
+        for x in nb {
+            if x != f {
+                *indeg.entry(x.as_str()).or_insert(0) += 1;
+            }
+        }
+    }
+    if indeg.is_empty() {
+        return HashSet::new();
+    }
+    let mut degs: Vec<usize> = indeg.values().copied().collect();
+    degs.sort_unstable();
+    let thr = degs[(degs.len() - 1) * 9 / 10];
+    indeg.into_iter().filter(|(_, d)| *d > thr).map(|(f, _)| f.to_string()).collect()
+}
+
+/// Apply LexBoost smoothing to the normalized fused file-score map. Returns
+/// the smoothed map plus a bounded diagnostic dump (top entries by smoothed
+/// score: `(file, smoothed, direct, neighbor_mean, is_hub)`) for the
+/// experiment harness's flip anatomy. See the section comment above for the
+/// formula and guards. Map order: existing `bm_n` entries first (original
+/// order, values updated in place), then inserted files in `corpus.files`
+/// order -- canonical, and minimally perturbing relative to the unsmoothed
+/// map (downstream tie-breaks on equal scores follow map insertion order).
+fn apply_lexboost(
+    bm_n: &IndexMap<String, f64>,
+    corpus: &Corpus,
+    nbrs: &NeighborMap,
+    hubs: &HashSet<String>,
+    lambda: f64,
+) -> (IndexMap<String, f64>, Vec<(String, f64, f64, f64, bool)>) {
+    let nb_mean = |f: &str| -> f64 {
+        match nbrs.get(f) {
+            Some(nb) if !nb.is_empty() => {
+                let mut sum = 0.0;
+                for x in nb {
+                    sum += bm_n.get(x).copied().unwrap_or(0.0);
+                }
+                sum / nb.len() as f64
+            }
+            _ => 0.0,
+        }
+    };
+
+    let mut smoothed: IndexMap<String, f64> = IndexMap::with_capacity(bm_n.len());
+    let mut diag: Vec<(String, f64, f64, f64, bool)> = Vec::new();
+    for (f, &direct) in bm_n {
+        let hub = hubs.contains(f);
+        let mean = if hub { 0.0 } else { nb_mean(f) };
+        let val = lambda * direct + (1.0 - lambda) * impl_prior(f) * mean;
+        smoothed.insert(f.clone(), val);
+        diag.push((f.clone(), val, direct, mean, hub));
+    }
+    // Insertion pass (E-class rescue): files absent from bm_n whose
+    // neighbor term alone is positive.
+    if lambda < 1.0 {
+        for f in &corpus.files {
+            if bm_n.contains_key(f) || hubs.contains(f) {
+                continue;
+            }
+            let mean = nb_mean(f);
+            if mean > 0.0 {
+                let val = (1.0 - lambda) * impl_prior(f) * mean;
+                smoothed.insert(f.clone(), val);
+                diag.push((f.clone(), val, 0.0, mean, false));
+            }
+        }
+    }
+    diag.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+    diag.truncate(30);
+    (smoothed, diag)
 }
 
 /// Calibrated low-confidence gate (issue #25). `top_score` is the raw,
@@ -2011,6 +2271,11 @@ pub struct Explain {
     /// `select_files` returns `Explain::default()` before this field would
     /// otherwise be set.
     pub top_score: f64,
+    /// E20 LexBoost diagnostics: top files by smoothed score as
+    /// `(file, smoothed, direct, neighbor_mean, is_hub)`. Empty (the
+    /// default) whenever smoothing is off -- populated only under
+    /// `--lexboost`, for the experiment harness's flip anatomy.
+    pub lexboost_top: Vec<(String, f64, f64, f64, bool)>,
 }
 
 fn normalize(scores: &IndexMap<String, f64>) -> IndexMap<String, f64> {
@@ -2284,6 +2549,18 @@ pub struct SelectParams<'a> {
     /// the fused file score of TESTLIKE_RE-matching paths. 1.0 (default) =
     /// off; the caller sets it < 1.0 ONLY for fence-dominant queries.
     pub test_penalty: f64,
+    /// E20 LexBoost lambda: blend weight on the DIRECT score in
+    /// `S' = lambda*S + (1-lambda)*prior*mean(neighbors)`. 0.0 (default) =
+    /// off, byte-identical to the pre-E20 engine; the paper's default is
+    /// 0.7. Only meaningful together with `lexboost_nbrs`.
+    pub lexboost: f64,
+    /// E20 LexBoost neighbor lists (import-graph or BM25-kNN; see
+    /// `lexboost_import_neighbors` / `lexboost_knn_neighbors`). None
+    /// (default) = smoothing off regardless of `lexboost`.
+    pub lexboost_nbrs: Option<&'a NeighborMap>,
+    /// E20 hub-guard set (`lexboost_hubs`): files excluded from RECEIVING
+    /// the neighbor term. None = no hub exclusion.
+    pub lexboost_hubs: Option<&'a HashSet<String>>,
 }
 
 impl<'a> Default for SelectParams<'a> {
@@ -2298,6 +2575,9 @@ impl<'a> Default for SelectParams<'a> {
             use_docsbridge: false,
             trace_files: None,
             test_penalty: 1.0,
+            lexboost: 0.0,
+            lexboost_nbrs: None,
+            lexboost_hubs: None,
         }
     }
 }
@@ -2321,6 +2601,22 @@ pub fn select_files(
     }
     let top_score = bm.values().cloned().fold(0.0_f64, f64::max);
     let mut bm_n = normalize(&bm);
+
+    // E20 LexBoost neighbor smoothing -- applied to the normalized fused
+    // score BEFORE the E11 trace boost (smoothing reshapes the lexical
+    // channel itself; the trace boost is an additive channel on top of it).
+    // Flag-gated: lexboost == 0.0 or no neighbor map = this block is dead
+    // code and bm_n is byte-identical to the pre-E20 engine.
+    let mut lexboost_top: Vec<(String, f64, f64, f64, bool)> = Vec::new();
+    if params.lexboost > 0.0 {
+        if let Some(nbrs) = params.lexboost_nbrs {
+            static NO_HUBS: LazyLock<HashSet<String>> = LazyLock::new(HashSet::new);
+            let hubs = params.lexboost_hubs.unwrap_or(&NO_HUBS);
+            let (sm, diag) = apply_lexboost(&bm_n, corpus, nbrs, hubs, params.lexboost);
+            bm_n = sm;
+            lexboost_top = diag;
+        }
+    }
 
     // E11 trace-frame FILE boost (BRTracer): rank-decayed additive channel
     // on the NORMALIZED lexical score -- 1/rank for the top-10 frame files
@@ -2405,6 +2701,7 @@ pub fn select_files(
             testbridge: tb_records,
             docsbridge: db_records,
             top_score,
+            lexboost_top,
             ..Default::default()
         };
         return (lex_out, scores, explain);
@@ -2660,6 +2957,7 @@ pub fn select_files(
         testbridge: tb_records,
         docsbridge: db_records,
         top_score,
+        lexboost_top,
     };
 
     (out, scores, explain)
@@ -5160,6 +5458,248 @@ def omega_worker(pp):
         assert_eq!(resolve_frame_path("/somewhere/else/engine.py", &corpus), None);
         // exact relative path -> resolved
         assert_eq!(resolve_frame_path("pkg/util.py", &corpus), Some("pkg/util.py".to_string()));
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    // ------------------------------------------------------------ E11b trace-boost
+
+    /// `trace_frame_files` must produce EXACTLY `route_query(...).trace_files`
+    /// (same frames, same raise-site-first order, same dedupe) on a mixed
+    /// trace+fence+prose issue -- the equivalence the E11b flag relies on --
+    /// and be empty on prose.
+    #[test]
+    fn trace_frame_files_matches_route_query() {
+        let (tmp, corpus) = e11_corpus("e11b_eq");
+        let q = concat!(
+            "Engine explodes on empty payload.\n",
+            "```python\n",
+            "run_engine(None)\n",
+            "```\n",
+            "Traceback (most recent call last):\n",
+            "  File \"/home/user/repro_zzqx.py\", line 3, in <module>\n",
+            "    run_engine(None)\n",
+            "  File \"/usr/lib/python3.9/site-packages/pkg/sub/engine.py\", line 4, in run_engine\n",
+            "    return helper_widget(payload)\n",
+            "  File \"/usr/lib/python3.9/site-packages/pkg/util.py\", line 2, in helper_widget\n",
+            "    return payload\n",
+            "ValueError: payload must not be empty\n",
+        );
+        let rq = route_query(q, &corpus);
+        let tf = trace_frame_files(q, &corpus);
+        assert_eq!(tf, rq.trace_files, "trace_frame_files == route_query trace_files");
+        // raise-site (util.py, last frame) first
+        assert_eq!(tf, vec!["pkg/util.py".to_string(), "pkg/sub/engine.py".to_string()]);
+        assert!(trace_frame_files("The engine crashes on empty payload.", &corpus).is_empty());
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    // ------------------------------------------------------------ E20 LexBoost
+
+    /// Corpus for the LexBoost tests: gold.py has WEAK direct overlap with
+    /// the query but two import-neighbors (a.py, b.py) that score well;
+    /// decoy.py has a moderate direct score and no scored neighbors;
+    /// hub.py is imported by everything (top-decile in-degree).
+    fn e20_corpus(tag: &str) -> (std::path::PathBuf, Corpus) {
+        let tmp = std::env::temp_dir().join(format!("roust_e20_{tag}_{}", std::process::id()));
+        std::fs::create_dir_all(tmp.join("pkg")).unwrap();
+        // Query will be "frobnicate widget quux". gold.py mentions none of
+        // the query terms; its neighbors a.py/b.py are dense in them.
+        std::fs::write(
+            tmp.join("pkg/gold.py"),
+            "from pkg.a import alpha_frob\nfrom pkg.b import beta_frob\n\ndef golden_path(x):\n    return alpha_frob(beta_frob(x))\n",
+        )
+        .unwrap();
+        std::fs::write(
+            tmp.join("pkg/a.py"),
+            "def alpha_frob(x):\n    frobnicate = x\n    widget = frobnicate\n    quux = widget\n    return quux\n",
+        )
+        .unwrap();
+        std::fs::write(
+            tmp.join("pkg/b.py"),
+            "def beta_frob(x):\n    frobnicate_widget = x\n    quux_widget = frobnicate_widget\n    return quux_widget\n",
+        )
+        .unwrap();
+        // Moderate direct match, no neighbors.
+        std::fs::write(tmp.join("pkg/decoy.py"), "def lonely():\n    widget = 1\n    return widget\n").unwrap();
+        // Hub: imported by many files, mild direct overlap.
+        std::fs::write(tmp.join("pkg/hub.py"), "def hub_util(x):\n    widget = x\n    return widget\n").unwrap();
+        for i in 0..6 {
+            std::fs::write(
+                tmp.join(format!("pkg/user{i}.py")),
+                "from pkg.hub import hub_util\n\ndef unrelated_stuff():\n    return hub_util(1)\n",
+            )
+            .unwrap();
+        }
+        let corpus = Corpus::build(&tmp, None, false, false);
+        (tmp, corpus)
+    }
+
+    /// Import-graph neighbor lists are sorted and symmetric; the hub guard
+    /// marks exactly the top-decile-in-degree file (hub.py, in-degree 6)
+    /// and nothing else.
+    #[test]
+    fn lexboost_import_neighbors_and_hubs() {
+        let (tmp, corpus) = e20_corpus("nbrs");
+        let edges = build_import_graph(&corpus);
+        let nbrs = lexboost_import_neighbors(&edges);
+        let g = nbrs.get("pkg/gold.py").expect("gold has import neighbors");
+        assert_eq!(g, &vec!["pkg/a.py".to_string(), "pkg/b.py".to_string()]);
+        // symmetry: a.py lists gold back
+        assert!(nbrs.get("pkg/a.py").unwrap().contains(&"pkg/gold.py".to_string()));
+        let hubs = lexboost_hubs(&nbrs);
+        assert!(hubs.contains("pkg/hub.py"), "hub.py (in-degree 6) is a hub: {hubs:?}");
+        assert!(!hubs.contains("pkg/gold.py"), "gold (in-degree 2) is not: {hubs:?}");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// The smoothing math: S' = lambda*S + (1-lambda)*prior*MEAN(neighbors),
+    /// verified to float precision for a scored file, a hub (neighbor term
+    /// forced to 0), and an inserted zero-direct-score file (E-class
+    /// rescue). MEAN (not sum): gold's smoothed score uses /2 for its two
+    /// neighbors.
+    #[test]
+    fn lexboost_smoothing_math_hub_guard_and_insertion() {
+        let (tmp, corpus) = e20_corpus("math");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let base = select_files(&corpus, &terms, true, &SelectParams::default());
+        let bm = corpus.bm25(&terms);
+        let bm_n = {
+            let mx = bm.values().cloned().fold(f64::MIN, f64::max);
+            let m: IndexMap<String, f64> = bm.iter().map(|(k, v)| (k.clone(), v / mx)).collect();
+            m
+        };
+        assert!(!bm_n.contains_key("pkg/gold.py"), "gold must have ZERO direct score for the rescue case");
+
+        let edges = build_import_graph(&corpus);
+        let nbrs = lexboost_import_neighbors(&edges);
+        let hubs = lexboost_hubs(&nbrs);
+        let lambda = 0.7;
+        let (sm, diag) = apply_lexboost(&bm_n, &corpus, &nbrs, &hubs, lambda);
+
+        // Inserted rescue: gold = (1-lambda) * mean(a, b)
+        let sa = bm_n["pkg/a.py"];
+        let sb = bm_n["pkg/b.py"];
+        let expect_gold = (1.0 - lambda) * (sa + sb) / 2.0;
+        let got_gold = sm.get("pkg/gold.py").copied().expect("gold inserted by neighbor rescue");
+        assert!((got_gold - expect_gold).abs() < 1e-12, "gold {got_gold} != {expect_gold}");
+
+        // Hub: neighbor term forced to zero -> lambda * S exactly.
+        let hub_direct = bm_n["pkg/hub.py"];
+        let got_hub = sm["pkg/hub.py"];
+        assert!((got_hub - lambda * hub_direct).abs() < 1e-12, "hub gets no neighbor term");
+
+        // Scored non-hub file (a.py): lambda*S + (1-lambda)*mean(its nbrs).
+        let nb_a = &nbrs["pkg/a.py"];
+        let mean_a: f64 = nb_a.iter().map(|x| bm_n.get(x).copied().unwrap_or(0.0)).sum::<f64>() / nb_a.len() as f64;
+        assert!((sm["pkg/a.py"] - (lambda * sa + (1.0 - lambda) * mean_a)).abs() < 1e-12);
+
+        // Diagnostics carry the anatomy.
+        assert!(diag.iter().any(|(f, _, d, m, _)| f == "pkg/gold.py" && *d == 0.0 && *m > 0.0));
+
+        // End-to-end at the LEX stage (structural expansion can add gold as
+        // a graph "addition" in the baseline too -- the smoothing claim is
+        // specifically that gold enters the lexical ranking itself):
+        // baseline lex_picks cannot contain gold (zero direct score);
+        // lexboost lex_picks must.
+        assert!(!base.2.lex_picks.contains(&"pkg/gold.py".to_string()), "gold not in baseline lex_picks: {:?}", base.2.lex_picks);
+        let params = SelectParams {
+            lexboost: lambda,
+            lexboost_nbrs: Some(&nbrs),
+            lexboost_hubs: Some(&hubs),
+            ..Default::default()
+        };
+        let boosted = select_files(&corpus, &terms, true, &params);
+        assert!(boosted.2.lex_picks.contains(&"pkg/gold.py".to_string()), "lexboost lifts gold into lex_picks: {:?}", boosted.2.lex_picks);
+        assert!(boosted.0.contains(&"pkg/gold.py".to_string()), "gold in final selection: {:?}", boosted.0);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// lambda = 1.0 must leave every score identical (no neighbor term, no
+    /// insertions) -- the blend degenerates to the identity.
+    #[test]
+    fn lexboost_lambda_one_is_identity() {
+        let (tmp, corpus) = e20_corpus("ident");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let bm = corpus.bm25(&terms);
+        let mx = bm.values().cloned().fold(f64::MIN, f64::max);
+        let bm_n: IndexMap<String, f64> = bm.iter().map(|(k, v)| (k.clone(), v / mx)).collect();
+        let edges = build_import_graph(&corpus);
+        let nbrs = lexboost_import_neighbors(&edges);
+        let hubs = lexboost_hubs(&nbrs);
+        let (sm, _) = apply_lexboost(&bm_n, &corpus, &nbrs, &hubs, 1.0);
+        assert_eq!(sm.len(), bm_n.len(), "no insertions at lambda=1");
+        for (f, v) in &bm_n {
+            assert_eq!(sm[f], *v, "identity at lambda=1 for {f}");
+        }
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// The kNN graph is deterministic across repeated construction, lists
+    /// are path-sorted, self is never a neighbor, and K caps the list size.
+    #[test]
+    fn lexboost_knn_deterministic_sorted_no_self() {
+        let (tmp, corpus) = e20_corpus("knn");
+        let g1 = lexboost_knn_neighbors(&corpus, 16);
+        let g2 = lexboost_knn_neighbors(&corpus, 16);
+        assert_eq!(g1, g2, "kNN graph deterministic across construction");
+        assert!(!g1.is_empty());
+        for (f, nb) in &g1 {
+            assert!(!nb.contains(f), "no self-neighbor for {f}");
+            assert!(nb.len() <= 16);
+            let mut sorted = nb.clone();
+            sorted.sort();
+            assert_eq!(&sorted, nb, "neighbor list sorted for {f}");
+        }
+        // k=2 caps harder
+        let g3 = lexboost_knn_neighbors(&corpus, 2);
+        for nb in g3.values() {
+            assert!(nb.len() <= 2);
+        }
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// The neighbor term is damped by impl_prior: a test-shaped file with
+    /// the same neighborhood as a production file receives 0.3x the
+    /// neighbor mean (it cannot ride neighbor support past the engine's
+    /// existing test-file damping).
+    #[test]
+    fn lexboost_neighbor_term_respects_impl_prior() {
+        let tmp = std::env::temp_dir().join(format!("roust_e20_prior_{}", std::process::id()));
+        std::fs::create_dir_all(tmp.join("pkg")).unwrap();
+        std::fs::create_dir_all(tmp.join("tests")).unwrap();
+        std::fs::write(tmp.join("pkg/a.py"), "def alpha():\n    return 1\n").unwrap();
+        std::fs::write(tmp.join("pkg/gold.py"), "def golden():\n    return 2\n").unwrap();
+        std::fs::write(tmp.join("tests/test_x.py"), "def test_things():\n    return 3\n").unwrap();
+        let corpus = Corpus::build(&tmp, None, false, false);
+        // Synthetic neighbor map: both files neighbor a.py only.
+        let mut nbrs: NeighborMap = BTreeMap::new();
+        nbrs.insert("pkg/gold.py".to_string(), vec!["pkg/a.py".to_string()]);
+        nbrs.insert("tests/test_x.py".to_string(), vec!["pkg/a.py".to_string()]);
+        let mut bm_n: IndexMap<String, f64> = IndexMap::new();
+        bm_n.insert("pkg/a.py".to_string(), 1.0);
+        let (sm, _) = apply_lexboost(&bm_n, &corpus, &nbrs, &HashSet::new(), 0.7);
+        let g = sm.get("pkg/gold.py").copied().unwrap_or(0.0);
+        let t = sm.get("tests/test_x.py").copied().unwrap_or(0.0);
+        assert!((g - 0.3_f64 * 1.0).abs() < 1e-12, "production rescue = (1-l)*mean = 0.3, got {g}");
+        assert!((t - 0.3_f64 * 0.3).abs() < 1e-12, "testlike rescue damped by prior 0.3, got {t}");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Defaults-off guarantee at the API level: SelectParams::default()
+    /// leaves lexboost off and select_files output identical with an
+    /// explicitly-supplied-but-disabled configuration.
+    #[test]
+    fn lexboost_defaults_off_identical() {
+        let (tmp, corpus) = e20_corpus("off");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let a = select_files(&corpus, &terms, true, &SelectParams::default());
+        let edges = build_import_graph(&corpus);
+        let nbrs = lexboost_import_neighbors(&edges);
+        // lexboost == 0.0 -> nbrs present but ignored.
+        let params = SelectParams { lexboost: 0.0, lexboost_nbrs: Some(&nbrs), ..Default::default() };
+        let b = select_files(&corpus, &terms, true, &params);
+        assert_eq!(a.0, b.0);
+        assert_eq!(a.1, b.1);
         std::fs::remove_dir_all(&tmp).ok();
     }
 }

@@ -5,6 +5,19 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+- **Behavior change - trace-frame FILE boost on by default** (issue #4
+  campaign, E11b, PR #52, user-approved adoption): files named in a
+  traceback in the query receive a rank-decayed additive file-score boost
+  (1/rank for the top-10 frames, raise-site first; 0.1 deeper; 0.1 import
+  spillover). Query text is untouched; queries without resolvable frames
+  are byte-identical to the previous engine (proven 14/14 instances, plus
+  `--no-trace-boost` reproduces the pre-adoption engine byte-for-byte).
+  Measured on SWE-bench Lite: FUNCTION 53.3 -> 54.7 (4 gains / 0 losses),
+  LINE 42.7 -> 43.3, fraction .5168 -> .5251, File@10 82.7 -> 83.3; on
+  held-out Verified: FILE 92.14 -> 92.38, LINE 35.38 -> 35.63, no cell
+  regressed. New flags: `--no-trace-boost` (escape hatch), flag-gated
+  `--lexboost`/`--lexboost-graph` (E20 experiment, default off, gate
+  REJECT - not a default).
 - Release infrastructure: tag-triggered PyPI (trusted publishing) + crates.io
   + GitHub Releases (`.github/workflows/release.yml`, `RELEASE.md`).
 

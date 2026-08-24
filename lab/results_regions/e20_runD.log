@@ -1,0 +1,59 @@
+runner D start: Mon Aug 24 18:15:53 KST 2026
+engine version: roust 0.2.0 (8034a57, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/swebench_verified_heldout.parquet
+pad_lines=5 len_exp=0.85
+[25/407] django__django-11087                          elapsed=112s (ok) ok=25 err=0
+[50/407] django__django-11734                          elapsed=247s (ok) ok=50 err=0
+[75/407] django__django-12774                          elapsed=440s (ok) ok=75 err=0
+[100/407] django__django-13568                          elapsed=605s (ok) ok=100 err=0
+[125/407] django__django-14376                          elapsed=747s (ok) ok=125 err=0
+[150/407] django__django-15368                          elapsed=891s (ok) ok=150 err=0
+[175/407] django__django-16100                          elapsed=1050s (ok) ok=175 err=0
+[200/407] django__django-16901                          elapsed=1187s (ok) ok=200 err=0
+[225/407] matplotlib__matplotlib-25287                  elapsed=1342s (ok) ok=225 err=0
+[250/407] pydata__xarray-4075                           elapsed=1433s (ok) ok=250 err=0
+[275/407] pytest-dev__pytest-10081                      elapsed=1518s (ok) ok=275 err=0
+[300/407] scikit-learn__scikit-learn-13328              elapsed=1593s (ok) ok=300 err=0
+[325/407] sphinx-doc__sphinx-7748                       elapsed=1694s (ok) ok=325 err=0
+[350/407] sphinx-doc__sphinx-9602                       elapsed=1824s (ok) ok=350 err=0
+[375/407] sympy__sympy-15809                            elapsed=1957s (ok) ok=375 err=0
+[400/407] sympy__sympy-23413                            elapsed=2114s (ok) ok=400 err=0
+[407/407] sympy__sympy-24661                            elapsed=2155s (ok) ok=407 err=0
+
+engine version: roust 0.2.0 (8034a57, clean)
+wrote 407 records (407 ok, 0 errors) to lab/results_regions/e20_verified_traceboost.jsonl
+runner D verified traceboost done: Mon Aug 24 18:51:49 KST 2026
+engine version: roust 0.2.0 (8034a57, clean)
+[25/300] django__django-11848                          elapsed=133s (ok) ok=25 err=0
+[50/300] django__django-13220                          elapsed=291s (ok) ok=50 err=0
+[75/300] django__django-14580                          elapsed=440s (ok) ok=75 err=0
+[100/300] django__django-15814                          elapsed=593s (ok) ok=100 err=0
+[125/300] matplotlib__matplotlib-23314                  elapsed=801s (ok) ok=125 err=0
+[150/300] pallets__flask-5063                           elapsed=977s (ok) ok=150 err=0
+[175/300] pytest-dev__pytest-5692                       elapsed=1083s (ok) ok=175 err=0
+[200/300] scikit-learn__scikit-learn-14894              elapsed=1171s (ok) ok=200 err=0
+[225/300] sympy__sympy-11870                            elapsed=1296s (ok) ok=225 err=0
+[250/300] sympy__sympy-15011                            elapsed=1440s (ok) ok=250 err=0
+[275/300] sympy__sympy-19487                            elapsed=1586s (ok) ok=275 err=0
+[300/300] sympy__sympy-24909                            elapsed=1735s (ok) ok=300 err=0
+
+engine version: roust 0.2.0 (8034a57, clean)
+wrote 300 records (300 ok, 0 errors) to lab/results_regions/e20_knn05.jsonl
+runner D lite knn05 done: Mon Aug 24 19:20:44 KST 2026
+engine version: roust 0.2.0 (8034a57, clean)
+[25/300] django__django-11848                          elapsed=141s (ok) ok=25 err=0
+[50/300] django__django-13220                          elapsed=301s (ok) ok=50 err=0
+[75/300] django__django-14580                          elapsed=449s (ok) ok=75 err=0
+[100/300] django__django-15814                          elapsed=599s (ok) ok=100 err=0
+[125/300] matplotlib__matplotlib-23314                  elapsed=758s (ok) ok=125 err=0
+[150/300] pallets__flask-5063                           elapsed=887s (ok) ok=150 err=0
+[175/300] pytest-dev__pytest-5692                       elapsed=954s (ok) ok=175 err=0
+[200/300] scikit-learn__scikit-learn-14894              elapsed=1026s (ok) ok=200 err=0
+[225/300] sympy__sympy-11870                            elapsed=1145s (ok) ok=225 err=0
+[250/300] sympy__sympy-15011                            elapsed=1298s (ok) ok=250 err=0
+[275/300] sympy__sympy-19487                            elapsed=1454s (ok) ok=275 err=0
+[300/300] sympy__sympy-24909                            elapsed=1603s (ok) ok=300 err=0
+
+engine version: roust 0.2.0 (8034a57, clean)
+wrote 300 records (300 ok, 0 errors) to lab/results_regions/e20_knn09.jsonl
+runner D lite knn09 done: Mon Aug 24 19:47:28 KST 2026
