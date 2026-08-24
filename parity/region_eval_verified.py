@@ -184,6 +184,9 @@ def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: f
     # E20/E11b diagnostics (present only under --lexboost / --trace-boost).
     rec["lexboost"] = stats.get("lexboost")
     rec["trace_boost"] = stats.get("trace_boost")
+    # E21/E22 diagnostics (present only under --file-score / --test-bridge).
+    rec["file_score"] = stats.get("file_score")
+    rec["test_bridge"] = stats.get("test_bridge")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]
@@ -263,6 +266,14 @@ def main() -> None:
     ap.add_argument("--route", action="store_true",
                      help="passthrough to roust's --route (E11 structure-aware query routing); "
                           "omitted by default (binary default: off)")
+    ap.add_argument("--file-score", type=str, default="",
+                     help="passthrough to roust's --file-score (E21 chunk-aggregated FILE "
+                          "scoring: accum|chunk-max|chunk-top2); empty (default) omits the "
+                          "flag, i.e. the binary's own default (accum)")
+    ap.add_argument("--test-bridge", type=float, default=0.0,
+                     help="passthrough to roust's --test-bridge (E22 static test-bridge FILE "
+                          "channel weight); 0.0 (default) omits the flag, i.e. the binary's "
+                          "own disabled default")
     ap.add_argument("--route-test-penalty", type=float, default=0.0,
                      help="passthrough to roust's --route-test-penalty (E11 conditional "
                           "test-path downweight); 0.0 (default) omits the flag, i.e. the "
@@ -301,6 +312,10 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--trace-boost")
     if args.no_trace_boost:
         EXTRA_ENGINE_FLAGS.append("--no-trace-boost")
+    if args.file_score:
+        EXTRA_ENGINE_FLAGS.extend(["--file-score", args.file_score])
+    if args.test_bridge != 0.0:
+        EXTRA_ENGINE_FLAGS.extend(["--test-bridge", str(args.test_bridge)])
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 
