@@ -104,10 +104,16 @@ side-effect: 9 of the 11 FUNCTION losses (django-11620/-11905/-11910/-16910,
 sphinx-8721/-8801, sympy-15011/-20154, scikit-learn-25638) had NO FILE flip —
 the chunk-based normalized `scores` map feeds `pack_regions`' budget
 allocation, and flattening whole-file accumulation reshapes per-file budget
-shares inside an unchanged file list. The FILE-stage mechanism works as
-specified; the damage is collateral, through the score-map coupling.
-chunk-top2 shows the same signature milder (FUNCTION −1.33, LINE −1.00) with
-FILE net zero.
+shares inside an unchanged file list. Quantified: in 8 of those 9 losses the
+GOLD file's packed line budget shrank under chunk-max (`views/debug.py`
+136→75 lines, `models/lookups.py` 205→129, `utilities/iterables.py` 481→213,
+`migrations/autodetector.py` 158→127, ...) — gold files are often the large
+central files (the E20 postmortem's finding), and chunk-max damps exactly
+their normalized score relative to small dense competitors, so the E20
+"central-gold tax" reappears one stage down, at budget allocation instead of
+ranking. The FILE-stage mechanism works as specified; the damage is
+collateral, through the score-map coupling. chunk-top2 shows the same
+signature milder (FUNCTION −1.33, LINE −1.00) with FILE net zero.
 
 **E22 w=0.1 FILE (0G/1L).** The sole flip is the smoke warning confirmed:
 sympy-15346 gold `trigsimp.py` (baseline rank 11) evicted by five bridged
@@ -125,6 +131,11 @@ the lexical ranking already found (247/300 queries bridge at the full cap of
 5; mean 4.19; the cap is load-bearing). tb0.1 vs tb0.3 non-monotonicity on
 sympy-15346 (0.1 loses gold, 0.3 keeps it at rank 30) is a k-boundary
 artifact: small additions evict the tail, larger ones reorder the head.
+tb0.3's LINE +0.33 / FUNCTION churn is likewise bridge-induced budget
+reshuffle, not the designed pathway: in every region-flip gain instance
+(django-13220/-13590/-13710, xarray-3364) the bridged non-gold files
+entered the packed set and redistributed budget; FUNCTION −1.00 has CI
+[−2.67, +0.67] (not bounded away from zero, unlike chunk-max's).
 
 ## Verdicts (per mechanism, Lite gate)
 
@@ -150,10 +161,12 @@ artifact: small additions evict the tail, larger ones reorder the head.
 
 - **The load-bearing new fact for E21b**: chunk-max's FILE-stage behavior is
   exactly as the spec predicted (hub attractors demoted on merit, central
-  gold files HELPED — no E20-style hub-guard tax anywhere), but swapping the
-  fused map wholesale couples the ranking change into `pack_regions`' budget
-  allocator, and THAT is where the losses live (9/11 FUNCTION losses had no
-  FILE flip). A follow-up worth designing: **chunk-max for file RANKING
+  gold files HELPED at the ranking stage — no E20-style hub-guard tax in any
+  FILE flip), but swapping the fused map wholesale couples the ranking
+  change into `pack_regions`' budget allocator, and THAT is where the losses
+  live: 9/11 FUNCTION losses had no FILE flip, and in 8 of those 9 the gold
+  file's packed budget shrank — the central-gold tax reappearing at the
+  budget stage. Revival precondition, concrete: **chunk-max for file RANKING
   only** — select/order files by the chunk aggregate but hand pack_regions
   the accum-normalized `scores` map. Decouples the validated FILE mechanism
   from the damaged region stage.
