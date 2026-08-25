@@ -2,8 +2,12 @@
 
 **Verdicts:**
 
-- **`--trace-formats-v2` — ADOPT-RECOMMEND (flag stays default-OFF; the
-  default flip is the user's call).** Java gains FUNCTION +0.79pp (+1/−0,
+- **`--trace-formats-v2` — ADOPTED (default ON since `ac0b63f`, PR #66,
+  2026-08-26, standing language-agnostic directive; was
+  ADOPT-RECOMMEND).** `--no-trace-formats-v2` is the escape hatch
+  (reproduces CPython-only parsing byte-identically);
+  `--trace-formats-v2` remains accepted-but-redundant for harness
+  compatibility. Adoption evidence: java gains FUNCTION +0.79pp (+1/−0,
   jackson-databind-4325) with ZERO losses on any java metric; rust is
   headline-flat (FILE/FUNCTION/LINE zero discordants, fraction −0.0003 at
   +1/−1 churn); Python is untouched by construction AND by measurement
@@ -207,6 +211,26 @@ under a thirdparty path, and index hygiene should not depend on a
 damping coincidence. These fresh numbers supersede the WS2/WS3a cpp
 reference for future rounds.
 
+## Adoption + rebaseline record (2026-08-26, `ac0b63f`)
+
+- **Default flip proofs** (`lab/ws3b_adoption_gate.py`,
+  `ws3b/adoption_gate.log`; retrieval-payload md5, two runs per config,
+  cold `.roust`): (A) NEW(ac0b63f) defaults == OLD(0c0fc79) with
+  explicit `--trace-formats-v2` on all 19 trace-firing java/rust
+  instances; (B) NEW defaults == OLD defaults on 12 Lite Python
+  instances (one per repo); (C) NEW `--no-trace-formats-v2` == OLD
+  defaults on the same 19 trace-firing instances. 0 failures.
+- **New references**: java **47.66 / 34.38 / 14.06 / .39325**
+  (`agentless_metric_ws3b_java_v2.json`) supersedes the WS2 exp row.
+  rust reference UNCHANGED (59.83/20.50/7.53/.24214): the flag is
+  neutral at every headline metric; the −0.0003 fraction mean (+1/−1,
+  p=1) is within the adopted delta and the base numbers remain the
+  citable reference. cpp/c references are the fresh thirdparty-fixed
+  baselines stated above (their change is the unconditional vendor
+  guard, not this flag). Python Lite/Verified references unchanged
+  (byte-identity proven). README scoreboard + CHANGELOG updated in the
+  adoption commit.
+
 ## Anomalies / notes
 
 - Census counted java 15 trace-bearing; 14 fired (one instance's frames
@@ -219,9 +243,10 @@ reference for future rounds.
   (clap "node" fires are Rust-ecosystem issues quoting panics).
 - The jsts micro FILE loss (svelte-11104) and rust fraction loss
   (clap-2161) share one anatomy: NO frame resolves to gold, and the
-  boosted non-gold frame files displace gold from budget/pack. A
-  follow-up guard (e.g. damp the boost when no frame file also carries
-  lexical mass) is case-mining material, not this round's scope.
+  boosted non-gold frame files displace gold from budget/pack. **QUEUED
+  FOLLOW-UP (post-adoption): a no-gold-frame displacement guard** (e.g.
+  damp the boost when no frame file also carries lexical mass) — the
+  svelte-11104/clap-2161 itemizations above are its case-mining seed.
 - ponyc-2950 carries the standard "pure file creation" error row (c
   slice n=128 includes it as wrong at all levels, unchanged convention).
 - zsh word-splitting ate one goldrank launcher attempt; rerun as a bash
