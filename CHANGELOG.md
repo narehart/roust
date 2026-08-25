@@ -5,6 +5,32 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+- **Behavior change - fixture-dir anchor displacement guard on by
+  default** (issue #56 campaign, WS3d, PR #68, adopted 2026-08-26 under
+  the standing language-agnostic directive): files under a `*.test/` or
+  `*.spec/` DIRECTORY component (the jscodeshift codemod fixture
+  convention -- e.g. mui's `jss-to-styled.test/first.actual.js` --
+  which the testlike damp's file-infix `.test.` match misses) are
+  excluded from symbol-anchor candidacy. Fire-level mining over the
+  WS3b/WS3c loss anatomies found this the only rule separating
+  displacing anchor fires from the adopted wins (0 win fires, 0 gold
+  fires matched across all 306 mined fires). Measured (Multi-SWE JS/TS
+  580): LINE 13.97 -> 14.14 (+1/-0: mui-34337 recovers 0 -> 1.0),
+  fraction .25979 -> .26156, FILE and FUNCTION invariant with zero
+  per-instance flips; base reproduced the WS3c reference digit-exact.
+  All other slices proven untouched: java/rust carry zero fixture-dir
+  paths in any evaluated tree (per-instance-sha `git ls-tree` census);
+  the entire Python exposure (31 pytest Lite/Verified instances, all
+  the single path `extra/setup-py.test/setup.py`) is byte-identical
+  under the guard. Ranking-side only (fixture files stay indexed and
+  lexically rankable; no cache re-key needed). `--displacement-guard`
+  is now accepted-but-redundant; `--no-displacement-guard` reproduces
+  the pre-adoption anchor channel byte-identically. The WS3c-queued
+  GENERAL anchor/trace displacement guard was investigated and closed
+  NO-GO: culprit fires are shape-identical to the adoption wins' gold
+  fires (mining tables in
+  `lab/research/langagnostic/ws3d-displacement-guard.md`).
+
 - **Behavior change - structural-symbol unification on by default**
   (issue #56 campaign, WS3c, PR #67, adopted 2026-08-26 under the
   standing language-agnostic directive): definition-symbol names for the
