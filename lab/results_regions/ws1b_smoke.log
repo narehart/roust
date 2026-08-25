@@ -1,0 +1,37 @@
+
+anuraghazra__github-readme-stats-3442 (anuraghazra__github-readme-stats)  cold 0.3s/base 0.5s/add  newcomers admitted 0 of 12 candidates, 0 tok of 0 leftover (core 8395 tok)
+  gold .gitignore: returned=False
+  gold readme.md: returned=False
+
+axios__axios-5338 (axios__axios)  cold 2.8s/base 3.2s/add  newcomers admitted 0 of 13 candidates, 0 tok of 0 leftover (core 8437 tok)
+  gold index.d.cts: returned=False
+  gold package.json: returned=False
+
+iamkun__dayjs-1047 (iamkun__dayjs)  cold 0.2s/base 0.5s/add  newcomers admitted 1 of 11 candidates, 180 tok of 203 leftover (core 7989 tok)
+  admitted: ['CONTRIBUTING.md']
+  gold .gitignore: returned=False
+
+mui__material-ui-23884 (mui__material-ui)  cold 5.2s/base 8.1s/add  newcomers admitted 0 of 16 candidates, 0 tok of 0 leftover (core 8603 tok)
+  gold scripts/react-next.diff: returned=False
+
+sveltejs__svelte-10996 (sveltejs__svelte)  cold 4.2s/base 6.1s/add  newcomers admitted 0 of 26 candidates, 0 tok of 0 leftover (core 8620 tok)
+  gold .prettierignore: returned=False
+
+anuraghazra__github-readme-stats-105 (anuraghazra__github-readme-stats)  cold 0.2s/base 0.3s/add  newcomers admitted 0 of 8 candidates, 0 tok of 0 leftover (core 8267 tok)
+  gold readme.md: returned=False
+
+anuraghazra__github-readme-stats-148 (anuraghazra__github-readme-stats)  cold 0.4s/base 0.5s/add  newcomers admitted 1 of 12 candidates, 45 tok of 53 leftover (core 8139 tok)
+  admitted: ['themes/README.md']
+  gold readme.md: returned=False
+
+anuraghazra__github-readme-stats-2075 (anuraghazra__github-readme-stats)  cold 0.4s/base 0.7s/add  newcomers admitted 0 of 10 candidates, 0 tok of 0 leftover (core 8383 tok)
+  gold readme.md: returned=False
+
+anuraghazra__github-readme-stats-2099 (anuraghazra__github-readme-stats)  cold 0.8s/base 1.1s/add  newcomers admitted 0 of 14 candidates, 0 tok of 0 leftover (core 8381 tok)
+  gold package-lock.json: returned=False
+  gold readme.md: returned=False
+
+anuraghazra__github-readme-stats-2491 (anuraghazra__github-readme-stats)  cold 0.7s/base 0.9s/add  newcomers admitted 0 of 12 candidates, 0 tok of 0 leftover (core 8369 tok)
+  gold readme.md: returned=False
+
+SMOKE TOTAL: 13 out-of-allowlist gold files -> returned 0/13; invariant violations 0/10
