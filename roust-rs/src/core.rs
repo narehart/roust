@@ -1245,8 +1245,12 @@ pub fn symbols_v2_enabled() -> bool {
     SYMBOLS_V2.load(std::sync::atomic::Ordering::Relaxed)
 }
 
-// WS3d (campaign #56, anchor/trace displacement-guard round): flag-gated
-// (`--displacement-guard`, default OFF) fixture-dir anchor exclusion.
+// WS3d (campaign #56, anchor/trace displacement-guard round): fixture-dir
+// anchor exclusion. ADOPTED engine default (standing language-agnostic
+// directive, 2026-08-26, PR #68): main.rs sets this ON unless
+// --no-displacement-guard. The LIBRARY initializer stays `false` so
+// in-process unit tests exercise pre-adoption paths without toggling the
+// process-global (the SYMBOLS_V2 convention above).
 // The WS3d fire-level mining (lab/research/langagnostic/
 // ws3d-displacement-guard.md) found exactly ONE discriminator that
 // separates displacing anchor fires from the adopted wins with zero
@@ -1259,9 +1263,10 @@ pub fn symbols_v2_enabled() -> bool {
 // the anchor channel: near-duplicate fixture pairs define the same
 // rare symbols and win the rarity gate, then their seated blocks eat
 // pass-1 budget from gold (mui-34337 LINE 1->0, mui-34548 FILE
-// 0.67->0, mui-35178 LINE .54->.38). Guard-off is byte-identical; the
-// filter applies AFTER the <=3-defining-files rarity gate so no new
-// symbols become anchor-eligible.
+// 0.67->0, mui-35178 LINE .54->.38). Guard-off reproduces the
+// pre-adoption anchor channel byte-identically; the filter applies
+// AFTER the <=3-defining-files rarity gate so no new symbols become
+// anchor-eligible.
 static DISPLACEMENT_GUARD: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
 pub fn set_displacement_guard(on: bool) {

@@ -317,19 +317,31 @@ struct Args {
     #[arg(long)]
     no_symbols_v2: bool,
 
-    /// WS3d anchor displacement guard (campaign #56, flag-gated
-    /// experiment, default OFF): exclude fixture-directory-shaped files
-    /// (any `*.test/` or `*.spec/` DIRECTORY component -- the jscodeshift
-    /// codemod fixture convention TESTLIKE_RE's file-infix `.test.` match
-    /// misses) from symbol-anchor candidacy. The WS3d fire-level mining
-    /// found this the only shape rule that separates displacing anchor
-    /// fires (mui-34337/34548/35178: fixture pairs defining the same rare
+    /// WS3d anchor displacement guard -- ADOPTED as the engine default
+    /// (campaign #56, PR #68, standing language-agnostic directive
+    /// 2026-08-26): exclude fixture-directory-shaped files (any `*.test/`
+    /// or `*.spec/` DIRECTORY component -- the jscodeshift codemod
+    /// fixture convention TESTLIKE_RE's file-infix `.test.` match misses)
+    /// from symbol-anchor candidacy. The WS3d fire-level mining found
+    /// this the only shape rule that separates displacing anchor fires
+    /// (mui-34337/34548/35178: fixture pairs defining the same rare
     /// symbol eat gold's pack budget) from the adopted anchor wins, with
-    /// zero win-fire / zero gold-fire collateral across all mined fires.
-    /// Ranking-side only; the fixture files themselves stay indexed and
-    /// lexically rankable.
+    /// zero win-fire / zero gold-fire collateral across all mined fires;
+    /// jsts arms LINE 13.97->14.14, fraction +0.0018, FILE/FUNCTION
+    /// invariant, zero win suppression; java/rust/Lite/Verified proven
+    /// inert (fixture census + 31-instance byte-identity micro-gate).
+    /// Ranking-side only; fixture files stay indexed and lexically
+    /// rankable. ON by default; passing this flag explicitly is
+    /// accepted-but-redundant (kept for harness compatibility). Disable
+    /// with --no-displacement-guard.
     #[arg(long)]
     displacement_guard: bool,
+
+    /// disable the WS3d fixture-dir anchor displacement guard
+    /// (reproduces the pre-adoption anchor channel byte-identically:
+    /// fixture-dir files compete for anchors again)
+    #[arg(long)]
+    no_displacement_guard: bool,
 
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
@@ -359,8 +371,10 @@ fn main() {
     // on-flag is accepted-but-redundant (mutual exclusion checked below,
     // mirroring the trace-formats-v2 pattern).
     roust::core::set_symbols_v2(!args.no_symbols_v2);
-    // WS3d displacement guard: default OFF (experiment flag, not adopted).
-    roust::core::set_displacement_guard(args.displacement_guard);
+    // WS3d displacement guard: default ON (adopted); --no-displacement-guard
+    // is the escape hatch and the explicit on-flag is accepted-but-redundant
+    // (mutual exclusion checked below, mirroring the symbols-v2 pattern).
+    roust::core::set_displacement_guard(!args.no_displacement_guard);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");
@@ -404,6 +418,10 @@ fn main() {
     }
     if args.symbols_v2 && args.no_symbols_v2 {
         eprintln!("roust: error: --symbols-v2 and --no-symbols-v2 are mutually exclusive");
+        std::process::exit(2);
+    }
+    if args.displacement_guard && args.no_displacement_guard {
+        eprintln!("roust: error: --displacement-guard and --no-displacement-guard are mutually exclusive");
         std::process::exit(2);
     }
     if args.structural_blocks && args.no_structural_blocks {

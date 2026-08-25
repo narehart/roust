@@ -1,4 +1,4 @@
-# WS3d — anchor/trace displacement guard (#56): general guard NO-GO by mining; narrow fixture-dir guard shipped flag-gated
+# WS3d — anchor/trace displacement guard (#56): general guard NO-GO by mining; fixture-dir guard ADOPTED
 
 **Verdicts:**
 
@@ -15,8 +15,13 @@
   frame is gold" (10 hits, both trace seeds, 0 wins), which cannot be
   computed at runtime. Mining tables are the deliverable, per the WS1c
   stop rule.
-- **`--displacement-guard` (fixture-dir anchor exclusion) — flag-gated,
-  default OFF; ADOPT-RECOMMEND.** The one discriminator that separates
+- **`--displacement-guard` (fixture-dir anchor exclusion) — ADOPTED
+  (default ON, PR #68, 2026-08-26, standing language-agnostic
+  directive; was ADOPT-RECOMMEND).** `--no-displacement-guard` is the
+  escape hatch (reproduces the pre-adoption anchor channel
+  byte-identically); the explicit `--displacement-guard` spelling
+  remains accepted-but-redundant for harness compatibility. No cache
+  re-key (ranking-side only). The one discriminator that separates
   cleanly IN THE DATA: the fired file living under a `*.test/` /
   `*.spec/` DIRECTORY component (jscodeshift codemod fixture
   convention; TESTLIKE_RE only matches `.test.` as a file-name INFIX,
@@ -30,7 +35,6 @@
   trees in 128+239 instances), Lite/Verified inert byte-exactly on the
   entire exposed population (31/31 pytest instances IDENTICAL under the
   micro-gate). Zero adoption wins touched (verified nominally, below).
-  NOT flipped this round.
 
 Engine: branch `ws3d-displacement-guard` @ `82c8d2f` vs main @
 `e41c972`. Pinned worktree binaries (`roust 0.2.0 (82c8d2f, clean)` /
@@ -139,6 +143,9 @@ EXACTLY per instance via read-only `git ls-tree -r <base_commit>`:
 |---|---|---|
 | java (128) | **0** | guard structurally inert — no arms needed |
 | rust (239) | **0** | guard structurally inert — no arms needed |
+| go (428) | **0** | ditto (census extended at adoption; go-zero via blob-less bare clone) |
+| c (128) | **0** | ditto |
+| cpp (129) | **0** | ditto |
 | Lite (300) | 15 (all pytest, all `extra/setup-py.test/setup.py`) | 31-instance byte-compare micro-gate |
 | Verified (407) | 16 (same single path) | ditto |
 | jsts (580) | 174 (mui codemod fixture trees) | full base+guard arms |
@@ -195,6 +202,41 @@ clap-3212 / clap-4474 (rust) held by structural inertness (census: 0
 fixture-dir trees in either slice); java's 18 zero-anchor WS3c fires
 likewise. All 14 pack-only diffs are mui fixture-bearing instances,
 non-gold churn only. Zero suppressed wins.
+
+## Adoption + rebaseline record (2026-08-26)
+
+- **Default flip** (adoption commit on this branch): main.rs sets the
+  guard ON unless `--no-displacement-guard`; mutual-exclusion check;
+  the core.rs library initializer stays `false` (the SYMBOLS_V2
+  unit-test convention). `tests/displacement_guard.rs` reworked for
+  default-ON (escape hatch reproduces the pre-adoption assertions; the
+  redundant old spelling asserted byte-equal to defaults); suite 97/97.
+- **Default flip proofs** (`lab/ws3d_adoption_gate.py`,
+  `ws3d/adoption_gate.log`; retrieval-payload md5, two runs per config,
+  cold `.roust`): (A) NEW defaults == OLD(82c8d2f) with explicit
+  `--displacement-guard` on ALL 17 changed jsts instances (3 metric +
+  14 pack-only — the entire changed population, not a sample);
+  (B) NEW defaults == OLD defaults on 12 Lite instances (one per repo,
+  pytest deliberately included: its instances are the whole Python
+  fixture-dir exposure, and the micro-gate proved the guard inert on
+  them, so there is NO expected differ class — any mismatch fails);
+  (C) NEW `--no-displacement-guard` == OLD defaults on the same 17.
+  **Results: 0 failures (A 17/17, B 12/12, C 17/17).**
+- **New reference**: jsts **46.38 / 31.21 / 14.14 / .26156**
+  (`agentless_metric_ws3d_jsts_guard.json`) supersedes the WS3c jsts
+  reference (46.38/31.21/13.97/.25979, now the escape-hatch state).
+  ALL other references stand unchanged, by proof rather than by arms:
+  java (49.22/35.16/14.84/.39691) and rust (60.25/19.67/7.53/.24315)
+  carry zero fixture-dir paths in any evaluated tree (census 0/128,
+  0/239); Lite (92.33/54.67/44.00/.52728) and Verified
+  (92.38/47.17/35.14/.47635) are byte-identical on their entire
+  31-instance exposed population (micro-gate) and untouched elsewhere
+  by construction; go (0/428), c (0/128) and cpp (0/129) are
+  structurally inert by the same census, extended at adoption to all
+  eight slices (`fixture_census.log`; the missing go-zero clone was
+  restored as a blob-less bare clone for the ls-tree reads). README
+  scoreboard (JS/TS row + note 6) and CHANGELOG updated in the
+  adoption commit.
 
 ## Anomalies / notes
 

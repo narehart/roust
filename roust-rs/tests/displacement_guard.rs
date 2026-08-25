@@ -1,8 +1,9 @@
 //! CLI-level WS3d tests (campaign #56, anchor/trace displacement-guard
-//! round): the flag-gated `--displacement-guard` fixture-dir anchor
-//! exclusion (default OFF -- experiment flag, not adopted), exercised
-//! through the real compiled binary because the flag is a process-global
-//! set at CLI parse (same convention as tests/symbols_v2.rs).
+//! round): the `--displacement-guard` fixture-dir anchor exclusion
+//! (ADOPTED default ON, PR #68; --no-displacement-guard is the escape
+//! hatch), exercised through the real compiled binary because the flag
+//! is a process-global set at CLI parse (same convention as
+//! tests/symbols_v2.rs).
 //!
 //! Fixture anatomy (mirrors mui-34337/34548/35178 exactly): a codemod
 //! fixture DIRECTORY named `<transform>.test/` holds an actual/expected
@@ -10,10 +11,12 @@
 //! mentions. TESTLIKE_RE only matches `.test.` as a file-name infix, so
 //! the pair is undamped and un-testlike everywhere in the engine; under
 //! the adopted symbols-v2 defaults both files win the <=3-definers
-//! rarity gate and are anchor-inserted, eating pass-1 pack budget from
-//! the genuinely relevant files. Under --displacement-guard the pair is
-//! excluded from anchor candidacy (ranking-side only: the files stay
-//! indexed) while every non-fixture anchor is untouched.
+//! rarity gate and, WITHOUT the guard, are anchor-inserted, eating
+//! pass-1 pack budget from the genuinely relevant files. At the adopted
+//! defaults the pair is excluded from anchor candidacy (ranking-side
+//! only: the files stay indexed) while every non-fixture anchor is
+//! untouched. "off" below means the --no-displacement-guard escape
+//! hatch (the pre-adoption engine).
 
 use serde_json::Value;
 use std::path::PathBuf;
@@ -24,11 +27,20 @@ struct Run {
     stdout: String,
 }
 
-fn run(dir: &PathBuf, query: &str, guard: bool) -> Run {
+/// `mode`: "default" (adopted engine defaults, guard ON), "off"
+/// (--no-displacement-guard escape hatch, pre-adoption engine), or
+/// "explicit" (--displacement-guard, accepted-but-redundant spelling).
+fn run(dir: &PathBuf, query: &str, mode: &str) -> Run {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_roust"));
     cmd.arg(query).arg(dir).arg("--no-cache").arg("--explain").arg("--budget").arg("3000");
-    if guard {
-        cmd.arg("--displacement-guard");
+    match mode {
+        "off" => {
+            cmd.arg("--no-displacement-guard");
+        }
+        "explicit" => {
+            cmd.arg("--displacement-guard");
+        }
+        _ => {}
     }
     let out = cmd.output().expect("failed to run roust binary");
     let stderr = String::from_utf8_lossy(&out.stderr).into_owned();
@@ -117,22 +129,28 @@ fn displacement_guard_excludes_fixture_dir_anchors_only() {
     .unwrap();
 
     let q = "themeSpacingProbe output wrong after runSpacingMigration in the widget spacing migration transform";
-    let base = run(&tmp, q, false);
-    let guarded = run(&tmp, q, true);
+    let off = run(&tmp, q, "off");
+    let def = run(&tmp, q, "default");
 
-    let base_promoted = promoted_files(&base.explain);
+    let off_promoted = promoted_files(&off.explain);
     assert!(
-        base_promoted.iter().any(|f| f.contains("spacing-transform.test/")),
-        "defaults: the fixture pair must be anchor-promoted (reproducing the mui-34337 anatomy), got {base_promoted:?}"
+        off_promoted.iter().any(|f| f.contains("spacing-transform.test/")),
+        "--no-displacement-guard: the fixture pair must be anchor-promoted (the pre-adoption mui-34337 anatomy), got {off_promoted:?}"
     );
-    let guard_promoted = promoted_files(&guarded.explain);
+    let def_promoted = promoted_files(&def.explain);
     assert!(
-        !guard_promoted.iter().any(|f| f.contains("spacing-transform.test/")),
-        "--displacement-guard: fixture-dir files must be excluded from anchor candidacy, got {guard_promoted:?}"
+        !def_promoted.iter().any(|f| f.contains("spacing-transform.test/")),
+        "adopted default: fixture-dir files must be excluded from anchor candidacy, got {def_promoted:?}"
     );
     assert!(
-        guard_promoted.contains(&"lib/transformRunner.js".to_string()),
-        "--displacement-guard: non-fixture anchors must be untouched, got {guard_promoted:?}"
+        def_promoted.contains(&"lib/transformRunner.js".to_string()),
+        "adopted default: non-fixture anchors must be untouched, got {def_promoted:?}"
+    );
+    // The old spelling stays accepted-but-redundant: identical output.
+    let explicit = run(&tmp, q, "explicit");
+    assert_eq!(
+        explicit.stdout, def.stdout,
+        "--displacement-guard (redundant old spelling) must match the adopted defaults"
     );
 
     let _ = std::fs::remove_dir_all(&tmp);
@@ -158,18 +176,23 @@ fn displacement_guard_defaults_byte_identical_without_fixture_dirs() {
     .unwrap();
 
     let q = "wrong output from runSpacingMigration in the widget spacing migration transform";
-    let base = run(&tmp, q, false);
-    let guarded = run(&tmp, q, true);
+    let def = run(&tmp, q, "default");
+    let off = run(&tmp, q, "off");
+    let explicit = run(&tmp, q, "explicit");
     assert_eq!(
-        base.stdout, guarded.stdout,
-        "no fixture-dir files in the tree: guard ON must be byte-identical to defaults"
+        def.stdout, off.stdout,
+        "no fixture-dir files in the tree: the escape hatch must be byte-identical to defaults"
     );
-    // ... including an actually-firing non-fixture anchor in both states.
-    assert_eq!(promoted_files(&base.explain), promoted_files(&guarded.explain));
+    assert_eq!(
+        def.stdout, explicit.stdout,
+        "no fixture-dir files in the tree: the redundant spelling must be byte-identical to defaults"
+    );
+    // ... including an actually-firing non-fixture anchor in all states.
+    assert_eq!(promoted_files(&def.explain), promoted_files(&off.explain));
     assert!(
-        promoted_files(&base.explain).contains(&"lib/transformRunner.js".to_string()),
+        promoted_files(&def.explain).contains(&"lib/transformRunner.js".to_string()),
         "identity fixture must exercise a live non-fixture anchor, got {:?}",
-        promoted_files(&base.explain)
+        promoted_files(&def.explain)
     );
 
     let _ = std::fs::remove_dir_all(&tmp);

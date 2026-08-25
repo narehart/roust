@@ -209,3 +209,6 @@
    mui__material-ui-23487: 22 files, e.g. ['packages/material-ui-codemod/src/v0.15.0/import-path.test/actual.js', 'packages/material-ui-codemod/src/v0.15.0/import-path.test/expected.js', 'packages/material-ui-codemod/src/v1.0.0/color-imports.test/actual.js']
    mui__material-ui-23073: 22 files, e.g. ['packages/material-ui-codemod/src/v0.15.0/import-path.test/actual.js', 'packages/material-ui-codemod/src/v0.15.0/import-path.test/expected.js', 'packages/material-ui-codemod/src/v1.0.0/color-imports.test/actual.js']
 TOTAL matching instances (excl. jsts full arms): 205
+== go(428): 0/428 instances with fixture-dir paths (0 ls-tree errors)
+== c(128): 0/128 instances with fixture-dir paths (0 ls-tree errors)
+== cpp(129): 0/129 instances with fixture-dir paths (0 ls-tree errors)
