@@ -1,0 +1,37 @@
+binary: lab/results_regions/ws3d/roust_82c8d2f_pinned -> roust 0.2.0 (82c8d2f, clean)
+binary: lab/results_regions/ws3d/roust_a03103c_pinned -> roust 0.2.0 (a03103c, clean)
+=== Proof A + C: 17 changed jsts instances ===
+  mui__material-ui-38247              A=OK C=OK
+  mui__material-ui-36853              A=OK C=OK
+  mui__material-ui-36403              A=OK C=OK
+  mui__material-ui-36056              A=OK C=OK
+  mui__material-ui-35364              A=OK C=OK
+  mui__material-ui-35178              A=OK C=OK
+  mui__material-ui-34548              A=OK C=OK
+  mui__material-ui-34337              A=OK C=OK
+  mui__material-ui-34247              A=OK C=OK
+  mui__material-ui-33880              A=OK C=OK
+  mui__material-ui-33820              A=OK C=OK
+  mui__material-ui-33801              A=OK C=OK
+  mui__material-ui-32987              A=OK C=OK
+  mui__material-ui-32713              A=OK C=OK
+  mui__material-ui-32182              A=OK C=OK
+  mui__material-ui-31172              A=OK C=OK
+  mui__material-ui-30788              A=OK C=OK
+Proof A failures: 0 / 17
+Proof C failures: 0 / 17
+=== Proof B: 12 Lite instances (one per repo) ===
+  astropy__astropy-12907              B=OK
+  django__django-10914                B=OK
+  matplotlib__matplotlib-18869        B=OK
+  mwaskom__seaborn-2848               B=OK
+  pallets__flask-4045                 B=OK
+  psf__requests-1963                  B=OK
+  pydata__xarray-3364                 B=OK
+  pylint-dev__pylint-5859             B=OK
+  pytest-dev__pytest-11143            B=OK
+  scikit-learn__scikit-learn-10297    B=OK
+  sphinx-doc__sphinx-10325            B=OK
+  sympy__sympy-11400                  B=OK
+Proof B failures: 0 / 12
+ADOPTION_GATE_DONE
