@@ -1,0 +1,6 @@
+paired: 300  (base=lite300_ws3a_base.jsonl  v2=lite300_ws3a_v2.jsonl)
+  django__django-16046                          FILE 1->1  LINE 0->0  frac 0.167->0.000 (-0.167)  doc-dir files in v2 bundle: ['docs/conf.py']
+  sympy__sympy-19007                            FILE 1->1  LINE 0->0  frac 0.217->0.174 (-0.043)  doc-dir files in v2 bundle: []
+changed instances: 2/300  (identical regions dicts: 164/300)
+
+no thirdparty paths in any v2 bundle
