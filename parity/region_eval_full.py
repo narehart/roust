@@ -130,6 +130,10 @@ def main() -> None:
                      help="WS1 (campaign #56): append --index-all to every roust "
                           "invocation (content-sniffed universal indexing instead of "
                           "the extension allowlist; rides EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--newcomer-reserve", type=float, default=0.0,
+                     help="WS1b reserve variant: append --newcomer-reserve FRAC to every "
+                          "roust invocation (core packs against budget*(1-frac); rides "
+                          "EXTRA_ENGINE_FLAGS; only meaningful with --index-all-additive)")
     ap.add_argument("--index-all-additive", action="store_true",
                      help="WS1b (campaign #56): append --index-all-additive to every "
                           "roust invocation (unflagged selection byte-identical, "
@@ -162,6 +166,8 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--index-all"]
     if args.index_all_additive:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--index-all-additive"]
+    if args.newcomer_reserve != 0.0:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--newcomer-reserve", str(args.newcomer_reserve)]
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
@@ -169,7 +175,8 @@ def main() -> None:
     print(f"pad_lines={args.pad_lines} len_exp={args.len_exp} "
           f"bm25_only={args.bm25_only} ts_blocks={args.ts_blocks} "
           f"index_all={args.index_all} "
-          f"index_all_additive={args.index_all_additive}", file=sys.stderr)
+          f"index_all_additive={args.index_all_additive} "
+          f"newcomer_reserve={args.newcomer_reserve}", file=sys.stderr)
 
     rows = rev.load_verified_rows(args.gold_parquet, limit=0)
     start, end = parse_shard(args.shard, len(rows))
@@ -191,6 +198,7 @@ def main() -> None:
             rec["ts_blocks"] = args.ts_blocks
             rec["index_all"] = args.index_all
             rec["index_all_additive"] = args.index_all_additive
+            rec["newcomer_reserve"] = args.newcomer_reserve
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

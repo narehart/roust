@@ -154,8 +154,14 @@ def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
               route_test_penalty: float = 0.0, lexboost: float = 0.0,
               lexboost_graph: str = "", trace_boost: bool = False,
               no_trace_boost: bool = False, index_all: bool = False,
-              index_all_additive: bool = False) -> tuple[dict | None, str | None]:
+              index_all_additive: bool = False,
+              newcomer_reserve: float = 0.0) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
+    if newcomer_reserve != 0.0:
+        # WS1b reserve variant: core packs against budget*(1-frac) to
+        # guarantee newcomer headroom; only meaningful with
+        # --index-all-additive. 0.0 (default) omits the flag.
+        argv += ["--newcomer-reserve", str(newcomer_reserve)]
     if index_all_additive:
         # WS1b (campaign #56): additive-only universal indexing -- the
         # unflagged pipeline runs byte-identically first, then newcomer
@@ -274,7 +280,8 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
                        route: bool = False, route_test_penalty: float = 0.0,
                        lexboost: float = 0.0, lexboost_graph: str = "",
                        trace_boost: bool = False, no_trace_boost: bool = False,
-                       index_all: bool = False, index_all_additive: bool = False) -> dict:
+                       index_all: bool = False, index_all_additive: bool = False,
+                       newcomer_reserve: float = 0.0) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -303,7 +310,7 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
     obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp,
                          family_enum, sibling_sim, max_siblings, route, route_test_penalty,
                          lexboost, lexboost_graph, trace_boost, no_trace_boost, index_all,
-                         index_all_additive)
+                         index_all_additive, newcomer_reserve)
     if err:
         rec["error"] = err
         return rec
@@ -429,6 +436,10 @@ def main() -> None:
                           "additive-only universal indexing -- unflagged selection byte-"
                           "identical, newcomers admitted into leftover budget only); "
                           "omitted by default (binary default: off)")
+    ap.add_argument("--newcomer-reserve", type=float, default=0.0,
+                     help="passthrough to roust's --newcomer-reserve (WS1b reserve variant: "
+                          "core packs against budget*(1-frac)); 0.0 (default) omits the "
+                          "flag; only meaningful with --index-all-additive")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -465,7 +476,7 @@ def main() -> None:
                                      args.repos_dir, args.route, args.route_test_penalty,
                                      args.lexboost, args.lexboost_graph, args.trace_boost,
                                      args.no_trace_boost, args.index_all,
-                                     args.index_all_additive)
+                                     args.index_all_additive, args.newcomer_reserve)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

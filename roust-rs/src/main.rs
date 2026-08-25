@@ -260,6 +260,18 @@ struct Args {
     #[arg(long, conflicts_with = "index_all")]
     index_all_additive: bool,
 
+    /// WS1b reserve variant (campaign #56): with --index-all-additive,
+    /// reserve this fraction of --budget for newcomer admission by packing
+    /// the core selection against budget*(1-frac) instead of the full
+    /// budget. The core FILE SET is unchanged (pass 1 seats one span per
+    /// selected file unconditionally regardless of budget) and newcomers
+    /// still can never evict a core file -- but core SPANS may pack
+    /// smaller than the unflagged engine's, trading region mass for
+    /// guaranteed newcomer headroom. 0.0 (default) = off: leftover-only
+    /// admission, core byte-identical. Requires --index-all-additive.
+    #[arg(long, default_value_t = 0.0, requires = "index_all_additive")]
+    newcomer_reserve: f64,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -297,6 +309,10 @@ fn main() {
     }
     if args.lexboost_graph != "import" && args.lexboost_graph != "knn" {
         eprintln!("roust: error: --lexboost-graph must be 'import' or 'knn'");
+        std::process::exit(2);
+    }
+    if !args.newcomer_reserve.is_finite() || !(0.0..1.0).contains(&args.newcomer_reserve) {
+        eprintln!("roust: error: --newcomer-reserve must be in [0, 1)");
         std::process::exit(2);
     }
     if args.route && args.trace_boost {
@@ -410,12 +426,22 @@ fn main() {
     } else {
         anchor_def_symbols(&args.query, &corpus, &anchor_files)
     };
+    // WS1b reserve variant: under --index-all-additive with
+    // --newcomer-reserve > 0, the CORE packs against budget*(1-frac) so a
+    // slice of the budget is guaranteed to survive for newcomer admission
+    // (which always checks against the FULL budget). Default (0.0, or no
+    // additive flag) keeps core_budget == budget: core byte-identical.
+    let core_budget = if args.index_all_additive && args.newcomer_reserve > 0.0 {
+        args.budget - (args.budget as f64 * args.newcomer_reserve).floor() as i64
+    } else {
+        args.budget
+    };
     let (spans, bundle) = pack_regions(
         &corpus,
         &files,
         &terms,
         &scores,
-        args.budget,
+        core_budget,
         &count_tokens,
         Some(&anchor_symbols),
         0.0,
@@ -567,6 +593,8 @@ fn main() {
             "n_newcomers_admitted": admitted.len(),
             "newcomers_admitted": admitted,
             "core_bundle_tokens": core_tokens,
+            "core_budget": core_budget,
+            "newcomer_reserve": args.newcomer_reserve,
             "leftover_tokens": (args.budget - core_tokens).max(0),
             "newcomer_tokens": cur_tokens - core_tokens,
             "additive_ms": (t_add.elapsed().as_secs_f64() * 1000.0).round() as i64,

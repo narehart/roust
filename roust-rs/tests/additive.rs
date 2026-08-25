@@ -141,6 +141,55 @@ fn additive_with_no_leftover_budget_is_identical_to_defaults() {
     std::fs::remove_dir_all(&repo).ok();
 }
 
+/// WS1b reserve variant: --newcomer-reserve shrinks the CORE pack budget
+/// (never the core file set -- pass 1 seats every selected file
+/// unconditionally) to guarantee newcomer headroom. Contract: the
+/// unflagged packed file LIST is still a byte-identical prefix of the
+/// flagged list (set + order), newcomers are appended, and the total
+/// stays within the full budget whenever a newcomer was admitted. Core
+/// spans MAY differ from the unflagged run (that is the trade), so no
+/// span equality is asserted for the reserve variant.
+#[test]
+fn reserve_preserves_core_file_set_and_appends_newcomers() {
+    let repo = make_repo("reserve");
+    let query = "widget pricing validation rules";
+    let base = run_json(&repo, &[], query);
+    let add = run_json(&repo, &["--index-all-additive", "--newcomer-reserve", "0.10"], query);
+
+    let base_files = file_paths(&base);
+    let add_files = file_paths(&add);
+    assert_eq!(
+        &add_files[..base_files.len()],
+        base_files.as_slice(),
+        "core packed file list must be a byte-identical prefix under --newcomer-reserve"
+    );
+    for f in &add_files[base_files.len()..] {
+        assert!(!roust::core::has_allowlisted_suffix(f), "appended file {f} is allowlisted");
+    }
+    let st = &add["stats"]["index_all_additive"];
+    assert_eq!(st["core_budget"].as_i64().unwrap(), 8192 - 819, "core budget must be budget*(1-0.10)");
+    if st["n_newcomers_admitted"].as_u64().unwrap() > 0 {
+        assert!(add["stats"]["bundle_tokens"].as_i64().unwrap() <= 8192);
+    }
+
+    std::fs::remove_dir_all(&repo).ok();
+}
+
+/// --newcomer-reserve without --index-all-additive is a usage error.
+#[test]
+fn reserve_requires_additive_flag() {
+    let repo = make_repo("reserve_req");
+    let out = Command::new(env!("CARGO_BIN_EXE_roust"))
+        .args(["--newcomer-reserve", "0.10", "widget"])
+        .arg(&repo)
+        .arg("--no-cache")
+        .output()
+        .expect("failed to spawn roust binary");
+    assert_eq!(out.status.code(), Some(2), "reserve without additive must be a usage error");
+
+    std::fs::remove_dir_all(&repo).ok();
+}
+
 /// --index-all and --index-all-additive are mutually exclusive (usage
 /// error, exit 2): one re-ranks everything, the other guards the core --
 /// silently combining them has no coherent meaning.
