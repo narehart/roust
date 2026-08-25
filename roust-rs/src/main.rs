@@ -197,16 +197,27 @@ struct Args {
     #[arg(long)]
     no_trace_boost: bool,
 
-    /// WS3b (campaign #56, audit finding 2): multi-format trace-frame
-    /// extraction for the E11b FILE boost. Adds Java (`at
+    /// WS3b multi-format trace-frame extraction -- ADOPTED as the engine
+    /// default (campaign #56, audit finding 2, PR #66, standing
+    /// language-agnostic directive 2026-08-26). Adds Java (`at
     /// pkg.Cls.m(Cls.java:123)`, FQCN->path), Node (`at fn
     /// (path.js:1:2)`), Go panic locator, and Rust backtrace `at` frame
     /// parsing alongside the CPython format; frames feed the SAME
-    /// rank-decayed boost channel, raise-site first per format's own
-    /// convention. Python parsing unchanged; query text byte-untouched.
-    /// No-op under --no-trace-boost / --route. Default OFF.
+    /// rank-decayed E11b boost channel, raise-site first per format's own
+    /// convention. Python parsing unchanged; query text byte-untouched;
+    /// provably byte-identical on all Python slices (zero new-format
+    /// matches on Lite/Verified/full). ON by default; passing this flag
+    /// explicitly is accepted-but-redundant (kept for harness
+    /// compatibility). Disable with --no-trace-formats-v2. No-op under
+    /// --no-trace-boost / --route.
     #[arg(long)]
     trace_formats_v2: bool,
+
+    /// disable WS3b multi-format trace-frame extraction (CPython-only
+    /// frame parsing, reproducing the pre-adoption engine
+    /// byte-identically)
+    #[arg(long)]
+    no_trace_formats_v2: bool,
 
     /// E20 (campaign #4 wave 5): LexBoost neighbor score smoothing lambda
     /// (arXiv:2409.05882). Final file score = lambda*S + (1-lambda)*
@@ -336,6 +347,10 @@ fn main() {
         eprintln!("roust: error: --trace-boost and --no-trace-boost are mutually exclusive");
         std::process::exit(2);
     }
+    if args.trace_formats_v2 && args.no_trace_formats_v2 {
+        eprintln!("roust: error: --trace-formats-v2 and --no-trace-formats-v2 are mutually exclusive");
+        std::process::exit(2);
+    }
     if args.structural_blocks && args.no_structural_blocks {
         eprintln!("roust: error: --structural-blocks and --no-structural-blocks are mutually exclusive");
         std::process::exit(2);
@@ -395,8 +410,11 @@ fn main() {
     // E11b trace-frame FILE extraction (adopted default; see
     // use_trace_boost above); `terms` above is untouched (byte-identical
     // query text).
+    // WS3b multi-format parsing is ON by default (adopted);
+    // --no-trace-formats-v2 restores CPython-only frame extraction.
+    let use_trace_formats_v2 = !args.no_trace_formats_v2;
     let boost_files: Vec<String> = if use_trace_boost {
-        if args.trace_formats_v2 {
+        if use_trace_formats_v2 {
             roust::core::trace_frame_files_v2(&args.query, &corpus)
         } else {
             trace_frame_files(&args.query, &corpus)
@@ -510,7 +528,7 @@ fn main() {
         // --no-trace-boost / --route.
         stats["trace_boost"] = serde_json::json!({
             "trace_files": boost_files,
-            "formats_v2": args.trace_formats_v2,
+            "formats_v2": use_trace_formats_v2,
         });
     }
     if args.lexboost > 0.0 {
