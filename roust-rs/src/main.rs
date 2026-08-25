@@ -317,6 +317,20 @@ struct Args {
     #[arg(long)]
     no_symbols_v2: bool,
 
+    /// WS3d anchor displacement guard (campaign #56, flag-gated
+    /// experiment, default OFF): exclude fixture-directory-shaped files
+    /// (any `*.test/` or `*.spec/` DIRECTORY component -- the jscodeshift
+    /// codemod fixture convention TESTLIKE_RE's file-infix `.test.` match
+    /// misses) from symbol-anchor candidacy. The WS3d fire-level mining
+    /// found this the only shape rule that separates displacing anchor
+    /// fires (mui-34337/34548/35178: fixture pairs defining the same rare
+    /// symbol eat gold's pack budget) from the adopted anchor wins, with
+    /// zero win-fire / zero gold-fire collateral across all mined fires.
+    /// Ranking-side only; the fixture files themselves stay indexed and
+    /// lexically rankable.
+    #[arg(long)]
+    displacement_guard: bool,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -345,6 +359,8 @@ fn main() {
     // on-flag is accepted-but-redundant (mutual exclusion checked below,
     // mirroring the trace-formats-v2 pattern).
     roust::core::set_symbols_v2(!args.no_symbols_v2);
+    // WS3d displacement guard: default OFF (experiment flag, not adopted).
+    roust::core::set_displacement_guard(args.displacement_guard);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");

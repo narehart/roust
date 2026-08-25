@@ -147,6 +147,10 @@ def main() -> None:
                           "invocation (tree-sitter-sourced def_index for all grammar-covered "
                           "languages + anchor-forced seating un-gated from .py; rides "
                           "EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--displacement-guard", action="store_true",
+                     help="WS3d (campaign #56): append --displacement-guard to every roust "
+                          "invocation (fixture-dir anchor exclusion; rides "
+                          "EXTRA_ENGINE_FLAGS)")
     ap.add_argument("--allow-stale-engine", action="store_true",
                      help="override the blocking engine-provenance guard (loud warning "
                           "instead of refusal) -- NOT recommended for real results")
@@ -180,6 +184,8 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--trace-formats-v2"]
     if args.symbols_v2:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--symbols-v2"]
+    if args.displacement_guard:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--displacement-guard"]
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
@@ -190,7 +196,8 @@ def main() -> None:
           f"no_structural_blocks={args.no_structural_blocks} "
           f"impl_prior_v2={args.impl_prior_v2} "
           f"trace_formats_v2={args.trace_formats_v2} "
-          f"symbols_v2={args.symbols_v2}", file=sys.stderr)
+          f"symbols_v2={args.symbols_v2} "
+          f"displacement_guard={args.displacement_guard}", file=sys.stderr)
 
     rows = rev.load_verified_rows(args.gold_parquet, limit=0)
     start, end = parse_shard(args.shard, len(rows))
@@ -215,6 +222,7 @@ def main() -> None:
             rec["impl_prior_v2"] = args.impl_prior_v2
             rec["trace_formats_v2"] = args.trace_formats_v2
             rec["symbols_v2"] = args.symbols_v2
+            rec["displacement_guard"] = args.displacement_guard
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

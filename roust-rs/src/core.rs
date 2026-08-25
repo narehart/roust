@@ -1245,6 +1245,46 @@ pub fn symbols_v2_enabled() -> bool {
     SYMBOLS_V2.load(std::sync::atomic::Ordering::Relaxed)
 }
 
+// WS3d (campaign #56, anchor/trace displacement-guard round): flag-gated
+// (`--displacement-guard`, default OFF) fixture-dir anchor exclusion.
+// The WS3d fire-level mining (lab/research/langagnostic/
+// ws3d-displacement-guard.md) found exactly ONE discriminator that
+// separates displacing anchor fires from the adopted wins with zero
+// win-fire and zero gold-fire collateral across all 306 mined fires:
+// the anchored file living under a DIRECTORY component named `*.test/`
+// or `*.spec/` (jscodeshift codemod fixture convention --
+// `jss-to-styled.test/first.actual.js` and friends). TESTLIKE_RE only
+// matches `.test.`/`.spec.` as FILE-name infixes and `tests?/` etc. as
+// whole components, so these fixture dirs pass the testlike damp AND
+// the anchor channel: near-duplicate fixture pairs define the same
+// rare symbols and win the rarity gate, then their seated blocks eat
+// pass-1 budget from gold (mui-34337 LINE 1->0, mui-34548 FILE
+// 0.67->0, mui-35178 LINE .54->.38). Guard-off is byte-identical; the
+// filter applies AFTER the <=3-defining-files rarity gate so no new
+// symbols become anchor-eligible.
+static DISPLACEMENT_GUARD: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_displacement_guard(on: bool) {
+    DISPLACEMENT_GUARD.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn displacement_guard_enabled() -> bool {
+    DISPLACEMENT_GUARD.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+/// Fixture-directory path shape (see `DISPLACEMENT_GUARD` above): any
+/// directory component ending in `.test`/`.spec` (case-insensitive).
+/// Deliberately NOT merged into TESTLIKE_RE -- that regex is consumed by
+/// the impl-prior damp and the testbridge, and widening it would change
+/// adopted default behavior; this predicate is read only by the
+/// flag-gated anchor filter.
+static FIXTURE_DIR_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?i)(^|/)[^/]+\.(test|spec)/").unwrap());
+
+pub fn fixture_dir_path(rel: &str) -> bool {
+    FIXTURE_DIR_RE.is_match(rel)
+}
+
 // WS3b: the one-word `thirdparty` path component is an UNCONDITIONAL
 // vendor alternate (promoted from WS3a's flag-gated `VENDOR_V2_RE`).
 // nlohmann/json vendors Google Benchmark at `benchmarks/thirdparty/`;
@@ -2147,6 +2187,13 @@ pub fn extract_symbol_anchors(question: &str, corpus: &Corpus) -> Vec<(String, f
             strength_base
         };
         for f in files {
+            // WS3d displacement guard (flag-gated, default OFF): skip
+            // fixture-dir-shaped def files AFTER the rarity gate -- the
+            // file simply never becomes an anchor; symbol eligibility and
+            // every other file's strength are untouched.
+            if displacement_guard_enabled() && fixture_dir_path(f) {
+                continue;
+            }
             let cur = best.get(f).copied().unwrap_or(-1.0);
             if strength > cur {
                 best.insert(f.clone(), strength);
@@ -6560,6 +6607,32 @@ def omega_worker(pp):
         let p_on = on.1.get("pkg/widget.py").copied().unwrap();
         assert_eq!(p_off, p_on, "non-test path untouched");
         std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// WS3d displacement guard: the fixture-dir predicate matches
+    /// `*.test/` / `*.spec/` DIRECTORY components (the jscodeshift
+    /// codemod convention TESTLIKE_RE misses) and nothing else -- in
+    /// particular not the `.test.` FILE infix TESTLIKE_RE already owns,
+    /// and not ordinary `test/` components.
+    #[test]
+    fn fixture_dir_path_shapes() {
+        // the three mined displacing shapes
+        assert!(fixture_dir_path("packages/mui-codemod/src/v5.0.0/jss-to-styled.test/first.actual.js"));
+        assert!(fixture_dir_path("packages/mui-codemod/src/v5.0.0/theme-spacing.test/large-expected.js"));
+        assert!(fixture_dir_path("packages/mui-codemod/src/v5.0.0/variant-prop.test/mui-import.actual.js"));
+        // .spec/ dir variant + case-insensitivity + leading component
+        assert!(fixture_dir_path("codemod.Spec/out.js"));
+        assert!(fixture_dir_path("a/b.TEST/c.rs"));
+        // NOT matched: file-infix .test. (TESTLIKE_RE's territory), plain
+        // test dirs, files merely named *.test, and lookalikes
+        assert!(!fixture_dir_path("src/foo.test.js"));
+        assert!(!fixture_dir_path("src/foo.spec.ts"));
+        assert!(!fixture_dir_path("test/foo.js"));
+        assert!(!fixture_dir_path("src/tests/foo.js"));
+        assert!(!fixture_dir_path("src/foo.test"));
+        assert!(!fixture_dir_path("src/latest/foo.js"));
+        assert!(!fixture_dir_path("src/attest/foo.js"));
+        assert!(!fixture_dir_path("src/prospect/foo.js"));
     }
 
     /// Frame-path resolution: >= 2 trailing components required, src/
