@@ -187,7 +187,11 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // vice versa) -- the two index different file sets. Flag-off keys are
     // byte-identical to main's format.
     let cf = if core::cfamily_ext_enabled() { ":cf1" } else { "" };
-    format!("{sha}:h{}:d{}{cf}", with_history as i32, with_docs as i32)
+    // WS3a: impl_prior participates at index time (def_index construction
+    // is impl_prior-gated), so --impl-prior-v2 re-keys the cache the same
+    // way. Flag-off keys are byte-identical to main's format.
+    let ip = if core::impl_prior_v2_enabled() { ":ipv2" } else { "" };
+    format!("{sha}:h{}:d{}{cf}{ip}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {

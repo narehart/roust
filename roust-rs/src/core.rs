@@ -56,8 +56,14 @@ pub fn code_suffix_allowed_with(suffix: &str, cfamily: bool) -> bool {
 pub const MAX_FILE_BYTES: u64 = 2_000_000;
 
 pub fn is_code_file(rel: &str) -> bool {
+    is_code_file_with(rel, cfamily_ext_enabled())
+}
+
+/// Pure-function form of `is_code_file` (explicit cfamily state) -- shared
+/// by `impl_prior_with` so unit tests never read the process-global.
+pub fn is_code_file_with(rel: &str, cfamily: bool) -> bool {
     CODE_EXTENSIONS.iter().any(|ext| rel.ends_with(ext))
-        || (cfamily_ext_enabled() && CFAMILY_EXTENSIONS.iter().any(|ext| rel.ends_with(ext)))
+        || (cfamily && CFAMILY_EXTENSIONS.iter().any(|ext| rel.ends_with(ext)))
 }
 
 fn has_code_suffix(rel: &str) -> bool {
@@ -1044,6 +1050,52 @@ pub static TESTLIKE_RE: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
+// WS3a (campaign #56, finding 1 of the WS3 assumption audit): the v1
+// TESTLIKE_RE treats `docs?`/`examples?`/`benchmark?s`/`benches` path
+// components as test-like and damps them 0.3x -- calibrated on SWE-bench
+// Lite (Python), where those dirs never hold gold. Outside Python they are
+// production dirs (mui ships `docs/data/...` demo components, ripgrep has
+// `crates/core/flags/doc/*.rs`, Catch2 has `include/internal/benchmark/`):
+// the audit census measured 21.4% of indexed JS/TS gold files damped,
+// C++ 15.6%, Rust 9.2%, Lite 0.0%. Under --impl-prior-v2 those DOC-LIKE
+// components stop damping files with a code extension (non-code files in
+// those dirs keep the 0.3 damp), while genuinely test-like paths keep 0.3
+// in every language. The split below reassigns each v1 alternate to
+// exactly one of the two v2 regexes, so v2 never damps a path v1 did not.
+//
+// TESTLIKE_V2_RE = v1 minus the four doc-like dir alternates, with the
+// `_test.<ext>` suffix broadened from the v1 (py|go|rs|ts|js) list to any
+// extension (Google-style C++ `foo_test.cc`, `_test.cpp`, etc. -- the
+// per-ecosystem test conventions the v1 list predates).
+static TESTLIKE_V2_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r"(?i)(^|/)(tests?|testing|spec|specs|fixtures?|mocks?|__tests__|e2e|docs_src|tutorials?|samples?|demos?|playground|scripts?|integration|t)(/|$)|(^|/)(test_|conftest)|_test\.[A-Za-z0-9]+$|\.test\.|\.spec\.",
+    )
+    .unwrap()
+});
+
+// The four audit-implicated doc-like dir components: damp only non-code
+// files under --impl-prior-v2. Alternates NOT moved here (docs_src,
+// tutorials?, samples?, demos?, playground, scripts?) stay unconditionally
+// test-like: the census implicated only these four on gold, and the round
+// changes exactly what it measured.
+static DOCLIKE_V2_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?i)(^|/)(docs?|examples?|benchmarks?|benches)(/|$)").unwrap());
+
+// WS3a flag global, mirroring the CFAMILY_EXT pattern: set ONCE at CLI
+// parse before any corpus/cache work. It participates at INDEX time
+// (def_index construction is impl_prior-gated), so the cache key gains an
+// ":ipv2" marker when ON -- see cache::cache_key.
+static IMPL_PRIOR_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_impl_prior_v2(on: bool) {
+    IMPL_PRIOR_V2.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn impl_prior_v2_enabled() -> bool {
+    IMPL_PRIOR_V2.load(std::sync::atomic::Ordering::Relaxed)
+}
+
 static VENDOR_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(
         r"(?i)(vendor|vendored|third_party|node_modules|\.min\.(js|css)$|bundle\.js$|(^|/)(cextern|extern)(/|$)|(^|/)(libsvm|liblinear)(/|$))",
@@ -1054,11 +1106,35 @@ static VENDOR_RE: LazyLock<Regex> = LazyLock::new(|| {
 const MAX_LINE_CHARS: usize = 3000;
 
 pub fn impl_prior(rel: &str) -> f64 {
-    if TESTLIKE_RE.is_match(rel) {
+    impl_prior_with(rel, impl_prior_v2_enabled(), cfamily_ext_enabled())
+}
+
+/// Pure-function form of `impl_prior` -- unit tests exercise this directly
+/// instead of toggling the process-globals (tests run in parallel threads;
+/// see `code_suffix_allowed_with` for the same pattern).
+pub fn impl_prior_with(rel: &str, v2: bool, cfamily: bool) -> f64 {
+    if v2 {
+        if TESTLIKE_V2_RE.is_match(rel) {
+            0.3
+        } else if DOCLIKE_V2_RE.is_match(rel) && !is_code_file_with(rel, cfamily) {
+            0.3
+        } else {
+            1.0
+        }
+    } else if TESTLIKE_RE.is_match(rel) {
         0.3
     } else {
         1.0
     }
+}
+
+/// The engine-wide "test-shaped path" predicate: exactly the damped set of
+/// `impl_prior`. Flag-OFF this equals `TESTLIKE_RE.is_match`; under
+/// --impl-prior-v2 the no-longer-damped doc-dir code files also stop being
+/// treated as test-like (testbridge sources, fence-dominant downweight),
+/// so every consumer keys off the same predicate.
+pub fn testlike_path(rel: &str) -> bool {
+    impl_prior(rel) < 1.0
 }
 
 static PATH_SPLIT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[/\\.\-]").unwrap());
@@ -2420,7 +2496,7 @@ fn apply_testbridge_promotions(
     let testlike: Vec<String> = corpus
         .files
         .iter()
-        .filter(|f| TESTLIKE_RE.is_match(f) && TESTBRIDGE_EXTS.contains(&suffix_of(f)))
+        .filter(|f| testlike_path(f) && TESTBRIDGE_EXTS.contains(&suffix_of(f)))
         .cloned()
         .collect();
     let testlike_set: HashSet<String> = testlike.iter().cloned().collect();
@@ -2702,7 +2778,7 @@ pub fn select_files(
         let direct: HashSet<&str> =
             params.trace_files.map(|tfs| tfs.iter().map(|s| s.as_str()).collect()).unwrap_or_default();
         for (f, v) in bm_n.iter_mut() {
-            if TESTLIKE_RE.is_match(f) && !direct.contains(f.as_str()) {
+            if testlike_path(f) && !direct.contains(f.as_str()) {
                 *v *= params.test_penalty;
             }
         }
@@ -4780,7 +4856,59 @@ mod tests {
         ];
         for (path, expected) in cases {
             assert_eq!(impl_prior(path), *expected, "impl_prior({path:?})");
+            // Flag-OFF v2 form must be byte-identical to v1 on every case.
+            assert_eq!(impl_prior_with(path, false, true), *expected, "impl_prior_with({path:?}, v2=false)");
         }
+    }
+
+    /// WS3a --impl-prior-v2 (audit finding 1): doc-like components
+    /// (docs?/examples?/benchmarks?/benches) stop damping code-extension
+    /// files; non-code files there keep 0.3; genuinely test-like paths
+    /// keep 0.3 in every language, with _test.<ext> broadened beyond the
+    /// v1 (py|go|rs|ts|js) list. Exercises the pure form (globals stay
+    /// untouched -- tests run in parallel threads).
+    #[test]
+    fn ws3a_impl_prior_v2_doc_dirs_undamped_for_code() {
+        // (path, v1_expected, v2_expected) -- cfamily ON (the WS2c default).
+        let cases: &[(&str, f64, f64)] = &[
+            // audit census exemplars: production code in doc-like dirs
+            ("docs/data/material/components/alert/SimpleAlert.js", 0.3, 1.0),
+            ("docs/src/pages/demo.tsx", 0.3, 1.0),
+            ("crates/core/flags/doc/mod.rs", 0.3, 1.0),
+            ("examples/simple/main.rs", 0.3, 1.0),
+            ("include/internal/benchmark/catch_benchmark.hpp", 0.3, 1.0),
+            ("benches/regex_bench.rs", 0.3, 1.0),
+            ("internal/docs/man.go", 0.3, 1.0),
+            // non-code files in doc-like dirs keep the damp
+            ("docs/index.md", 0.3, 0.3),
+            ("examples/README.md", 0.3, 0.3),
+            ("docs/conf.txt", 0.3, 0.3),
+            // genuinely test-like paths damp in every language
+            ("tests/test_main.py", 0.3, 0.3),
+            ("src/test/java/com/foo/BarTest.java", 0.3, 0.3),
+            ("src/__tests__/App.test.tsx", 0.3, 0.3),
+            ("spec/models/user.spec.ts", 0.3, 0.3),
+            ("foo.test.js", 0.3, 0.3),
+            ("a/b/conftest.py", 0.3, 0.3),
+            ("src/t/z.py", 0.3, 0.3),
+            // v2 broadened _test.<ext>: NEW damp for C-family/Java suffixes
+            ("src/util_test.cc", 1.0, 0.3),
+            ("lib/parser_test.cpp", 1.0, 0.3),
+            // test-file patterns win over doc dirs (order of the v2 check)
+            ("docs/test_example.py", 0.3, 0.3),
+            ("examples/foo_test.go", 0.3, 0.3),
+            // plain production code: 1.0 under both
+            ("src/main.py", 1.0, 1.0),
+            ("lib/router.rs", 1.0, 1.0),
+        ];
+        for (path, v1, v2) in cases {
+            assert_eq!(impl_prior_with(path, false, true), *v1, "v1 impl_prior({path:?})");
+            assert_eq!(impl_prior_with(path, true, true), *v2, "v2 impl_prior({path:?})");
+        }
+        // cfamily interlock: a .hpp in docs-like dirs is only "code" when
+        // the C-family extensions are indexed at all.
+        assert_eq!(impl_prior_with("benchmark/foo.hpp", true, true), 1.0);
+        assert_eq!(impl_prior_with("benchmark/foo.hpp", true, false), 0.3);
     }
 
     /// WS2c vendored-C guard: the new VENDOR_RE alternates exclude

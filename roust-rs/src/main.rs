@@ -250,6 +250,20 @@ struct Args {
     #[arg(long)]
     no_cfamily_ext: bool,
 
+    /// WS3a (campaign #56, audit finding 1): recalibrated impl_prior.
+    /// Doc-like path components (docs?/examples?/benchmarks?/benches)
+    /// stop damping files with a code extension -- they are production
+    /// dirs outside Python (21.4% of indexed JS/TS gold damped by v1;
+    /// Lite 0.0%). Genuinely test-like paths (test/tests/__tests__/spec
+    /// dirs, test_*/_test.*/.spec./.test. patterns) keep the 0.3 damp in
+    /// every language, with _test.<ext> broadened to all extensions.
+    /// Non-code files in doc-like dirs keep the damp. Also lifts the
+    /// structural-expansion / testbridge / docsbridge exclusions for
+    /// no-longer-damped files (all key off impl_prior). Re-keys the index
+    /// cache (def_index is impl_prior-gated at build time). Default OFF.
+    #[arg(long)]
+    impl_prior_v2: bool,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -265,6 +279,11 @@ fn main() {
     // cache manifest scan read this process-global exactly once per file.
     // WS2c: default ON; --no-cfamily-ext wins over the (redundant) on-flag.
     roust::core::set_cfamily_ext(args.cfamily_ext && !args.no_cfamily_ext);
+
+    // WS3a: same contract as the cfamily global -- set BEFORE any
+    // corpus/cache work (impl_prior gates def_index at build time and the
+    // cache key reads this).
+    roust::core::set_impl_prior_v2(args.impl_prior_v2);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");
