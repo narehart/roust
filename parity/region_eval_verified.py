@@ -272,6 +272,10 @@ def main() -> None:
                           "(index .c/.h/.cc/.cpp/.cxx/.hpp/.hh); omitted by default (binary "
                           "default: off). This is the Python-repo dilution gate for flipping "
                           "the engine default.")
+    ap.add_argument("--impl-prior-v2", action="store_true",
+                     help="WS3a (campaign #56): append --impl-prior-v2 to every roust "
+                          "invocation (doc/example/bench dirs stop damping code files); "
+                          "omitted by default (binary default: off)")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -309,6 +313,9 @@ def main() -> None:
     # WS2b passthrough, same mechanism.
     if args.cfamily_ext:
         EXTRA_ENGINE_FLAGS.append("--cfamily-ext")
+    # WS3a passthrough, same mechanism.
+    if args.impl_prior_v2:
+        EXTRA_ENGINE_FLAGS.append("--impl-prior-v2")
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 
