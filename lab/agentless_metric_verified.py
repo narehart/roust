@@ -681,13 +681,21 @@ def print_table(report: dict) -> None:
     row("FILE   (predicted ⊇ gold files)", a["file"]["pct_correct"], al["file"])
     row("FUNCTION (EXACT)                ", a["function"]["pct_correct"], al["function"])
     row("LINE   (all-or-nothing)         ", a["line"]["pct_correct_all_or_nothing"], al["line"])
+    # WS2 hardening: any of these means can be None on a degenerate arm
+    # (e.g. an empty file-correct subset when FILE == 0 -- the C/C++
+    # main-binary vacuous baselines); the JSON artifact stores the null,
+    # the table prints n/a instead of crashing after the artifact write.
+    def n4(x):
+        return "n/a" if x is None else f"{x:.4f}"
+
     print(f"\n{'LINE mean-fraction covered (continuity w/ prior reporting)':60} "
-          f"{a['line']['mean_fraction_covered']:.4f}")
+          f"{n4(a['line']['mean_fraction_covered'])}")
     rp = a["region_precision"]
     print(f"{'REGION PRECISION (gold lines / total returned lines), mean':60} "
-          f"{rp['mean_precision']:.4f}  (n={rp['n']}, excluded={rp['n_excluded']})")
+          f"{n4(rp['mean_precision'])}  (n={rp['n']}, excluded={rp['n_excluded']})")
+    mtl = rp['mean_total_region_lines_per_instance']
     print(f"{'  mean total region lines / instance':60} "
-          f"{rp['mean_total_region_lines_per_instance']:.1f}")
+          f"{'n/a' if mtl is None else f'{mtl:.1f}'}")
     print(f"\nFUNCTION n={a['function']['n']} n_judged={a['function']['n_judged']} "
           f"n_correct={a['function']['n_correct']} "
           f"counted_wrong(engine_errors={a['function']['n_engine_errors_counted_wrong']}, "
@@ -696,9 +704,9 @@ def print_table(report: dict) -> None:
     print(f"\n--- restricted to file-correct subset (n={fc['n']}/{a['n']}) ---")
     row("FUNCTION (EXACT)                ", fc["function"]["pct_correct"], None)
     row("LINE   (all-or-nothing)         ", fc["line"]["pct_correct_all_or_nothing"], None)
-    print(f"{'LINE mean-fraction covered':60} {fc['line']['mean_fraction_covered']:.4f}")
+    print(f"{'LINE mean-fraction covered':60} {n4(fc['line']['mean_fraction_covered'])}")
     rpf = fc["region_precision"]
-    print(f"{'REGION PRECISION, mean':60} {rpf['mean_precision']:.4f} (n={rpf['n']})")
+    print(f"{'REGION PRECISION, mean':60} {n4(rpf['mean_precision'])} (n={rpf['n']})")
 
 
 if __name__ == "__main__":

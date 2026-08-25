@@ -1,0 +1,26 @@
+engine version: roust 0.2.0 (0d8113e, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/mswe_go.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/ws2_repos/go_base
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False
+shard 1/1: rows [0:428] of the sorted split (428 instances)
+[25/428] cli__cli-1283                                 elapsed=46s (ok) ok=25 err=0
+[50/428] cli__cli-1986                                 elapsed=59s (ok) ok=50 err=0
+[75/428] cli__cli-2404                                 elapsed=73s (ok) ok=75 err=0
+[100/428] cli__cli-3490                                 elapsed=92s (ok) ok=100 err=0
+[125/428] cli__cli-4003                                 elapsed=118s (ok) ok=125 err=0
+[150/428] cli__cli-4543                                 elapsed=152s (ok) ok=149 err=1
+[175/428] cli__cli-5047                                 elapsed=193s (ok) ok=174 err=1
+[200/428] cli__cli-5524                                 elapsed=240s (ok) ok=199 err=1
+[225/428] cli__cli-590                                  elapsed=291s (ok) ok=224 err=1
+[250/428] cli__cli-667                                  elapsed=330s (ok) ok=249 err=1
+[275/428] cli__cli-7254                                 elapsed=375s (ok) ok=274 err=1
+[300/428] cli__cli-7621                                 elapsed=423s (ok) ok=299 err=1
+[325/428] cli__cli-8180                                 elapsed=469s (ok) ok=324 err=1
+[350/428] cli__cli-8824                                 elapsed=512s (ok) ok=349 err=1
+[375/428] cli__cli-9452                                 elapsed=562s (ok) ok=374 err=1
+[400/428] grpc__grpc-go-2630                            elapsed=606s (ok) ok=399 err=1
+[425/428] zeromicro__go-zero-2537                       elapsed=627s (ok) ok=424 err=1
+[428/428] zeromicro__go-zero-990                        elapsed=629s (ok) ok=427 err=1
+
+engine version: roust 0.2.0 (0d8113e, clean)
+wrote 428 records (427 ok, 1 errors) to /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/results_regions/ws2/mswe_go_base.jsonl

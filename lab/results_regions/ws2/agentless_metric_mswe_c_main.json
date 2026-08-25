@@ -1,0 +1,563 @@
+{
+  "convention": "errors-count-as-wrong-at-all-levels/v1: FILE, FUNCTION, and LINE share the same denominator (n = all loaded records); engine errors and git_show failures count as WRONG and are reported separately (*_counted_wrong / n_engine_errors keys).",
+  "source": {
+    "predictions": [
+      "lab/results_regions/ws2/mswe_c_main.jsonl"
+    ],
+    "gold": "lab/mswe_c.parquet",
+    "n_instances": 128,
+    "n_region_eval_errors": 50,
+    "engine_shas_seen": [
+      "0d8113e"
+    ],
+    "engine_dirty_seen": [
+      false
+    ],
+    "bm25_only": false,
+    "pipeline": "shipped roust-rs engine, --budget 8192, confidence-scheduled packing (parity/region_eval_full.py Part A, no-LLM), FULL SWE-bench test split (paper eval wave)"
+  },
+  "all_instances": {
+    "n": 128,
+    "file": {
+      "pct_correct": 0.0,
+      "n": 128,
+      "n_correct": 0,
+      "n_engine_errors": 50
+    },
+    "function": {
+      "pct_correct": 3.91,
+      "n": 128,
+      "n_judged": 78,
+      "n_correct": 5,
+      "n_engine_errors_counted_wrong": 50,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "facebook__zstd-1008",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1080",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1105",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 22,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1106",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1107",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1243",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 25,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1390",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1416",
+          "n_gold_functions": 25,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1458",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 24,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1459",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1530",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 24,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1532",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1540",
+          "n_gold_functions": 29,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1726",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 20,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1733",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-1837",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-2094",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-2130",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-2451",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-3223",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-3362",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-3438",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-3530",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-3942",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-637",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 24,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-809",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 25,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-836",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 25,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-938",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "facebook__zstd-983",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 28,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-1793",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2133",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 26,
+          "correct": true
+        },
+        {
+          "instance_id": "jqlang__jq-2157",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 26,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2624",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 24,
+          "correct": true
+        },
+        {
+          "instance_id": "jqlang__jq-2646",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 26,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2654",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 26,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2658",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 26,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2674",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 26,
+          "correct": true
+        },
+        {
+          "instance_id": "jqlang__jq-2728",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 26,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2821",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 25,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2824",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 27,
+          "correct": true
+        },
+        {
+          "instance_id": "jqlang__jq-2839",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2840",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-2919",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-3161",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-3165",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "jqlang__jq-3238",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 24,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1339",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1411",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1486",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1536",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1726",
+          "n_gold_functions": 36,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1852",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1858",
+          "n_gold_functions": 112,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1867",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-1981",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2007",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2126",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2168",
+          "n_gold_functions": 56,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2176",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2201",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2203",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2205",
+          "n_gold_functions": 32,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2214",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2221",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2247",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2261",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2272",
+          "n_gold_functions": 34,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2342",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2504",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2532",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 19,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2586",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2660",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2664",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2853",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-2865",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-3006",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-3293",
+          "n_gold_functions": 31,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "ponylang__ponyc-3442",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 49,
+          "correct": true
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 0.0,
+      "n": 128,
+      "n_correct_all_or_nothing": 0,
+      "mean_fraction_covered": 0.0,
+      "median_fraction_covered": 0.0,
+      "n_engine_errors": 50
+    },
+    "region_precision": {
+      "mean_precision": 0.0,
+      "median_precision": 0.0,
+      "n": 78,
+      "n_excluded": 50,
+      "mean_total_region_lines_per_instance": 696.9487179487179,
+      "median_total_region_lines_per_instance": 744.0
+    }
+  },
+  "file_correct_subset": {
+    "n": 0,
+    "file": {
+      "pct_correct": null,
+      "n": 0,
+      "n_correct": 0,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": null,
+      "n": 0,
+      "n_judged": 0,
+      "n_correct": 0,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": []
+    },
+    "line": {
+      "pct_correct_all_or_nothing": null,
+      "n": 0,
+      "n_correct_all_or_nothing": 0,
+      "mean_fraction_covered": null,
+      "median_fraction_covered": null,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": null,
+      "median_precision": null,
+      "n": 0,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": null,
+      "median_total_region_lines_per_instance": null
+    },
+    "note": "restricted to instances where FILE-level was already correct -- isolates region/line/function quality from file recall"
+  },
+  "agentless_gpt4o_published": {
+    "file": 69.7,
+    "function": 52.0,
+    "line": 35.3
+  },
+  "agentless_note": "AGENTLESS_GPT4O numbers are Agentless's published SWE-bench LITE localization rates (arXiv:2407.01489 Table 1) -- context only; no published Agentless full-split localization numbers exist to compare against directly."
+}

@@ -1,0 +1,14 @@
+engine version: roust 0.2.0 (0d8113e, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/mswe_c.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/ws2_repos/c_base
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False
+shard 1/1: rows [0:128] of the sorted split (128 instances)
+[25/128] facebook__zstd-637                            elapsed=26s (ok) ok=25 err=0
+[50/128] ponylang__ponyc-1095                          elapsed=36s (ERR) ok=46 err=4
+[75/128] ponylang__ponyc-2342                          elapsed=47s (ok) ok=68 err=7
+[100/128] ponylang__ponyc-3819                          elapsed=60s (ERR) ok=78 err=22
+[125/128] ponylang__ponyc-4588                          elapsed=72s (ERR) ok=78 err=47
+[128/128] ponylang__ponyc-671                           elapsed=74s (ERR) ok=78 err=50
+
+engine version: roust 0.2.0 (0d8113e, clean)
+wrote 128 records (78 ok, 50 errors) to /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/results_regions/ws2/mswe_c_main.jsonl
