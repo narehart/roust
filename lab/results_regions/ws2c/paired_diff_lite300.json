@@ -1,0 +1,340 @@
+{
+  "base": "lab/results_regions/ws2c/lite300_base.jsonl",
+  "exp": "lab/results_regions/ws2c/lite300_cfamily.jsonl",
+  "n": 300,
+  "n_payload_diff": 36,
+  "n_changed_or_flipped": 36,
+  "fraction_sign_test": {
+    "pos": 1,
+    "neg": 0,
+    "p_two_sided": 1.0
+  },
+  "changed": [
+    {
+      "instance_id": "astropy__astropy-12907",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "astropy/wcs/src/astropy_wcs.c",
+        "astropy/wcs/src/wcslib_wrap.c"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "astropy__astropy-14182",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14365",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14995",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-6938",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "astropy/io/ascii/src/tokenizer.c",
+        "astropy/io/fits/src/compressionmodule.c"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "astropy__astropy-7746",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "astropy/wcs/include/astropy_wcs/pipeline.h",
+        "astropy/wcs/src/astropy_wcs.c",
+        "astropy/wcs/src/pipeline.c",
+        "astropy/wcs/src/pyutil.c",
+        "astropy/wcs/src/sip_wrap.c",
+        "astropy/wcs/src/str_list_proxy.c",
+        "astropy/wcs/src/unit_list_proxy.c",
+        "astropy/wcs/src/wcslib_tabprm_wrap.c",
+        "astropy/wcs/src/wcslib_wrap.c"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-18869",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-22711",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "src/_backend_agg_wrapper.cpp"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-22835",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "src/_image_wrapper.cpp"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23299",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "src/_backend_agg_wrapper.cpp"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23314",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "src/_backend_agg_wrapper.cpp"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23476",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23562",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23563",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23913",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23987",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "src/_backend_agg.cpp"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24149",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24265",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "src/_tkagg.cpp"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24334",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24970",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "src/_backend_agg.cpp",
+        "src/_backend_agg_wrapper.cpp"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25079",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25311",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25332",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25433",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25442",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25498",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [
+        "src/_image_wrapper.cpp"
+      ],
+      "attribution": "direct"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-26011",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-26020",
+      "payload_diff": true,
+      "flips": {
+        "LINE": [
+          false,
+          true
+        ]
+      },
+      "frac_delta": 0.052631578947368474,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-10297",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-10508",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-10949",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-11040",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-11281",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-12471",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-13142",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-13439",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    }
+  ]
+}
