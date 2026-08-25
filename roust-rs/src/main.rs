@@ -210,24 +210,36 @@ struct Args {
     /// engine default (E23, campaign #4 wave 5, PR #55, user-approved
     /// 2026-08-25, language-agnostic directive; first entry of the #56
     /// campaign). Structural region candidates come from each language's
-    /// parser: Python natively, .js/.jsx/.ts/.tsx via tree-sitter CST
-    /// walks (functions, methods, classes, declarator-bound arrow
-    /// functions; same nested class-span + member-span shape
-    /// python_blocks emits), fixed +/-30-line windows for languages
-    /// without structural support yet (#56 tracks the grammar batch).
-    /// ON by default; passing this flag explicitly is
-    /// accepted-but-redundant (kept for harness compatibility; hidden
-    /// alias: --ts-blocks). Disable with --no-structural-blocks.
+    /// parser: Python natively; .js/.jsx/.ts/.tsx (E23) and, since the
+    /// WS2 grammar batch, .java/.go/.rs plus the C family
+    /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh, indexed only under --cfamily-ext)
+    /// via pinned tree-sitter CST walks (functions, methods, classes,
+    /// impl/trait blocks, structs/enums, templates; same nested
+    /// class-span + member-span shape python_blocks emits); fixed
+    /// +/-30-line windows for anything else. ON by default; passing this
+    /// flag explicitly is accepted-but-redundant (kept for harness
+    /// compatibility; hidden alias: --ts-blocks). Disable with
+    /// --no-structural-blocks.
     #[arg(long, alias = "ts-blocks")]
     structural_blocks: bool,
 
     /// disable structural block extraction for languages beyond Python
     /// (reproduces the pre-adoption engine byte-identically:
-    /// .js/.jsx/.ts/.tsx files fall back to fixed +/-30-line windows;
-    /// Python's native structural packing is unaffected in either state;
-    /// hidden alias: --no-ts-blocks)
+    /// .js/.jsx/.ts/.tsx -- and the WS2 grammar-batch languages -- fall
+    /// back to fixed +/-30-line windows; Python's native structural
+    /// packing is unaffected in either state; hidden alias: --no-ts-blocks)
     #[arg(long, alias = "no-ts-blocks")]
     no_structural_blocks: bool,
+
+    /// WS2 (campaign #56): ALSO index the C-family extensions
+    /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh) in the corpus walk. Default OFF --
+    /// not because the grammars are missing (they ship in this binary) but
+    /// because Python repos vendor C sources (numpy/pandas), so default-ON
+    /// would change bundles on Python instances and break the adopted
+    /// byte-identity contract. Flipping this flag re-keys the index cache
+    /// (a flag-off cache is never served to a flag-on run, or vice versa).
+    #[arg(long)]
+    cfamily_ext: bool,
 
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
@@ -239,6 +251,10 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
+
+    // WS2: set BEFORE any corpus/cache work -- both the corpus walk and the
+    // cache manifest scan read this process-global exactly once per file.
+    roust::core::set_cfamily_ext(args.cfamily_ext);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");
