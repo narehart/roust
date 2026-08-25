@@ -53,7 +53,7 @@ use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 pub const CACHE_VERSION: i64 = 3;
-pub const CACHE_DIRNAME: &str = ".roust";
+pub use crate::core::CACHE_DIRNAME;
 const INDEX_FILENAME: &str = "rust-index.bin";
 
 /// `{relpath: (mtime_ns, size)}` for every candidate-extension file, as of
@@ -114,7 +114,7 @@ fn git_head_sha(repo_path: &Path) -> String {
 /// oversize / long-line filtering) -- a spuriously-"changed" entry just
 /// costs an extra reindex of that one file (or, for add/remove, a full
 /// rebuild), which is always safe; it can never cause a stale hit.
-fn scan_manifest(repo_path: &Path, with_docs: bool) -> Manifest {
+fn scan_manifest(repo_path: &Path, with_docs: bool, index_all: bool) -> Manifest {
     let mut exts: HashSet<&str> = core::CODE_EXTENSIONS.iter().copied().collect();
     if with_docs {
         exts.extend(core::DOCS_EXTENSIONS.iter().copied());
@@ -127,7 +127,11 @@ fn scan_manifest(repo_path: &Path, with_docs: bool) -> Manifest {
         if rel.starts_with(&format!("{CACHE_DIRNAME}/")) || rel.contains(&format!("/{CACHE_DIRNAME}/")) {
             continue;
         }
-        if !exts.contains(core::suffix_of(&rel)) {
+        // Under --index-all inclusion is content-based, which a stat-only
+        // pass cannot evaluate -- so the manifest covers EVERY walked file
+        // (coarser-is-safe, per this function's doc: a never-indexed entry
+        // can only cause a spurious rebuild, never a stale hit).
+        if !index_all && !exts.contains(core::suffix_of(&rel)) {
             continue;
         }
         let full = repo_path.join(&rel);
@@ -157,8 +161,8 @@ enum Verdict {
 
 /// Stat-walk the repo's current candidate files and diff against `manifest`
 /// (the snapshot the cached Corpus was built from). See `Verdict`.
-fn classify_changes(repo_path: &Path, with_docs: bool, manifest: &Manifest) -> (Verdict, Manifest, Vec<String>) {
-    let current = scan_manifest(repo_path, with_docs);
+fn classify_changes(repo_path: &Path, with_docs: bool, index_all: bool, manifest: &Manifest) -> (Verdict, Manifest, Vec<String>) {
+    let current = scan_manifest(repo_path, with_docs, index_all);
     let old_keys: HashSet<&String> = manifest.keys().collect();
     let new_keys: HashSet<&String> = current.keys().collect();
     if !old_keys.is_subset(&new_keys) || !new_keys.is_subset(&old_keys) {
@@ -175,9 +179,13 @@ fn classify_changes(repo_path: &Path, with_docs: bool, manifest: &Manifest) -> (
     (Verdict::Modified, current, modified)
 }
 
-fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
+fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool, index_all: bool) -> String {
     let sha = git_head_sha(repo_path);
-    format!("{sha}:h{}:d{}", with_history as i32, with_docs as i32)
+    // The `:a1` suffix appears ONLY under --index-all, keeping every
+    // pre-existing (unflagged) cache key byte-identical -- a flagged and an
+    // unflagged run over the same repo can never serve each other's corpus.
+    let suffix = if index_all { ":a1" } else { "" };
+    format!("{sha}:h{}:d{}{suffix}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {
@@ -237,7 +245,7 @@ fn save(repo_path: &Path, key: &str, corpus: &Corpus, edges: &EdgeMap, history: 
 /// `core::walk_all_files` (git-ls-files-first, same as `Corpus::build` and
 /// `scan_manifest`) so a .gitignore'd file is never fed to history mining as
 /// a "current" file either.
-fn collect_current_code_files(repo_path: &Path) -> HashSet<String> {
+fn collect_current_code_files(repo_path: &Path, index_all: bool) -> HashSet<String> {
     let mut files = HashSet::new();
     for rel in core::walk_all_files(repo_path) {
         if rel.starts_with(".git/") || rel.contains("/.git/") {
@@ -246,7 +254,11 @@ fn collect_current_code_files(repo_path: &Path) -> HashSet<String> {
         if rel.starts_with(&format!("{CACHE_DIRNAME}/")) || rel.contains(&format!("/{CACHE_DIRNAME}/")) {
             continue;
         }
-        if !core::is_code_file(&rel) {
+        // Under --index-all every walked file is a history-mining candidate
+        // (a stat-only pass can't content-sniff; a superset only lets
+        // history retain msgs/co-change rows for files the corpus may
+        // index, and never removes anything the default set had).
+        if !index_all && !core::is_code_file(&rel) {
             continue;
         }
         let full = repo_path.join(&rel);
@@ -267,8 +279,28 @@ fn collect_current_code_files(repo_path: &Path) -> HashSet<String> {
 /// entirely (never save or return them) whenever this returns `false`,
 /// falling back to a full rebuild instead.
 fn try_incremental_update(corpus: &mut Corpus, edges: &mut EdgeMap, modified: &[String]) -> bool {
-    let code_rels: Vec<String> = modified.iter().filter(|r| core::CODE_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect();
-    let docs_rels: Vec<String> = modified.iter().filter(|r| core::DOCS_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect();
+    let (code_rels, docs_rels): (Vec<String>, Vec<String>) = if corpus.index_all {
+        // Under --index-all the manifest covers EVERY walked file, including
+        // never-indexed ones (binaries, vendored, oversized), and membership
+        // in the corpus -- not extension -- says which side(s) a modified
+        // file lives on (a .md page can legitimately be in BOTH the code and
+        // docs fields). A modified file indexed on neither side may have
+        // flipped its inclusion verdict (binary -> text, shrank under the
+        // size cap), which an in-place patch cannot represent: decline to
+        // the always-safe full rebuild.
+        if modified.iter().any(|r| !corpus.text.contains_key(r) && !corpus.docs_text.contains_key(r)) {
+            return false;
+        }
+        (
+            modified.iter().filter(|r| corpus.text.contains_key(*r)).cloned().collect(),
+            modified.iter().filter(|r| corpus.docs_text.contains_key(*r)).cloned().collect(),
+        )
+    } else {
+        (
+            modified.iter().filter(|r| core::CODE_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect(),
+            modified.iter().filter(|r| core::DOCS_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect(),
+        )
+    };
 
     // Defensive: `scan_manifest` doesn't apply Corpus::build's own
     // vendor/size/oversized-line filters, so a "modified" rel can name a
@@ -277,7 +309,8 @@ fn try_incremental_update(corpus: &mut Corpus, edges: &mut EdgeMap, modified: &[
     // KeyError in this situation; declining incrementally (forcing the
     // always-safe full-rebuild fallback) is strictly more robust and never
     // changes the observable result, so this is a deliberate hardening, not
-    // a parity deviation.
+    // a parity deviation. (Vacuously true by construction on the index-all
+    // branch above.)
     if code_rels.iter().any(|r| !corpus.text.contains_key(r)) {
         return false;
     }
@@ -298,15 +331,15 @@ fn try_incremental_update(corpus: &mut Corpus, edges: &mut EdgeMap, modified: &[
     true
 }
 
-fn build_fresh(repo_path: &Path, with_history: bool, with_docs: bool) -> (Corpus, EdgeMap, Option<HistoryData>) {
+fn build_fresh(repo_path: &Path, with_history: bool, with_docs: bool, index_all: bool) -> (Corpus, EdgeMap, Option<HistoryData>) {
     let history = if with_history {
-        let current_files = collect_current_code_files(repo_path);
+        let current_files = collect_current_code_files(repo_path, index_all);
         Some(mine_history(repo_path, 5000, Some(&current_files)))
     } else {
         None
     };
     let history_msgs = history.as_ref().map(|h| &h.msgs);
-    let corpus = Corpus::build(repo_path, history_msgs, false, with_docs);
+    let corpus = Corpus::build_ex(repo_path, history_msgs, false, with_docs, index_all);
     let edges = build_import_graph(&corpus);
     (corpus, edges, history)
 }
@@ -323,13 +356,14 @@ pub fn load_or_build_ex(
     with_docs: bool,
     use_cache: bool,
     force_reindex: bool,
+    index_all: bool,
 ) -> (Corpus, EdgeMap, Option<HistoryData>, bool, &'static str) {
-    let key = cache_key(repo_path, with_history, with_docs);
+    let key = cache_key(repo_path, with_history, with_docs, index_all);
 
     if use_cache && !force_reindex {
         if let Some(payload) = load(repo_path, &key) {
             let CachePayload { mut corpus, mut edges, history, manifest, .. } = payload;
-            let (verdict, new_manifest, modified) = classify_changes(repo_path, with_docs, &manifest);
+            let (verdict, new_manifest, modified) = classify_changes(repo_path, with_docs, index_all, &manifest);
             match verdict {
                 Verdict::Unchanged => return (corpus, edges, history, true, "unchanged"),
                 Verdict::Modified => {
@@ -346,8 +380,8 @@ pub fn load_or_build_ex(
         }
     }
 
-    let (corpus, edges, history) = build_fresh(repo_path, with_history, with_docs);
-    let manifest = scan_manifest(repo_path, with_docs);
+    let (corpus, edges, history) = build_fresh(repo_path, with_history, with_docs, index_all);
+    let manifest = scan_manifest(repo_path, with_docs, index_all);
     if use_cache {
         save(repo_path, &key, &corpus, &edges, &history, &manifest);
     }
@@ -366,7 +400,9 @@ pub fn load_or_build(
     with_docs: bool,
     use_cache: bool,
     force_reindex: bool,
+    index_all: bool,
 ) -> (Corpus, EdgeMap, Option<HistoryData>, bool) {
-    let (corpus, edges, history, cache_hit, _update_kind) = load_or_build_ex(repo_path, with_history, with_docs, use_cache, force_reindex);
+    let (corpus, edges, history, cache_hit, _update_kind) =
+        load_or_build_ex(repo_path, with_history, with_docs, use_cache, force_reindex, index_all);
     (corpus, edges, history, cache_hit)
 }

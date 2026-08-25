@@ -229,21 +229,21 @@ fn incremental_property() {
     let router_v1 = ROUTER_V1;
 
     // Seed the cache with an initial full build.
-    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "full");
     assert!(!cache_hit);
     assert_matches_fresh_build(&repo, &corpus);
 
     // Step 1: modify a function body (validators.py) -- no import/def change.
     write_bumped(&repo, "pkg/validators.py", VALIDATORS_V2);
-    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "incremental", "step 1 (modify function body) should patch, not rebuild");
     assert!(cache_hit);
     assert_matches_fresh_build(&repo, &corpus);
 
     // Step 2: modify imports in a file (handlers.py starts importing utils).
     write_bumped(&repo, "pkg/handlers.py", HANDLERS_V2);
-    let (corpus, edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "incremental", "step 2 (modify imports) should patch, not rebuild");
     assert!(
         edges.get("pkg/handlers.py").map(|s| s.contains("pkg/utils.py")).unwrap_or(false),
@@ -253,27 +253,27 @@ fn incremental_property() {
 
     // Step 3: modify a file to add a new def (utils.py gains slugify()).
     write_bumped(&repo, "pkg/utils.py", UTILS_V2);
-    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "incremental", "step 3 (add a def) should patch, not rebuild");
     assert_eq!(corpus.def_index.get("slugify"), Some(&vec!["pkg/utils.py".to_string()]));
     assert_matches_fresh_build(&repo, &corpus);
 
     // Step 4: touch a file without content change (config.py).
     touch_bumped(&repo, "pkg/config.py");
-    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "incremental", "step 4 (mtime-only touch) should patch, not rebuild");
     assert_matches_fresh_build(&repo, &corpus);
 
     // Step 5: modify two files at once (router.py and service.py).
     write_bumped(&repo, "pkg/router.py", ROUTER_V2);
     write_bumped(&repo, "pkg/service.py", SERVICE_V2);
-    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "incremental", "step 5 (two files at once) should patch, not rebuild");
     assert_matches_fresh_build(&repo, &corpus);
 
     // Step 6: revert a file (router.py back to its original content).
     write_bumped(&repo, "pkg/router.py", router_v1);
-    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "incremental", "step 6 (revert) should patch, not rebuild");
     assert!(!corpus.text["pkg/router.py"].contains("add_route"));
     assert_matches_fresh_build(&repo, &corpus);
@@ -305,14 +305,14 @@ fn multi_definer_symbol_keeps_corpus_order_on_incremental_update() {
     // Corpus walk order sorts pkg/config.py before pkg/utils.py, so the
     // fresh-built definer list for `shared_probe` is [config, utils].
     let expect = vec!["pkg/config.py".to_string(), "pkg/utils.py".to_string()];
-    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "full");
     assert_eq!(corpus.def_index.get("shared_probe"), Some(&expect));
 
     // Edit the EARLIER-ordered definer; the incremental patch must
     // re-insert it at its corpus-order slot, not append it to the end.
     write_bumped(&repo, "pkg/config.py", config_v2);
-    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "incremental", "editing one definer must patch, not rebuild");
     assert!(cache_hit);
     assert_eq!(
@@ -333,14 +333,14 @@ fn multi_definer_symbol_keeps_corpus_order_on_incremental_update() {
 fn add_file_triggers_full_rebuild() {
     let base = std::env::temp_dir();
     let repo = make_repo(&base, "add");
-    cache::load_or_build_ex(&repo, false, false, true, false);
+    cache::load_or_build_ex(&repo, false, false, true, false, false);
 
     std::fs::write(
         repo.join("pkg/extra.py"),
         "\"\"\"A brand new module.\"\"\"\n\n\ndef extra_fn():\n    return 1\n",
     )
     .unwrap();
-    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "full", "adding a file must force a full rebuild");
     assert!(!cache_hit);
     assert!(corpus.files.contains(&"pkg/extra.py".to_string()));
@@ -353,10 +353,10 @@ fn add_file_triggers_full_rebuild() {
 fn remove_file_triggers_full_rebuild() {
     let base = std::env::temp_dir();
     let repo = make_repo(&base, "rm");
-    cache::load_or_build_ex(&repo, false, false, true, false);
+    cache::load_or_build_ex(&repo, false, false, true, false, false);
 
     std::fs::remove_file(repo.join("pkg/utils.py")).unwrap();
-    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "full", "removing a file must force a full rebuild");
     assert!(!cache_hit);
     assert!(!corpus.files.contains(&"pkg/utils.py".to_string()));
@@ -369,8 +369,8 @@ fn remove_file_triggers_full_rebuild() {
 fn unchanged_repo_is_pure_cache_hit() {
     let base = std::env::temp_dir();
     let repo = make_repo(&base, "unchanged");
-    cache::load_or_build_ex(&repo, false, false, true, false);
-    let (_corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    cache::load_or_build_ex(&repo, false, false, true, false, false);
+    let (_corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "unchanged");
     assert!(cache_hit);
 
@@ -383,10 +383,10 @@ fn docs_field_incremental_update() {
     let repo = make_repo(&base, "docs");
     std::fs::create_dir_all(repo.join("docs")).unwrap();
     std::fs::write(repo.join("docs/guide.md"), "# Guide\n\nSee pkg.router.Router for dispatch details.\n").unwrap();
-    cache::load_or_build_ex(&repo, false, true, true, false);
+    cache::load_or_build_ex(&repo, false, true, true, false, false);
 
     write_bumped(&repo, "docs/guide.md", "# Guide\n\nSee pkg.service.Service for the entry point.\n");
-    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, true, true, false);
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, true, true, false, false);
     assert_eq!(kind, "incremental", "docs-only content edit should patch, not rebuild");
     assert!(corpus.docs_text["docs/guide.md"].contains("service"));
     let fresh = Corpus::build(&repo, None, false, true);
@@ -489,7 +489,7 @@ fn gitignored_file_creation_does_not_trigger_rebuild() {
     let base = std::env::temp_dir();
     let repo = make_git_repo(&base, "gitignore");
 
-    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, _cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "full");
     assert!(corpus.files.contains(&"pkg/router.py".to_string()));
 
@@ -501,18 +501,73 @@ fn gitignored_file_creation_does_not_trigger_rebuild() {
     )
     .unwrap();
 
-    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "unchanged", "an ignored file appearing on disk must not trigger a rebuild");
     assert!(cache_hit);
     assert!(!corpus.files.contains(&"ignored_pkg/junk.py".to_string()));
 
     // A tracked-file edit must still be detected and incrementally patched.
     write_bumped(&repo, "pkg/validators.py", VALIDATORS_V2);
-    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false);
+    let (corpus, _edges, _history, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
     assert_eq!(kind, "incremental", "a tracked-file edit must still be detected");
     assert!(cache_hit);
     assert!(!corpus.files.contains(&"ignored_pkg/junk.py".to_string()));
     assert_matches_fresh_build(&repo, &corpus);
+
+    std::fs::remove_dir_all(&repo).ok();
+}
+
+// ---------------------------------------------------------------- WS1 --index-all
+
+/// WS1 (campaign #56) cache contract: a flagged (--index-all) and an
+/// unflagged run over the SAME repo must never serve each other's cached
+/// corpus (distinct cache keys), and the flagged path supports the full
+/// unchanged/incremental lifecycle for a non-allowlisted member -- an
+/// edited .json is patched in place, observationally identical to a fresh
+/// flagged build.
+#[test]
+fn index_all_cache_isolation_and_incremental() {
+    let base = std::env::temp_dir();
+    let repo = make_repo(&base, "ws1_indexall");
+    std::fs::write(repo.join("pkg/config.json"), "{\"widget\": \"validation rules\"}\n").unwrap();
+
+    // Seed the UNFLAGGED cache.
+    let (corpus, _e, _h, _hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
+    assert_eq!(kind, "full");
+    assert!(!corpus.files.contains(&"pkg/config.json".to_string()));
+
+    // First flagged run must NOT reuse the unflagged cache: full build, json indexed.
+    let (corpus, _e, _h, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, true);
+    assert_eq!(kind, "full", "flagged run must not be served by the unflagged cache");
+    assert!(!cache_hit);
+    assert!(corpus.index_all);
+    assert!(corpus.files.contains(&"pkg/config.json".to_string()));
+
+    // Flagged rerun with nothing changed: clean cache hit.
+    let (_c, _e, _h, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, true);
+    assert_eq!(kind, "unchanged");
+    assert!(cache_hit);
+
+    // Edit the .json: flagged run patches incrementally and matches a fresh flagged build.
+    write_bumped(&repo, "pkg/config.json", "{\"widget\": \"pricing rules\"}\n");
+    let (corpus, _e, _h, cache_hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, true);
+    assert_eq!(kind, "incremental", "an edited non-allowlisted member should patch, not rebuild");
+    assert!(cache_hit);
+    assert!(corpus.text["pkg/config.json"].contains("pricing"));
+    let fresh = Corpus::build_ex(&repo, None, false, false, true);
+    assert_eq!(corpus.files, fresh.files);
+    for &query in QUERIES {
+        let (c_files, c_scores) = select(&corpus, query);
+        let (f_files, f_scores) = select(&fresh, query);
+        assert_eq!(c_files, f_files, "file list diverged for query: {query:?}");
+        assert_eq!(rounded_scores(&c_scores), rounded_scores(&f_scores), "scores diverged for query: {query:?}");
+    }
+
+    // Back on defaults over the SAME repo (flagged cache now on disk):
+    // must not be served the flagged corpus.
+    let (corpus, _e, _h, _hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
+    assert_eq!(kind, "full", "unflagged run must not be served by the flagged cache");
+    assert!(!corpus.files.contains(&"pkg/config.json".to_string()));
 
     std::fs::remove_dir_all(&repo).ok();
 }

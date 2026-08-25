@@ -184,6 +184,12 @@ def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: f
     # E20/E11b diagnostics (present only under --lexboost / --trace-boost).
     rec["lexboost"] = stats.get("lexboost")
     rec["trace_boost"] = stats.get("trace_boost")
+    # WS1: corpus-composition summary (files beyond the extension allowlist
+    # + their suffix breakdown) -- present only when --index-all was passed
+    # through EXTRA_ENGINE_FLAGS; None otherwise. Named *_stats so
+    # region_eval_full.py's boolean provenance key "index_all" never
+    # collides with it.
+    rec["index_all_stats"] = stats.get("index_all")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]

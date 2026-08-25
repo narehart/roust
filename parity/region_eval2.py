@@ -153,8 +153,13 @@ def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
               max_siblings: int = 0, route: bool = False,
               route_test_penalty: float = 0.0, lexboost: float = 0.0,
               lexboost_graph: str = "", trace_boost: bool = False,
-              no_trace_boost: bool = False) -> tuple[dict | None, str | None]:
+              no_trace_boost: bool = False, index_all: bool = False) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
+    if index_all:
+        # WS1 (campaign #56): content-sniffed universal indexing instead of
+        # the extension allowlist. Omitted (the default) -> the binary's own
+        # default (off).
+        argv += ["--index-all"]
     if route:
         # E11 (campaign #4 wave 5): structure-aware query routing. Omitted
         # (the default) -> the binary's own default (off).
@@ -261,7 +266,8 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
                        max_siblings: int = 0, repos_dir: Path | None = None,
                        route: bool = False, route_test_penalty: float = 0.0,
                        lexboost: float = 0.0, lexboost_graph: str = "",
-                       trace_boost: bool = False, no_trace_boost: bool = False) -> dict:
+                       trace_boost: bool = False, no_trace_boost: bool = False,
+                       index_all: bool = False) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -289,7 +295,7 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
 
     obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp,
                          family_enum, sibling_sim, max_siblings, route, route_test_penalty,
-                         lexboost, lexboost_graph, trace_boost, no_trace_boost)
+                         lexboost, lexboost_graph, trace_boost, no_trace_boost, index_all)
     if err:
         rec["error"] = err
         return rec
@@ -310,6 +316,10 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
     # (lexboost: direct-vs-neighbor anatomy; trace_boost: frame files/ranks).
     rec["lexboost"] = stats.get("lexboost")
     rec["trace_boost"] = stats.get("trace_boost")
+    # WS1: corpus-composition summary (files beyond the extension allowlist
+    # + their suffix breakdown) -- present only when --index-all was passed;
+    # None otherwise. Consumed by the gate's smoke checks / flip anatomy.
+    rec["index_all_stats"] = stats.get("index_all")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]
@@ -397,6 +407,10 @@ def main() -> None:
                      help="passthrough to roust's --route-test-penalty (E11 conditional "
                           "test-path downweight); 0.0 (default) omits the flag, i.e. the "
                           "binary's own default (0.85); only meaningful with --route")
+    ap.add_argument("--index-all", action="store_true",
+                     help="passthrough to roust's --index-all (WS1, campaign #56: content-"
+                          "sniffed universal indexing instead of the extension allowlist); "
+                          "omitted by default (binary default: off)")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -432,7 +446,7 @@ def main() -> None:
                                      args.family_enum, args.sibling_sim, args.max_siblings,
                                      args.repos_dir, args.route, args.route_test_penalty,
                                      args.lexboost, args.lexboost_graph, args.trace_boost,
-                                     args.no_trace_boost)
+                                     args.no_trace_boost, args.index_all)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

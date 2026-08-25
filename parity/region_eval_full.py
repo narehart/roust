@@ -126,6 +126,10 @@ def main() -> None:
                      help="E23: append --ts-blocks to every roust invocation "
                           "(tree-sitter structural blocks for .js/.jsx/.ts/.tsx; "
                           "rides the same EXTRA_ENGINE_FLAGS mechanism as --bm25-only)")
+    ap.add_argument("--index-all", action="store_true",
+                     help="WS1 (campaign #56): append --index-all to every roust "
+                          "invocation (content-sniffed universal indexing instead of "
+                          "the extension allowlist; rides EXTRA_ENGINE_FLAGS)")
     ap.add_argument("--allow-stale-engine", action="store_true",
                      help="override the blocking engine-provenance guard (loud warning "
                           "instead of refusal) -- NOT recommended for real results")
@@ -149,12 +153,15 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = BM25_ONLY_FLAGS
     if args.ts_blocks:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ts-blocks"]
+    if args.index_all:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--index-all"]
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
     print(f"repos dir: {args.repos_dir}", file=sys.stderr)
     print(f"pad_lines={args.pad_lines} len_exp={args.len_exp} "
-          f"bm25_only={args.bm25_only} ts_blocks={args.ts_blocks}", file=sys.stderr)
+          f"bm25_only={args.bm25_only} ts_blocks={args.ts_blocks} "
+          f"index_all={args.index_all}", file=sys.stderr)
 
     rows = rev.load_verified_rows(args.gold_parquet, limit=0)
     start, end = parse_shard(args.shard, len(rows))
@@ -174,6 +181,7 @@ def main() -> None:
             rec["shard"] = args.shard
             rec["bm25_only"] = args.bm25_only
             rec["ts_blocks"] = args.ts_blocks
+            rec["index_all"] = args.index_all
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

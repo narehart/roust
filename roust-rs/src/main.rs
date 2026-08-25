@@ -229,6 +229,18 @@ struct Args {
     #[arg(long, alias = "no-ts-blocks")]
     no_structural_blocks: bool,
 
+    /// WS1 universal indexing (campaign #56): index every file that
+    /// survives the ignore rules (git-ls-files enumeration, .git/, .roust/,
+    /// vendored dirs) and sniffs as text (no NUL byte in the first 8KB,
+    /// UTF-8-decodable head), instead of requiring an allowlisted code
+    /// extension. Existing size (2MB) and long-line (3000-char, minified
+    /// junk) filters still apply; allowlisted extensions are always
+    /// indexed exactly as before, so the flagged corpus is a strict
+    /// superset of the default corpus. Default OFF: byte-identical to the
+    /// engine without this flag.
+    #[arg(long)]
+    index_all: bool,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -302,7 +314,7 @@ fn main() {
     let t0 = Instant::now();
 
     let (corpus, edges, history, cache_hit) =
-        cache::load_or_build(&repo_path, with_history, with_docs, !args.no_cache, args.reindex);
+        cache::load_or_build(&repo_path, with_history, with_docs, !args.no_cache, args.reindex, args.index_all);
     let index_ms = t0.elapsed().as_secs_f64() * 1000.0;
 
     // E20 LexBoost graph (flag-gated; defaults build nothing): neighbor
@@ -443,6 +455,25 @@ fn main() {
         // --no-trace-boost / --route.
         stats["trace_boost"] = serde_json::json!({
             "trace_files": boost_files,
+        });
+    }
+    if args.index_all {
+        // Present only under --index-all (defaults stay byte-identical):
+        // corpus-composition summary for the WS1 gate's smoke checks --
+        // how many indexed files came from outside the extension
+        // allowlist, and the per-suffix breakdown of those newcomers.
+        let mut newcomer_suffixes: std::collections::BTreeMap<String, usize> = std::collections::BTreeMap::new();
+        let mut n_newcomers = 0usize;
+        for f in &corpus.files {
+            if !roust::core::has_allowlisted_suffix(f) {
+                n_newcomers += 1;
+                let suf = roust::core::file_suffix(f);
+                *newcomer_suffixes.entry(if suf.is_empty() { "<none>".to_string() } else { suf.to_string() }).or_insert(0) += 1;
+            }
+        }
+        stats["index_all"] = serde_json::json!({
+            "n_files_beyond_allowlist": n_newcomers,
+            "beyond_allowlist_suffixes": newcomer_suffixes,
         });
     }
     if args.lexboost > 0.0 {

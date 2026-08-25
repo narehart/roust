@@ -18,6 +18,14 @@ pub const CODE_EXTENSIONS: &[&str] = &[
 ];
 pub const MAX_FILE_BYTES: u64 = 2_000_000;
 
+/// On-disk cache directory name (`<repo>/.roust/`). Defined here (not in
+/// `cache.rs`, which re-exports it) because `Corpus::build` under
+/// `--index-all` must exclude it explicitly: without the extension
+/// allowlist, the cache's own `index.json` would otherwise sniff as text
+/// and index itself. The default path never needed this -- no cache file
+/// carries a `CODE_EXTENSIONS` suffix.
+pub const CACHE_DIRNAME: &str = ".roust";
+
 pub fn is_code_file(rel: &str) -> bool {
     CODE_EXTENSIONS.iter().any(|ext| rel.ends_with(ext))
 }
@@ -32,6 +40,36 @@ fn has_code_suffix(rel: &str) -> bool {
     // accepted extension-only hidden names like `a/.py`, which Python's
     // `Path.suffix` -- and `suffix_of` -- correctly reject.)
     CODE_EXTENSIONS.contains(&suffix_of(rel))
+}
+
+/// Content-based text sniff for `--index-all` (WS1, campaign #56): a file
+/// is "text" when its first 8 KB contain no NUL byte and decode as UTF-8 --
+/// tolerating exactly one incomplete multi-byte sequence at the 8 KB cut
+/// (`Utf8Error::error_len() == None`), which is a truncation artifact, not
+/// invalid content. Applied ONLY to files outside `CODE_EXTENSIONS`:
+/// allowlisted files keep `Corpus::build`'s historical read-lossy behavior
+/// (indexed even with stray invalid bytes), so the `--index-all` corpus is
+/// always a strict superset of the default corpus.
+pub(crate) fn sniff_is_text(bytes: &[u8]) -> bool {
+    let head = &bytes[..bytes.len().min(8192)];
+    if head.contains(&0u8) {
+        return false;
+    }
+    match std::str::from_utf8(head) {
+        Ok(_) => true,
+        Err(e) => e.error_len().is_none(),
+    }
+}
+
+/// Public view of `has_code_suffix` for tooling (main.rs' `--index-all`
+/// stats summary): true when `rel`'s `Path.suffix` is in `CODE_EXTENSIONS`.
+pub fn has_allowlisted_suffix(rel: &str) -> bool {
+    has_code_suffix(rel)
+}
+
+/// Public view of `suffix_of` for tooling (same consumer as above).
+pub fn file_suffix(rel: &str) -> &str {
+    suffix_of(rel)
 }
 
 pub(crate) fn suffix_of(rel: &str) -> &str {
@@ -1199,6 +1237,14 @@ pub struct Corpus {
     pub doclen: HashMap<String, u32>,
     pub df: HashMap<String, u32>,
     pub use_comments: bool,
+    /// Whether this Corpus was built under `--index-all` (WS1, campaign
+    /// #56): content-sniffed inclusion instead of the extension allowlist.
+    /// Serde-defaulted so caches written before this field existed still
+    /// deserialize (they were necessarily built without the flag, and the
+    /// cache key separates flagged caches anyway). `update_files` consults
+    /// it to re-apply the same inclusion criteria build used.
+    #[serde(default)]
+    pub index_all: bool,
     pub com_tf: HashMap<String, IndexMap<String, u32>>,
     pub com_df: HashMap<String, u32>,
     pub def_index: HashMap<String, Vec<String>>,
@@ -1228,6 +1274,26 @@ impl Corpus {
         use_comments: bool,
         build_docs: bool,
     ) -> Corpus {
+        Self::build_ex(repo_path, history_msgs, use_comments, build_docs, false)
+    }
+
+    /// `build` plus the WS1 `index_all` switch (campaign #56). When
+    /// `index_all` is false this is EXACTLY the historical `build` (the
+    /// `build` wrapper above delegates here). When true, the extension
+    /// allowlist is replaced by content-based inclusion: every file that
+    /// survives the ignore rules (git-ls-files enumeration, `.git/`,
+    /// `.roust/`, `VENDOR_RE`), the `MAX_FILE_BYTES` cap, the
+    /// `MAX_LINE_CHARS` long-line filter, and non-empty tokenization is
+    /// indexed if it `sniff_is_text`s -- with `CODE_EXTENSIONS` files
+    /// admitted unconditionally (never sniffed), so the flagged corpus is a
+    /// strict superset of the default corpus.
+    pub fn build_ex(
+        repo_path: &Path,
+        history_msgs: Option<&IndexMap<String, String>>,
+        use_comments: bool,
+        build_docs: bool,
+        index_all: bool,
+    ) -> Corpus {
         let mut files = Vec::new();
         let mut text: HashMap<String, String> = HashMap::new();
         let mut ptoks: HashMap<String, HashSet<String>> = HashMap::new();
@@ -1243,8 +1309,18 @@ impl Corpus {
             if rel.starts_with(".git/") || rel.contains("/.git/") {
                 continue;
             }
-            if !has_code_suffix(rel) {
-                continue;
+            let suffix_listed = has_code_suffix(rel);
+            if !suffix_listed {
+                if !index_all {
+                    continue;
+                }
+                // The cache dir is implicitly excluded on the default path
+                // (no cache file has an allowlisted extension); without the
+                // allowlist it must be excluded by name or the index would
+                // index itself.
+                if rel.starts_with(&format!("{CACHE_DIRNAME}/")) || rel.contains(&format!("/{CACHE_DIRNAME}/")) {
+                    continue;
+                }
             }
             if VENDOR_RE.is_match(rel) {
                 continue;
@@ -1260,10 +1336,17 @@ impl Corpus {
             if meta.len() > MAX_FILE_BYTES {
                 continue;
             }
-            let txt = match read_text_lossy(&full) {
-                Some(t) => t,
-                None => continue,
+            let bytes = match std::fs::read(&full) {
+                Ok(b) => b,
+                Err(_) => continue,
             };
+            // Content sniff applies ONLY to files outside the extension
+            // allowlist (see `sniff_is_text`): allowlisted files keep the
+            // historical read-lossy behavior in both flag states.
+            if !suffix_listed && !sniff_is_text(&bytes) {
+                continue;
+            }
+            let txt = String::from_utf8_lossy(&bytes).into_owned();
             let text_lines = py_splitlines(&txt);
             if let Some(maxlen) = text_lines.iter().map(|l| l.chars().count()).max() {
                 if maxlen > MAX_LINE_CHARS {
@@ -1431,6 +1514,7 @@ impl Corpus {
             doclen,
             df,
             use_comments,
+            index_all,
             com_tf,
             com_df,
             def_index,
@@ -1523,10 +1607,18 @@ impl Corpus {
             if meta.len() > MAX_FILE_BYTES {
                 return false;
             }
-            let text = match read_text_lossy(&p) {
-                Some(t) => t,
-                None => return false,
+            let bytes = match std::fs::read(&p) {
+                Ok(b) => b,
+                Err(_) => return false,
             };
+            // Mirror `build_ex`'s content sniff for non-allowlisted members
+            // (only possible under --index-all): content that flips from
+            // text to binary is an inclusion-verdict change, i.e. shaped
+            // like a remove -- decline so the caller full-rebuilds.
+            if self.index_all && !has_code_suffix(rel) && !sniff_is_text(&bytes) {
+                return false;
+            }
+            let text = String::from_utf8_lossy(&bytes).into_owned();
             let lines = py_splitlines(&text);
             if let Some(maxlen) = lines.iter().map(|l| l.chars().count()).max() {
                 if maxlen > MAX_LINE_CHARS {
@@ -6070,6 +6162,114 @@ def omega_worker(pp):
             spans_off["b.py"], spans_on["b.py"],
             "the .py file's spans must be untouched by --ts-blocks"
         );
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    // ------------------------------------------------------------ WS1 --index-all
+
+    #[test]
+    fn sniff_is_text_verdicts() {
+        assert!(sniff_is_text(b"plain ascii text\n"));
+        assert!(sniff_is_text("utf-8 caf\u{e9} \u{2713}\n".as_bytes()));
+        assert!(sniff_is_text(b""));
+        // NUL byte anywhere in the head: binary.
+        assert!(!sniff_is_text(b"MZ\x00\x03binary"));
+        // Invalid UTF-8 mid-stream: binary.
+        assert!(!sniff_is_text(b"abc\xff\xfedef"));
+        // Incomplete multi-byte char exactly at the 8KB cut: still text.
+        let mut big = vec![b'a'; 8191];
+        big.push(0xE2); // first byte of a 3-byte sequence, truncated by the cut
+        big.extend_from_slice("\u{2713} more".as_bytes());
+        assert!(sniff_is_text(&big));
+        // NUL beyond the 8KB head is never inspected (sniff is head-only).
+        let mut tail_nul = vec![b'a'; 8192];
+        tail_nul.push(0);
+        assert!(sniff_is_text(&tail_nul));
+    }
+
+    /// The core WS1 contract in one fixture repo: default build indexes only
+    /// allowlisted extensions; `--index-all` additionally indexes files that
+    /// sniff as text (json/md/toml/extensionless) while still excluding
+    /// binaries, vendored dirs, the cache dir, and oversized-line files --
+    /// and the flagged file set is a strict superset of the default set.
+    #[test]
+    fn build_ex_index_all_content_based_inclusion() {
+        let tmp = std::env::temp_dir().join(format!("roust_indexall_{}", std::process::id()));
+        std::fs::remove_dir_all(&tmp).ok();
+        std::fs::create_dir_all(tmp.join("node_modules/dep")).unwrap();
+        std::fs::create_dir_all(tmp.join(".roust")).unwrap();
+        std::fs::write(tmp.join("main.py"), "def handler_widget():\n    return 1\n").unwrap();
+        std::fs::write(tmp.join("config.json"), "{\n  \"handler\": \"widget\"\n}\n").unwrap();
+        std::fs::write(tmp.join("README.md"), "# handler widget docs\n").unwrap();
+        std::fs::write(tmp.join("Makefile"), "build:\n\techo handler widget\n").unwrap();
+        std::fs::write(tmp.join("logo.png"), b"\x89PNG\x00\x1a\nhandler widget").unwrap();
+        std::fs::write(tmp.join("node_modules/dep/index.json"), "{\"vendored\": true}\n").unwrap();
+        std::fs::write(tmp.join(".roust/index.json"), "{\"cache\": \"handler widget\"}\n").unwrap();
+        let long_line = format!("{{\"minified\": \"{}\"}}\n", "x".repeat(4000));
+        std::fs::write(tmp.join("bundle.min.map"), long_line).unwrap();
+
+        let base = Corpus::build(&tmp, None, false, false);
+        assert_eq!(base.files, vec!["main.py".to_string()], "default build: allowlist only");
+        assert!(!base.index_all);
+
+        let all = Corpus::build_ex(&tmp, None, false, false, true);
+        assert!(all.index_all);
+        assert_eq!(
+            all.files,
+            vec!["Makefile".to_string(), "README.md".to_string(), "config.json".to_string(), "main.py".to_string()],
+            "--index-all: text files in walk order; binary/vendored/cache-dir/oversized-line excluded"
+        );
+        // Strict superset of the default set.
+        let base_set: HashSet<&String> = base.files.iter().collect();
+        let all_set: HashSet<&String> = all.files.iter().collect();
+        assert!(base_set.is_subset(&all_set) && base_set.len() < all_set.len());
+        // Newly-admitted files are first-class corpus members: tokenized,
+        // scored fields populated.
+        assert!(all.tf.contains_key("config.json") && all.doclen["config.json"] > 0);
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// An allowlisted file whose content would FAIL the sniff (stray invalid
+    /// bytes -- read lossily since forever) must be indexed in BOTH flag
+    /// states: the sniff applies only beyond the allowlist, preserving the
+    /// strict-superset guarantee.
+    #[test]
+    fn build_ex_index_all_never_sniffs_allowlisted_files() {
+        let tmp = std::env::temp_dir().join(format!("roust_indexall_lossy_{}", std::process::id()));
+        std::fs::remove_dir_all(&tmp).ok();
+        std::fs::create_dir_all(&tmp).unwrap();
+        std::fs::write(tmp.join("weird.py"), b"def handler():\n    return b'\xff\xfe'\n").unwrap();
+
+        let base = Corpus::build(&tmp, None, false, false);
+        let all = Corpus::build_ex(&tmp, None, false, false, true);
+        assert_eq!(base.files, vec!["weird.py".to_string()]);
+        assert_eq!(all.files, vec!["weird.py".to_string()]);
+        assert_eq!(base.text["weird.py"], all.text["weird.py"]);
+
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// update_files under --index-all: a modified non-allowlisted member is
+    /// patched in place with the same criteria build_ex used, and a
+    /// text->binary content flip declines (inclusion-verdict change).
+    #[test]
+    fn update_files_index_all_sniffs_non_allowlisted() {
+        let tmp = std::env::temp_dir().join(format!("roust_indexall_upd_{}", std::process::id()));
+        std::fs::remove_dir_all(&tmp).ok();
+        std::fs::create_dir_all(&tmp).unwrap();
+        std::fs::write(tmp.join("config.json"), "{\"handler\": \"widget\"}\n").unwrap();
+
+        let mut corpus = Corpus::build_ex(&tmp, None, false, false, true);
+        assert_eq!(corpus.files, vec!["config.json".to_string()]);
+
+        std::fs::write(tmp.join("config.json"), "{\"handler\": \"sprocket\"}\n").unwrap();
+        assert!(corpus.update_files(&["config.json".to_string()]));
+        assert!(corpus.text["config.json"].contains("sprocket"));
+
+        std::fs::write(tmp.join("config.json"), b"\x00\x01binary now").unwrap();
+        assert!(!corpus.update_files(&["config.json".to_string()]), "text->binary flip must decline to full rebuild");
 
         std::fs::remove_dir_all(&tmp).ok();
     }
