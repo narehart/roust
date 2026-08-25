@@ -1,5 +1,6 @@
 //! CLI-level WS3c tests (campaign #56, audit findings 3+6): the
-//! `--symbols-v2` def/anchor channel + un-gated anchor-forced seating,
+//! symbols-v2 def/anchor channel + un-gated anchor-forced seating
+//! (ADOPTED default ON, PR #67; --no-symbols-v2 is the escape hatch),
 //! exercised through the real compiled binary because the flag is a
 //! process-global set at CLI parse -- an in-process unit test would race
 //! the parallel test threads (see `impl_prior_with`'s doc comment for the
@@ -14,7 +15,8 @@
 //! so no anchor exists and the file stays unranked. Flag-on, the
 //! tree-sitter def_index resolves the anchor, promotes the file, and the
 //! seating fix packs the SYMBOL'S OWN block (not the decoy region that
-//! wins on generic term density).
+//! wins on generic term density). "Flag-off" below means the
+//! --no-symbols-v2 escape hatch (the pre-adoption engine).
 
 use serde_json::Value;
 use std::path::PathBuf;
@@ -25,11 +27,20 @@ struct Run {
     bundle: String,
 }
 
-fn run(dir: &PathBuf, query: &str, symbols_v2: bool) -> Run {
+/// `mode`: "default" (adopted engine defaults, symbols-v2 ON), "off"
+/// (--no-symbols-v2 escape hatch, pre-adoption engine), or "explicit"
+/// (--symbols-v2, accepted-but-redundant old spelling).
+fn run(dir: &PathBuf, query: &str, mode: &str) -> Run {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_roust"));
     cmd.arg(query).arg(dir).arg("--no-cache").arg("--explain").arg("--budget").arg("3000");
-    if symbols_v2 {
-        cmd.arg("--symbols-v2");
+    match mode {
+        "off" => {
+            cmd.arg("--no-symbols-v2");
+        }
+        "explicit" => {
+            cmd.arg("--symbols-v2");
+        }
+        _ => {}
     }
     let out = cmd.output().expect("failed to run roust binary");
     let stderr = String::from_utf8_lossy(&out.stderr).into_owned();
@@ -99,22 +110,29 @@ fn symbols_v2_seats_js_arrow_definition() {
     std::fs::write(tmp.join("util.js"), util).unwrap();
 
     let q = "crash in `parseWidgetConfig` when rendering the dashboard panel layout";
-    let base = run(&tmp, q, false);
-    let v2 = run(&tmp, q, true);
+    let base = run(&tmp, q, "off");
+    let v2 = run(&tmp, q, "default");
 
     assert!(
         promoted_files(&base.explain).is_empty(),
-        "flag OFF: the arrow definition must be invisible to the def/anchor channel, got {:?}",
+        "--no-symbols-v2: the arrow definition must be invisible to the def/anchor channel, got {:?}",
         base.explain["anchor_promotions"]
     );
     assert!(
         promoted_files(&v2.explain).contains(&"util.js".to_string()),
-        "flag ON: util.js must be anchor-promoted via the tree-sitter def_index, got {:?}",
+        "adopted default: util.js must be anchor-promoted via the tree-sitter def_index, got {:?}",
         v2.explain["anchor_promotions"]
+    );
+    // The old spelling stays accepted-but-redundant: identical promotions.
+    let explicit = run(&tmp, q, "explicit");
+    assert_eq!(
+        promoted_files(&explicit.explain),
+        promoted_files(&v2.explain),
+        "--symbols-v2 (redundant old spelling) must match the adopted defaults"
     );
     assert!(
         v2.bundle.contains("const parseWidgetConfig = (raw)") && v2.bundle.contains("JSON.parse"),
-        "flag ON: the anchored symbol's OWN block must be seated (not just the decoy), bundle:\n{}",
+        "adopted default: the anchored symbol's OWN block must be seated (not just the decoy), bundle:\n{}",
         &v2.bundle[..v2.bundle.len().min(2000)]
     );
 
@@ -144,23 +162,23 @@ fn symbols_v2_seats_java_method_definition() {
     std::fs::write(tmp.join("WidgetRegistry.java"), registry).unwrap();
 
     let q = "crash in `registerWidget` when rendering the dashboard panel layout";
-    let base = run(&tmp, q, false);
-    let v2 = run(&tmp, q, true);
+    let base = run(&tmp, q, "off");
+    let v2 = run(&tmp, q, "default");
 
     assert!(
         promoted_files(&base.explain).is_empty(),
-        "flag OFF: Java has no def/anchor channel at all, got {:?}",
+        "--no-symbols-v2: Java has no def/anchor channel at all, got {:?}",
         base.explain["anchor_promotions"]
     );
     assert!(
         promoted_files(&v2.explain).contains(&"WidgetRegistry.java".to_string()),
-        "flag ON: WidgetRegistry.java must be anchor-promoted, got {:?}",
+        "adopted default: WidgetRegistry.java must be anchor-promoted, got {:?}",
         v2.explain["anchor_promotions"]
     );
     assert!(
         v2.bundle.contains("public void registerWidget(String title)")
             && v2.bundle.contains("store.put"),
-        "flag ON: the Java method's own block must be seated, bundle:\n{}",
+        "adopted default: the Java method's own block must be seated, bundle:\n{}",
         &v2.bundle[..v2.bundle.len().min(2000)]
     );
 

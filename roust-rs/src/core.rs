@@ -1230,7 +1230,11 @@ pub fn impl_prior_v2_enabled() -> bool {
 // names for grammar-covered non-Python files), so the cache key gains an
 // ":sv2" marker when ON -- see cache::cache_key. It ALSO participates at
 // pack time (anchor-forced region seating un-gated from `.py`), read
-// directly by `pack_regions`.
+// directly by `pack_regions`. ADOPTED engine default (standing
+// language-agnostic directive, 2026-08-26, PR #67): main.rs sets this ON
+// unless --no-symbols-v2. The LIBRARY initializer stays `false` so
+// in-process unit tests exercise pre-adoption paths without toggling the
+// process-global (see `def_symbols_with`'s pure-function form).
 static SYMBOLS_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
 pub fn set_symbols_v2(on: bool) {
