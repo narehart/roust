@@ -1,0 +1,1 @@
+(eval):1: command not found: uv run --no-project --with pandas --with pyarrow python

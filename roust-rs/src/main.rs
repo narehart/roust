@@ -197,6 +197,28 @@ struct Args {
     #[arg(long)]
     no_trace_boost: bool,
 
+    /// WS3b multi-format trace-frame extraction -- ADOPTED as the engine
+    /// default (campaign #56, audit finding 2, PR #66, standing
+    /// language-agnostic directive 2026-08-26). Adds Java (`at
+    /// pkg.Cls.m(Cls.java:123)`, FQCN->path), Node (`at fn
+    /// (path.js:1:2)`), Go panic locator, and Rust backtrace `at` frame
+    /// parsing alongside the CPython format; frames feed the SAME
+    /// rank-decayed E11b boost channel, raise-site first per format's own
+    /// convention. Python parsing unchanged; query text byte-untouched;
+    /// provably byte-identical on all Python slices (zero new-format
+    /// matches on Lite/Verified/full). ON by default; passing this flag
+    /// explicitly is accepted-but-redundant (kept for harness
+    /// compatibility). Disable with --no-trace-formats-v2. No-op under
+    /// --no-trace-boost / --route.
+    #[arg(long)]
+    trace_formats_v2: bool,
+
+    /// disable WS3b multi-format trace-frame extraction (CPython-only
+    /// frame parsing, reproducing the pre-adoption engine
+    /// byte-identically)
+    #[arg(long)]
+    no_trace_formats_v2: bool,
+
     /// E20 (campaign #4 wave 5): LexBoost neighbor score smoothing lambda
     /// (arXiv:2409.05882). Final file score = lambda*S + (1-lambda)*
     /// prior*mean(neighbor S) over the graph chosen by --lexboost-graph,
@@ -250,6 +272,24 @@ struct Args {
     #[arg(long)]
     no_cfamily_ext: bool,
 
+    /// WS3a (campaign #56, audit finding 1): recalibrated impl_prior.
+    /// Doc-like path components (docs?/examples?/benchmarks?/benches)
+    /// stop damping files with a code extension -- they are production
+    /// dirs outside Python (21.4% of indexed JS/TS gold damped by v1;
+    /// Lite 0.0%). Genuinely test-like paths (test/tests/__tests__/spec
+    /// dirs, test_*/_test.*/.spec./.test. patterns) keep the 0.3 damp in
+    /// every language, with _test.<ext> broadened to all extensions.
+    /// Non-code files in doc-like dirs keep the damp. Also lifts the
+    /// structural-expansion / testbridge / docsbridge exclusions for
+    /// no-longer-damped files (all key off impl_prior), and adds the
+    /// one-word `thirdparty` component to the vendor guard (the WS3a cpp
+    /// arm measured nlohmann's vendored Google Benchmark displacing gold
+    /// once undamped; VENDOR_RE only knew `third_party`). Re-keys the
+    /// index cache (def_index is impl_prior-gated at build time). Default
+    /// OFF.
+    #[arg(long)]
+    impl_prior_v2: bool,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -265,6 +305,11 @@ fn main() {
     // cache manifest scan read this process-global exactly once per file.
     // WS2c: default ON; --no-cfamily-ext wins over the (redundant) on-flag.
     roust::core::set_cfamily_ext(args.cfamily_ext && !args.no_cfamily_ext);
+
+    // WS3a: same contract as the cfamily global -- set BEFORE any
+    // corpus/cache work (impl_prior gates def_index at build time and the
+    // cache key reads this).
+    roust::core::set_impl_prior_v2(args.impl_prior_v2);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");
@@ -300,6 +345,10 @@ fn main() {
     }
     if args.trace_boost && args.no_trace_boost {
         eprintln!("roust: error: --trace-boost and --no-trace-boost are mutually exclusive");
+        std::process::exit(2);
+    }
+    if args.trace_formats_v2 && args.no_trace_formats_v2 {
+        eprintln!("roust: error: --trace-formats-v2 and --no-trace-formats-v2 are mutually exclusive");
         std::process::exit(2);
     }
     if args.structural_blocks && args.no_structural_blocks {
@@ -361,8 +410,18 @@ fn main() {
     // E11b trace-frame FILE extraction (adopted default; see
     // use_trace_boost above); `terms` above is untouched (byte-identical
     // query text).
-    let boost_files: Vec<String> =
-        if use_trace_boost { trace_frame_files(&args.query, &corpus) } else { Vec::new() };
+    // WS3b multi-format parsing is ON by default (adopted);
+    // --no-trace-formats-v2 restores CPython-only frame extraction.
+    let use_trace_formats_v2 = !args.no_trace_formats_v2;
+    let boost_files: Vec<String> = if use_trace_boost {
+        if use_trace_formats_v2 {
+            roust::core::trace_frame_files_v2(&args.query, &corpus)
+        } else {
+            trace_frame_files(&args.query, &corpus)
+        }
+    } else {
+        Vec::new()
+    };
     let (matched_terms, total_terms) = query_term_coverage(&corpus, &terms);
     let zero_match = matched_terms == 0;
     let anchors = if use_anchors { Some(extract_symbol_anchors(&args.query, &corpus)) } else { None };
@@ -469,6 +528,7 @@ fn main() {
         // --no-trace-boost / --route.
         stats["trace_boost"] = serde_json::json!({
             "trace_files": boost_files,
+            "formats_v2": use_trace_formats_v2,
         });
     }
     if args.lexboost > 0.0 {

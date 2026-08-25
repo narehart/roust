@@ -56,8 +56,14 @@ pub fn code_suffix_allowed_with(suffix: &str, cfamily: bool) -> bool {
 pub const MAX_FILE_BYTES: u64 = 2_000_000;
 
 pub fn is_code_file(rel: &str) -> bool {
+    is_code_file_with(rel, cfamily_ext_enabled())
+}
+
+/// Pure-function form of `is_code_file` (explicit cfamily state) -- shared
+/// by `impl_prior_with` so unit tests never read the process-global.
+pub fn is_code_file_with(rel: &str, cfamily: bool) -> bool {
     CODE_EXTENSIONS.iter().any(|ext| rel.ends_with(ext))
-        || (cfamily_ext_enabled() && CFAMILY_EXTENSIONS.iter().any(|ext| rel.ends_with(ext)))
+        || (cfamily && CFAMILY_EXTENSIONS.iter().any(|ext| rel.ends_with(ext)))
 }
 
 fn has_code_suffix(rel: &str) -> bool {
@@ -327,6 +333,75 @@ static TB_EXC_RE: LazyLock<Regex> = LazyLock::new(|| {
     )
     .unwrap()
 });
+
+// ------------------------------------------------------------- WS3b formats
+// Multi-format trace-frame extraction (`--trace-formats-v2`, campaign #56
+// round WS3b, audit finding #2): per-format frame parsers feeding the SAME
+// `trace_frame_files` contract (rank-ordered resolved file references,
+// raise-site first). Regexes are line-for-line ports of the WS3 census
+// miner (`lab/research/langagnostic/mine_ws3_audit.py`), so the census
+// counts (java 15/124 trace-bearing, 10 gold-resolving; rust 19/239) are
+// exactly the population these parsers see. Python parsing is UNCHANGED
+// (`TB_FRAME_RE` above); every format below is syntactically disjoint from
+// CPython's `File "X", line N` frame shape.
+//
+// Java/JVM: `    at com.foo.Bar.baz(Bar.java:123)` -- exactly ONE line
+// number (Node requires two), filename is a bare basename; the FQCN in the
+// same frame determines the path prefix (`com/foo/Bar.java`), resolved
+// into the corpus by `resolve_frame_path` component matching.
+static JAVA_FRAME_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"^\s*at\s+([\w.$<>/]+)\(([\w$]+\.(?:java|kt|scala)):\d+\)\s*$").unwrap()
+});
+// Node/V8: `    at fnName (/abs/or/rel/path.js:10:15)` or `    at /path.js:1:2`
+// (TWO trailing line:col numbers; path must be absolute, drive-lettered,
+// dot-relative, or contain a directory component).
+static NODE_FRAME_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r"^\s*at\s+(?:[^\s(]+(?:\s+\[as\s+[^\]]+\])?\s+\()?((?:[A-Za-z]:\\|/|\.{1,2}/|[\w@][\w@./-]*/)[^():]+?):\d+:\d+\)?\s*$",
+    )
+    .unwrap()
+});
+// Go panic: the frame-locator line `\tpkg/file.go:123 +0x39` (indented under
+// a `pkg.func(...)` line; the indentation requirement keeps bare
+// `file.go:12` prose mentions out).
+static GO_FRAME_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"^\s*([\w@./-]+\.go):\d+(?:\s+\+0x[0-9a-f]+)?\s*$").unwrap()
+});
+// Rust backtrace frame-locator: `             at src/main.rs:12:34` (the
+// `at ` prefix is required; bare `path.rs:12` prose does not count).
+static RUST_AT_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"^\s*at\s+([\w@./-]+\.rs):\d+(?::\d+)?\s*$").unwrap()
+});
+
+/// WS3b: derive the repo-relative path suffix a Java/JVM frame implies.
+/// `qualifier` is the frame's dotted method reference (optionally with a
+/// Java-9 module prefix, `java.base/java.util.Foo.bar`), `filename` the
+/// bare basename in parentheses (`Foo.java`). The package portion is
+/// everything before the LAST dotted component whose top-level-class
+/// prefix (before any `$`) equals the file stem; if no component matches
+/// (lambda/synthetic frames), fall back to dropping the trailing
+/// method + class components.
+fn java_frame_path(qualifier: &str, filename: &str) -> String {
+    let q = qualifier.rsplit('/').next().unwrap_or(qualifier);
+    let stem = filename.split('.').next().unwrap_or("");
+    let parts: Vec<&str> = q.split('.').filter(|p| !p.is_empty()).collect();
+    let mut cls_idx: Option<usize> = None;
+    for (i, p) in parts.iter().enumerate() {
+        if p.split('$').next() == Some(stem) {
+            cls_idx = Some(i);
+        }
+    }
+    let pkg: &[&str] = match cls_idx {
+        Some(i) => &parts[..i],
+        None if parts.len() >= 2 => &parts[..parts.len() - 2],
+        None => &[],
+    };
+    if pkg.is_empty() {
+        filename.to_string()
+    } else {
+        format!("{}/{}", pkg.join("/"), filename)
+    }
+}
 
 // Code-fence channel (Chaparro part-selection / BLIZZARD BR_PE): markdown
 // fences, doctest/REPL lines, and 4-space/tab-indented code runs.
@@ -764,6 +839,65 @@ pub fn trace_frame_files(question: &str, corpus: &Corpus) -> Vec<String> {
     out
 }
 
+/// WS3b (`--trace-formats-v2`, campaign #56): multi-format trace-frame
+/// extraction feeding the SAME contract as `trace_frame_files` --
+/// rank-ordered resolved repo-relative files, raise-site first, deduped
+/// keeping best rank. Query text remains byte-untouched (boost-only, the
+/// E11b invariant).
+///
+/// Per-line classification (first match wins, mirroring the census miner):
+/// CPython `TB_FRAME_RE` -> Java -> Node -> Rust `at` -> Go locator (the
+/// Go alternate additionally requires an indented non-first line, keeping
+/// bare `file.go:12` prose mentions out).
+///
+/// Rank semantics: CPython lists frames outermost-first, so its raise site
+/// is the LAST frame (v1 reverses document order). Java/Node/Go/Rust all
+/// print the throw site FIRST, so their frames keep document order. Python
+/// frames (reversed) precede non-Python frames in the output; on
+/// Python-only text this function is EXACTLY `trace_frame_files` (proven
+/// by `trace_formats_v2_python_identity`).
+pub fn trace_frame_files_v2(question: &str, corpus: &Corpus) -> Vec<String> {
+    let lines = py_splitlines(question);
+    let mut py_paths: Vec<String> = Vec::new();
+    let mut other_paths: Vec<String> = Vec::new();
+    for (i, l) in lines.iter().enumerate() {
+        if let Some(cap) = TB_FRAME_RE.captures(l) {
+            py_paths.push(cap.get(1).unwrap().as_str().to_string());
+            continue;
+        }
+        if let Some(cap) = JAVA_FRAME_RE.captures(l) {
+            other_paths.push(java_frame_path(
+                cap.get(1).unwrap().as_str(),
+                cap.get(2).unwrap().as_str(),
+            ));
+            continue;
+        }
+        if let Some(cap) = NODE_FRAME_RE.captures(l) {
+            other_paths.push(cap.get(1).unwrap().as_str().to_string());
+            continue;
+        }
+        if let Some(cap) = RUST_AT_RE.captures(l) {
+            other_paths.push(cap.get(1).unwrap().as_str().to_string());
+            continue;
+        }
+        if i > 0 && (l.starts_with('\t') || l.starts_with("    ")) {
+            if let Some(cap) = GO_FRAME_RE.captures(l) {
+                other_paths.push(cap.get(1).unwrap().as_str().to_string());
+            }
+        }
+    }
+    let mut out: Vec<String> = Vec::new();
+    let mut seen: HashSet<String> = HashSet::new();
+    for path in py_paths.iter().rev().chain(other_paths.iter()) {
+        if let Some(rel) = resolve_frame_path(path, corpus) {
+            if seen.insert(rel.clone()) {
+                out.push(rel);
+            }
+        }
+    }
+    out
+}
+
 // ---------------------------------------------------------------- E20 LexBoost
 //
 // LexBoost (Kulkarni et al., DocEng 2024, arXiv:2409.05882), campaign #4
@@ -1044,21 +1178,105 @@ pub static TESTLIKE_RE: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-static VENDOR_RE: LazyLock<Regex> = LazyLock::new(|| {
+// WS3a (campaign #56, finding 1 of the WS3 assumption audit): the v1
+// TESTLIKE_RE treats `docs?`/`examples?`/`benchmark?s`/`benches` path
+// components as test-like and damps them 0.3x -- calibrated on SWE-bench
+// Lite (Python), where those dirs never hold gold. Outside Python they are
+// production dirs (mui ships `docs/data/...` demo components, ripgrep has
+// `crates/core/flags/doc/*.rs`, Catch2 has `include/internal/benchmark/`):
+// the audit census measured 21.4% of indexed JS/TS gold files damped,
+// C++ 15.6%, Rust 9.2%, Lite 0.0%. Under --impl-prior-v2 those DOC-LIKE
+// components stop damping files with a code extension (non-code files in
+// those dirs keep the 0.3 damp), while genuinely test-like paths keep 0.3
+// in every language. The split below reassigns each v1 alternate to
+// exactly one of the two v2 regexes, so v2 never damps a path v1 did not.
+//
+// TESTLIKE_V2_RE = v1 minus the four doc-like dir alternates, with the
+// `_test.<ext>` suffix broadened from the v1 (py|go|rs|ts|js) list to any
+// extension (Google-style C++ `foo_test.cc`, `_test.cpp`, etc. -- the
+// per-ecosystem test conventions the v1 list predates).
+static TESTLIKE_V2_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(
-        r"(?i)(vendor|vendored|third_party|node_modules|\.min\.(js|css)$|bundle\.js$|(^|/)(cextern|extern)(/|$)|(^|/)(libsvm|liblinear)(/|$))",
+        r"(?i)(^|/)(tests?|testing|spec|specs|fixtures?|mocks?|__tests__|e2e|docs_src|tutorials?|samples?|demos?|playground|scripts?|integration|t)(/|$)|(^|/)(test_|conftest)|_test\.[A-Za-z0-9]+$|\.test\.|\.spec\.",
     )
     .unwrap()
 });
 
+// The four audit-implicated doc-like dir components: damp only non-code
+// files under --impl-prior-v2. Alternates NOT moved here (docs_src,
+// tutorials?, samples?, demos?, playground, scripts?) stay unconditionally
+// test-like: the census implicated only these four on gold, and the round
+// changes exactly what it measured.
+static DOCLIKE_V2_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?i)(^|/)(docs?|examples?|benchmarks?|benches)(/|$)").unwrap());
+
+// WS3a flag global, mirroring the CFAMILY_EXT pattern: set ONCE at CLI
+// parse before any corpus/cache work. It participates at INDEX time
+// (def_index construction is impl_prior-gated), so the cache key gains an
+// ":ipv2" marker when ON -- see cache::cache_key.
+static IMPL_PRIOR_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_impl_prior_v2(on: bool) {
+    IMPL_PRIOR_V2.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn impl_prior_v2_enabled() -> bool {
+    IMPL_PRIOR_V2.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+// WS3b: the one-word `thirdparty` path component is an UNCONDITIONAL
+// vendor alternate (promoted from WS3a's flag-gated `VENDOR_V2_RE`).
+// nlohmann/json vendors Google Benchmark at `benchmarks/thirdparty/`;
+// VENDOR_RE knew `third_party` but not `thirdparty`, and the WS3a cpp arm
+// measured the vendored benchmark sources displacing gold on 2/129
+// instances (nlohmann__json-944, -969) once the benchmarks/ damp was
+// lifted. WS3a's tree walk proved ZERO gold files under a `thirdparty`
+// path across every evaluated slice, so the alternate is pure noise
+// removal. Requires the WS3b CACHE_VERSION bump (default-index contents
+// change for thirdparty-bearing repos).
+static VENDOR_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r"(?i)(vendor|vendored|third_party|node_modules|\.min\.(js|css)$|bundle\.js$|(^|/)(cextern|extern)(/|$)|(^|/)(libsvm|liblinear)(/|$)|(^|/)thirdparty(/|$))",
+    )
+    .unwrap()
+});
+
+fn is_vendored(rel: &str) -> bool {
+    VENDOR_RE.is_match(rel)
+}
+
 const MAX_LINE_CHARS: usize = 3000;
 
 pub fn impl_prior(rel: &str) -> f64 {
-    if TESTLIKE_RE.is_match(rel) {
+    impl_prior_with(rel, impl_prior_v2_enabled(), cfamily_ext_enabled())
+}
+
+/// Pure-function form of `impl_prior` -- unit tests exercise this directly
+/// instead of toggling the process-globals (tests run in parallel threads;
+/// see `code_suffix_allowed_with` for the same pattern).
+pub fn impl_prior_with(rel: &str, v2: bool, cfamily: bool) -> f64 {
+    if v2 {
+        if TESTLIKE_V2_RE.is_match(rel) {
+            0.3
+        } else if DOCLIKE_V2_RE.is_match(rel) && !is_code_file_with(rel, cfamily) {
+            0.3
+        } else {
+            1.0
+        }
+    } else if TESTLIKE_RE.is_match(rel) {
         0.3
     } else {
         1.0
     }
+}
+
+/// The engine-wide "test-shaped path" predicate: exactly the damped set of
+/// `impl_prior`. Flag-OFF this equals `TESTLIKE_RE.is_match`; under
+/// --impl-prior-v2 the no-longer-damped doc-dir code files also stop being
+/// treated as test-like (testbridge sources, fence-dominant downweight),
+/// so every consumer keys off the same predicate.
+pub fn testlike_path(rel: &str) -> bool {
+    impl_prior(rel) < 1.0
 }
 
 static PATH_SPLIT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[/\\.\-]").unwrap());
@@ -1288,7 +1506,7 @@ impl Corpus {
             if !has_code_suffix(rel) {
                 continue;
             }
-            if VENDOR_RE.is_match(rel) {
+            if is_vendored(rel) {
                 continue;
             }
             let full = repo_path.join(rel);
@@ -2420,7 +2638,7 @@ fn apply_testbridge_promotions(
     let testlike: Vec<String> = corpus
         .files
         .iter()
-        .filter(|f| TESTLIKE_RE.is_match(f) && TESTBRIDGE_EXTS.contains(&suffix_of(f)))
+        .filter(|f| testlike_path(f) && TESTBRIDGE_EXTS.contains(&suffix_of(f)))
         .cloned()
         .collect();
     let testlike_set: HashSet<String> = testlike.iter().cloned().collect();
@@ -2702,7 +2920,7 @@ pub fn select_files(
         let direct: HashSet<&str> =
             params.trace_files.map(|tfs| tfs.iter().map(|s| s.as_str()).collect()).unwrap_or_default();
         for (f, v) in bm_n.iter_mut() {
-            if TESTLIKE_RE.is_match(f) && !direct.contains(f.as_str()) {
+            if testlike_path(f) && !direct.contains(f.as_str()) {
                 *v *= params.test_penalty;
             }
         }
@@ -4780,6 +4998,84 @@ mod tests {
         ];
         for (path, expected) in cases {
             assert_eq!(impl_prior(path), *expected, "impl_prior({path:?})");
+            // Flag-OFF v2 form must be byte-identical to v1 on every case.
+            assert_eq!(impl_prior_with(path, false, true), *expected, "impl_prior_with({path:?}, v2=false)");
+        }
+    }
+
+    /// WS3a --impl-prior-v2 (audit finding 1): doc-like components
+    /// (docs?/examples?/benchmarks?/benches) stop damping code-extension
+    /// files; non-code files there keep 0.3; genuinely test-like paths
+    /// keep 0.3 in every language, with _test.<ext> broadened beyond the
+    /// v1 (py|go|rs|ts|js) list. Exercises the pure form (globals stay
+    /// untouched -- tests run in parallel threads).
+    #[test]
+    fn ws3a_impl_prior_v2_doc_dirs_undamped_for_code() {
+        // (path, v1_expected, v2_expected) -- cfamily ON (the WS2c default).
+        let cases: &[(&str, f64, f64)] = &[
+            // audit census exemplars: production code in doc-like dirs
+            ("docs/data/material/components/alert/SimpleAlert.js", 0.3, 1.0),
+            ("docs/src/pages/demo.tsx", 0.3, 1.0),
+            ("crates/core/flags/doc/mod.rs", 0.3, 1.0),
+            ("examples/simple/main.rs", 0.3, 1.0),
+            ("include/internal/benchmark/catch_benchmark.hpp", 0.3, 1.0),
+            ("benches/regex_bench.rs", 0.3, 1.0),
+            ("internal/docs/man.go", 0.3, 1.0),
+            // non-code files in doc-like dirs keep the damp
+            ("docs/index.md", 0.3, 0.3),
+            ("examples/README.md", 0.3, 0.3),
+            ("docs/conf.txt", 0.3, 0.3),
+            // genuinely test-like paths damp in every language
+            ("tests/test_main.py", 0.3, 0.3),
+            ("src/test/java/com/foo/BarTest.java", 0.3, 0.3),
+            ("src/__tests__/App.test.tsx", 0.3, 0.3),
+            ("spec/models/user.spec.ts", 0.3, 0.3),
+            ("foo.test.js", 0.3, 0.3),
+            ("a/b/conftest.py", 0.3, 0.3),
+            ("src/t/z.py", 0.3, 0.3),
+            // v2 broadened _test.<ext>: NEW damp for C-family/Java suffixes
+            ("src/util_test.cc", 1.0, 0.3),
+            ("lib/parser_test.cpp", 1.0, 0.3),
+            // test-file patterns win over doc dirs (order of the v2 check)
+            ("docs/test_example.py", 0.3, 0.3),
+            ("examples/foo_test.go", 0.3, 0.3),
+            // plain production code: 1.0 under both
+            ("src/main.py", 1.0, 1.0),
+            ("lib/router.rs", 1.0, 1.0),
+        ];
+        for (path, v1, v2) in cases {
+            assert_eq!(impl_prior_with(path, false, true), *v1, "v1 impl_prior({path:?})");
+            assert_eq!(impl_prior_with(path, true, true), *v2, "v2 impl_prior({path:?})");
+        }
+        // cfamily interlock: a .hpp in docs-like dirs is only "code" when
+        // the C-family extensions are indexed at all.
+        assert_eq!(impl_prior_with("benchmark/foo.hpp", true, true), 1.0);
+        assert_eq!(impl_prior_with("benchmark/foo.hpp", true, false), 0.3);
+    }
+
+    /// WS3b vendored-thirdparty guard: the one-word `thirdparty` component
+    /// is vendor-excluded UNCONDITIONALLY (promoted from WS3a's
+    /// flag-gated VENDOR_V2_RE after the cpp arm measured nlohmann's
+    /// vendored Google Benchmark displacing gold and the WS3a tree walk
+    /// proved zero gold under thirdparty paths anywhere).
+    #[test]
+    fn ws3b_vendor_thirdparty_unconditional() {
+        let vendored = [
+            "benchmarks/thirdparty/benchmark/src/benchmark.cc",
+            "benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h",
+            "test/thirdparty/catch/catch.hpp",
+            "thirdparty/lib/x.c",
+        ];
+        for rel in vendored {
+            assert!(is_vendored(rel), "must exclude {rel}");
+        }
+        // existing alternates unaffected
+        for rel in ["third_party/lib/x.cc", "vendor/pkg/y.js", "node_modules/z.js"] {
+            assert!(is_vendored(rel), "excludes {rel}");
+        }
+        // production paths stay in (component match only, not substring)
+        for rel in ["src/thirdparty_import.rs", "lib/third.rs", "src/main.cpp", "my_thirdparty/x.c"] {
+            assert!(!is_vendored(rel), "keeps {rel}");
         }
     }
 
@@ -5984,6 +6280,132 @@ def omega_worker(pp):
         // raise-site (util.py, last frame) first
         assert_eq!(tf, vec!["pkg/util.py".to_string(), "pkg/sub/engine.py".to_string()]);
         assert!(trace_frame_files("The engine crashes on empty payload.", &corpus).is_empty());
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    // ------------------------------------------------------------ WS3b formats
+
+    /// Corpus for the WS3b multi-format tests: one indexed file per
+    /// ecosystem layout (Maven java tree, TS lib, Go internal pkg, Rust
+    /// crate) plus a Python file so the CPython-identity case has a target.
+    fn ws3b_corpus(tag: &str) -> (std::path::PathBuf, Corpus) {
+        let tmp = std::env::temp_dir().join(format!("roust_ws3b_{tag}_{}", std::process::id()));
+        for (rel, body) in [
+            ("src/main/java/com/foo/Bar.java", "package com.foo;\npublic class Bar { void baz() {} }\n"),
+            ("src/lib/parse.ts", "export function parseThing(x: string) { return x; }\n"),
+            ("internal/server/handler.go", "package server\n\nfunc Handle() {}\n"),
+            ("crates/core/src/flags.rs", "pub fn parse_flags() {}\n"),
+            ("pkg/util.py", "def helper_widget(payload):\n    return payload\n"),
+        ] {
+            let full = tmp.join(rel);
+            std::fs::create_dir_all(full.parent().unwrap()).unwrap();
+            std::fs::write(full, body).unwrap();
+        }
+        let corpus = Corpus::build(&tmp, None, false, false);
+        (tmp, corpus)
+    }
+
+    /// `java_frame_path` FQCN->path derivation: plain, inner-class,
+    /// module-prefixed, and no-matching-component fallback shapes.
+    #[test]
+    fn ws3b_java_frame_path_derivation() {
+        assert_eq!(java_frame_path("com.foo.Bar.baz", "Bar.java"), "com/foo/Bar.java");
+        assert_eq!(java_frame_path("com.foo.Bar$Inner.baz", "Bar.java"), "com/foo/Bar.java");
+        assert_eq!(
+            java_frame_path("java.base/java.util.Optional.orElseThrow", "Optional.java"),
+            "java/util/Optional.java"
+        );
+        // no component matches the stem (synthetic frame): drop method+class
+        assert_eq!(java_frame_path("com.foo.Wrapped.call", "Bar.java"), "com/foo/Bar.java");
+        // default package: bare filename
+        assert_eq!(java_frame_path("Bar.baz", "Bar.java"), "Bar.java");
+    }
+
+    /// Each new format resolves its frame into the corpus; ordering is
+    /// raise-site first (= document order for Java/Node/Go/Rust).
+    #[test]
+    fn ws3b_multi_format_extraction() {
+        let (tmp, corpus) = ws3b_corpus("multi");
+        // Java: FQCN carries the path; deeper frames after the throw site.
+        let q_java = concat!(
+            "NPE when serializing.\n",
+            "Exception in thread \"main\" java.lang.NullPointerException\n",
+            "\tat com.foo.Bar.baz(Bar.java:42)\n",
+            "\tat com.foo.Main.run(Main.java:9)\n",
+        );
+        assert_eq!(
+            trace_frame_files_v2(q_java, &corpus),
+            vec!["src/main/java/com/foo/Bar.java".to_string()]
+        );
+        // Node: both frame shapes, throw site first, deduped.
+        let q_node = concat!(
+            "TypeError: x is not a function\n",
+            "    at parseThing (/app/src/lib/parse.ts:12:34)\n",
+            "    at /app/src/lib/parse.ts:99:1\n",
+        );
+        assert_eq!(
+            trace_frame_files_v2(q_node, &corpus),
+            vec!["src/lib/parse.ts".to_string()]
+        );
+        // Go: locator line must be indented; prose mention is not a frame.
+        let q_go = concat!(
+            "panic: runtime error: invalid memory address\n",
+            "goroutine 1 [running]:\n",
+            "example.com/m/internal/server.Handle()\n",
+            "\tinternal/server/handler.go:3 +0x64\n",
+        );
+        assert_eq!(
+            trace_frame_files_v2(q_go, &corpus),
+            vec!["internal/server/handler.go".to_string()]
+        );
+        assert!(trace_frame_files_v2("see internal/server/handler.go:3 for details\n", &corpus)
+            .is_empty());
+        // Rust: `at` locator lines; bare path:line prose is not a frame.
+        let q_rust = concat!(
+            "thread 'main' panicked at 'boom':\n",
+            "stack backtrace:\n",
+            "   0: core::flags::parse_flags\n",
+            "             at crates/core/src/flags.rs:1:5\n",
+        );
+        assert_eq!(
+            trace_frame_files_v2(q_rust, &corpus),
+            vec!["crates/core/src/flags.rs".to_string()]
+        );
+        assert!(trace_frame_files_v2("broken since crates/core/src/flags.rs:1\n", &corpus)
+            .is_empty());
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// On Python-only text v2 output is EXACTLY v1's (same frames, same
+    /// raise-site-first order) -- the Lite/Verified disjointness invariant
+    /// -- and the CPython frame shape matches NONE of the new regexes.
+    #[test]
+    fn trace_formats_v2_python_identity() {
+        let (tmp, corpus) = e11_corpus("ws3b_pyid");
+        let q = concat!(
+            "Engine explodes on empty payload.\n",
+            "Traceback (most recent call last):\n",
+            "  File \"/usr/lib/python3.9/site-packages/pkg/sub/engine.py\", line 4, in run_engine\n",
+            "    return helper_widget(payload)\n",
+            "  File \"/usr/lib/python3.9/site-packages/pkg/util.py\", line 2, in helper_widget\n",
+            "    return payload\n",
+            "ValueError: payload must not be empty\n",
+        );
+        assert_eq!(trace_frame_files_v2(q, &corpus), trace_frame_files(q, &corpus));
+        let py_frame = "  File \"/usr/lib/python3.9/site-packages/pkg/util.py\", line 2, in helper_widget";
+        assert!(!JAVA_FRAME_RE.is_match(py_frame));
+        assert!(!NODE_FRAME_RE.is_match(py_frame));
+        assert!(!RUST_AT_RE.is_match(py_frame));
+        assert!(!GO_FRAME_RE.is_match(py_frame));
+        // and the new formats never match TB_FRAME_RE
+        for l in [
+            "\tat com.foo.Bar.baz(Bar.java:42)",
+            "    at parseThing (/app/src/lib/parse.ts:12:34)",
+            "\tinternal/server/handler.go:3 +0x64",
+            "             at crates/core/src/flags.rs:1:5",
+        ] {
+            assert!(!TB_FRAME_RE.is_match(l), "TB_FRAME_RE must not match {l}");
+        }
         std::fs::remove_dir_all(&tmp).ok();
     }
 

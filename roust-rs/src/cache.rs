@@ -52,7 +52,10 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
-pub const CACHE_VERSION: i64 = 3;
+// v3 -> v4 (WS3b): the one-word `thirdparty` vendor alternate joined
+// VENDOR_RE unconditionally -- default-index contents change for
+// thirdparty-bearing repos, so pre-WS3b caches must never be served.
+pub const CACHE_VERSION: i64 = 4;
 pub const CACHE_DIRNAME: &str = ".roust";
 const INDEX_FILENAME: &str = "rust-index.bin";
 
@@ -187,7 +190,11 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // vice versa) -- the two index different file sets. Flag-off keys are
     // byte-identical to main's format.
     let cf = if core::cfamily_ext_enabled() { ":cf1" } else { "" };
-    format!("{sha}:h{}:d{}{cf}", with_history as i32, with_docs as i32)
+    // WS3a: impl_prior participates at index time (def_index construction
+    // is impl_prior-gated), so --impl-prior-v2 re-keys the cache the same
+    // way. Flag-off keys are byte-identical to main's format.
+    let ip = if core::impl_prior_v2_enabled() { ":ipv2" } else { "" };
+    format!("{sha}:h{}:d{}{cf}{ip}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {

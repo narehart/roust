@@ -1,0 +1,14 @@
+engine version: roust 0.2.0 (b80cae1, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_cpp.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3a_repos/cpp_v2
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=True
+shard 1/1: rows [0:129] of the sorted split (129 instances)
+[25/129] fmtlib__fmt-2610                              elapsed=197s (ok) ok=25 err=0
+[50/129] fmtlib__fmt-4310                              elapsed=376s (ok) ok=50 err=0
+[75/129] nlohmann__json-2352                           elapsed=532s (ok) ok=75 err=0
+[100/129] nlohmann__json-4537                           elapsed=714s (ok) ok=100 err=0
+[125/129] simdjson__simdjson-644                        elapsed=884s (ok) ok=125 err=0
+[129/129] yhirose__cpp-httplib-1765                     elapsed=917s (ok) ok=129 err=0
+
+engine version: roust 0.2.0 (b80cae1, clean)
+wrote 129 records (129 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/ws3a/mswe_cpp_ws3a_v2fix.jsonl

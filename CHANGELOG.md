@@ -5,6 +5,30 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+- **Behavior change - multi-format trace-frame boost on by default**
+  (issue #56 campaign, WS3b, PR #66, adopted 2026-08-26 under the
+  standing language-agnostic directive): the E11b trace-frame FILE boost
+  now parses Java (`at pkg.Cls.m(Cls.java:123)`, FQCN->path), Node/V8,
+  Go panic locator, and Rust backtrace frames alongside CPython
+  tracebacks. Measured: Multi-SWE Java FUNCTION 33.59 -> 34.38 (+1/-0)
+  with zero losses on any java metric; rust headline-flat; Python
+  provably byte-identical (zero new-format regex matches across
+  Lite/Verified/full; 91/91 trace-bearing instances byte-identical in
+  both flag states, two runs each). `--trace-formats-v2` is now
+  accepted-but-redundant; `--no-trace-formats-v2` reproduces
+  CPython-only parsing byte-identically. Known micro-scale anatomy
+  (queued follow-up guard): traces that resolve to non-gold files can
+  displace gold (svelte-11104, clap-2161).
+- **Behavior change - one-word `thirdparty` path component joins the
+  vendor guard unconditionally** (WS3b, PR #66; promoted from WS3a's
+  flag-gate after zero gold matches across all 8 benchmark slices and
+  zero thirdparty paths in every evaluated tree outside nlohmann/json):
+  files under a `thirdparty/` component are no longer indexed. Index
+  cache format version 3 -> 4 (stale caches rebuild automatically).
+  Fresh references: MSWE C++ 65.12/17.83/6.98/.295 (was
+  65.89/18.60/7.75/.297; confined to nlohmann, itemized in
+  `lab/research/langagnostic/ws3b-trace-formats.md`), MSWE C unchanged
+  digit-exact.
 - **Behavior change - tree-sitter JS/TS structural blocks on by default**
   (issue #4 campaign, E23, PR #55, user-approved adoption 2026-08-25; step
   one of the language-agnostic campaign, issue #56): .js/.jsx/.ts/.tsx
