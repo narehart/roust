@@ -190,6 +190,10 @@ def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: f
     # region_eval_full.py's boolean provenance key "index_all" never
     # collides with it.
     rec["index_all_stats"] = stats.get("index_all")
+    # WS1b: newcomer candidate/admission anatomy + budget accounting --
+    # present only when --index-all-additive rode EXTRA_ENGINE_FLAGS; None
+    # otherwise.
+    rec["index_all_additive_stats"] = stats.get("index_all_additive")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]

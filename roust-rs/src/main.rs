@@ -241,6 +241,25 @@ struct Args {
     #[arg(long)]
     index_all: bool,
 
+    /// WS1b additive-only universal indexing (campaign #56): run the ENTIRE
+    /// unflagged pipeline first -- default (allowlist-only) corpus, default
+    /// corpus statistics, identical selection and packing, so the core
+    /// selection is byte-identical to a run without this flag -- THEN, with
+    /// whatever token budget the core bundle left unused, admit "newcomer"
+    /// files (files only indexable under --index-all: content-sniffed text
+    /// beyond the extension allowlist) in the rank order the superset
+    /// corpus's own selection gives them. Newcomers are appended AFTER the
+    /// core selection and can never evict or shrink it (E12b guard pattern
+    /// lifted to file admission): a newcomer that would push the bundle
+    /// over --budget is skipped, and if the core bundle already used the
+    /// whole budget no newcomer is admitted at all. The returned file set
+    /// is therefore always a superset of the unflagged run's, with the
+    /// unflagged files' spans byte-unchanged. Mutually exclusive with
+    /// --index-all (which re-ranks everything in one corpus instead).
+    /// Default OFF: byte-identical to the engine without this flag.
+    #[arg(long, conflicts_with = "index_all")]
+    index_all_additive: bool,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -409,6 +428,154 @@ fn main() {
     );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
+    // WS1b --index-all-additive: everything above ran the unflagged engine
+    // untouched (the core selection is byte-identical by construction --
+    // including corpus statistics, which is why this is a second corpus and
+    // not a filter on a flagged one: df/n_docs/avg_len over the superset
+    // corpus would perturb every core score). Newcomers are admitted below
+    // strictly into leftover budget, appended after the core selection.
+    // Skipped on zero_match so the "no query term matched the corpus
+    // vocabulary" exit contract is unchanged.
+    let mut additive_stats: Option<serde_json::Value> = None;
+    let (files, spans, bundle) = if args.index_all_additive && !zero_match {
+        let t_add = Instant::now();
+        let mut files = files;
+        let mut spans = spans;
+        let mut bundle = bundle;
+        // Superset corpus (--index-all semantics), cached under its own
+        // file + key: loading it never disturbs the default cache.
+        let (corpus_all, edges_all, history_all, _hit_all) =
+            cache::load_or_build(&repo_path, with_history, with_docs, !args.no_cache, args.reindex, true);
+        let lexboost_nbrs_all: Option<roust::core::NeighborMap> = if args.lexboost > 0.0 {
+            Some(match args.lexboost_graph.as_str() {
+                "knn" => lexboost_knn_neighbors(&corpus_all, 16),
+                _ => lexboost_import_neighbors(&edges_all),
+            })
+        } else {
+            None
+        };
+        let lexboost_hub_set_all = lexboost_nbrs_all.as_ref().map(lexboost_hubs);
+        let boost_files_all: Vec<String> =
+            if use_trace_boost { trace_frame_files(&args.query, &corpus_all) } else { Vec::new() };
+        let anchors_all =
+            if use_anchors { Some(extract_symbol_anchors(&args.query, &corpus_all)) } else { None };
+        let cochange_all = if with_history { history_all.as_ref().map(|h| &h.cochange) } else { None };
+        let params_all = SelectParams {
+            cochange: cochange_all,
+            anchors: anchors_all.as_deref(),
+            use_testbridge,
+            use_docsbridge: with_docs,
+            trace_files: routed
+                .as_ref()
+                .filter(|rq| !rq.trace_files.is_empty())
+                .map(|rq| rq.trace_files.as_slice())
+                .or(if use_trace_boost && !boost_files_all.is_empty() {
+                    Some(boost_files_all.as_slice())
+                } else {
+                    None
+                }),
+            test_penalty: match &routed {
+                Some(rq) if rq.fence_dominant => args.route_test_penalty,
+                _ => 1.0,
+            },
+            lexboost: args.lexboost,
+            lexboost_nbrs: lexboost_nbrs_all.as_ref(),
+            lexboost_hubs: lexboost_hub_set_all.as_ref(),
+            ..Default::default()
+        };
+        // Full flagged-engine selection over the superset corpus; only its
+        // NEWCOMER picks (files outside the extension allowlist) are
+        // eligible for admission -- allowlisted files it ranks differently
+        // are ignored (they are exactly the corpus-statistics contamination
+        // WS1 measured).
+        let (files_all, scores_all, explain_all) = select_files(&corpus_all, &terms, true, &params_all);
+        let newcomer_candidates: Vec<String> =
+            files_all.iter().filter(|f| !roust::core::has_allowlisted_suffix(f)).cloned().collect();
+        let anchor_files_all: HashSet<String> =
+            explain_all.anchor_promotions.iter().map(|(f, ..)| f.clone()).collect();
+        let anchor_symbols_all = if anchor_files_all.is_empty() {
+            indexmap::IndexMap::new()
+        } else {
+            anchor_def_symbols(&args.query, &corpus_all, &anchor_files_all)
+        };
+        let core_tokens = if bundle.is_empty() { 0i64 } else { count_tokens(&bundle) as i64 };
+        let mut cur_tokens = core_tokens;
+        let mut admitted: Vec<String> = Vec::new();
+        // Greedy admission in superset-selection rank order. Each newcomer
+        // is packed alone against the CURRENT remaining budget (so its
+        // per-file caps scale down as budget is consumed), then accepted
+        // only if the concatenated bundle stays within --budget. A
+        // non-fitting newcomer is skipped, not fatal: a smaller,
+        // lower-ranked one may still fit. Core files/spans/bundle are
+        // append-only throughout -- eviction is structurally impossible.
+        for f in &newcomer_candidates {
+            if args.k > 0 && files.len() >= args.k as usize {
+                break;
+            }
+            let remaining = args.budget - cur_tokens;
+            if remaining <= 0 {
+                break;
+            }
+            let one = [f.clone()];
+            let (spans_f, bundle_f) = pack_regions(
+                &corpus_all,
+                &one,
+                &terms,
+                &scores_all,
+                remaining,
+                &count_tokens,
+                Some(&anchor_symbols_all),
+                0.0,
+                args.pad_lines,
+                args.len_exp,
+                args.family_enum,
+                args.sibling_sim,
+                args.max_siblings,
+                use_structural_blocks,
+            );
+            let Some(spans_new) = spans_f.get(f.as_str()) else { continue };
+            if bundle_f.is_empty() {
+                continue;
+            }
+            let candidate = if bundle.is_empty() { bundle_f.clone() } else { format!("{bundle}\n\n{bundle_f}") };
+            let cand_tokens = count_tokens(&candidate) as i64;
+            if cand_tokens > args.budget {
+                continue;
+            }
+            bundle = candidate;
+            cur_tokens = cand_tokens;
+            spans.insert(f.clone(), spans_new.clone());
+            files.push(f.clone());
+            admitted.push(f.clone());
+        }
+        let mut newcomer_suffixes: std::collections::BTreeMap<String, usize> = std::collections::BTreeMap::new();
+        let mut n_beyond = 0usize;
+        for f in &corpus_all.files {
+            if !roust::core::has_allowlisted_suffix(f) {
+                n_beyond += 1;
+                let suf = roust::core::file_suffix(f);
+                *newcomer_suffixes
+                    .entry(if suf.is_empty() { "<none>".to_string() } else { suf.to_string() })
+                    .or_insert(0) += 1;
+            }
+        }
+        additive_stats = Some(serde_json::json!({
+            "n_files_beyond_allowlist": n_beyond,
+            "beyond_allowlist_suffixes": newcomer_suffixes,
+            "n_newcomer_candidates": newcomer_candidates.len(),
+            "newcomer_candidates": newcomer_candidates,
+            "n_newcomers_admitted": admitted.len(),
+            "newcomers_admitted": admitted,
+            "core_bundle_tokens": core_tokens,
+            "leftover_tokens": (args.budget - core_tokens).max(0),
+            "newcomer_tokens": cur_tokens - core_tokens,
+            "additive_ms": (t_add.elapsed().as_secs_f64() * 1000.0).round() as i64,
+        }));
+        (files, spans, bundle)
+    } else {
+        (files, spans, bundle)
+    };
+
     if args.explain {
         eprintln!("{}", serde_json::to_string_pretty(&explain).unwrap());
     }
@@ -475,6 +642,13 @@ fn main() {
             "n_files_beyond_allowlist": n_newcomers,
             "beyond_allowlist_suffixes": newcomer_suffixes,
         });
+    }
+    if let Some(st) = additive_stats {
+        // Present only under --index-all-additive with a non-zero-match
+        // query (defaults stay byte-identical): superset-corpus composition
+        // + newcomer candidate/admission anatomy + budget accounting, for
+        // the WS1b gate's invariant checks and anatomy itemization.
+        stats["index_all_additive"] = st;
     }
     if args.lexboost > 0.0 {
         // Present only under --lexboost (defaults stay byte-identical):
