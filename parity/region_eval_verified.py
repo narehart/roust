@@ -280,6 +280,10 @@ def main() -> None:
                      help="WS3b (campaign #56): append --trace-formats-v2 to every roust "
                           "invocation (Java/Node/Go/Rust trace-frame parsing for the E11b "
                           "boost); omitted by default (binary default: off)")
+    ap.add_argument("--symbols-v2", action="store_true",
+                     help="WS3c (campaign #56): append --symbols-v2 to every roust "
+                          "invocation (tree-sitter-sourced def_index + un-gated anchor "
+                          "seating); omitted by default (binary default: off)")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -323,6 +327,9 @@ def main() -> None:
     # WS3b passthrough, same mechanism.
     if args.trace_formats_v2:
         EXTRA_ENGINE_FLAGS.append("--trace-formats-v2")
+    # WS3c passthrough, same mechanism.
+    if args.symbols_v2:
+        EXTRA_ENGINE_FLAGS.append("--symbols-v2")
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 

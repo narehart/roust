@@ -290,6 +290,33 @@ struct Args {
     #[arg(long)]
     impl_prior_v2: bool,
 
+    /// WS3c (campaign #56, audit findings 3+6): structural-symbol
+    /// unification -- ADOPTED as the engine default (standing
+    /// language-agnostic directive, 2026-08-26; PR #67). def_index symbol
+    /// names are sourced from the SAME pinned tree-sitter walks that
+    /// produce structural blocks (union with the legacy per-language def
+    /// regexes) for every grammar-covered non-Python file -- Java/C/C++
+    /// gain a def/anchor channel for the first time; JS/TS arrow
+    /// functions (`const f = () => ..`), object-literal methods and class
+    /// fields become def entries; Rust impl/trait/enum and Go
+    /// grouped-type names are covered. Anchor-forced region seating (the
+    /// query names the exact symbol -> its own structural block is
+    /// force-seated) is un-gated from `.py` to all grammar-covered
+    /// languages. Python's def extraction and seating are byte-identical
+    /// in either state. Either state re-keys the index cache (a flag-off
+    /// cache is never served to a flag-on run, or vice versa). ON by
+    /// default; passing this flag explicitly is accepted-but-redundant
+    /// (kept for harness compatibility). Disable with --no-symbols-v2.
+    #[arg(long)]
+    symbols_v2: bool,
+
+    /// disable WS3c structural-symbol unification (reproduces the
+    /// pre-adoption engine byte-identically: def_index falls back to the
+    /// per-language regex scan alone, and anchor-forced region seating is
+    /// `.py`-only again)
+    #[arg(long)]
+    no_symbols_v2: bool,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -310,6 +337,14 @@ fn main() {
     // corpus/cache work (impl_prior gates def_index at build time and the
     // cache key reads this).
     roust::core::set_impl_prior_v2(args.impl_prior_v2);
+
+    // WS3c: same contract -- set BEFORE any corpus/cache work (def_index
+    // gains tree-sitter symbols at build time; the cache key reads this;
+    // pack_regions reads it at pack time for anchor seating). ADOPTED
+    // default ON; --no-symbols-v2 is the escape hatch and the explicit
+    // on-flag is accepted-but-redundant (mutual exclusion checked below,
+    // mirroring the trace-formats-v2 pattern).
+    roust::core::set_symbols_v2(!args.no_symbols_v2);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");
@@ -349,6 +384,10 @@ fn main() {
     }
     if args.trace_formats_v2 && args.no_trace_formats_v2 {
         eprintln!("roust: error: --trace-formats-v2 and --no-trace-formats-v2 are mutually exclusive");
+        std::process::exit(2);
+    }
+    if args.symbols_v2 && args.no_symbols_v2 {
+        eprintln!("roust: error: --symbols-v2 and --no-symbols-v2 are mutually exclusive");
         std::process::exit(2);
     }
     if args.structural_blocks && args.no_structural_blocks {
