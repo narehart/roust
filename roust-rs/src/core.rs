@@ -3070,6 +3070,218 @@ fn window_blocks(text: &str, hit_lines: &[usize], radius: usize) -> Vec<(usize, 
     spans
 }
 
+// ------------------------------------------------------------- E23 ts_blocks
+//
+// tree-sitter structural blocks for the JS/TS family (campaign #4 wave 5,
+// lab/research/wave5/multilang-and-sweeps.md Part (a)). ADOPTED as the
+// engine default (PR #55, user-approved 2026-08-25) behind the
+// language-agnostic --structural-blocks flag (--no-structural-blocks is
+// the escape hatch reproducing the pre-adoption engine;
+// --ts-blocks/--no-ts-blocks are hidden compat aliases). Mechanism per the field
+// consensus (cAST / SweRank+ / Sweep / Continue / LlamaIndex): walk the CST
+// with a ~10-entry node-type ALLOWLIST -- not queries/tags.scm, whose
+// per-grammar files are of "varying sophistication" and which cannot be
+// version-pinned alongside the grammar crates -- and emit spans in the EXACT
+// shape `python_blocks` produces, so the packer, padding (E12b), length
+// norm (E14), and anchor seating apply unchanged:
+//
+//   - spans are 1-indexed inclusive (start, end);
+//   - a leading preamble span (1, first_header_line-1) covers imports;
+//   - each header's span runs to the next header at same-or-lower nesting
+//     depth (CST depth plays the role python_blocks gives indentation), so
+//     top-level spans PARTITION the file after the preamble and trailing
+//     module-level code is swallowed by the preceding block -- the packer's
+//     adjacency expectations hold;
+//   - class-like spans cover header..end-of-partition, and each member
+//     (method, arrow-function class field) ALSO gets its own tighter span,
+//     the same multi-granularity nesting python_blocks emits.
+//
+// Line numbers: tree-sitter's byte offsets are mapped onto py_splitlines'
+// OWN line starts (binary search over slice offsets) rather than trusting
+// tree-sitter row numbers -- py_splitlines splits on the full Unicode
+// boundary set (\u{2028}, \x0b, ...) while tree-sitter rows count only
+// \n/\r\n, and the packer slices `py_splitlines` output by these numbers,
+// so the mapping must be exact even on files where the two disagree.
+//
+// Parse failures degrade to the whole-file span (1, n) -- python_blocks'
+// own no-headers behavior -- never to an error: tree-sitter returns a tree
+// with ERROR nodes for malformed input, so this path fires only on
+// parser-init failure or the (documented, cancellation-only) None parse.
+
+/// True for the extensions `ts_blocks` can parse. Deliberately the exact
+/// four extensions of the E23 scope (.js/.jsx/.ts/.tsx) -- not every
+/// JS-family extension in CODE_EXTENSIONS' universe (.mjs/.cjs are not
+/// indexed by the corpus walk anyway, see CODE_EXTENSIONS).
+pub(crate) fn is_ts_family(rel: &str) -> bool {
+    rel.ends_with(".js") || rel.ends_with(".jsx") || rel.ends_with(".ts") || rel.ends_with(".tsx")
+}
+
+/// Kinds that make a bare expression node "a function" when bound to a
+/// declarator / object-literal pair / class field. `function_expression`
+/// is the current tree-sitter-javascript kind; `function` was its pre-0.20
+/// name, kept for grammar-bump resilience (matching a never-produced kind
+/// is harmless).
+fn ts_is_function_value_kind(kind: &str) -> bool {
+    matches!(kind, "arrow_function" | "function_expression" | "function" | "generator_function")
+}
+
+/// If `node` is a block header per the E23 allowlist, returns the byte
+/// offset its span starts at (hoisted to the enclosing declaration
+/// statement for declarator-bound functions, and to a wrapping
+/// `export_statement` / `ambient_declaration` in both cases -- the
+/// JS analogue of python_blocks folding decorator lines into a def's span).
+fn ts_header_start(node: &tree_sitter::Node) -> Option<usize> {
+    let kind = node.kind();
+    let declaration_like = matches!(
+        kind,
+        // functions & classes (async variants are the same kinds with an
+        // `async` token child; generator declarations are their own kind)
+        "function_declaration" | "generator_function_declaration"
+            | "class_declaration" | "abstract_class_declaration"
+            // class-body and object-literal methods
+            | "method_definition"
+            // TS-only declaration kinds (trivial to include: kind match only)
+            | "interface_declaration" | "enum_declaration"
+            | "module" | "internal_module"
+    );
+    if declaration_like {
+        let mut start = node.start_byte();
+        if let Some(parent) = node.parent() {
+            if matches!(parent.kind(), "export_statement" | "ambient_declaration") {
+                start = parent.start_byte();
+            }
+        }
+        return Some(start);
+    }
+    // Expression-level functions -- the shapes a header-regex port
+    // structurally cannot see (the a4 null): `const f = () => ..`,
+    // `{ key: function() .. }`, `handleClick = () => ..` class fields.
+    let bound_function = match kind {
+        "variable_declarator" | "pair" | "field_definition" | "public_field_definition" => node
+            .child_by_field_name("value")
+            .is_some_and(|v| ts_is_function_value_kind(v.kind())),
+        _ => false,
+    };
+    if !bound_function {
+        return None;
+    }
+    let mut start = node.start_byte();
+    let mut cur = *node;
+    // hoist declarator -> lexical_declaration/variable_declaration ->
+    // export_statement; and field/pair headers to any decorator-inclusive
+    // parent start. Two levels are sufficient for every allowlisted shape.
+    for _ in 0..2 {
+        let Some(parent) = cur.parent() else { break };
+        match parent.kind() {
+            "lexical_declaration" | "variable_declaration" | "export_statement"
+            | "ambient_declaration" => {
+                start = parent.start_byte();
+                cur = parent;
+            }
+            _ => break,
+        }
+    }
+    Some(start)
+}
+
+/// `python_blocks` for the JS/TS family via tree-sitter. Same output
+/// contract (see the E23 block comment above); `rel` picks the grammar
+/// (.tsx -> TSX, .ts -> TypeScript, .js/.jsx -> JavaScript, which parses
+/// JSX natively).
+fn ts_blocks(text: &str, rel: &str) -> Vec<(usize, usize)> {
+    let lines = py_splitlines(text);
+    let n = lines.len();
+    let language: tree_sitter::Language = if rel.ends_with(".tsx") {
+        tree_sitter_typescript::LANGUAGE_TSX.into()
+    } else if rel.ends_with(".ts") {
+        tree_sitter_typescript::LANGUAGE_TYPESCRIPT.into()
+    } else {
+        tree_sitter_javascript::LANGUAGE.into()
+    };
+    let mut parser = tree_sitter::Parser::new();
+    if parser.set_language(&language).is_err() {
+        return vec![(1, n)];
+    }
+    let Some(tree) = parser.parse(text, None) else {
+        return vec![(1, n)];
+    };
+
+    // py_splitlines line-start byte offsets (each returned slice borrows
+    // from `text`, so pointer arithmetic recovers its offset exactly).
+    let base = text.as_ptr() as usize;
+    let starts: Vec<usize> = lines.iter().map(|l| l.as_ptr() as usize - base).collect();
+    let line_of_byte = |b: usize| -> usize {
+        match starts.binary_search(&b) {
+            Ok(i) => i,
+            Err(0) => 0,
+            Err(i) => i - 1,
+        }
+    };
+
+    // Iterative pre-order walk (recursion would be stack-bound on deeply
+    // nested minified JS). `headers` collects (0-indexed line, depth) where
+    // depth counts EMITTED ancestors only -- the CST analogue of
+    // python_blocks' indent column.
+    let mut headers: Vec<(usize, usize)> = Vec::new();
+    let mut cursor = tree.root_node().walk();
+    let mut depth = 0usize;
+    let mut emitted_stack: Vec<bool> = Vec::new();
+    'walk: loop {
+        let node = cursor.node();
+        let emitted = match ts_header_start(&node) {
+            Some(start_byte) => {
+                headers.push((line_of_byte(start_byte), depth));
+                true
+            }
+            None => false,
+        };
+        if cursor.goto_first_child() {
+            emitted_stack.push(emitted);
+            if emitted {
+                depth += 1;
+            }
+            continue;
+        }
+        loop {
+            if cursor.goto_next_sibling() {
+                break;
+            }
+            if !cursor.goto_parent() {
+                break 'walk;
+            }
+            if emitted_stack.pop().unwrap_or(false) {
+                depth -= 1;
+            }
+        }
+    }
+
+    if headers.is_empty() {
+        return vec![(1, n)];
+    }
+    // Hoisted starts can place a header a line before an already-collected
+    // one (export wrapper) and same-line multi-declarators duplicate a
+    // line: sort by (line, depth) and keep the first (shallowest) header
+    // per line, mirroring python_blocks' one-header-per-line invariant.
+    headers.sort();
+    headers.dedup_by_key(|h| h.0);
+
+    let mut spans: Vec<(usize, usize)> = Vec::new();
+    if headers[0].0 > 0 {
+        spans.push((1, headers[0].0)); // leading preamble (imports)
+    }
+    for (idx, &(i, d)) in headers.iter().enumerate() {
+        let mut end = n;
+        for &(j, d2) in &headers[idx + 1..] {
+            if d2 <= d {
+                end = j;
+                break;
+            }
+        }
+        spans.push((i + 1, end));
+    }
+    spans.into_iter().filter(|&(a, b)| b >= a).collect()
+}
+
 fn hit_lines(text: &str, terms: &HashSet<String>) -> Vec<usize> {
     let mut hits = Vec::new();
     for (i, ln) in py_splitlines(text).iter().enumerate() {
@@ -3407,6 +3619,13 @@ fn sibling_bag_overlap(a: &HashMap<String, usize>, b: &HashMap<String, usize>) -
 /// that does not fit is skipped, never force-seated), and marked as
 /// pass-2 spans for the E12b guard (evictable; a file's pass-1 span --
 /// its last-span guarantee -- is never displaced by a sibling).
+///
+/// `use_ts_blocks` (E23, campaign #4 wave 5; ADOPTED default -- the CLI
+/// passes `true` unless --no-ts-blocks): when enabled, .js/.jsx/.ts/.tsx
+/// files get tree-sitter structural block candidates (`ts_blocks`, same
+/// span shape as `python_blocks`) instead of `window_blocks(±30)` -- see
+/// the E23 block comment above `ts_blocks`. `false` is BYTE-IDENTICAL to
+/// the pre-E23 engine. Python files are untouched in either state.
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],
@@ -3421,6 +3640,7 @@ pub fn pack_regions(
     family_enum: bool,
     sibling_sim: f64,
     max_siblings: usize,
+    use_ts_blocks: bool,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
@@ -3460,7 +3680,16 @@ pub fn pack_regions(
         let text = &corpus.text[rel];
         let lines = py_splitlines(text);
         let hits = hit_lines(text, &tset);
-        let spans = if rel.ends_with(".py") { python_blocks(text) } else { window_blocks(text, &hits, 30) };
+        // E23: with --ts-blocks, the JS/TS family gets tree-sitter structural
+        // blocks instead of fixed windows -- the flag-OFF path is
+        // byte-identical to the pre-E23 engine (same two branches).
+        let spans = if rel.ends_with(".py") {
+            python_blocks(text)
+        } else if use_ts_blocks && is_ts_family(rel) {
+            ts_blocks(text, rel)
+        } else {
+            window_blocks(text, &hits, 30)
+        };
         let hitset: HashSet<usize> = hits.into_iter().collect();
         let def_lines: Vec<(usize, String)> =
             if w_name != 0.0 { file_def_lines(text, def_re_for(rel)) } else { Vec::new() };
@@ -4391,10 +4620,10 @@ mod tests {
             spans["core.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         assert_eq!(sym_of(&spans_off), Some("subtokens".to_string()), "pre-fix (w_name=0.0) reproduces the bug: body term-density picks the wrong region");
 
-        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3);
+        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3, false);
         assert_eq!(sym_of(&spans_on), Some("pack_regions".to_string()), "w_name=1.0 must select pack_regions via name-score anchoring");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -4449,14 +4678,14 @@ mod tests {
             spans["mod.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         assert_eq!(
             sym_of(&spans_linear),
             Some("stub_widget".to_string()),
             "len_exp=1.0 (pre-E14 linear gain/tok) must reproduce the crushed-long-fix failure mode: stub wins"
         );
 
-        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3);
+        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, false);
         assert_eq!(
             sym_of(&spans_softened),
             Some("real_gadget_sprocket_cog_lever".to_string()),
@@ -4504,8 +4733,8 @@ mod tests {
         // Large budget so pass 2's greedy loop actually runs over multiple
         // remaining candidates (pass 1 alone would only ever touch one span
         // per file).
-        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
-        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         assert_eq!(spans1, spans2, "pack_regions must be deterministic given identical (NaN/inf-bearing) inputs");
         assert!(!spans1.is_empty(), "pack_regions should still select regions despite NaN/inf scores");
 
@@ -4554,10 +4783,10 @@ mod tests {
         // remaining candidates per iteration -- the exact scenario that
         // triggers repeated `marginal(i)` calls for the same `i` within a
         // single sort.
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls given many equal/near-equal marginal scores (and must never panic)"
@@ -4594,7 +4823,7 @@ mod tests {
         let files = vec!["needles.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         let got = &spans["needles.py"];
         assert_eq!(got, &vec![(1, 5), (6, 8)], "pad_lines=0 must keep the two naturally-adjacent spans as separate, unmerged entries (pre-E12 behavior)");
 
@@ -4619,7 +4848,7 @@ mod tests {
         let files = vec!["needles.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1, 1.0, false, 0.0, 3);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1, 1.0, false, 0.0, 3, false);
         let got = &spans["needles.py"];
         assert_eq!(got, &vec![(1, 8)], "pad_lines=1 must merge the two adjacent spans into one (1,8) covering the whole file");
         // merged text must be the FULL file content, not a truncated slice.
@@ -4644,7 +4873,7 @@ mod tests {
         let files = vec!["tiny.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 500, 1.0, false, 0.0, 3);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 500, 1.0, false, 0.0, 3, false);
         assert_eq!(spans["tiny.py"], vec![(1, 3)], "pad_lines far exceeding the file's own length must clamp to (1, n_lines)");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -4695,13 +4924,13 @@ mod tests {
         // ignoring budget) -- it only gates pass 2 and the post-padding
         // de-escalation/eviction step, so both hi.py and lo.py's pass-1
         // spans are seated before padding/eviction ever runs.
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         assert!(
             spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
             "pad=0 baseline seats BOTH pass-1 spans (unconditionally), overshooting budget"
         );
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0, false, 0.0, 3);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0, false, 0.0, 3, false);
         let got: HashSet<&String> = spans.keys().collect();
         let baseline: HashSet<&String> = spans0.keys().collect();
         assert_eq!(
@@ -4748,10 +4977,10 @@ mod tests {
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
         let budget: i64 = 800;
 
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 0.85, false, 0.0, 3);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 0.85, false, 0.0, 3, false);
         assert_eq!(spans0.len(), 25, "pad=0 baseline must select all 25 files (pass 1 seats unconditionally)");
 
-        let (spans5, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 5, 0.85, false, 0.0, 3);
+        let (spans5, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 5, 0.85, false, 0.0, 3, false);
         let got: HashSet<&String> = spans5.keys().collect();
         let baseline: HashSet<&String> = spans0.keys().collect();
         assert_eq!(
@@ -4807,7 +5036,7 @@ mod tests {
 
         // pad=0 baseline: both files' own needle spans are seated
         // unconditionally by pass 1 and comfortably fit budget on their own.
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         assert!(
             spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
             "pad_lines=0 baseline must select both files"
@@ -4815,7 +5044,7 @@ mod tests {
         let baseline: HashSet<&String> = spans0.keys().collect();
 
         for pad in [2usize, 6, 15] {
-            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad, 1.0, false, 0.0, 3);
+            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad, 1.0, false, 0.0, 3, false);
             let got: HashSet<&String> = spans.keys().collect();
             assert_eq!(
                 got, baseline,
@@ -4874,10 +5103,10 @@ mod tests {
         let t_needle = count_tokens(&needle_text) as i64;
         let budget = 2 * t_needle + 3;
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3, false);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3, false);
             assert_eq!(
                 spans, first,
                 "pack_regions with the E12b guard active must produce byte-identical spans across repeated calls"
@@ -4907,10 +5136,10 @@ mod tests {
         let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3, false);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3, false);
             assert_eq!(
                 spans, first,
                 "pack_regions with pad_lines>0 must produce byte-identical spans across repeated calls"
@@ -4941,7 +5170,7 @@ mod tests {
         let files = vec!["a.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
 
         let expected_spans: IndexMap<String, Vec<(usize, usize)>> =
             [("a.py".to_string(), vec![(1usize, 2usize)])].into_iter().collect();
@@ -4975,10 +5204,10 @@ mod tests {
         let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, false);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, false);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls at len_exp=0.7"
@@ -5036,7 +5265,7 @@ mod tests {
         assert!(files.contains(&"pkg/validators.py".to_string()));
 
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3, false);
         assert!(!bundle.is_empty());
         assert!(spans.contains_key("pkg/router.py"));
 
@@ -5130,7 +5359,7 @@ mod tests {
         // Beta.transform's span starts at its def line (7); Gamma's at 12.
         // Delta.unrelated_thing (17) is NOT family.
         let (spans_off, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         let starts_off: Vec<usize> = spans_off["mod.py"].iter().map(|s| s.0).collect();
         assert!(
             !starts_off.contains(&7) && !starts_off.contains(&12),
@@ -5138,7 +5367,7 @@ mod tests {
         );
 
         let (spans_on, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3, false);
         let starts_on: Vec<usize> = spans_on["mod.py"].iter().map(|s| s.0).collect();
         assert!(
             starts_on.contains(&7) && starts_on.contains(&12),
@@ -5186,7 +5415,7 @@ def omega_worker(pp):
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
         let (spans, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3, false);
         let starts: Vec<usize> = spans["handlers.py"].iter().map(|s| s.0).collect();
         for (start, who) in [(5usize, "beta_handler"), (8, "gamma_handler"), (11, "delta_handler")] {
             assert!(starts.contains(&start), "suffix family must add {who} (line {start}), got {starts:?}");
@@ -5221,7 +5450,7 @@ def omega_worker(pp):
         // Layout: seed_fn at 1 (body 3-5), clone_one at 7 (body 8-10),
         // clone_two at 12 (body 13-15), weird_other at 17.
         let (spans_off, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
         let starts_off: Vec<usize> = spans_off["clones.py"].iter().map(|s| s.0).collect();
         assert!(
             !starts_off.contains(&7) && !starts_off.contains(&12),
@@ -5229,7 +5458,7 @@ def omega_worker(pp):
         );
 
         let (spans_on, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 3);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 3, false);
         let starts_on: Vec<usize> = spans_on["clones.py"].iter().map(|s| s.0).collect();
         assert!(
             starts_on.contains(&7) && starts_on.contains(&12),
@@ -5244,7 +5473,7 @@ def omega_worker(pp):
         // sibling; equal-overlap ties break by ascending span start
         // (clone_one before clone_two).
         let (spans_cap, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 1);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 1, false);
         let starts_cap: Vec<usize> = spans_cap["clones.py"].iter().map(|s| s.0).collect();
         assert!(
             starts_cap.contains(&7) && !starts_cap.contains(&12),
@@ -5270,7 +5499,7 @@ def omega_worker(pp):
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
         let (spans, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, true, 0.7, 3);
+            pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, true, 0.7, 3, false);
         assert_eq!(
             spans["mod.py"].len(),
             1,
@@ -5700,6 +5929,148 @@ def omega_worker(pp):
         let b = select_files(&corpus, &terms, true, &params);
         assert_eq!(a.0, b.0);
         assert_eq!(a.1, b.1);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    // ------------------------------------------------------------ E23 tests
+
+    /// E23 JS fixture: arrow-function-in-const, export default, nested
+    /// named function, object-literal methods (method shorthand, arrow
+    /// pair, function-expression pair), nested class inside a method, and
+    /// an arrow-function class field. Expected spans follow python_blocks'
+    /// contract exactly: 1-indexed inclusive, preamble first, each header
+    /// runs to the next header at same-or-lower CST depth (so top-level
+    /// spans partition the file after the preamble and trailing lines are
+    /// swallowed by the last block -- same as python_blocks' last method
+    /// swallowing the class's closing lines).
+    #[test]
+    fn ts_blocks_js_fixture_multigranularity_spans() {
+        let js = "import { x } from './x';\n\nconst f = (a) => {\n  return a + 1;\n};\n\nexport default function main() {\n  function inner() { return 2; }\n  return inner();\n}\n\nconst obj = {\n  plain: 1,\n  method() { return 3; },\n  arrow: () => 4,\n  fnval: function () { return 5; },\n};\n\nclass Outer {\n  constructor() { this.v = 1; }\n  handle = () => { return this.v; }\n  method() {\n    class Inner {\n      m() { return 9; }\n    }\n    return new Inner();\n  }\n}\n";
+        let spans = ts_blocks(js, "a.js");
+        assert_eq!(
+            spans,
+            vec![
+                (1, 2),   // preamble (import + blank)
+                (3, 6),   // const f = (a) => ...  (declarator-bound arrow)
+                (7, 13),  // export default function main (export line hoisted;
+                          //  swallows the non-header `const obj = {` opener,
+                          //  python_blocks-style)
+                (8, 13),  // nested named function inner (depth 1)
+                (14, 14), // obj.method() -- object-literal method shorthand
+                (15, 15), // obj.arrow: () => 4 -- function-valued pair
+                (16, 18), // obj.fnval: function () -- function-expression pair
+                (19, 28), // class Outer (whole-class span, to EOF)
+                (20, 20), // constructor
+                (21, 21), // handle = () => -- arrow-function class field
+                (22, 28), // method() (last member swallows class close)
+                (23, 28), // class Inner nested inside method (depth 2)
+                (24, 28), // Inner.m (depth 3)
+            ],
+            "JS fixture spans changed -- ts_blocks contract regression"
+        );
+    }
+
+    /// E23 TS fixture: interface/enum/namespace declarations (the trivial
+    /// TS-only allowlist kinds), export-hoisted arrow-in-const, abstract
+    /// class, and a function inside a namespace. `abstract run(): void;`
+    /// is a method SIGNATURE, not an implementation, and is deliberately
+    /// not a header (mirrors the Python side counting `def` bodies only).
+    #[test]
+    fn ts_blocks_ts_declaration_kinds() {
+        let ts = "import type { T } from './t';\n\nexport interface Props { name: string; }\n\nenum Color { Red, Green }\n\nnamespace NS {\n  export function nsFn(): number { return 1; }\n}\n\nexport const useThing = (p: Props): number => {\n  const helper = () => 2;\n  return helper();\n};\n\nexport abstract class Base {\n  abstract run(): void;\n  concrete(): number { return 3; }\n}\n";
+        let spans = ts_blocks(ts, "a.ts");
+        assert_eq!(
+            spans,
+            vec![
+                (1, 2),   // preamble
+                (3, 4),   // export interface Props
+                (5, 6),   // enum Color
+                (7, 10),  // namespace NS (internal_module)
+                (8, 10),  // NS.nsFn (export-hoisted, depth 1)
+                (11, 15), // export const useThing = arrow
+                (12, 15), // nested helper arrow (depth 1)
+                (16, 19), // export abstract class Base
+                (18, 19), // Base.concrete (abstract run() is signature-only: no span)
+            ],
+            "TS fixture spans changed -- ts_blocks contract regression"
+        );
+    }
+
+    /// E23 TSX fixture: an arrow-function component with JSX (needs the
+    /// TSX grammar -- the TypeScript grammar cannot parse JSX) plus an
+    /// export-default function component.
+    #[test]
+    fn ts_blocks_tsx_components() {
+        let tsx = "import React from 'react';\n\nexport const App = ({ name }: { name: string }) => {\n  const onClick = () => console.log(name);\n  return <button onClick={onClick}>{name}</button>;\n};\n\nexport default function Page() {\n  return <App name=\"x\" />;\n}\n";
+        let spans = ts_blocks(tsx, "a.tsx");
+        assert_eq!(
+            spans,
+            vec![
+                (1, 2),  // preamble
+                (3, 7),  // export const App = (...) => JSX
+                (4, 7),  // nested onClick arrow (depth 1)
+                (8, 10), // export default function Page
+            ],
+            "TSX fixture spans changed -- ts_blocks contract regression"
+        );
+    }
+
+    /// E23: a headerless script degrades to the whole-file span, exactly
+    /// python_blocks' no-headers behavior (the packer's fallback shape).
+    #[test]
+    fn ts_blocks_headerless_whole_file() {
+        let js = "const a = 1;\nconsole.log(a);\n";
+        assert_eq!(ts_blocks(js, "a.js"), vec![(1, 2)]);
+    }
+
+    /// E23 flag gating in pack_regions: OFF keeps the JS file on
+    /// window_blocks (span centered on the hit line, start != function
+    /// header); ON substitutes the structural function span (starts at the
+    /// header). The .py control file's spans must be IDENTICAL in both
+    /// runs -- the flag must not touch the Python path.
+    #[test]
+    fn pack_regions_ts_blocks_flag_gates_js_only() {
+        let tmp = std::env::temp_dir().join(format!("roust_e23_gate_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let mut js = String::from("import { z } from './z';\n\nfunction big() {\n");
+        for i in 4..=54 {
+            js.push_str(&format!("  const v{i} = {i};\n"));
+        }
+        js.push_str("  return frobnicate_widget();\n}\n"); // term on line 55
+        std::fs::write(tmp.join("a.js"), &js).unwrap();
+        std::fs::write(
+            tmp.join("b.py"),
+            "def frobnicate_widget():\n    return 1\n",
+        )
+        .unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("frobnicate widget", &[]);
+        let scores: IndexMap<String, f64> =
+            [("a.js".to_string(), 1.0), ("b.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["a.js".to_string(), "b.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let (spans_off, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans_on, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, true);
+
+        let js_starts_off: Vec<usize> = spans_off["a.js"].iter().map(|s| s.0).collect();
+        let js_starts_on: Vec<usize> = spans_on["a.js"].iter().map(|s| s.0).collect();
+        assert!(
+            !js_starts_off.contains(&3),
+            "flag OFF must keep window_blocks for .js (no span at the function header), got {js_starts_off:?}"
+        );
+        assert!(
+            js_starts_on.contains(&3),
+            "flag ON must seat the structural function span starting at the header (line 3), got {js_starts_on:?}"
+        );
+        assert_eq!(
+            spans_off["b.py"], spans_on["b.py"],
+            "the .py file's spans must be untouched by --ts-blocks"
+        );
+
         std::fs::remove_dir_all(&tmp).ok();
     }
 }
