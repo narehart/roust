@@ -119,12 +119,21 @@ for _, row in gate:
                 problems.append(f"core spans changed for {f}")
         if not add["bundle"].startswith(base["bundle"]):
             problems.append("flagged bundle does not start with defaults bundle")
-        if add["stats"]["bundle_tokens"] > 8192:
-            problems.append(f"bundle_tokens {add['stats']['bundle_tokens']} > budget")
+        # Budget invariant: newcomers may only consume LEFTOVER budget. The
+        # CORE itself can legitimately exceed --budget (pass-1 seats one
+        # span per file unconditionally, defaults behavior) -- so the check
+        # is: if any newcomer was admitted the total must fit the budget;
+        # if none was, the output must equal defaults exactly.
+        n_appended = len(af) - len(bf)
+        if n_appended > 0 and add["stats"]["bundle_tokens"] > 8192:
+            problems.append(f"newcomers admitted yet bundle_tokens "
+                            f"{add['stats']['bundle_tokens']} > budget")
+        if n_appended == 0 and add["bundle"] != base["bundle"]:
+            problems.append("no newcomers admitted but bundle differs from defaults")
         st = add["stats"].get("index_all_additive") or {}
         n_admitted = st.get("n_newcomers_admitted", 0)
-        if n_admitted != len(af) - len(bf):
-            problems.append(f"stats n_newcomers_admitted={n_admitted} != appended {len(af)-len(bf)}")
+        if n_admitted != n_appended:
+            problems.append(f"stats n_newcomers_admitted={n_admitted} != appended {n_appended}")
     ok = not problems
     if not ok:
         fail += 1
