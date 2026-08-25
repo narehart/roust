@@ -206,15 +206,28 @@ struct Args {
     #[arg(long, default_value_t = 0.0)]
     lexboost: f64,
 
-    /// E23 (campaign #4 wave 5): tree-sitter structural blocks for the
-    /// JS/TS family. With this flag, .js/.jsx/.ts/.tsx files get CST-walk
-    /// block candidates (functions, methods, classes, declarator-bound
-    /// arrow functions; same nested class-span + member-span shape
-    /// python_blocks emits for .py) in place of the fixed +/-30-line
-    /// windows. Python files are untouched. Default OFF: byte-identical
-    /// to the engine without this flag.
-    #[arg(long)]
-    ts_blocks: bool,
+    /// language-agnostic structural block extraction -- ADOPTED as the
+    /// engine default (E23, campaign #4 wave 5, PR #55, user-approved
+    /// 2026-08-25, language-agnostic directive; first entry of the #56
+    /// campaign). Structural region candidates come from each language's
+    /// parser: Python natively, .js/.jsx/.ts/.tsx via tree-sitter CST
+    /// walks (functions, methods, classes, declarator-bound arrow
+    /// functions; same nested class-span + member-span shape
+    /// python_blocks emits), fixed +/-30-line windows for languages
+    /// without structural support yet (#56 tracks the grammar batch).
+    /// ON by default; passing this flag explicitly is
+    /// accepted-but-redundant (kept for harness compatibility; hidden
+    /// alias: --ts-blocks). Disable with --no-structural-blocks.
+    #[arg(long, alias = "ts-blocks")]
+    structural_blocks: bool,
+
+    /// disable structural block extraction for languages beyond Python
+    /// (reproduces the pre-adoption engine byte-identically:
+    /// .js/.jsx/.ts/.tsx files fall back to fixed +/-30-line windows;
+    /// Python's native structural packing is unaffected in either state;
+    /// hidden alias: --no-ts-blocks)
+    #[arg(long, alias = "no-ts-blocks")]
+    no_structural_blocks: bool,
 
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
@@ -263,6 +276,14 @@ fn main() {
         eprintln!("roust: error: --trace-boost and --no-trace-boost are mutually exclusive");
         std::process::exit(2);
     }
+    if args.structural_blocks && args.no_structural_blocks {
+        eprintln!("roust: error: --structural-blocks and --no-structural-blocks are mutually exclusive");
+        std::process::exit(2);
+    }
+    // E23 structural blocks are ON by default (adopted);
+    // --no-structural-blocks disables them (--ts-blocks/--no-ts-blocks are
+    // hidden compat aliases).
+    let use_structural_blocks = !args.no_structural_blocks;
     // Trace boost is ON by default (adopted); --no-trace-boost disables it,
     // and --route implies it off (route's own pipeline supplies trace_files).
     let use_trace_boost = !args.no_trace_boost && !args.route;
@@ -372,7 +393,7 @@ fn main() {
         args.family_enum,
         args.sibling_sim,
         args.max_siblings,
-        args.ts_blocks,
+        use_structural_blocks,
     );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 

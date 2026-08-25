@@ -1,4 +1,4 @@
-# E23 — tree-sitter JS/TS/TSX structural blocks (`--ts-blocks`): MSWE-580 gate PASS, ADOPT-RECOMMEND
+# E23 — tree-sitter JS/TS/TSX structural blocks (`--ts-blocks`): MSWE-580 gate PASS, ADOPTED
 
 *Campaign #4 wave 5. Spec: `lab/research/wave5/multilang-and-sweeps.md` Part (a), transplant #1.
 Branch `e23-tsblocks` off main `3f0c77b`; engine + harness commits `a24b0c6` / `60d1455`.
@@ -101,14 +101,30 @@ counted wrong at all levels per the unified convention.)
   with the Python path; optimizing it (span-count caps, marginal-cache) is a separate,
   language-agnostic engine experiment.
 
-## Verdict: ADOPT-RECOMMEND (default NOT flipped here)
+## Verdict: ADOPTED (user-approved 2026-08-25, language-agnostic directive)
 
 Gate criteria met exactly: MSWE LINE +3.97 (p=1.8e-3) and fraction +.0776 (p=4.4e-7)
 positive, FILE per-instance invariant (+0/−0), FUNCTION +9.82 on its first real
 measurement (p=3.5e-11), Lite-300 v12 reproduced exactly and Python path byte-identical
-under the flag. Recommend flipping `--ts-blocks` to default ON in a follow-up adoption
-PR (with the +3.39 MB binary and the ~2.2 s structural-query cost on JS/TS repos as the
-accepted price; Python-repo queries are provably unaffected). Post-adoption follow-ups:
+under the flag. **Structural blocks are now the engine default** (same PR #55, adoption
+conversion), and the flag was renamed for the mechanism's scope as part of adoption —
+the same flag will carry the #56 grammar batch (Java/Go/Rust/C/C++): canonical names
+are `--structural-blocks` (ON by default, accepted-but-redundant) and
+`--no-structural-blocks` (escape hatch reproducing the pre-adoption engine
+byte-identically); `--ts-blocks`/`--no-ts-blocks` remain as **hidden accepted
+aliases** (clap `alias`, not shown in `--help`) so existing harness scripts and this
+document's own provenance notes stay valid.
+Adoption identity proofs (14 MSWE JS/TS + 12 Lite Python instances, two runs per
+config, md5 over the retrieval payload, run against the final renamed binary):
+new-default binary == old binary with explicit `--ts-blocks` (and the structural
+path demonstrably fired on all 14 JS/TS instances), new `--no-structural-blocks`
+== old defaults; all eight runs per Python instance hashed identically
+(structural blocks never fire on .py).
+`mswe_jsts_e23_tsblocks` (FILE 46.38 / FUNCTION 31.03 / LINE 13.28 / fraction .2582)
+is the MSWE reference going forward; Python v12 references are unchanged (proven
+untouched). Accepted price: +3.39 MB binary, ~2.2 s structural-query cost on JS/TS
+repos. This is step one of the language-agnostic campaign (issue #56).
+Post-adoption follow-ups (now tracked in #56):
 (a) the FILE-ranking half (46.38 vs the 76.7 extension ceiling — select_files is still
 Python-tuned), (b) pass-2 cost optimization, (c) extending the corpus walk /
 CODE_EXTENSIONS beyond the current set (.json/.md gold files are 135 instances of FILE

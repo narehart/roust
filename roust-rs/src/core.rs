@@ -3073,8 +3073,11 @@ fn window_blocks(text: &str, hit_lines: &[usize], radius: usize) -> Vec<(usize, 
 // ------------------------------------------------------------- E23 ts_blocks
 //
 // tree-sitter structural blocks for the JS/TS family (campaign #4 wave 5,
-// lab/research/wave5/multilang-and-sweeps.md Part (a)). Flag-gated behind
-// --ts-blocks (default OFF: byte-identical engine). Mechanism per the field
+// lab/research/wave5/multilang-and-sweeps.md Part (a)). ADOPTED as the
+// engine default (PR #55, user-approved 2026-08-25) behind the
+// language-agnostic --structural-blocks flag (--no-structural-blocks is
+// the escape hatch reproducing the pre-adoption engine;
+// --ts-blocks/--no-ts-blocks are hidden compat aliases). Mechanism per the field
 // consensus (cAST / SweRank+ / Sweep / Continue / LlamaIndex): walk the CST
 // with a ~10-entry node-type ALLOWLIST -- not queries/tags.scm, whose
 // per-grammar files are of "varying sophistication" and which cannot be
@@ -3617,12 +3620,12 @@ fn sibling_bag_overlap(a: &HashMap<String, usize>, b: &HashMap<String, usize>) -
 /// pass-2 spans for the E12b guard (evictable; a file's pass-1 span --
 /// its last-span guarantee -- is never displaced by a sibling).
 ///
-/// `use_ts_blocks` (E23, campaign #4 wave 5): default `false` is OFF and
-/// BYTE-IDENTICAL to the pre-E23 engine. When enabled, .js/.jsx/.ts/.tsx
+/// `use_ts_blocks` (E23, campaign #4 wave 5; ADOPTED default -- the CLI
+/// passes `true` unless --no-ts-blocks): when enabled, .js/.jsx/.ts/.tsx
 /// files get tree-sitter structural block candidates (`ts_blocks`, same
 /// span shape as `python_blocks`) instead of `window_blocks(±30)` -- see
-/// the E23 block comment above `ts_blocks`. Python files are untouched by
-/// the flag in either state.
+/// the E23 block comment above `ts_blocks`. `false` is BYTE-IDENTICAL to
+/// the pre-E23 engine. Python files are untouched in either state.
 pub fn pack_regions(
     corpus: &Corpus,
     files: &[String],

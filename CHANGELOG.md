@@ -5,6 +5,26 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+- **Behavior change - tree-sitter JS/TS structural blocks on by default**
+  (issue #4 campaign, E23, PR #55, user-approved adoption 2026-08-25; step
+  one of the language-agnostic campaign, issue #56): .js/.jsx/.ts/.tsx
+  files now get tree-sitter CST structural block candidates (functions,
+  methods, classes, declarator-bound arrow functions - the same nested
+  span shape `python_blocks` emits) in place of fixed +/-30-line windows.
+  Measured on the 580-instance Multi-SWE-bench JS/TS slice: FUNCTION
+  21.21 -> 31.03 (+68/-11, p=3.5e-11; the previously published 99.83 was
+  a vacuous Python-only-scorer artifact, now retired), LINE 9.31 -> 13.28,
+  mean fraction .1805 -> .2582, FILE invariant (per-instance identical).
+  Python bundles are provably untouched (Lite-300 reproduces the v12
+  reference exactly; byte-identity proven per instance in both flag
+  states). The flag is named for the mechanism's scope, not one language:
+  `--structural-blocks` (ON by default, accepted-but-redundant) /
+  `--no-structural-blocks` (escape hatch, reproduces the pre-adoption
+  engine byte-identically); `--ts-blocks` / `--no-ts-blocks` remain as
+  hidden compat aliases for existing harness scripts and artifact
+  provenance. Cost: binary +3.39 MB (three exactly-pinned grammars);
+  warm JS/TS structural queries ~2.2 s on axios-scale repos (the packer's
+  known structural-candidate cost profile, shared with the Python path).
 - **Behavior change - trace-frame FILE boost on by default** (issue #4
   campaign, E11b, PR #52, user-approved adoption): files named in a
   traceback in the query receive a rank-decayed additive file-score boost

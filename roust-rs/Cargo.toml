@@ -17,7 +17,8 @@ serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.150"
 tiktoken-rs = "0.6"
 # E23 (campaign #4 wave 5): tree-sitter structural blocks for the JS/TS
-# family (--ts-blocks, default OFF). Versions are PINNED EXACTLY: the
+# family (--structural-blocks, ADOPTED default ON per PR #55; disable with
+# --no-structural-blocks). Versions are PINNED EXACTLY: the
 # tree-sitter ecosystem's documented failure mode is core/grammar ABI drift
 # (tree-sitter#3095, zed#24632), and the field mitigation is pin-and-vendor
 # (difftastic) or a pinned pack (aider). Grammar updates are gated

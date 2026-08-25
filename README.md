@@ -14,8 +14,11 @@ compressed into one process call.
 
 ## Install
 
-roust is a single Rust binary. Every install path below builds the same
-`roust-rs` engine — there is no separate Python implementation.
+roust is a single Rust binary (~9.7 MB release build; +3.39 MB of that is
+the exactly-pinned tree-sitter JS/TS/TSX grammars that power structural
+packing for those languages — grammar bumps are gated dependency changes).
+Every install path below builds the same `roust-rs` engine — there is no
+separate Python implementation.
 
 **Not yet on PyPI or crates.io.** The tag-triggered release pipeline is
 committed (`.github/workflows/release.yml`), but the registry credentials
@@ -321,10 +324,13 @@ Given the same task and the same agent (tokenbench v2, live Sonnet 4.5; the grep
 | CoSIL | 60.7 | Top-1 | no (LLM) | arXiv:2503.22424 |
 | archex (BM25 default) | 56.0 | Agentless-metric FILE | yes (local index; embeddings optional) | `lab/results_regions/agentless_metric_archex_bm25.json` |
 | archex (vector/hybrid) | 57.3 | Agentless-metric FILE | yes (local index + FastEmbed/ONNX) | `lab/results_regions/agentless_metric_archex_vector.json` |
+| **roust** (Multi-SWE JS/TS, 580 inst.) | 46.4 | Agentless-metric FILE | yes | `lab/results_regions/agentless_metric_mswe_e23_tsblocks.json` |
 
 — = not measured by us (see gaps below). archex has two rows: its default retrieval mode (BM25+graph, no embeddings) and its optional vector/hybrid mode (FastEmbed/ONNX + graph) — both are now measured, see [#1](https://github.com/narehart/roust/issues/1).
 
 The File-level column mixes several different metrics (Acc@10 / Top-1 / file-match / Agentless-metric FILE) and is **not** comparable straight down the column — each row names its own. The two metrics in roust's cell differ in both directions: Acc@10 counts an instance correct if *any* gold file appears in the top 10, while the Agentless-metric FILE score counts it correct only if *all* gold files appear anywhere in the returned set (~35 files for roust, range 22–38, measured from `lab/results_regions/full300_v11.jsonl`) — stricter on completeness, looser on depth, so neither subsumes the other. **File@10 83.3** (all gold files within the top 10 — the FROZEN v7 ablation row of `lab/README.md` measured 82.7 = 248/300, and the adopted trace-frame boost adds +2 gains / 0 losses over the 46 trace-bearing instances, remeasured in `lab/research/wave5/e20-e11b-results.md`; all other instances are byte-identical) is the depth-aligned number to rank roust against the Acc@10 rows — and on that aligned metric roust sits *below* the trained retrievers, including SweRankEmbed-Small's 90.9; the comparison is conservative, since File@10 demands all gold files in the top 10 where Acc@10 needs one. The 92.3 all-gold figure is the one whose FUNCTION/LINE companions follow: roust's Agentless-metric scores on Lite are FILE 92.3% / FUNCTION 54.7% (exact) / LINE 43.3% (`lab/results_regions/agentless_metric_e20_traceboost.json`) — training-free roust now *exceeds* Agentless GPT-4o at function level (54.7 vs 52.0) and line level (43.3 vs 35.3), closing what was this table's weakest cell; Agentless (GPT-4o) for comparison is 69.7 / 52.0 / 35.3; archex (BM25 default) is 56.0 / 38.3 / 25.7 (`lab/results_regions/agentless_metric_archex_bm25.json`; 2 of 300 instances timed out — they count as wrong at FILE and LINE but are **excluded from the FUNCTION denominator** in that artifact, a baseline-favorable convention: 38.3 = 114/298, counting them wrong would give 38.0); archex (vector/hybrid) is 57.3 / 40.7 / 27.7 (`lab/results_regions/agentless_metric_archex_vector.json`, same 2 timeouts and convention, plus one git-show exclusion at FUNCTION) — a single-digit gain over BM25 that leaves the ~35-point FILE gap to roust unchanged. LINE mean-fraction-covered (a continuity metric with prior reporting, distinct from the strict all-or-nothing LINE % above) rose 0.4564 → 0.5168 → 0.5251 across the same changes. Region precision (gold lines returned / total lines returned, i.e. "how much of the packed context is actually the fix") rose from 0.4486% to 0.5522% mean (+23% relative) — roust still trades precision for recall by design, packing ~1,123 lines of surrounding context per instance under the 8192-token budget (down slightly from ~1,150 pre-adoption). These gains are the additive stack of three measured changes from the #4 campaign (autopsy-driven), now the shipped engine defaults: guarded span padding (`--pad-lines`, default 5), sub-linear length normalization (`--len-exp`, default 0.85), and the trace-frame FILE boost (E11b, PR #52: files named in a traceback in the query get a rank-decayed file-score boost, raise-site first, query text untouched; Verified held-out confirmed non-negative in every cell — FILE 92.14→92.38, LINE 35.38→35.63; `--no-trace-boost` disables) — run `roust --help` for the exact flags that reproduce the pre-adoption engine, or see [#4](https://github.com/narehart/roust/issues/4).
+
+**The Multi-SWE JS/TS row** is roust's first non-Python scoreboard entry (every other roust cell above is Python SWE-bench Lite/Verified): on the 580-instance Multi-SWE-bench JS/TS slice, FILE 46.4 (269/580) / FUNCTION 31.0 (exact) / LINE 13.3 / LINE mean-fraction .258 (`lab/results_regions/agentless_metric_mswe_e23_tsblocks.json`), measured with the now-default tree-sitter structural blocks for .js/.jsx/.ts/.tsx (E23, PR [#55](https://github.com/narehart/roust/pull/55) — step one of the language-agnostic campaign, [#56](https://github.com/narehart/roust/issues/56)). Two corrections against prior reporting: (1) the previously published MSWE FUNCTION **99.83 is retired as vacuous** — the gold-function scorer was Python-AST-only, so every JS/TS instance had `n_gold_functions: 0` and passed the subset condition vacuously; with the fixed tree-sitter scorer the true pre-adoption baseline is **21.2** (`lab/results_regions/agentless_metric_mswe_e23_baseline.json`), lifted to **31.0** by the structural blocks (+68/−11 paired, p=3.5e-11). (2) FILE 46.4 sits under a measured **~76.7 ceiling**: 135/580 instances have at least one gold file outside the indexed extension set (.json — 316 gold files, .md — 158, .svelte, .mjs, …), so no ranking change can lift FILE past ~76.7 on this corpus walk — universal indexing is workstream 1 of [#56](https://github.com/narehart/roust/issues/56).
 
 ### Latency (measured, `lab/latency/latency_v1.json`)
 
@@ -434,9 +440,13 @@ Adapter + protocol: `lab/contextbench/`; aggregate:
   and error strings as anchors; a vague prose description with none of those
   gives the pipeline little to grab onto.
 - **Python gets the full signal set** (import graph, definition-symbol
-  index). Other languages (JS/TS, Go, Rust, Java, etc.) get a best-effort
-  subset -- lexical/BM25F, paths, and history still apply, but there's no
-  import-graph or def-index expansion yet.
+  index). JS/TS/TSX now additionally get tree-sitter structural region
+  packing by default (E23, PR [#55](https://github.com/narehart/roust/pull/55);
+  `--no-structural-blocks` restores the old fixed windows). Other languages (Go,
+  Rust, Java, etc.) still get a best-effort subset -- lexical/BM25F, paths,
+  and history apply, but fixed-window packing and no import-graph or
+  def-index expansion. Closing this gap across languages is the
+  language-agnostic campaign, [#56](https://github.com/narehart/roust/issues/56).
 
 ## Roadmap
 
@@ -452,6 +462,15 @@ Adapter + protocol: `lab/contextbench/`; aggregate:
   the old cold-index Rust-vs-Python ratio is no longer reproducible and is
   kept there only as a historical note. Build from source: `cd roust-rs &&
   cargo build --release`.
+- **Language-agnostic roust** ([#56](https://github.com/narehart/roust/issues/56),
+  user-directed campaign): universal indexing (binary sniffing + size caps
+  instead of the extension allowlist — lifts the Multi-SWE FILE ceiling from
+  ~76.7 toward ~100), the grammar batch (Java/Go/Rust/C/C++ via the E23
+  mechanism, gated per-language on Multi-SWE slices), and a
+  Python-assumption audit (tokenizer, test-path heuristics, history mining,
+  query construction) with Multi-SWE slices as first-class gates. Step one
+  (JS/TS/TSX structural packing) shipped in PR
+  [#55](https://github.com/narehart/roust/pull/55).
 - Publish to PyPI + crates.io — **pending**: the tag-triggered release
   pipeline is committed (`.github/workflows/release.yml`), but the two
   credential steps (PyPI trusted-publisher config, crates.io
