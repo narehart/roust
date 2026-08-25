@@ -1044,8 +1044,12 @@ pub static TESTLIKE_RE: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-static VENDOR_RE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"(?i)(vendor|vendored|third_party|node_modules|\.min\.(js|css)$|bundle\.js$)").unwrap());
+static VENDOR_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r"(?i)(vendor|vendored|third_party|node_modules|\.min\.(js|css)$|bundle\.js$|(^|/)(cextern|extern)(/|$)|(^|/)(libsvm|liblinear)(/|$))",
+    )
+    .unwrap()
+});
 
 const MAX_LINE_CHARS: usize = 3000;
 
@@ -4776,6 +4780,38 @@ mod tests {
         ];
         for (path, expected) in cases {
             assert_eq!(impl_prior(path), *expected, "impl_prior({path:?})");
+        }
+    }
+
+    /// WS2c vendored-C guard: the new VENDOR_RE alternates exclude
+    /// vendored-in-spirit C dirs (astropy cextern/, matplotlib extern/,
+    /// sklearn libsvm/liblinear) while first-party native code stays in.
+    #[test]
+    fn ws2c_vendor_re_cextern_libsvm_guard() {
+        let excluded = [
+            "cextern/erfa/erfa.c",
+            "astropy/cextern/wcslib/wcs.c",
+            "extern/agg24-svn/src/agg_curves.cpp",
+            "extern/ttconv/ttutil.cpp",
+            "sklearn/svm/src/libsvm/svm.cpp",
+            "sklearn/svm/src/liblinear/linear.cpp",
+            "libsvm/svm.h",
+            "vendor/x.c",
+        ];
+        for rel in excluded {
+            assert!(VENDOR_RE.is_match(rel), "expected excluded: {rel}");
+        }
+        let kept = [
+            "astropy/wcs/src/astropy_wcs.c",
+            "src/_backend_agg.cpp",
+            "sklearn/utils/murmurhash.c",
+            "sklearn/linear_model/sag_fast.c",
+            "src/externals/helper.c",
+            "my_extern_utils/helper.c",
+            "external/foo.c",
+        ];
+        for rel in kept {
+            assert!(!VENDOR_RE.is_match(rel), "expected kept: {rel}");
         }
     }
 

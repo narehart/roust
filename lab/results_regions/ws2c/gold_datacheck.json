@@ -1,0 +1,64 @@
+{
+ "c": {
+  "n": 128,
+  "new_hits": [],
+  "old_hits": [],
+  "extern_substring": []
+ },
+ "cpp": {
+  "n": 129,
+  "new_hits": [],
+  "old_hits": [
+   [
+    "nlohmann__json-944",
+    "third_party/amalgamate/config.json"
+   ]
+  ],
+  "extern_substring": []
+ },
+ "go": {
+  "n": 428,
+  "new_hits": [],
+  "old_hits": [],
+  "extern_substring": []
+ },
+ "rust": {
+  "n": 239,
+  "new_hits": [],
+  "old_hits": [],
+  "extern_substring": [
+   [
+    "nushell__nushell-13870",
+    "crates/nu-command/src/system/run_external.rs"
+   ],
+   [
+    "nushell__nushell-12901",
+    "crates/nu-command/src/system/run_external.rs"
+   ]
+  ]
+ },
+ "java": {
+  "n": 128,
+  "new_hits": [],
+  "old_hits": [],
+  "extern_substring": []
+ },
+ "jsts": {
+  "n": 580,
+  "new_hits": [],
+  "old_hits": [],
+  "extern_substring": []
+ },
+ "lite": {
+  "n": 300,
+  "new_hits": [],
+  "old_hits": [],
+  "extern_substring": []
+ },
+ "verified": {
+  "n": 407,
+  "new_hits": [],
+  "old_hits": [],
+  "extern_substring": []
+ }
+}
