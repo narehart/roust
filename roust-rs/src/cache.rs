@@ -194,7 +194,12 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // is impl_prior-gated), so --impl-prior-v2 re-keys the cache the same
     // way. Flag-off keys are byte-identical to main's format.
     let ip = if core::impl_prior_v2_enabled() { ":ipv2" } else { "" };
-    format!("{sha}:h{}:d{}{cf}{ip}", with_history as i32, with_docs as i32)
+    // WS3c: --symbols-v2 changes def_index contents at build time
+    // (tree-sitter-sourced symbols for grammar-covered non-Python files),
+    // so it re-keys the cache the same way. Flag-off keys are
+    // byte-identical to main's format.
+    let sv = if core::symbols_v2_enabled() { ":sv2" } else { "" };
+    format!("{sha}:h{}:d{}{cf}{ip}{sv}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {

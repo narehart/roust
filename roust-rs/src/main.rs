@@ -290,6 +290,22 @@ struct Args {
     #[arg(long)]
     impl_prior_v2: bool,
 
+    /// WS3c (campaign #56, audit findings 3+6): structural-symbol
+    /// unification. def_index symbol names are sourced from the SAME
+    /// pinned tree-sitter walks that produce structural blocks (union with
+    /// the legacy per-language def regexes) for every grammar-covered
+    /// non-Python file -- Java/C/C++ gain a def/anchor channel for the
+    /// first time; JS/TS arrow functions (`const f = () => ..`),
+    /// object-literal methods and class fields become def entries; Rust
+    /// impl/trait/enum and Go grouped-type names are covered. Anchor-forced
+    /// region seating (the query names the exact symbol -> its own
+    /// structural block is force-seated) is un-gated from `.py` to all
+    /// grammar-covered languages. Python's def extraction and seating are
+    /// byte-identical in either state. Re-keys the index cache (def_index
+    /// contents change at build time). Default OFF.
+    #[arg(long)]
+    symbols_v2: bool,
+
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
     /// files by content similarity, computed from the cached index at
@@ -310,6 +326,11 @@ fn main() {
     // corpus/cache work (impl_prior gates def_index at build time and the
     // cache key reads this).
     roust::core::set_impl_prior_v2(args.impl_prior_v2);
+
+    // WS3c: same contract -- set BEFORE any corpus/cache work (def_index
+    // gains tree-sitter symbols at build time; the cache key reads this;
+    // pack_regions reads it at pack time for anchor seating).
+    roust::core::set_symbols_v2(args.symbols_v2);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");

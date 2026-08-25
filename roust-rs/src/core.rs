@@ -1224,6 +1224,23 @@ pub fn impl_prior_v2_enabled() -> bool {
     IMPL_PRIOR_V2.load(std::sync::atomic::Ordering::Relaxed)
 }
 
+// WS3c flag global (campaign #56, audit findings 3+6), same contract as
+// IMPL_PRIOR_V2: set ONCE at CLI parse before any corpus/cache work. It
+// participates at INDEX time (def_index gains tree-sitter-sourced symbol
+// names for grammar-covered non-Python files), so the cache key gains an
+// ":sv2" marker when ON -- see cache::cache_key. It ALSO participates at
+// pack time (anchor-forced region seating un-gated from `.py`), read
+// directly by `pack_regions`.
+static SYMBOLS_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_symbols_v2(on: bool) {
+    SYMBOLS_V2.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn symbols_v2_enabled() -> bool {
+    SYMBOLS_V2.load(std::sync::atomic::Ordering::Relaxed)
+}
+
 // WS3b: the one-word `thirdparty` path component is an UNCONDITIONAL
 // vendor alternate (promoted from WS3a's flag-gated `VENDOR_V2_RE`).
 // nlohmann/json vendors Google Benchmark at `benchmarks/thirdparty/`;
@@ -1556,29 +1573,11 @@ impl Corpus {
             }
 
             if impl_prior(rel) == 1.0 {
-                let def_re: Option<&LazyLock<Regex>> = if rel.ends_with(".py") {
-                    Some(&PY_DEF_RE)
-                } else if rel.ends_with(".go") {
-                    Some(&GO_DEF_RE)
-                } else if rel.ends_with(".rs") {
-                    Some(&RS_DEF_RE)
-                } else if rel.ends_with(".js") || rel.ends_with(".ts") || rel.ends_with(".jsx") || rel.ends_with(".tsx") {
-                    Some(&JS_DEF_RE)
-                } else {
-                    None
-                };
-                if let Some(re) = def_re {
-                    let mut syms: HashSet<String> = HashSet::new();
-                    for cap in re.captures_iter(&txt) {
-                        for gi in 1..cap.len() {
-                            if let Some(g) = cap.get(gi) {
-                                syms.insert(g.as_str().to_string());
-                            }
-                        }
-                    }
-                    for sym in syms {
-                        def_index.entry(sym).or_default().push(rel.clone());
-                    }
+                // WS3c: regex scan UNION tree-sitter names under
+                // --symbols-v2; flag-off this is the pre-WS3c per-extension
+                // regex chain verbatim (see `def_symbols_with`).
+                for sym in Self::def_symbols_with(rel, &txt, symbols_v2_enabled()) {
+                    def_index.entry(sym).or_default().push(rel.clone());
                 }
             }
 
@@ -1761,6 +1760,27 @@ impl Corpus {
         syms
     }
 
+    /// The complete def-symbol set `rel` contributes to `def_index`:
+    /// the legacy regex scan, UNIONed (WS3c, when `symbols_v2` is on) with
+    /// the tree-sitter walk's names for grammar-covered non-Python files.
+    /// Pure-function form (`v2` explicit) so unit tests exercise it without
+    /// toggling the process-global -- `build`/`update_files` call it with
+    /// `symbols_v2_enabled()`. With `v2 == false` this is EXACTLY the
+    /// pre-WS3c regex behavior (byte-identity path); Python files never
+    /// take the sitter branch in either state.
+    fn def_symbols_with(rel: &str, text: &str, v2: bool) -> HashSet<String> {
+        let mut syms = match Self::def_re_for(rel) {
+            Some(re) => Self::def_syms(re, text),
+            None => HashSet::new(),
+        };
+        if v2 {
+            for (_line, name) in structural_def_entries(rel, text) {
+                syms.insert(name);
+            }
+        }
+        syms
+    }
+
     /// Patch this Corpus in place for `rels` -- files already present in
     /// `self.files` whose on-disk content has changed. Re-reads each file
     /// directly from `self.repo_path` and applies exactly `build`'s per-file
@@ -1836,9 +1856,11 @@ impl Corpus {
                     }
                 }
             }
-            let def_re = if impl_prior(rel) == 1.0 { Self::def_re_for(rel) } else { None };
-            if let Some(re) = def_re {
-                for sym in Self::def_syms(re, &self.text[rel]) {
+            // WS3c: the same regex-union-sitter symbol set `build` used (see
+            // `def_symbols_with`) -- subtract and re-add must agree with it.
+            let use_defs = impl_prior(rel) == 1.0;
+            if use_defs {
+                for sym in Self::def_symbols_with(rel, &self.text[rel], symbols_v2_enabled()) {
                     if let Some(lst) = self.def_index.get_mut(&sym) {
                         lst.retain(|f| f != rel);
                     }
@@ -1865,16 +1887,16 @@ impl Corpus {
                     self.com_tf.insert(rel.clone(), ctf);
                 }
             }
-            if let Some(re) = def_re {
+            if use_defs {
                 // Ordered re-insert (see `file_pos` above): place `rel`
                 // before the first already-listed definer that comes AFTER
                 // it in corpus order, keeping every list byte-identical to
                 // what a fresh `build` would produce. The removal pass
-                // above already `retain`ed `rel` out, and `def_syms`
+                // above already `retain`ed `rel` out, and `def_symbols_with`
                 // returns a de-duplicated set, so no duplicate check is
                 // needed here.
                 let rp = file_pos.get(rel).copied().unwrap_or(usize::MAX);
-                for sym in Self::def_syms(re, &new_text[rel]) {
+                for sym in Self::def_symbols_with(rel, &new_text[rel], symbols_v2_enabled()) {
                     let lst = self.def_index.entry(sym).or_default();
                     let ins = lst
                         .iter()
@@ -3728,6 +3750,286 @@ fn grammar_blocks(text: &str, fam: SitterFamily) -> Vec<(usize, usize)> {
     sitter_blocks(text, language, &header)
 }
 
+// ----------------------------------------- WS3c structural symbol unification
+//
+// (campaign #56, audit findings 3+6; flag-gated --symbols-v2, default OFF.)
+// Definition-symbol NAMES + their span-start lines sourced from the SAME
+// pinned tree-sitter walks that already produce structural block spans for
+// every grammar-covered language -- replacing nothing for Python (its
+// PY_DEF_RE extraction is byte-identity-pinned) and AUGMENTING the legacy
+// per-language def regexes everywhere else (union, so a parse failure can
+// never LOSE symbols versus the regex baseline; it only fails to add).
+// Two consumers:
+//
+//   1. `Corpus::{build,update_files}` via `def_symbols_with`: def_index
+//      entries for Java / C / C++ (no regex existed at all) and the regex
+//      blind spots in JS/TS (`const f = () => ..` arrow declarators,
+//      object-literal methods, class fields), Rust (impl/trait/enum names,
+//      fns inside impl blocks were already caught but e.g. `enum` was
+//      not), Go (grouped type names). This is what lets
+//      `extract_symbol_anchors` promote a Java/C++ file when the issue
+//      names the exact class/method.
+//
+//   2. `pack_regions`' anchor-forced seating via the (line, name) pairs:
+//      the seat lookup matches a symbol's line against candidate span
+//      STARTS, and because both sides derive from the same `*_header_start`
+//      hoisting logic (attribute folding, export wrappers, template lines),
+//      the line a def-entry reports is by construction the line its
+//      structural span starts at.
+//
+// Determinism: the CST walk order is a pure function of the parse tree;
+// entries are additionally sorted by (line, name) so first-occurrence-wins
+// consumers see ascending lines regardless of future walk reorderings.
+
+/// Mirror of the def regexes' `(\w+)` capture discipline: a name is
+/// indexable iff it is a nonempty run of word characters (so computed JS
+/// keys, C++ `operator+`/`~Foo`, destructuring patterns etc. are skipped,
+/// exactly as a `(\w+)` capture would never have matched them).
+fn sitter_valid_name(s: &str) -> bool {
+    !s.is_empty() && s.chars().all(|c| c.is_alphanumeric() || c == '_')
+}
+
+/// Text of `node`'s `field` child, quote-stripped (JS string keys like
+/// `"foo": () => ..` index as `foo`, mirroring how a regex would see the
+/// bare word), validated per `sitter_valid_name`.
+fn sitter_name_from_field(node: &tree_sitter::Node, field: &str, text: &str) -> Option<String> {
+    let n = node.child_by_field_name(field)?;
+    let raw = text.get(n.byte_range())?;
+    let stripped = raw.trim_matches(|c| c == '"' || c == '\'' || c == '`');
+    sitter_valid_name(stripped).then(|| stripped.to_string())
+}
+
+/// JS/TS: names for exactly the shapes `ts_header_start` emits. The
+/// expression-level shapes (declarator / pair / field) are the audit's
+/// finding-6 blind spot -- JS_DEF_RE structurally cannot see them.
+fn ts_def_names(node: &tree_sitter::Node, text: &str) -> Vec<String> {
+    let field = match node.kind() {
+        "function_declaration" | "generator_function_declaration" | "class_declaration"
+        | "abstract_class_declaration" | "interface_declaration" | "enum_declaration"
+        | "module" | "internal_module" | "method_definition" | "variable_declarator" => "name",
+        "pair" => "key",
+        "field_definition" | "public_field_definition" => "property",
+        _ => return Vec::new(),
+    };
+    sitter_name_from_field(node, field, text).into_iter().collect()
+}
+
+fn java_def_names(node: &tree_sitter::Node, text: &str) -> Vec<String> {
+    match node.kind() {
+        "class_declaration" | "interface_declaration" | "enum_declaration"
+        | "record_declaration" | "annotation_type_declaration" | "method_declaration"
+        | "constructor_declaration" | "compact_constructor_declaration" => {
+            sitter_name_from_field(node, "name", text).into_iter().collect()
+        }
+        _ => Vec::new(), // static_initializer has no name
+    }
+}
+
+fn go_def_names(node: &tree_sitter::Node, text: &str) -> Vec<String> {
+    match node.kind() {
+        "function_declaration" | "method_declaration" => {
+            sitter_name_from_field(node, "name", text).into_iter().collect()
+        }
+        // grouped `type ( A struct{..}; B interface{..} )` declarations:
+        // every spec's name, all seated at the type_declaration's line.
+        "type_declaration" => {
+            let mut out = Vec::new();
+            let mut cursor = node.walk();
+            for child in node.named_children(&mut cursor) {
+                if matches!(child.kind(), "type_spec" | "type_alias") {
+                    out.extend(sitter_name_from_field(&child, "name", text));
+                }
+            }
+            out
+        }
+        _ => Vec::new(),
+    }
+}
+
+fn rust_def_names(node: &tree_sitter::Node, text: &str) -> Vec<String> {
+    match node.kind() {
+        "function_item" | "struct_item" | "enum_item" | "trait_item" | "union_item"
+        | "macro_definition" | "mod_item" => {
+            sitter_name_from_field(node, "name", text).into_iter().collect()
+        }
+        // `impl Foo`, `impl<T> Foo<T>`, `impl Trait for foo::Bar`: index the
+        // implemented TYPE's base name (the def-shaped identity a query
+        // names), descending generic/scoped wrappers to the bare identifier.
+        "impl_item" => {
+            let mut ty = match node.child_by_field_name("type") {
+                Some(t) => t,
+                None => return Vec::new(),
+            };
+            loop {
+                match ty.kind() {
+                    "generic_type" => match ty.child_by_field_name("type") {
+                        Some(inner) => ty = inner,
+                        None => break,
+                    },
+                    "scoped_type_identifier" => match ty.child_by_field_name("name") {
+                        Some(inner) => ty = inner,
+                        None => break,
+                    },
+                    _ => break,
+                }
+            }
+            text.get(ty.byte_range())
+                .filter(|s| sitter_valid_name(s))
+                .map(|s| s.to_string())
+                .into_iter()
+                .collect()
+        }
+        _ => Vec::new(),
+    }
+}
+
+/// C/C++ declarator descent: `function_definition` / `type_definition`
+/// bury the name under pointer/function/parenthesized declarator wrappers;
+/// follow `declarator` fields to the terminal node, then unwrap C++
+/// `Foo::bar` qualification to the rightmost identifier (the method name --
+/// the class name is indexed at its own class_specifier).
+fn cfamily_declarator_name(node: &tree_sitter::Node, text: &str) -> Option<String> {
+    let mut cur = *node;
+    loop {
+        if let Some(d) = cur.child_by_field_name("declarator") {
+            cur = d;
+            continue;
+        }
+        if cur.kind() == "parenthesized_declarator" {
+            let mut cursor = cur.walk();
+            let inner = cur.named_children(&mut cursor).next();
+            match inner {
+                Some(n) => {
+                    cur = n;
+                    continue;
+                }
+                None => break,
+            }
+        }
+        break;
+    }
+    while cur.kind() == "qualified_identifier" {
+        match cur.child_by_field_name("name") {
+            Some(n) => cur = n,
+            None => break,
+        }
+    }
+    text.get(cur.byte_range())
+        .filter(|s| sitter_valid_name(s))
+        .map(|s| s.to_string())
+}
+
+fn cfamily_def_names(node: &tree_sitter::Node, text: &str) -> Vec<String> {
+    match node.kind() {
+        "function_definition" | "type_definition" => {
+            cfamily_declarator_name(node, text).into_iter().collect()
+        }
+        "struct_specifier" | "enum_specifier" | "union_specifier" | "class_specifier"
+        | "namespace_definition" | "preproc_function_def" => {
+            sitter_name_from_field(node, "name", text).into_iter().collect()
+        }
+        _ => Vec::new(), // template_declaration: the hoisted inner node carries the name
+    }
+}
+
+/// The def-entry walk: `sitter_blocks`' traversal + line mapping, emitting
+/// (1-indexed span-start line, symbol name) for every allowlisted header
+/// that yields a valid name. Parse/grammar failure degrades to NO entries
+/// (never an error) -- and because `def_symbols_with` UNIONS these with the
+/// regex scan, degradation can only miss additions, never lose baseline
+/// symbols.
+fn sitter_def_walk(
+    text: &str,
+    language: tree_sitter::Language,
+    header_start: &dyn Fn(&tree_sitter::Node) -> Option<usize>,
+    names_of: &dyn Fn(&tree_sitter::Node, &str) -> Vec<String>,
+) -> Vec<(usize, String)> {
+    let lines = py_splitlines(text);
+    let mut parser = tree_sitter::Parser::new();
+    if parser.set_language(&language).is_err() {
+        return Vec::new();
+    }
+    let Some(tree) = parser.parse(text, None) else {
+        return Vec::new();
+    };
+    let base = text.as_ptr() as usize;
+    let starts: Vec<usize> = lines.iter().map(|l| l.as_ptr() as usize - base).collect();
+    let line_of_byte = |b: usize| -> usize {
+        match starts.binary_search(&b) {
+            Ok(i) => i,
+            Err(0) => 0,
+            Err(i) => i - 1,
+        }
+    };
+
+    let mut out: Vec<(usize, String)> = Vec::new();
+    let mut cursor = tree.root_node().walk();
+    'walk: loop {
+        let node = cursor.node();
+        if let Some(start_byte) = header_start(&node) {
+            for name in names_of(&node, text) {
+                out.push((line_of_byte(start_byte) + 1, name));
+            }
+        }
+        if cursor.goto_first_child() {
+            continue;
+        }
+        loop {
+            if cursor.goto_next_sibling() {
+                break;
+            }
+            if !cursor.goto_parent() {
+                break 'walk;
+            }
+        }
+    }
+    out.sort();
+    out
+}
+
+/// (span-start line, name) def entries for `rel` via its pinned grammar;
+/// empty for Python (byte-identity-pinned regex path) and for any
+/// extension without a grammar (.kt/.cs/.swift stay window-fallback).
+pub(crate) fn structural_def_entries(rel: &str, text: &str) -> Vec<(usize, String)> {
+    if rel.ends_with(".py") {
+        return Vec::new();
+    }
+    if is_ts_family(rel) {
+        let language: tree_sitter::Language = if rel.ends_with(".tsx") {
+            tree_sitter_typescript::LANGUAGE_TSX.into()
+        } else if rel.ends_with(".ts") {
+            tree_sitter_typescript::LANGUAGE_TYPESCRIPT.into()
+        } else {
+            tree_sitter_javascript::LANGUAGE.into()
+        };
+        return sitter_def_walk(text, language, &ts_header_start, &ts_def_names);
+    }
+    let Some(fam) = sitter_family(rel) else {
+        return Vec::new();
+    };
+    let language: tree_sitter::Language = match fam {
+        SitterFamily::Java => tree_sitter_java::LANGUAGE.into(),
+        SitterFamily::Go => tree_sitter_go::LANGUAGE.into(),
+        SitterFamily::Rust => tree_sitter_rust::LANGUAGE.into(),
+        SitterFamily::C => tree_sitter_c::LANGUAGE.into(),
+        SitterFamily::Cpp => tree_sitter_cpp::LANGUAGE.into(),
+    };
+    let header: fn(&tree_sitter::Node) -> Option<usize> = match fam {
+        SitterFamily::Java => java_header_start,
+        SitterFamily::Go => go_header_start,
+        SitterFamily::Rust => rust_header_start,
+        SitterFamily::C => c_header_start,
+        SitterFamily::Cpp => cpp_header_start,
+    };
+    let names: fn(&tree_sitter::Node, &str) -> Vec<String> = match fam {
+        SitterFamily::Java => java_def_names,
+        SitterFamily::Go => go_def_names,
+        SitterFamily::Rust => rust_def_names,
+        SitterFamily::C | SitterFamily::Cpp => cfamily_def_names,
+    };
+    sitter_def_walk(text, language, &header, &names)
+}
+
 fn hit_lines(text: &str, terms: &HashSet<String>) -> Vec<usize> {
     let mut hits = Vec::new();
     for (i, ln) in py_splitlines(text).iter().enumerate() {
@@ -4203,10 +4505,31 @@ pub fn pack_regions(
     let mut forced: HashMap<String, usize> = HashMap::new(); // file -> candidate index
     if let Some(anchor_map) = anchor_symbols {
         for (rel, syms) in anchor_map {
-            if !rel.ends_with(".py") || !files.iter().any(|f| f == rel) {
+            // WS3c (--symbols-v2): seating un-gated from `.py` -- any
+            // grammar-covered file can seat its anchored symbol's own
+            // structural block, using def lines from the SAME tree-sitter
+            // walk that produced the candidate spans (so the line==span-start
+            // lookup below matches by construction). Flag-off, non-Python
+            // files `continue` here exactly as before. Note the non-Python
+            // def lines only ever match when structural blocks produced the
+            // candidates (`use_ts_blocks`); under --no-structural-blocks the
+            // lookup finds no candidate at the def line and seats nothing.
+            let structural_ok =
+                symbols_v2_enabled() && (is_ts_family(rel) || sitter_family(rel).is_some());
+            if (!rel.ends_with(".py") && !structural_ok) || !files.iter().any(|f| f == rel) {
                 continue;
             }
-            let def_lines = py_def_line_numbers(&corpus.text[rel]);
+            let def_lines: HashMap<String, usize> = if rel.ends_with(".py") {
+                py_def_line_numbers(&corpus.text[rel])
+            } else {
+                // first occurrence wins (entries arrive line-ascending),
+                // mirroring `py_def_line_numbers`' or_insert semantics.
+                let mut m: HashMap<String, usize> = HashMap::new();
+                for (line, name) in structural_def_entries(rel, &corpus.text[rel]) {
+                    m.entry(name).or_insert(line);
+                }
+                m
+            };
             let mut cand_by_start: HashMap<usize, usize> = HashMap::new();
             for (i, c) in candidates.iter().enumerate() {
                 if &c.file == rel {
@@ -6943,5 +7266,185 @@ def omega_worker(pp):
         );
 
         std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    // ------------------------------------------------ WS3c structural def entries
+
+    /// WS3c JS: the finding-6 blind spots become def entries -- arrow
+    /// functions bound to declarators, object-literal methods/pairs, and
+    /// arrow-function class fields -- alongside the declaration kinds
+    /// JS_DEF_RE already saw. Reuses the E23 span-fixture text so lines
+    /// here are cross-checkable against that test's span starts.
+    #[test]
+    fn structural_def_entries_js_arrows_and_object_methods() {
+        let js = "import { x } from './x';\n\nconst f = (a) => {\n  return a + 1;\n};\n\nexport default function main() {\n  function inner() { return 2; }\n  return inner();\n}\n\nconst obj = {\n  plain: 1,\n  method() { return 3; },\n  arrow: () => 4,\n  fnval: function () { return 5; },\n};\n\nclass Outer {\n  constructor() { this.v = 1; }\n  handle = () => { return this.v; }\n  method() {\n    class Inner {\n      m() { return 9; }\n    }\n    return new Inner();\n  }\n}\n";
+        let entries = structural_def_entries("a.js", js);
+        assert_eq!(
+            entries,
+            vec![
+                (3, "f".to_string()),            // const f = (a) => -- arrow declarator
+                (7, "main".to_string()),         // export-hoisted function declaration
+                (8, "inner".to_string()),
+                (14, "method".to_string()),      // object-literal method shorthand
+                (15, "arrow".to_string()),       // function-valued pair (arrow)
+                (16, "fnval".to_string()),       // function-valued pair (function expr)
+                (19, "Outer".to_string()),
+                (20, "constructor".to_string()),
+                (21, "handle".to_string()),      // arrow-function class field
+                (22, "method".to_string()),
+                (23, "Inner".to_string()),
+                (24, "m".to_string()),
+            ],
+            "JS def entries changed -- WS3c name-capture regression"
+        );
+        // `const obj = {..}` binds a NON-function value: never a def entry.
+        assert!(!entries.iter().any(|(_, n)| n == "obj"));
+    }
+
+    /// WS3c Java: classes, constructors, methods, nested classes,
+    /// interfaces + their bodyless method declarations, enums -- the
+    /// def/anchor channel Java never had (no JAVA def regex exists).
+    #[test]
+    fn structural_def_entries_java_methods() {
+        let java = "import java.util.List;\n\npublic class Outer<T> {\n    private int x;\n\n    public Outer(int x) { this.x = x; }\n\n    @Override\n    public <U> U convert(List<U> items) {\n        return items.get(0);\n    }\n\n    static class Inner {\n        void ping() {}\n    }\n}\n\ninterface Shape {\n    double area();\n}\n\nenum Color { RED, GREEN }\n";
+        assert_eq!(
+            structural_def_entries("A.java", java),
+            vec![
+                (3, "Outer".to_string()),
+                (6, "Outer".to_string()),   // constructor
+                (8, "convert".to_string()), // @Override folded into the span start
+                (13, "Inner".to_string()),
+                (14, "ping".to_string()),
+                (18, "Shape".to_string()),
+                (19, "area".to_string()),
+                (22, "Color".to_string()),
+            ],
+            "Java def entries changed -- WS3c name-capture regression"
+        );
+    }
+
+    /// WS3c Rust: struct (attr-folded line), impl blocks (the implemented
+    /// type's base name -- both inherent and trait impls), fns INSIDE impl
+    /// blocks, traits, mods. Bodyless trait signatures emit no structural
+    /// entry (no span exists for them) -- RS_DEF_RE's union still indexes
+    /// those names, see `def_symbols_with`.
+    #[test]
+    fn structural_def_entries_rust_impl_fns() {
+        let rs = "use std::fmt;\n\n#[derive(Debug)]\npub struct Point {\n    x: i32,\n}\n\nimpl Point {\n    pub fn new(x: i32) -> Self {\n        Point { x }\n    }\n}\n\nimpl fmt::Debug for Point {\n    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {\n        Ok(())\n    }\n}\n\npub trait Shape {\n    fn area(&self) -> f64;\n}\n\nmod tests {\n    #[test]\n    fn t() {}\n}\n";
+        assert_eq!(
+            structural_def_entries("lib.rs", rs),
+            vec![
+                (3, "Point".to_string()),  // #[derive] folded struct
+                (8, "Point".to_string()),  // impl Point
+                (9, "new".to_string()),    // fn inside impl
+                (14, "Point".to_string()), // impl fmt::Debug for Point -> type name
+                (15, "fmt".to_string()),
+                (20, "Shape".to_string()),
+                (24, "tests".to_string()),
+                (25, "t".to_string()),     // #[test]-folded line
+            ],
+            "Rust def entries changed -- WS3c name-capture regression"
+        );
+    }
+
+    /// WS3c C++: namespace, template class (entry on the hoisted
+    /// template<..> line, where its span starts), inline members, template
+    /// function, struct, free function -- plus the out-of-line
+    /// `void Foo::bar()` shape, whose qualified name unwraps to the method
+    /// name.
+    #[test]
+    fn structural_def_entries_cpp_class_methods() {
+        let cpp = "#include <vector>\n\nnamespace geo {\n\ntemplate <typename T>\nclass Box {\npublic:\n    Box(T v) : v_(v) {}\n\n    T get() const { return v_; }\n\nprivate:\n    T v_;\n};\n\ntemplate <typename T>\nT twice(T v) {\n    return v + v;\n}\n\n}\n\nstruct Pair {\n    int a;\n};\n\nint Free(int x) {\n    return x + 1;\n}\n";
+        assert_eq!(
+            structural_def_entries("box.cpp", cpp),
+            vec![
+                (3, "geo".to_string()),
+                (5, "Box".to_string()),   // class hoisted to template<..> line
+                (8, "Box".to_string()),   // inline constructor
+                (10, "get".to_string()),  // inline method
+                (16, "twice".to_string()), // template fn hoisted line
+                (23, "Pair".to_string()),
+                (27, "Free".to_string()),
+            ],
+            "C++ def entries changed -- WS3c name-capture regression"
+        );
+
+        let out_of_line = "struct Foo {\n    void bar();\n};\n\nvoid Foo::bar() {\n    return;\n}\n";
+        let entries = structural_def_entries("foo.cpp", out_of_line);
+        assert!(
+            entries.contains(&(1, "Foo".to_string())) && entries.contains(&(5, "bar".to_string())),
+            "out-of-line C++ method must index the class at its specifier and the \
+             method name at its definition, got {entries:?}"
+        );
+    }
+
+    /// WS3c gating: Python NEVER takes the sitter path (its extraction is
+    /// byte-identity-pinned), and grammarless extensions stay empty.
+    #[test]
+    fn structural_def_entries_python_and_grammarless_empty() {
+        assert!(structural_def_entries("m.py", "def a():\n    pass\n").is_empty());
+        assert!(structural_def_entries("M.kt", "fun a() {}\n").is_empty());
+    }
+
+    /// WS3c `def_symbols_with`: v2=false is EXACTLY the legacy regex set
+    /// (byte-identity path); v2=true unions in the sitter names (arrow fns,
+    /// object methods for JS; everything for Java, which has no regex).
+    /// Pure-function form -- the process-global is deliberately not
+    /// toggled (tests run in parallel threads).
+    #[test]
+    fn def_symbols_with_flag_off_matches_regex_and_on_unions_sitter() {
+        let js = "const f = () => 1;\nfunction g() {}\nclass K {\n  m() {}\n}\n";
+        let off = Corpus::def_symbols_with("a.js", js, false);
+        assert!(off.contains("g") && off.contains("K"), "regex names must survive, got {off:?}");
+        assert!(!off.contains("f") && !off.contains("m"), "v2=false must be regex-only, got {off:?}");
+        let on = Corpus::def_symbols_with("a.js", js, true);
+        for name in ["f", "g", "K", "m"] {
+            assert!(on.contains(name), "v2=true must union regex+sitter, missing {name} in {on:?}");
+        }
+
+        let java = "class Widget {\n    void frob() {}\n}\n";
+        assert!(Corpus::def_symbols_with("W.java", java, false).is_empty());
+        let on_java = Corpus::def_symbols_with("W.java", java, true);
+        assert!(on_java.contains("Widget") && on_java.contains("frob"), "got {on_java:?}");
+
+        // Rust: the bodyless trait signature has no structural span, but the
+        // regex union keeps indexing it under v2.
+        let rs = "pub trait Shape {\n    fn area(&self) -> f64;\n}\n";
+        let on_rs = Corpus::def_symbols_with("s.rs", rs, true);
+        assert!(on_rs.contains("area") && on_rs.contains("Shape"), "got {on_rs:?}");
+    }
+
+    /// WS3c seating precondition: every def entry's line is the START of a
+    /// structural block span for that file -- the anchor-forced seat lookup
+    /// in `pack_regions` matches `cand_by_start` by exactly this line, so
+    /// this correspondence is what makes non-Python seating fire at all.
+    #[test]
+    fn structural_def_entry_lines_match_span_starts() {
+        let js = "import { x } from './x';\n\nconst f = (a) => {\n  return a + 1;\n};\n\nexport default function main() {\n  function inner() { return 2; }\n  return inner();\n}\n";
+        let starts: HashSet<usize> = ts_blocks(js, "a.js").iter().map(|s| s.0).collect();
+        for (line, name) in structural_def_entries("a.js", js) {
+            assert!(starts.contains(&line), "JS def {name} at line {line} has no span start in {starts:?}");
+        }
+
+        let java = "import java.util.List;\n\npublic class Outer<T> {\n    public Outer(int x) {}\n\n    void ping() {}\n}\n";
+        let starts: HashSet<usize> =
+            grammar_blocks(java, SitterFamily::Java).iter().map(|s| s.0).collect();
+        for (line, name) in structural_def_entries("A.java", java) {
+            assert!(starts.contains(&line), "Java def {name} at line {line} has no span start in {starts:?}");
+        }
+
+        let rs = "#[derive(Debug)]\npub struct Point;\n\nimpl Point {\n    pub fn new() -> Self { Point }\n}\n";
+        let starts: HashSet<usize> =
+            grammar_blocks(rs, SitterFamily::Rust).iter().map(|s| s.0).collect();
+        for (line, name) in structural_def_entries("p.rs", rs) {
+            assert!(starts.contains(&line), "Rust def {name} at line {line} has no span start in {starts:?}");
+        }
+
+        let cpp = "namespace geo {\ntemplate <typename T>\nclass Box {\npublic:\n    T get() const { return T(); }\n};\n}\n";
+        let starts: HashSet<usize> =
+            grammar_blocks(cpp, SitterFamily::Cpp).iter().map(|s| s.0).collect();
+        for (line, name) in structural_def_entries("b.cpp", cpp) {
+            assert!(starts.contains(&line), "C++ def {name} at line {line} has no span start in {starts:?}");
+        }
     }
 }
