@@ -24,6 +24,7 @@ from pathlib import Path
 
 CONFIGS = {
     "default": [],
+    "guard": ["--displacement-guard"],
     "no_trace_v2": ["--no-trace-formats-v2"],
     "no_symbols_v2": ["--no-symbols-v2"],
     "both_off": ["--no-trace-formats-v2", "--no-symbols-v2"],
