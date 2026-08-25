@@ -332,6 +332,23 @@ The File-level column mixes several different metrics (Acc@10 / Top-1 / file-mat
 
 **The Multi-SWE JS/TS row** is roust's first non-Python scoreboard entry (every other roust cell above is Python SWE-bench Lite/Verified): on the 580-instance Multi-SWE-bench JS/TS slice, FILE 46.4 (269/580) / FUNCTION 31.0 (exact) / LINE 13.3 / LINE mean-fraction .258 (`lab/results_regions/agentless_metric_mswe_e23_tsblocks.json`), measured with the now-default tree-sitter structural blocks for .js/.jsx/.ts/.tsx (E23, PR [#55](https://github.com/narehart/roust/pull/55) — step one of the language-agnostic campaign, [#56](https://github.com/narehart/roust/issues/56)). Two corrections against prior reporting: (1) the previously published MSWE FUNCTION **99.83 is retired as vacuous** — the gold-function scorer was Python-AST-only, so every JS/TS instance had `n_gold_functions: 0` and passed the subset condition vacuously; with the fixed tree-sitter scorer the true pre-adoption baseline is **21.2** (`lab/results_regions/agentless_metric_mswe_e23_baseline.json`), lifted to **31.0** by the structural blocks (+68/−11 paired, p=3.5e-11). (2) FILE 46.4 sits under a measured **~76.7 ceiling**: 135/580 instances have at least one gold file outside the indexed extension set (.json — 316 gold files, .md — 158, .svelte, .mjs, …), so no ranking change can lift FILE past ~76.7 on this corpus walk — universal indexing is workstream 1 of [#56](https://github.com/narehart/roust/issues/56).
 
+### Multi-language localization (Agentless metric, all levels)
+
+roust's per-language scoreboard across all eight benchmarked language slices — Python (SWE-bench Lite + held-out Verified) and the seven Multi-SWE-bench languages ([#56](https://github.com/narehart/roust/issues/56) campaign; JS/TS via E23/PR [#55](https://github.com/narehart/roust/pull/55), Java/Go/Rust/C/C++ via the WS2 grammar batch, PR [#60](https://github.com/narehart/roust/pull/60)). Every FUNCTION number is from the corrected language-aware scorer (the Python-AST-only scorer's vacuous non-Python FUNCTION numbers are retired — see `lab/research/langagnostic/ws2-grammar-batch.md`). All rows are the shipped engine defaults except C and C++, which additionally require the opt-in `--cfamily-ext` flag (see note below the table).
+
+| language (n) | FILE | FUNCTION (exact) | LINE | LINE mean-fraction | engine config | source |
+|---|---|---|---|---|---|---|
+| Python — Lite 300 | 92.33 | 54.67 | 43.67 | .525 | defaults | `lab/results_regions/ws2b/agentless_metric_ws2b_lite300_base.json` |
+| Python — Verified 407 (held-out) | 92.38 | 47.17 | 35.38 | .477 | defaults | `lab/results_regions/ws2b/agentless_metric_ws2b_ver407_base.json` |
+| JS/TS — MSWE 580 | 46.38 | 31.03 | 13.28 | .258 | defaults | `lab/results_regions/agentless_metric_mswe_e23_tsblocks.json` |
+| Java — MSWE 128 | 47.66 | 33.59 | 14.06 | .393 | defaults | `lab/results_regions/ws2/agentless_metric_mswe_java_exp.json` |
+| Go — MSWE 428 | 63.79 | 29.21 | 16.59 | .411 | defaults | `lab/results_regions/ws2/agentless_metric_mswe_go_exp.json` |
+| Rust — MSWE 239 | 59.83 | 20.50 | 7.53 | .242 | defaults | `lab/results_regions/ws2/agentless_metric_mswe_rust_exp.json` |
+| C — MSWE 128 | 46.88 | 26.56 | 10.94 | .196 | `--cfamily-ext` (opt-in) | `lab/results_regions/ws2/agentless_metric_mswe_c_exp.json` |
+| C++ — MSWE 129 | 65.89 | 18.60 | 7.75 | .297 | `--cfamily-ext` (opt-in) | `lab/results_regions/ws2/agentless_metric_mswe_cpp_exp.json` |
+
+Notes: (1) The two Python rows are the current post-adoption references (fresh re-baseline, WS2b): Lite LINE is 43.67 (the 43.3 previously quoted above predates the structural-blocks default), and the Verified row **retires the stale 35.63/.478 reference** — structural-blocks adoption moved held-out Verified LINE 35.63→35.38 and fraction .4781→.4765 (drift finding, `lab/research/langagnostic/ws2b-cfamily-gate.md`). (2) `.c/.h/.cc/.cpp/.cxx/.hpp/.hh` are indexed only under `--cfamily-ext`; without it the C/C++ rows are FILE 0 (nothing indexable). The default flip was gated on the Python benches (WS2b) and **deferred**: indexing C-family files leaves Python FILE per-instance invariant on both benches but cost one Lite FUNCTION instance to vendored libsvm entering the bundle — the flip waits on a vendored-C exclusion (`cextern/`, `extern/`, libsvm/liblinear) proposed as WS2c. (3) Cross-language FILE differences are dominated by corpus shape (e.g. JS/TS's ~76.7 extension ceiling above, Go's single-repo skew — cli/cli is 397 of 428 instances); compare within a row's own slice, not down the column.
+
 ### Latency (measured, `lab/latency/latency_v1.json`)
 
 Cold index (median of 3, `.roust/` removed each time), warm index (median of
