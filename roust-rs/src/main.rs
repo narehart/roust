@@ -232,14 +232,23 @@ struct Args {
     no_structural_blocks: bool,
 
     /// WS2 (campaign #56): ALSO index the C-family extensions
-    /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh) in the corpus walk. Default OFF --
-    /// not because the grammars are missing (they ship in this binary) but
-    /// because Python repos vendor C sources (numpy/pandas), so default-ON
-    /// would change bundles on Python instances and break the adopted
-    /// byte-identity contract. Flipping this flag re-keys the index cache
-    /// (a flag-off cache is never served to a flag-on run, or vice versa).
-    #[arg(long)]
+    /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh) in the corpus walk. ON by default
+    /// since WS2c: the vendored-C VENDOR_RE guard (cextern/, extern/,
+    /// libsvm/, liblinear/ path components) excludes the bundled-C class
+    /// that made default-ON unsafe in the WS2b gate (vendored libsvm
+    /// displacing gold on sklearn), and the WS2c re-gate held all four
+    /// metrics on Lite-300 with MSWE C/C++ payload-identical. Passing this
+    /// flag explicitly is accepted-but-redundant (kept for harness
+    /// compatibility). Disable with --no-cfamily-ext. Either state re-keys
+    /// the index cache (a flag-off cache is never served to a flag-on run,
+    /// or vice versa).
+    #[arg(long, default_value_t = true)]
     cfamily_ext: bool,
+
+    /// disable C-family indexing (reproduces the pre-WS2c corpus walk:
+    /// .c/.h/.cc/.cpp/.cxx/.hpp/.hh are not indexed at all)
+    #[arg(long)]
+    no_cfamily_ext: bool,
 
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
@@ -254,7 +263,8 @@ fn main() {
 
     // WS2: set BEFORE any corpus/cache work -- both the corpus walk and the
     // cache manifest scan read this process-global exactly once per file.
-    roust::core::set_cfamily_ext(args.cfamily_ext);
+    // WS2c: default ON; --no-cfamily-ext wins over the (redundant) on-flag.
+    roust::core::set_cfamily_ext(args.cfamily_ext && !args.no_cfamily_ext);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");
