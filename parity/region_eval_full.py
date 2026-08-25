@@ -138,6 +138,10 @@ def main() -> None:
                      help="WS3a (campaign #56): append --impl-prior-v2 to every roust "
                           "invocation (doc/example/bench dirs stop damping code files; "
                           "rides EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--trace-formats-v2", action="store_true",
+                     help="WS3b (campaign #56): append --trace-formats-v2 to every roust "
+                          "invocation (Java/Node/Go/Rust trace-frame parsing for the E11b "
+                          "boost; rides EXTRA_ENGINE_FLAGS)")
     ap.add_argument("--allow-stale-engine", action="store_true",
                      help="override the blocking engine-provenance guard (loud warning "
                           "instead of refusal) -- NOT recommended for real results")
@@ -167,6 +171,8 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--no-structural-blocks"]
     if args.impl_prior_v2:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--impl-prior-v2"]
+    if args.trace_formats_v2:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--trace-formats-v2"]
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
@@ -175,7 +181,8 @@ def main() -> None:
           f"bm25_only={args.bm25_only} ts_blocks={args.ts_blocks} "
           f"cfamily_ext={args.cfamily_ext} "
           f"no_structural_blocks={args.no_structural_blocks} "
-          f"impl_prior_v2={args.impl_prior_v2}", file=sys.stderr)
+          f"impl_prior_v2={args.impl_prior_v2} "
+          f"trace_formats_v2={args.trace_formats_v2}", file=sys.stderr)
 
     rows = rev.load_verified_rows(args.gold_parquet, limit=0)
     start, end = parse_shard(args.shard, len(rows))
@@ -198,6 +205,7 @@ def main() -> None:
             rec["cfamily_ext"] = args.cfamily_ext
             rec["no_structural_blocks"] = args.no_structural_blocks
             rec["impl_prior_v2"] = args.impl_prior_v2
+            rec["trace_formats_v2"] = args.trace_formats_v2
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

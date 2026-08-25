@@ -197,6 +197,17 @@ struct Args {
     #[arg(long)]
     no_trace_boost: bool,
 
+    /// WS3b (campaign #56, audit finding 2): multi-format trace-frame
+    /// extraction for the E11b FILE boost. Adds Java (`at
+    /// pkg.Cls.m(Cls.java:123)`, FQCN->path), Node (`at fn
+    /// (path.js:1:2)`), Go panic locator, and Rust backtrace `at` frame
+    /// parsing alongside the CPython format; frames feed the SAME
+    /// rank-decayed boost channel, raise-site first per format's own
+    /// convention. Python parsing unchanged; query text byte-untouched.
+    /// No-op under --no-trace-boost / --route. Default OFF.
+    #[arg(long)]
+    trace_formats_v2: bool,
+
     /// E20 (campaign #4 wave 5): LexBoost neighbor score smoothing lambda
     /// (arXiv:2409.05882). Final file score = lambda*S + (1-lambda)*
     /// prior*mean(neighbor S) over the graph chosen by --lexboost-graph,
@@ -384,8 +395,15 @@ fn main() {
     // E11b trace-frame FILE extraction (adopted default; see
     // use_trace_boost above); `terms` above is untouched (byte-identical
     // query text).
-    let boost_files: Vec<String> =
-        if use_trace_boost { trace_frame_files(&args.query, &corpus) } else { Vec::new() };
+    let boost_files: Vec<String> = if use_trace_boost {
+        if args.trace_formats_v2 {
+            roust::core::trace_frame_files_v2(&args.query, &corpus)
+        } else {
+            trace_frame_files(&args.query, &corpus)
+        }
+    } else {
+        Vec::new()
+    };
     let (matched_terms, total_terms) = query_term_coverage(&corpus, &terms);
     let zero_match = matched_terms == 0;
     let anchors = if use_anchors { Some(extract_symbol_anchors(&args.query, &corpus)) } else { None };
@@ -492,6 +510,7 @@ fn main() {
         // --no-trace-boost / --route.
         stats["trace_boost"] = serde_json::json!({
             "trace_files": boost_files,
+            "formats_v2": args.trace_formats_v2,
         });
     }
     if args.lexboost > 0.0 {

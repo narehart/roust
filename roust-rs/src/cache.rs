@@ -52,7 +52,10 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
-pub const CACHE_VERSION: i64 = 3;
+// v3 -> v4 (WS3b): the one-word `thirdparty` vendor alternate joined
+// VENDOR_RE unconditionally -- default-index contents change for
+// thirdparty-bearing repos, so pre-WS3b caches must never be served.
+pub const CACHE_VERSION: i64 = 4;
 pub const CACHE_DIRNAME: &str = ".roust";
 const INDEX_FILENAME: &str = "rust-index.bin";
 

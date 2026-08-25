@@ -412,6 +412,10 @@ def main() -> None:
                      help="WS3a (campaign #56): append --impl-prior-v2 to every roust "
                           "invocation (doc/example/bench dirs stop damping code files); "
                           "omitted by default (binary default: off)")
+    ap.add_argument("--trace-formats-v2", action="store_true",
+                     help="WS3b (campaign #56): append --trace-formats-v2 to every roust "
+                          "invocation (Java/Node/Go/Rust trace-frame parsing for the E11b "
+                          "boost); omitted by default (binary default: off)")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -429,6 +433,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--cfamily-ext")
     if args.impl_prior_v2:
         EXTRA_ENGINE_FLAGS.append("--impl-prior-v2")
+    if args.trace_formats_v2:
+        EXTRA_ENGINE_FLAGS.append("--trace-formats-v2")
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
