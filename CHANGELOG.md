@@ -5,6 +5,30 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+- **Behavior change - structural-symbol unification on by default**
+  (issue #56 campaign, WS3c, PR #67, adopted 2026-08-26 under the
+  standing language-agnostic directive): definition-symbol names for the
+  def/anchor channel are now sourced from the same pinned tree-sitter
+  walks that produce structural blocks, for every grammar-covered
+  language (union with the legacy per-language def regexes), and
+  anchor-forced region seating is un-gated from `.py`. Java and the C
+  family gain a def/anchor channel for the first time; JS/TS arrow
+  functions, object-literal methods and class fields become def
+  entries; Rust impl/trait/enum and Go grouped-type names are covered.
+  Measured (Multi-SWE): Java 47.66/34.38/14.06/.393 ->
+  49.22/35.16/14.84/.397 (all four up); JS/TS 46.21/30.86/13.45/.258 ->
+  46.38/31.21/13.97/.260 (all four up); Rust FILE 59.83 -> 60.25 and
+  fraction +.0013 with a FUNCTION 20.50 -> 19.67 displacement cost
+  (+0/-2, itemized in `lab/research/langagnostic/ws3c-symbols.md`).
+  Python is held exactly: Lite-300 and Verified-407 all four metrics
+  digit-identical per instance (zero FUNCTION flips). `--symbols-v2` is
+  now accepted-but-redundant; `--no-symbols-v2` reproduces the
+  pre-adoption engine byte-identically. Either state re-keys the index
+  cache (`:sv2` marker), so pre-adoption caches rebuild automatically.
+  Known anatomy shared with WS3b's trace boost (queued follow-up
+  guard): a weak anchor on a non-gold file can displace gold-region
+  budget (mui-34337, jackson-databind-4219, clap-4059/5227).
+
 - **Behavior change - multi-format trace-frame boost on by default**
   (issue #56 campaign, WS3b, PR #66, adopted 2026-08-26 under the
   standing language-agnostic directive): the E11b trace-frame FILE boost

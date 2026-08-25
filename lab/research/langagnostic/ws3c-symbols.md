@@ -1,6 +1,10 @@
 # WS3c — structural-symbol unification (#56, audit findings 3+6)
 
-**Verdict: ADOPT-RECOMMEND (`--symbols-v2`; flag NOT flipped).** The two
+**Verdict: ADOPTED (default ON since `3984d33`, PR #67, 2026-08-26,
+standing language-agnostic directive; was ADOPT-RECOMMEND).**
+`--no-symbols-v2` is the escape hatch (reproduces the pre-adoption
+engine byte-identically); `--symbols-v2` remains accepted-but-redundant
+for harness compatibility. Round evidence: The two
 slices where the def/anchor channel was absent or blind gain at every
 region level with FILE positive: java FILE 47.66→49.22 (+2/−0), FUNCTION
 34.38→35.16 (+2/−1), LINE 14.06→14.84 (+1/−0), fraction +0.0037; jsts
@@ -193,9 +197,42 @@ FILE invariant-or-positive and Python held.
   (2 displacement losses, 0 gains at function level).
 - Python: all four metrics held per-instance on both benches — MET.
 
-ADOPT-RECOMMEND on the jsts+java evidence with the rust FUNCTION cost
-stated; the displacement guard follow-up is the risk-reduction path
-before (or alongside) a default flip. Not flipped in this PR.
+ADOPTED on the jsts+java evidence with the rust FUNCTION cost stated
+(the WS2 go-caveat precedent: a mixed-positive slice does not block a
+campaign-level win when itemized); the shared anchor/trace displacement
+guard stays queued as the follow-up round.
+
+## Adoption + rebaseline record (2026-08-26, `3984d33`)
+
+- **Default flip proofs** (`lab/ws3c_adoption_gate.py`,
+  `ws3c/adoption_gate.log`; retrieval-payload md5, two runs per config,
+  cold `.roust`): (A) NEW(3984d33) defaults == OLD(10967da) with
+  explicit `--symbols-v2` on all 19 itemized metric-changed
+  jsts/java/rust instances; (B) NEW defaults == OLD defaults on 12 Lite
+  Python instances (one per repo) -- rows in the known pack-only differ
+  class (matplotlib-18869 expected) are re-checked as NEW defaults ==
+  OLD `--symbols-v2` and reported, not failed; (C) NEW
+  `--no-symbols-v2` == OLD defaults on the same 19 instances.
+  **Results: 0 failures.** Proof A 19/19 OK; proof B 11/12 OK with
+  matplotlib-18869 DIFFERS-AS-KNOWN (the itemized pack-only differ:
+  NEW defaults == OLD `--symbols-v2` byte-identically, per-config
+  determinism held); proof C 19/19 OK.
+- **New references**: jsts **46.38 / 31.21 / 13.97 / .25979**
+  (`agentless_metric_ws3c_jsts_v2.json`), java
+  **49.22 / 35.16 / 14.84 / .39691**
+  (`agentless_metric_ws3c_java_v2.json`), rust
+  **60.25 / 19.67 / 7.53 / .24315**
+  (`agentless_metric_ws3c_rust_v2.json`; FUNCTION carries the stated
+  −2-instance displacement caveat -- clap-4059/clap-5227 -- pending the
+  displacement-guard round). The post-WS3b jsts base
+  (46.21/30.86/13.45/.25774) is formally SUPERSEDED, as is the pre-WS3b
+  46.38/31.03/13.28/.25820 it restated. Python Lite/Verified references
+  unchanged (all four metrics digit-identical per instance under the
+  new default). README scoreboard + CHANGELOG updated in the adoption
+  commit.
+- **Tests**: `tests/symbols_v2.rs` reworked for default-ON (escape
+  hatch reproduces the pre-adoption assertions; the redundant old
+  spelling is asserted equal to defaults); suite 94/94.
 
 ## Anomalies / notes
 
