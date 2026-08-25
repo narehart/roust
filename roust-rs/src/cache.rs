@@ -116,6 +116,11 @@ fn git_head_sha(repo_path: &Path) -> String {
 /// rebuild), which is always safe; it can never cause a stale hit.
 fn scan_manifest(repo_path: &Path, with_docs: bool) -> Manifest {
     let mut exts: HashSet<&str> = core::CODE_EXTENSIONS.iter().copied().collect();
+    if core::cfamily_ext_enabled() {
+        // WS2 (--cfamily-ext): the manifest scan must track the corpus
+        // walk's suffix set exactly (see core::code_suffix_allowed).
+        exts.extend(core::CFAMILY_EXTENSIONS.iter().copied());
+    }
     if with_docs {
         exts.extend(core::DOCS_EXTENSIONS.iter().copied());
     }
@@ -177,7 +182,12 @@ fn classify_changes(repo_path: &Path, with_docs: bool, manifest: &Manifest) -> (
 
 fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     let sha = git_head_sha(repo_path);
-    format!("{sha}:h{}:d{}", with_history as i32, with_docs as i32)
+    // WS2: the ":cf1" marker appears ONLY under --cfamily-ext, so a cache
+    // written with the flag on can never be served to a flag-off run (and
+    // vice versa) -- the two index different file sets. Flag-off keys are
+    // byte-identical to main's format.
+    let cf = if core::cfamily_ext_enabled() { ":cf1" } else { "" };
+    format!("{sha}:h{}:d{}{cf}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {
@@ -267,7 +277,7 @@ fn collect_current_code_files(repo_path: &Path) -> HashSet<String> {
 /// entirely (never save or return them) whenever this returns `false`,
 /// falling back to a full rebuild instead.
 fn try_incremental_update(corpus: &mut Corpus, edges: &mut EdgeMap, modified: &[String]) -> bool {
-    let code_rels: Vec<String> = modified.iter().filter(|r| core::CODE_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect();
+    let code_rels: Vec<String> = modified.iter().filter(|r| core::code_suffix_allowed(core::suffix_of(r))).cloned().collect();
     let docs_rels: Vec<String> = modified.iter().filter(|r| core::DOCS_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect();
 
     // Defensive: `scan_manifest` doesn't apply Corpus::build's own

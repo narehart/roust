@@ -1,0 +1,25 @@
+Installed 13 packages in 163ms
+Computing exact FUNCTION-level metric + region precision via read-only `git show` (this walks every gold + returned .py file's AST)...
+
+wrote /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/results_regions/ws2/agentless_metric_mswe_rust_base.json
+
+==============================================================================
+Agentless-style %% Correct Location -- roust (no-LLM) vs GPT-4o Agentless
+(FUNCTION is EXACT, not a proxy -- SWE-bench Verified held-out)
+==============================================================================
+                                            roust   GPT-4o Agentless
+FILE   (predicted ⊇ gold files)             59.8%        69.7%
+FUNCTION (EXACT)                             9.2%        52.0%
+LINE   (all-or-nothing)                      3.8%        35.3%
+
+LINE mean-fraction covered (continuity w/ prior reporting)   0.0976
+REGION PRECISION (gold lines / total returned lines), mean   0.0117  (n=239, excluded=0)
+  mean total region lines / instance                         1037.7
+
+FUNCTION n=239 n_judged=239 n_correct=22 counted_wrong(engine_errors=0, git_show_failures=0)
+
+--- restricted to file-correct subset (n=143/239) ---
+FUNCTION (EXACT)                            12.6%          n/a
+LINE   (all-or-nothing)                      6.3%          n/a
+LINE mean-fraction covered                                   0.1200
+REGION PRECISION, mean                                       0.0051 (n=143)

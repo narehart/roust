@@ -1,0 +1,107 @@
+Installed 13 packages in 320ms
+Computing exact FUNCTION-level metric + region precision via read-only `git show` (this walks every gold + returned .py file's AST)...
+<unknown>:156: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:156: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:156: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:156: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:156: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:159: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:160: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:160: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:160: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:160: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:160: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:160: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:160: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:164: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:181: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:181: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:185: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:185: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:190: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:194: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:79: SyntaxWarning: invalid escape sequence '\d'
+<unknown>:194: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:194: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:194: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:195: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:79: SyntaxWarning: invalid escape sequence '\d'
+<unknown>:156: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:156: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:14: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:43: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:93: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:94: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:95: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:96: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:97: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:14: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:43: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:93: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:94: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:95: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:96: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:97: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:14: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:43: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:93: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:94: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:95: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:96: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:97: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:14: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:43: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:93: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:94: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:95: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:96: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:97: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:14: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:35: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:43: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:93: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:94: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:95: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:96: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:97: SyntaxWarning: invalid escape sequence '\s'
+
+wrote /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/results_regions/ws2/agentless_metric_mswe_c_main.json
+
+==============================================================================
+Agentless-style %% Correct Location -- roust (no-LLM) vs GPT-4o Agentless
+(FUNCTION is EXACT, not a proxy -- SWE-bench Verified held-out)
+==============================================================================
+                                            roust   GPT-4o Agentless
+FILE   (predicted ⊇ gold files)              0.0%        69.7%
+FUNCTION (EXACT)                             3.9%        52.0%
+LINE   (all-or-nothing)                      0.0%        35.3%
+
+LINE mean-fraction covered (continuity w/ prior reporting)   0.0000
+REGION PRECISION (gold lines / total returned lines), mean   0.0000  (n=78, excluded=50)
+  mean total region lines / instance                         696.9
+
+FUNCTION n=128 n_judged=78 n_correct=5 counted_wrong(engine_errors=50, git_show_failures=0)
+
+--- restricted to file-correct subset (n=0/128) ---
+FUNCTION (EXACT)                              n/a          n/a
+LINE   (all-or-nothing)                       n/a          n/a
+Traceback (most recent call last):
+  File "/Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/agentless_metric_full.py", line 172, in <module>
+    main()
+    ~~~~^^
+  File "/Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/agentless_metric_full.py", line 168, in main
+    amv.print_table(report)
+    ~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/agentless_metric_verified.py", line 699, in print_table
+    print(f"{'LINE mean-fraction covered':60} {fc['line']['mean_fraction_covered']:.4f}")
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: unsupported format string passed to NoneType.__format__

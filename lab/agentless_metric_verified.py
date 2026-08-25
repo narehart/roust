@@ -143,6 +143,123 @@ def ts_function_spans(source: str, path: str) -> list[tuple[int, int]]:
     return spans
 
 
+# WS2 harness twin (campaign #56 workstream 2): tree-sitter function spans
+# for the grammar-batch languages (Java/Go/Rust/C/C++), fixing the same
+# vacuous-FUNCTION problem E23 fixed for JS/TS -- without this, every
+# instance of those languages has n_gold_functions: 0 and passes the subset
+# condition vacuously.
+#
+# FLAG-GATED, default OFF (--lang-functions on agentless_metric_full.py),
+# orthogonal to TS_FUNCTIONS: with both flags off this module remains
+# byte-identical to the pre-E23 scorer on every input.
+#
+# Span definition mirrors the Python/JS sides: function/method
+# IMPLEMENTATIONS only --
+#   - Java: method/constructor declarations WITH a body (abstract and
+#     interface signatures excluded, the `def`-only convention);
+#   - Go: func/method declarations WITH a body (assembly stubs excluded);
+#   - Rust: function_item (trait `fn f(&self);` signatures are a different
+#     kind, function_signature_item, and are excluded by construction);
+#     span start folds the contiguous run of preceding attribute_item
+#     siblings (#[derive]/#[cfg] -- the decorator-folding analogue);
+#   - C/C++: function_definition (free functions, methods, constructors,
+#     operators; lambdas excluded -- they are expressions, not named
+#     members); C++ spans hoist to a wrapping template_declaration.
+#   - Bound function values (Java lambdas in fields, Go func literals in
+#     vars, Rust closures in lets) are NOT extracted -- unlike JS, where
+#     expression-bound functions are the dominant declaration idiom, these
+#     are rare enough at definition level that the engine allowlists skip
+#     them too; gold/pred sides share the convention so the metric stays
+#     comparable by construction.
+# Grammar wheels are pinned to the SAME grammar versions the engine vendors
+# (see roust-rs/Cargo.toml WS2 block); run under:
+#   uv run --with pandas --with pyarrow --with tree-sitter==0.26.0 \
+#     --with tree-sitter-java==0.23.5 --with tree-sitter-go==0.25.0 \
+#     --with tree-sitter-rust==0.24.2 --with tree-sitter-c==0.24.2 \
+#     --with tree-sitter-cpp==0.23.4 \
+#     [--with tree-sitter-javascript==0.25.0 --with tree-sitter-typescript==0.23.2]
+LANG_FUNCTIONS = False
+LANG_EXTS = (".java", ".go", ".rs", ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".hh")
+
+# node kinds whose body-bearing instances are function implementations
+_LANG_FUNCTION_KINDS = {
+    "java": {"method_declaration", "constructor_declaration",
+             "compact_constructor_declaration"},
+    "go": {"function_declaration", "method_declaration"},
+    "rust": {"function_item"},
+    "c": {"function_definition"},
+    "cpp": {"function_definition"},
+}
+# kinds that require a `body` field child to count as an implementation
+_LANG_BODY_REQUIRED = {"method_declaration", "constructor_declaration",
+                       "function_declaration"}
+
+_lang_parsers: dict[str, object] = {}
+
+
+def _lang_key(path: str) -> str:
+    if path.endswith(".java"):
+        return "java"
+    if path.endswith(".go"):
+        return "go"
+    if path.endswith(".rs"):
+        return "rust"
+    if path.endswith(".c"):
+        return "c"
+    return "cpp"  # .h/.cc/.cpp/.cxx/.hpp/.hh -- C++ grammar, the engine's choice
+
+
+def _lang_parser(key: str):
+    """Parser for the grammar-batch language `key`, cached; lazy imports
+    exactly like `_ts_parser` (wheels needed only when --lang-functions is
+    on AND such a file is encountered)."""
+    if key not in _lang_parsers:
+        import tree_sitter
+        if key == "java":
+            import tree_sitter_java as g
+        elif key == "go":
+            import tree_sitter_go as g
+        elif key == "rust":
+            import tree_sitter_rust as g
+        elif key == "c":
+            import tree_sitter_c as g
+        else:
+            import tree_sitter_cpp as g
+        _lang_parsers[key] = tree_sitter.Parser(tree_sitter.Language(g.language()))
+    return _lang_parsers[key]
+
+
+def lang_function_spans(source: str, path: str) -> list[tuple[int, int]]:
+    """Java/Go/Rust/C/C++ analogue of `function_spans` / `ts_function_spans`
+    (see the WS2 block comment above for the exact conventions)."""
+    key = _lang_key(path)
+    parser = _lang_parser(key)
+    tree = parser.parse(source.encode("utf-8", errors="replace"))
+    kinds = _LANG_FUNCTION_KINDS[key]
+    spans: list[tuple[int, int]] = []
+    stack = [tree.root_node]
+    while stack:
+        node = stack.pop()
+        stack.extend(node.children)
+        kind = node.type
+        if kind not in kinds:
+            continue
+        if kind in _LANG_BODY_REQUIRED and node.child_by_field_name("body") is None:
+            continue  # abstract/interface signature or Go assembly stub
+        top = node
+        if key == "cpp" and top.parent is not None \
+                and top.parent.type == "template_declaration":
+            top = top.parent
+        start = top.start_point[0] + 1
+        if key == "rust":
+            prev = top.prev_sibling
+            while prev is not None and prev.type == "attribute_item":
+                start = prev.start_point[0] + 1
+                prev = prev.prev_sibling
+        spans.append((start, node.end_point[0] + 1))
+    return spans
+
+
 def function_spans_for_path(path: str, source: str) -> list[tuple[int, int]] | None:
     """Extension dispatch shared by the gold and predicted walks. None means
     "unsupported extension, skip the file" -- exactly the pre-E23 behavior
@@ -151,7 +268,18 @@ def function_spans_for_path(path: str, source: str) -> list[tuple[int, int]] | N
         return function_spans(source)
     if TS_FUNCTIONS and path.endswith(TS_EXTS):
         return ts_function_spans(source, path)
+    if LANG_FUNCTIONS and path.endswith(LANG_EXTS):
+        return lang_function_spans(source, path)
     return None
+
+
+def scored_path(path: str) -> bool:
+    """True when `path`'s extension participates in FUNCTION-level scoring
+    under the current flag state -- the single predicate the gold and
+    predicted walks share (each previously repeated the endswith chain)."""
+    return (path.endswith(".py")
+            or (TS_FUNCTIONS and path.endswith(TS_EXTS))
+            or (LANG_FUNCTIONS and path.endswith(LANG_EXTS)))
 
 
 def mean_median(values: list[float]) -> tuple[float | None, float | None]:
@@ -212,7 +340,7 @@ def gold_function_spans_for_instance(repo_slug: str, base_commit: str,
     ast_ok = True
     for path, ranges in gold_hunks.items():
         src = None
-        if path.endswith(".py") or (TS_FUNCTIONS and path.endswith(TS_EXTS)):
+        if scored_path(path):
             src = git_show(repo_slug, base_commit, path)
             if src is None:
                 ast_ok = False
@@ -241,7 +369,7 @@ def predicted_function_spans_for_instance(repo_slug: str, base_commit: str,
     spans_out: set[tuple[str, int, int]] = set()
     ast_ok = True
     for path, region_spans in regions.items():
-        if not (path.endswith(".py") or (TS_FUNCTIONS and path.endswith(TS_EXTS))):
+        if not scored_path(path):
             continue  # unsupported extension (pre-E23 behavior for non-.py)
         src = git_show(repo_slug, base_commit, path)
         if src is None:
@@ -553,13 +681,21 @@ def print_table(report: dict) -> None:
     row("FILE   (predicted ⊇ gold files)", a["file"]["pct_correct"], al["file"])
     row("FUNCTION (EXACT)                ", a["function"]["pct_correct"], al["function"])
     row("LINE   (all-or-nothing)         ", a["line"]["pct_correct_all_or_nothing"], al["line"])
+    # WS2 hardening: any of these means can be None on a degenerate arm
+    # (e.g. an empty file-correct subset when FILE == 0 -- the C/C++
+    # main-binary vacuous baselines); the JSON artifact stores the null,
+    # the table prints n/a instead of crashing after the artifact write.
+    def n4(x):
+        return "n/a" if x is None else f"{x:.4f}"
+
     print(f"\n{'LINE mean-fraction covered (continuity w/ prior reporting)':60} "
-          f"{a['line']['mean_fraction_covered']:.4f}")
+          f"{n4(a['line']['mean_fraction_covered'])}")
     rp = a["region_precision"]
     print(f"{'REGION PRECISION (gold lines / total returned lines), mean':60} "
-          f"{rp['mean_precision']:.4f}  (n={rp['n']}, excluded={rp['n_excluded']})")
+          f"{n4(rp['mean_precision'])}  (n={rp['n']}, excluded={rp['n_excluded']})")
+    mtl = rp['mean_total_region_lines_per_instance']
     print(f"{'  mean total region lines / instance':60} "
-          f"{rp['mean_total_region_lines_per_instance']:.1f}")
+          f"{'n/a' if mtl is None else f'{mtl:.1f}'}")
     print(f"\nFUNCTION n={a['function']['n']} n_judged={a['function']['n_judged']} "
           f"n_correct={a['function']['n_correct']} "
           f"counted_wrong(engine_errors={a['function']['n_engine_errors_counted_wrong']}, "
@@ -568,9 +704,9 @@ def print_table(report: dict) -> None:
     print(f"\n--- restricted to file-correct subset (n={fc['n']}/{a['n']}) ---")
     row("FUNCTION (EXACT)                ", fc["function"]["pct_correct"], None)
     row("LINE   (all-or-nothing)         ", fc["line"]["pct_correct_all_or_nothing"], None)
-    print(f"{'LINE mean-fraction covered':60} {fc['line']['mean_fraction_covered']:.4f}")
+    print(f"{'LINE mean-fraction covered':60} {n4(fc['line']['mean_fraction_covered'])}")
     rpf = fc["region_precision"]
-    print(f"{'REGION PRECISION, mean':60} {rpf['mean_precision']:.4f} (n={rpf['n']})")
+    print(f"{'REGION PRECISION, mean':60} {n4(rpf['mean_precision'])} (n={rpf['n']})")
 
 
 if __name__ == "__main__":

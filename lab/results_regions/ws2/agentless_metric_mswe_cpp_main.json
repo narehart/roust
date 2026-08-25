@@ -1,0 +1,869 @@
+{
+  "convention": "errors-count-as-wrong-at-all-levels/v1: FILE, FUNCTION, and LINE share the same denominator (n = all loaded records); engine errors and git_show failures count as WRONG and are reported separately (*_counted_wrong / n_engine_errors keys).",
+  "source": {
+    "predictions": [
+      "lab/results_regions/ws2/mswe_cpp_main.jsonl"
+    ],
+    "gold": "lab/mswe_cpp.parquet",
+    "n_instances": 129,
+    "n_region_eval_errors": 0,
+    "engine_shas_seen": [
+      "0d8113e"
+    ],
+    "engine_dirty_seen": [
+      false
+    ],
+    "bm25_only": false,
+    "pipeline": "shipped roust-rs engine, --budget 8192, confidence-scheduled packing (parity/region_eval_full.py Part A, no-LLM), FULL SWE-bench test split (paper eval wave)"
+  },
+  "all_instances": {
+    "n": 129,
+    "file": {
+      "pct_correct": 0.0,
+      "n": 129,
+      "n_correct": 0,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 4.65,
+      "n": 129,
+      "n_judged": 129,
+      "n_correct": 6,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "catchorg__Catch2-1422",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-1448",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-1608",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-1609",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "catchorg__Catch2-1614",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-1616",
+          "n_gold_functions": 46,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-2128",
+          "n_gold_functions": 18,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-2187",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-2288",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-2394",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 56,
+          "correct": true
+        },
+        {
+          "instance_id": "catchorg__Catch2-2723",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "catchorg__Catch2-2849",
+          "n_gold_functions": 23,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-1171",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-1361",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-1390",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-1407",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 55,
+          "correct": true
+        },
+        {
+          "instance_id": "fmtlib__fmt-1663",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 83,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-1837",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-2070",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-2158",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-2292",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-2310",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-2317",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 93,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-2394",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 77,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-2610",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-2940",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 67,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3158",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 75,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3248",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3260",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 76,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3271",
+          "n_gold_functions": 37,
+          "n_predicted_functions": 78,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3272",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3279",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3537",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 86,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3555",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3569",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 52,
+          "correct": true
+        },
+        {
+          "instance_id": "fmtlib__fmt-3713",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3727",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3729",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3732",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3734",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3750",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3819",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3824",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3863",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3912",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-3913",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-4055",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-4057",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-4286",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 76,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-4310",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-493",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 83,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-967",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "fmtlib__fmt-974",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1138",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1221",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1301",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1303",
+          "n_gold_functions": 32,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1314",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1323",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 5,
+          "correct": true
+        },
+        {
+          "instance_id": "nlohmann__json-1343",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1446",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1555",
+          "n_gold_functions": 20,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1769",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-18",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-1821",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2019",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2099",
+          "n_gold_functions": 40,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2212",
+          "n_gold_functions": 25,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2225",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "nlohmann__json-2258",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2273",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2297",
+          "n_gold_functions": 79,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2319",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2332",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2352",
+          "n_gold_functions": 24,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2576",
+          "n_gold_functions": 46,
+          "n_predicted_functions": 6,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2866",
+          "n_gold_functions": 20,
+          "n_predicted_functions": 6,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2963",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 3,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-2989",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3008",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 6,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3037",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 6,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3073",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 6,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3109",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3332",
+          "n_gold_functions": 20,
+          "n_predicted_functions": 7,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3415",
+          "n_gold_functions": 293,
+          "n_predicted_functions": 7,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3446",
+          "n_gold_functions": 125,
+          "n_predicted_functions": 26,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3463",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3514",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3523",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3543",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3564",
+          "n_gold_functions": 40,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3590",
+          "n_gold_functions": 47,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3601",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3605",
+          "n_gold_functions": 31,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3663",
+          "n_gold_functions": 26,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-3664",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-4512",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-4525",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-4536",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-4537",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-508",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-545",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-609",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-708",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 0,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-807",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-944",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-969",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "nlohmann__json-986",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 5,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-1615",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 17,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-1624",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 16,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-1667",
+          "n_gold_functions": 29,
+          "n_predicted_functions": 21,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-1695",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 20,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-1712",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 12,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-1896",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 22,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-1899",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 17,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-2016",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 22,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-2026",
+          "n_gold_functions": 22,
+          "n_predicted_functions": 17,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-2150",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-2178",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-485",
+          "n_gold_functions": 138,
+          "n_predicted_functions": 18,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-524",
+          "n_gold_functions": 202,
+          "n_predicted_functions": 14,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-543",
+          "n_gold_functions": 52,
+          "n_predicted_functions": 18,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-545",
+          "n_gold_functions": 19,
+          "n_predicted_functions": 18,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-559",
+          "n_gold_functions": 261,
+          "n_predicted_functions": 18,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-644",
+          "n_gold_functions": 21,
+          "n_predicted_functions": 13,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-949",
+          "n_gold_functions": 51,
+          "n_predicted_functions": 14,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-954",
+          "n_gold_functions": 152,
+          "n_predicted_functions": 18,
+          "correct": false
+        },
+        {
+          "instance_id": "simdjson__simdjson-958",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 14,
+          "correct": false
+        },
+        {
+          "instance_id": "yhirose__cpp-httplib-1765",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 0,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 0.0,
+      "n": 129,
+      "n_correct_all_or_nothing": 0,
+      "mean_fraction_covered": 4.5680247404219944e-05,
+      "median_fraction_covered": 0.0,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 8.499932000543996e-05,
+      "median_precision": 0.0,
+      "n": 129,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 729.7441860465116,
+      "median_total_region_lines_per_instance": 901.0
+    }
+  },
+  "file_correct_subset": {
+    "n": 0,
+    "file": {
+      "pct_correct": null,
+      "n": 0,
+      "n_correct": 0,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": null,
+      "n": 0,
+      "n_judged": 0,
+      "n_correct": 0,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": []
+    },
+    "line": {
+      "pct_correct_all_or_nothing": null,
+      "n": 0,
+      "n_correct_all_or_nothing": 0,
+      "mean_fraction_covered": null,
+      "median_fraction_covered": null,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": null,
+      "median_precision": null,
+      "n": 0,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": null,
+      "median_total_region_lines_per_instance": null
+    },
+    "note": "restricted to instances where FILE-level was already correct -- isolates region/line/function quality from file recall"
+  },
+  "agentless_gpt4o_published": {
+    "file": 69.7,
+    "function": 52.0,
+    "line": 35.3
+  },
+  "agentless_note": "AGENTLESS_GPT4O numbers are Agentless's published SWE-bench LITE localization rates (arXiv:2407.01489 Table 1) -- context only; no published Agentless full-split localization numbers exist to compare against directly."
+}

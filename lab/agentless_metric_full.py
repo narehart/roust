@@ -74,6 +74,12 @@ def main() -> None:
                           "metric). Default OFF: byte-identical to the pre-E23 scorer. "
                           "Requires the tree-sitter wheels -- see the E23 note in "
                           "agentless_metric_verified.py for the pinned uv invocation.")
+    ap.add_argument("--lang-functions", action="store_true",
+                     help="WS2 (campaign #56): extract gold/predicted FUNCTION spans for "
+                          "the grammar-batch languages (.java/.go/.rs and the C family) "
+                          "via tree-sitter -- the same vacuous-FUNCTION fix E23 made for "
+                          "JS/TS. Default OFF; orthogonal to --ts-functions. See the WS2 "
+                          "note in agentless_metric_verified.py for the pinned wheels.")
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
     args = ap.parse_args()
 
@@ -81,6 +87,8 @@ def main() -> None:
         amv.SWEBENCH_REPOS = args.repos_dir
     if args.ts_functions:
         amv.TS_FUNCTIONS = True
+    if args.lang_functions:
+        amv.LANG_FUNCTIONS = True
 
     records = load_merged_records(args.predictions)
     if args.expect_n:

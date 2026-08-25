@@ -1,0 +1,14 @@
+engine version: roust 0.2.0 (0d8113e, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/mswe_cpp.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/ws2_repos/cpp_base
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False
+shard 1/1: rows [0:129] of the sorted split (129 instances)
+[25/129] fmtlib__fmt-2610                              elapsed=11s (ok) ok=25 err=0
+[50/129] fmtlib__fmt-4310                              elapsed=25s (ok) ok=50 err=0
+[75/129] nlohmann__json-2352                           elapsed=43s (ok) ok=75 err=0
+[100/129] nlohmann__json-4537                           elapsed=72s (ok) ok=100 err=0
+[125/129] simdjson__simdjson-644                        elapsed=86s (ok) ok=125 err=0
+[129/129] yhirose__cpp-httplib-1765                     elapsed=87s (ok) ok=129 err=0
+
+engine version: roust 0.2.0 (0d8113e, clean)
+wrote 129 records (129 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws2-grammar-batch/lab/results_regions/ws2/mswe_cpp_main.jsonl

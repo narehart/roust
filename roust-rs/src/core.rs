@@ -16,10 +16,48 @@ use std::sync::LazyLock;
 pub const CODE_EXTENSIONS: &[&str] = &[
     ".py", ".ts", ".js", ".go", ".rs", ".java", ".kt", ".cs", ".swift", ".tsx", ".jsx",
 ];
+
+// WS2 (campaign #56 workstream 2, grammar batch): the C-family extensions,
+// indexed ONLY under --cfamily-ext (default OFF). They cannot join
+// CODE_EXTENSIONS unconditionally: Python repos vendor C sources
+// (numpy/pandas/pillow ship .c/.h trees), so default-ON indexing would
+// change bundles on Python instances and break the adopted-default
+// byte-identity contract every gate since E23 has proven. The flag is set
+// ONCE at CLI parse (before any corpus/cache work) via `set_cfamily_ext`;
+// the corpus walk, the cache manifest scan, and the incremental-update
+// filter all read `code_suffix_allowed`, so they can never disagree about
+// which files are code, and the cache key gains a ":cf1" marker only when
+// the flag is ON (flag-OFF cache payloads stay byte-identical to main's).
+pub const CFAMILY_EXTENSIONS: &[&str] = &[".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".hh"];
+
+static CFAMILY_EXT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_cfamily_ext(on: bool) {
+    CFAMILY_EXT.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn cfamily_ext_enabled() -> bool {
+    CFAMILY_EXT.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+/// The one place the "which suffixes are code" decision lives (see the
+/// CFAMILY_EXTENSIONS comment for why it is flag-dependent).
+pub fn code_suffix_allowed(suffix: &str) -> bool {
+    code_suffix_allowed_with(suffix, cfamily_ext_enabled())
+}
+
+/// Pure-function form of `code_suffix_allowed` -- unit tests exercise this
+/// directly instead of toggling the process-global (tests run in parallel
+/// threads; a mid-test flag flip would race every corpus-building test).
+pub fn code_suffix_allowed_with(suffix: &str, cfamily: bool) -> bool {
+    CODE_EXTENSIONS.contains(&suffix) || (cfamily && CFAMILY_EXTENSIONS.contains(&suffix))
+}
+
 pub const MAX_FILE_BYTES: u64 = 2_000_000;
 
 pub fn is_code_file(rel: &str) -> bool {
     CODE_EXTENSIONS.iter().any(|ext| rel.ends_with(ext))
+        || (cfamily_ext_enabled() && CFAMILY_EXTENSIONS.iter().any(|ext| rel.ends_with(ext)))
 }
 
 fn has_code_suffix(rel: &str) -> bool {
@@ -31,7 +69,7 @@ fn has_code_suffix(rel: &str) -> bool {
     // version also searched the last '.' across the WHOLE rel path and
     // accepted extension-only hidden names like `a/.py`, which Python's
     // `Path.suffix` -- and `suffix_of` -- correctly reject.)
-    CODE_EXTENSIONS.contains(&suffix_of(rel))
+    code_suffix_allowed(suffix_of(rel))
 }
 
 pub(crate) fn suffix_of(rel: &str) -> &str {
@@ -3189,8 +3227,6 @@ fn ts_header_start(node: &tree_sitter::Node) -> Option<usize> {
 /// (.tsx -> TSX, .ts -> TypeScript, .js/.jsx -> JavaScript, which parses
 /// JSX natively).
 fn ts_blocks(text: &str, rel: &str) -> Vec<(usize, usize)> {
-    let lines = py_splitlines(text);
-    let n = lines.len();
     let language: tree_sitter::Language = if rel.ends_with(".tsx") {
         tree_sitter_typescript::LANGUAGE_TSX.into()
     } else if rel.ends_with(".ts") {
@@ -3198,6 +3234,22 @@ fn ts_blocks(text: &str, rel: &str) -> Vec<(usize, usize)> {
     } else {
         tree_sitter_javascript::LANGUAGE.into()
     };
+    sitter_blocks(text, language, &ts_header_start)
+}
+
+/// The E23 CST walk, factored out of `ts_blocks` VERBATIM for the WS2
+/// grammar batch (campaign #56 workstream 2): everything below is the
+/// exact code `ts_blocks` ran through tree-sitter-javascript/-typescript,
+/// now parametric over (grammar, header-allowlist fn) so Java/Go/Rust/C/C++
+/// ride the identical span contract. Behavior on the JS/TS family is
+/// unchanged by construction (the gate's byte-identity proof covers it).
+fn sitter_blocks(
+    text: &str,
+    language: tree_sitter::Language,
+    header_start: &dyn Fn(&tree_sitter::Node) -> Option<usize>,
+) -> Vec<(usize, usize)> {
+    let lines = py_splitlines(text);
+    let n = lines.len();
     let mut parser = tree_sitter::Parser::new();
     if parser.set_language(&language).is_err() {
         return vec![(1, n)];
@@ -3228,7 +3280,7 @@ fn ts_blocks(text: &str, rel: &str) -> Vec<(usize, usize)> {
     let mut emitted_stack: Vec<bool> = Vec::new();
     'walk: loop {
         let node = cursor.node();
-        let emitted = match ts_header_start(&node) {
+        let emitted = match header_start(&node) {
             Some(start_byte) => {
                 headers.push((line_of_byte(start_byte), depth));
                 true
@@ -3280,6 +3332,178 @@ fn ts_blocks(text: &str, rel: &str) -> Vec<(usize, usize)> {
         spans.push((i + 1, end));
     }
     spans.into_iter().filter(|&(a, b)| b >= a).collect()
+}
+
+// ------------------------------------------- WS2 grammar batch (campaign #56)
+//
+// Java / Go / Rust / C / C++ structural blocks, replicating the E23 recipe
+// exactly: pinned grammar crate + ~10-entry node-kind allowlist per
+// language + the shared `sitter_blocks` walk (the SAME depth/span/preamble
+// contract python_blocks and ts_blocks emit). Per-language notes:
+//
+//   - Java: annotations/modifiers are CHILDREN of the declaration node in
+//     tree-sitter-java, so `start_byte` already covers `@Override` lines --
+//     no hoisting needed (the decorator-folding analogue is built in).
+//   - Go: `type_declaration` covers single and grouped (`type (...)`)
+//     struct/interface declarations; methods-with-receivers are
+//     `method_declaration`.
+//   - Rust: outer attributes (`#[derive(..)]`, `#[cfg(..)]`) are PRECEDING
+//     SIBLINGS of the item, not children -- fold the contiguous run of
+//     `attribute_item` siblings into the span start, python_blocks'
+//     decorator folding, Rust edition. `mod_item` requires a body (`mod
+//     tests { .. }` yes; `mod foo;` re-export lines no -- they'd fragment
+//     the preamble into 1-line spans).
+//   - C/C++: `struct/enum/union/class_specifier` require a `body` field
+//     (bare `struct foo x;` references must not become headers); the
+//     specifier hoists into a wrapping `type_definition`/`declaration`
+//     (typedef start line), and C++ definitions inside a
+//     `template_declaration` hoist to the `template<..>` line -- the same
+//     wrapper-hoist + one-header-per-line dedup that handles JS `export`.
+//     `.h` parses with the C++ grammar (difftastic's choice: the C++
+//     grammar handles the overwhelmingly-C-compatible header subset, and
+//     the MSWE C++ repos keep inline definitions in headers).
+//
+// None of these extensions are reachable unless the file was indexed:
+// .java/.go/.rs are in CODE_EXTENSIONS (window-fallback on main -- the WS2
+// experiment flips them structural under the adopted default), while
+// .c/.h/.cc/.cpp/.cxx/.hpp/.hh require --cfamily-ext (see CFAMILY_EXTENSIONS).
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum SitterFamily {
+    Java,
+    Go,
+    Rust,
+    C,
+    Cpp,
+}
+
+/// Grammar family for `rel`, None when the WS2 batch has no grammar for it.
+/// (JS/TS is handled by `is_ts_family`/`ts_blocks`, kept separate so the
+/// E23 dispatch stays textually untouched.)
+fn sitter_family(rel: &str) -> Option<SitterFamily> {
+    if rel.ends_with(".java") {
+        Some(SitterFamily::Java)
+    } else if rel.ends_with(".go") {
+        Some(SitterFamily::Go)
+    } else if rel.ends_with(".rs") {
+        Some(SitterFamily::Rust)
+    } else if rel.ends_with(".c") {
+        Some(SitterFamily::C)
+    } else if [".cpp", ".cc", ".cxx", ".hpp", ".hh", ".h"].iter().any(|e| rel.ends_with(e)) {
+        Some(SitterFamily::Cpp)
+    } else {
+        None
+    }
+}
+
+fn java_header_start(node: &tree_sitter::Node) -> Option<usize> {
+    matches!(
+        node.kind(),
+        "class_declaration"
+            | "interface_declaration"
+            | "enum_declaration"
+            | "record_declaration"
+            | "annotation_type_declaration"
+            | "method_declaration"
+            | "constructor_declaration"
+            | "compact_constructor_declaration"
+            | "static_initializer"
+    )
+    .then(|| node.start_byte())
+}
+
+fn go_header_start(node: &tree_sitter::Node) -> Option<usize> {
+    matches!(node.kind(), "function_declaration" | "method_declaration" | "type_declaration")
+        .then(|| node.start_byte())
+}
+
+fn rust_header_start(node: &tree_sitter::Node) -> Option<usize> {
+    let kind = node.kind();
+    let emit = match kind {
+        "function_item" | "impl_item" | "trait_item" | "struct_item" | "enum_item"
+        | "union_item" | "macro_definition" => true,
+        // body required: `mod foo;` declaration lines are preamble, not
+        // headers (see the WS2 block comment).
+        "mod_item" => node.child_by_field_name("body").is_some(),
+        _ => false,
+    };
+    if !emit {
+        return None;
+    }
+    // Fold the contiguous run of preceding outer-attribute siblings
+    // (#[derive(..)] etc.) into the span start.
+    let mut start = node.start_byte();
+    let mut cur = *node;
+    while let Some(prev) = cur.prev_sibling() {
+        if prev.kind() == "attribute_item" {
+            start = prev.start_byte();
+            cur = prev;
+        } else {
+            break;
+        }
+    }
+    Some(start)
+}
+
+/// Shared C/C++ header logic; `cpp` adds the C++-only kinds.
+fn cfamily_header_start(node: &tree_sitter::Node, cpp: bool) -> Option<usize> {
+    let kind = node.kind();
+    let emit = match kind {
+        "function_definition" | "type_definition" | "preproc_function_def" => true,
+        "struct_specifier" | "enum_specifier" | "union_specifier" => {
+            node.child_by_field_name("body").is_some()
+        }
+        "class_specifier" => cpp && node.child_by_field_name("body").is_some(),
+        "namespace_definition" | "template_declaration" => cpp,
+        _ => false,
+    };
+    if !emit {
+        return None;
+    }
+    // Hoist into wrapping typedef/declaration statements and (C++) the
+    // template<..> line; two levels covers `template<..> struct X {..};`
+    // shapes the same way the JS declarator hoist does.
+    let mut start = node.start_byte();
+    let mut cur = *node;
+    for _ in 0..2 {
+        let Some(parent) = cur.parent() else { break };
+        match parent.kind() {
+            "type_definition" | "declaration" | "template_declaration" => {
+                start = parent.start_byte();
+                cur = parent;
+            }
+            _ => break,
+        }
+    }
+    Some(start)
+}
+
+fn c_header_start(node: &tree_sitter::Node) -> Option<usize> {
+    cfamily_header_start(node, false)
+}
+
+fn cpp_header_start(node: &tree_sitter::Node) -> Option<usize> {
+    cfamily_header_start(node, true)
+}
+
+/// `python_blocks`/`ts_blocks` for the WS2 grammar-batch languages. Same
+/// output contract; `fam` picks the pinned grammar + allowlist.
+fn grammar_blocks(text: &str, fam: SitterFamily) -> Vec<(usize, usize)> {
+    let language: tree_sitter::Language = match fam {
+        SitterFamily::Java => tree_sitter_java::LANGUAGE.into(),
+        SitterFamily::Go => tree_sitter_go::LANGUAGE.into(),
+        SitterFamily::Rust => tree_sitter_rust::LANGUAGE.into(),
+        SitterFamily::C => tree_sitter_c::LANGUAGE.into(),
+        SitterFamily::Cpp => tree_sitter_cpp::LANGUAGE.into(),
+    };
+    let header: fn(&tree_sitter::Node) -> Option<usize> = match fam {
+        SitterFamily::Java => java_header_start,
+        SitterFamily::Go => go_header_start,
+        SitterFamily::Rust => rust_header_start,
+        SitterFamily::C => c_header_start,
+        SitterFamily::Cpp => cpp_header_start,
+    };
+    sitter_blocks(text, language, &header)
 }
 
 fn hit_lines(text: &str, terms: &HashSet<String>) -> Vec<usize> {
@@ -3687,6 +3911,11 @@ pub fn pack_regions(
             python_blocks(text)
         } else if use_ts_blocks && is_ts_family(rel) {
             ts_blocks(text, rel)
+        } else if let Some(fam) = sitter_family(rel).filter(|_| use_ts_blocks) {
+            // WS2 grammar batch (campaign #56): Java/Go/Rust/C/C++ get the
+            // same structural treatment under the same adopted default
+            // (--no-structural-blocks restores windows for ALL non-Python).
+            grammar_blocks(text, fam)
         } else {
             window_blocks(text, &hits, 30)
         };
@@ -6013,6 +6242,190 @@ def omega_worker(pp):
             ],
             "TSX fixture spans changed -- ts_blocks contract regression"
         );
+    }
+
+    /// WS2 Java fixture: generic outer class, constructor, annotated
+    /// generic method (the @Override line is INSIDE method_declaration's
+    /// span in tree-sitter-java -- decorator folding comes built in),
+    /// nested static class, interface, enum. `double area();` (abstract,
+    /// bodyless) IS a packing header -- unlike the harness twin's
+    /// implementations-only convention, block boundaries want every
+    /// declaration line, same reason ts_blocks emits interface members'
+    /// spans via the class-like kinds.
+    #[test]
+    fn grammar_blocks_java_fixture() {
+        let java = "import java.util.List;\n\npublic class Outer<T> {\n    private int x;\n\n    public Outer(int x) { this.x = x; }\n\n    @Override\n    public <U> U convert(List<U> items) {\n        return items.get(0);\n    }\n\n    static class Inner {\n        void ping() {}\n    }\n}\n\ninterface Shape {\n    double area();\n}\n\nenum Color { RED, GREEN }\n";
+        assert_eq!(
+            grammar_blocks(java, SitterFamily::Java),
+            vec![
+                (1, 2),   // preamble (import + blank)
+                (3, 17),  // class Outer<T> (partition to interface)
+                (6, 7),   // constructor
+                (8, 12),  // convert (@Override start, depth 1)
+                (13, 17), // static class Inner (depth 1)
+                (14, 17), // Inner.ping (depth 2)
+                (18, 21), // interface Shape
+                (19, 21), // area() declaration (depth 1)
+                (22, 22), // enum Color
+            ],
+            "Java fixture spans changed -- grammar_blocks contract regression"
+        );
+    }
+
+    /// WS2 Go fixture: struct type, method with pointer receiver, generic
+    /// function, grouped `type (...)` declaration block.
+    #[test]
+    fn grammar_blocks_go_fixture() {
+        let go = "package main\n\nimport \"fmt\"\n\ntype Point struct {\n\tX int\n}\n\nfunc (p *Point) Dist() float64 {\n\treturn 0\n}\n\nfunc Add[T any](a, b T) T {\n\tfmt.Println(a)\n\treturn b\n}\n\ntype (\n\tReader interface{ Read() error }\n\tCount int\n)\n";
+        assert_eq!(
+            grammar_blocks(go, SitterFamily::Go),
+            vec![
+                (1, 4),   // preamble (package + import)
+                (5, 8),   // type Point struct
+                (9, 12),  // (p *Point) Dist -- method with receiver
+                (13, 17), // generic Add[T any]
+                (18, 21), // grouped type (...) declaration
+            ],
+            "Go fixture spans changed -- grammar_blocks contract regression"
+        );
+    }
+
+    /// WS2 Rust fixture: derive-attributed struct (attribute_item is a
+    /// PRECEDING SIBLING in tree-sitter-rust -- the fold is explicit,
+    /// python_blocks' decorator folding), inherent impl, trait impl,
+    /// trait (whose `fn area(&self) -> f64;` is a function_signature_item,
+    /// deliberately not a header), inline mod with an attributed fn.
+    #[test]
+    fn grammar_blocks_rust_fixture() {
+        let rs = "use std::fmt;\n\n#[derive(Debug)]\npub struct Point {\n    x: i32,\n}\n\nimpl Point {\n    pub fn new(x: i32) -> Self {\n        Point { x }\n    }\n}\n\nimpl fmt::Debug for Point {\n    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {\n        Ok(())\n    }\n}\n\npub trait Shape {\n    fn area(&self) -> f64;\n}\n\nmod tests {\n    #[test]\n    fn t() {}\n}\n";
+        assert_eq!(
+            grammar_blocks(rs, SitterFamily::Rust),
+            vec![
+                (1, 2),   // preamble (use + blank)
+                (3, 7),   // #[derive(Debug)] pub struct Point (attr folded)
+                (8, 13),  // impl Point
+                (9, 13),  // Point::new (depth 1)
+                (14, 19), // impl fmt::Debug for Point (trait impl)
+                (15, 19), // fmt (depth 1)
+                (20, 23), // trait Shape (signature-only member: no span)
+                (24, 27), // mod tests (has body; `mod x;` lines would not emit)
+                (25, 27), // #[test] fn t (attr folded, depth 1)
+            ],
+            "Rust fixture spans changed -- grammar_blocks contract regression"
+        );
+    }
+
+    /// WS2 C fixture: typedef'd struct (type_definition and its hoisted
+    /// struct_specifier land on one line -- dedup keeps the shallowest,
+    /// the JS export-hoist behavior), top-level enum, function-like macro,
+    /// static + extern function definitions.
+    #[test]
+    fn grammar_blocks_c_fixture() {
+        let c = "#include <stdio.h>\n\ntypedef struct Node {\n    int value;\n} Node;\n\nenum Mode { A, B };\n\n#define SQUARE(x) ((x) * (x))\n\nstatic int helper(int v) {\n    return v * v;\n}\n\nint main(void) {\n    printf(\"%d\", helper(2));\n    return 0;\n}\n";
+        assert_eq!(
+            grammar_blocks(c, SitterFamily::C),
+            vec![
+                (1, 2),   // preamble (#include)
+                (3, 6),   // typedef struct Node
+                (7, 8),   // enum Mode
+                (9, 10),  // #define SQUARE(x) -- preproc_function_def
+                (11, 14), // helper
+                (15, 18), // main
+            ],
+            "C fixture spans changed -- grammar_blocks contract regression"
+        );
+    }
+
+    /// WS2 C++ fixture: namespace, template class (class_specifier hoists
+    /// to the `template <..>` line; the template_declaration header on the
+    /// same line dedups to the shallowest), inline constructor + method
+    /// members, template function, plain struct, free function.
+    #[test]
+    fn grammar_blocks_cpp_fixture() {
+        let cpp = "#include <vector>\n\nnamespace geo {\n\ntemplate <typename T>\nclass Box {\npublic:\n    Box(T v) : v_(v) {}\n\n    T get() const { return v_; }\n\nprivate:\n    T v_;\n};\n\ntemplate <typename T>\nT twice(T v) {\n    return v + v;\n}\n\n}\n\nstruct Pair {\n    int a;\n};\n\nint Free(int x) {\n    return x + 1;\n}\n";
+        assert_eq!(
+            grammar_blocks(cpp, SitterFamily::Cpp),
+            vec![
+                (1, 2),   // preamble (#include)
+                (3, 22),  // namespace geo (partition to struct Pair)
+                (5, 15),  // template<..> class Box (hoisted, depth 1)
+                (8, 9),   // Box constructor (depth 2)
+                (10, 15), // Box::get (depth 2, swallows class close)
+                (16, 22), // template<..> T twice (hoisted, depth 1)
+                (23, 26), // struct Pair
+                (27, 29), // int Free
+            ],
+            "C++ fixture spans changed -- grammar_blocks contract regression"
+        );
+    }
+
+    /// WS2 dispatch + gating table checks: extension -> grammar family
+    /// (.h goes to the C++ grammar, difftastic's choice), and the
+    /// C-family suffixes are code ONLY under --cfamily-ext (pure-function
+    /// form -- the process-global is deliberately not toggled here, tests
+    /// run in parallel threads).
+    #[test]
+    fn ws2_family_dispatch_and_cfamily_gating() {
+        assert_eq!(sitter_family("A.java"), Some(SitterFamily::Java));
+        assert_eq!(sitter_family("m/a.go"), Some(SitterFamily::Go));
+        assert_eq!(sitter_family("src/lib.rs"), Some(SitterFamily::Rust));
+        assert_eq!(sitter_family("z.c"), Some(SitterFamily::C));
+        for h in ["a.cpp", "a.cc", "a.cxx", "a.hpp", "a.hh", "a.h"] {
+            assert_eq!(sitter_family(h), Some(SitterFamily::Cpp), "{h}");
+        }
+        assert_eq!(sitter_family("a.py"), None); // python_blocks' branch, not ours
+        assert_eq!(sitter_family("a.ts"), None); // ts_blocks' branch, not ours
+        for s in [".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".hh"] {
+            assert!(!code_suffix_allowed_with(s, false), "{s} must be OFF by default");
+            assert!(code_suffix_allowed_with(s, true), "{s} must be ON under --cfamily-ext");
+        }
+        assert!(code_suffix_allowed_with(".py", false) && code_suffix_allowed_with(".java", false));
+        assert!(!cfamily_ext_enabled(), "process default must be OFF in tests");
+    }
+
+    /// WS2 flag gating in pack_regions for a grammar-batch language,
+    /// mirroring `pack_regions_ts_blocks_flag_gates_js_only`: OFF keeps
+    /// .java on window_blocks; ON seats the structural method span at its
+    /// header; the .py control file is byte-identical in both states.
+    #[test]
+    fn pack_regions_grammar_blocks_flag_gates_java_only() {
+        let tmp = std::env::temp_dir().join(format!("roust_ws2_gate_{}", std::process::id()));
+        std::fs::create_dir_all(&tmp).unwrap();
+        let mut java = String::from("import java.util.List;\n\nclass Big {\n    int frob() {\n");
+        for i in 5..=55 {
+            java.push_str(&format!("        int v{i} = {i};\n"));
+        }
+        java.push_str("        return frobnicate_widget();\n    }\n}\n"); // term on line 56
+        std::fs::write(tmp.join("A.java"), &java).unwrap();
+        std::fs::write(tmp.join("b.py"), "def frobnicate_widget():\n    return 1\n").unwrap();
+
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("frobnicate widget", &[]);
+        let scores: IndexMap<String, f64> =
+            [("A.java".to_string(), 1.0), ("b.py".to_string(), 1.0)].into_iter().collect();
+        let files = vec!["A.java".to_string(), "b.py".to_string()];
+        let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
+
+        let (spans_off, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans_on, _) =
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, true);
+
+        let java_starts_off: Vec<usize> = spans_off["A.java"].iter().map(|s| s.0).collect();
+        let java_starts_on: Vec<usize> = spans_on["A.java"].iter().map(|s| s.0).collect();
+        assert!(
+            !java_starts_off.contains(&3),
+            "flag OFF must keep window_blocks for .java (no span at the class header), got {java_starts_off:?}"
+        );
+        assert!(
+            java_starts_on.contains(&3) || java_starts_on.contains(&4),
+            "flag ON must seat a structural span at the class/method header, got {java_starts_on:?}"
+        );
+        assert_eq!(
+            spans_off["b.py"], spans_on["b.py"],
+            "the structural flag must not touch the Python path"
+        );
+        std::fs::remove_dir_all(&tmp).ok();
     }
 
     /// E23: a headerless script degrades to the whole-file span, exactly
