@@ -1103,6 +1103,27 @@ static VENDOR_RE: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
+// WS3a: the one-word `thirdparty` component joins the vendor guard under
+// --impl-prior-v2 ONLY. nlohmann/json vendors Google Benchmark at
+// `benchmarks/thirdparty/`; VENDOR_RE knows `third_party` but not
+// `thirdparty`, and under v1 the gap was masked because the `benchmarks?`
+// component damped those files 0.3x anyway. v2 undamps doc-like dirs, and
+// the WS3a cpp arm measured the vendored benchmark sources displacing
+// gold on 2/129 instances (nlohmann__json-944, -969). Gating the new
+// alternate under the same flag preserves flag-OFF byte-identity with
+// main; the ":ipv2" cache marker already re-keys flag-ON indexes.
+static VENDOR_V2_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?i)(^|/)thirdparty(/|$)").unwrap());
+
+fn is_vendored(rel: &str) -> bool {
+    is_vendored_with(rel, impl_prior_v2_enabled())
+}
+
+/// Pure-function form of `is_vendored` (explicit flag state) for tests.
+pub fn is_vendored_with(rel: &str, v2: bool) -> bool {
+    VENDOR_RE.is_match(rel) || (v2 && VENDOR_V2_RE.is_match(rel))
+}
+
 const MAX_LINE_CHARS: usize = 3000;
 
 pub fn impl_prior(rel: &str) -> f64 {
@@ -1364,7 +1385,7 @@ impl Corpus {
             if !has_code_suffix(rel) {
                 continue;
             }
-            if VENDOR_RE.is_match(rel) {
+            if is_vendored(rel) {
                 continue;
             }
             let full = repo_path.join(rel);
@@ -4909,6 +4930,34 @@ mod tests {
         // the C-family extensions are indexed at all.
         assert_eq!(impl_prior_with("benchmark/foo.hpp", true, true), 1.0);
         assert_eq!(impl_prior_with("benchmark/foo.hpp", true, false), 0.3);
+    }
+
+    /// WS3a vendored-thirdparty guard: the one-word `thirdparty` component
+    /// is vendor-excluded ONLY under --impl-prior-v2 (v1 masked the
+    /// VENDOR_RE gap by damping `benchmarks?/` 0.3x; v2 undamps it, and
+    /// the cpp arm measured nlohmann's vendored Google Benchmark
+    /// displacing gold). Flag-OFF must match main's VENDOR_RE exactly.
+    #[test]
+    fn ws3a_vendor_thirdparty_gated_by_flag() {
+        let vendored_v2_only = [
+            "benchmarks/thirdparty/benchmark/src/benchmark.cc",
+            "benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h",
+            "test/thirdparty/catch/catch.hpp",
+        ];
+        for rel in vendored_v2_only {
+            assert!(!is_vendored_with(rel, false), "v1 must keep {rel}");
+            assert!(is_vendored_with(rel, true), "v2 must exclude {rel}");
+        }
+        // existing alternates unaffected by the flag
+        for rel in ["third_party/lib/x.cc", "vendor/pkg/y.js", "node_modules/z.js"] {
+            assert!(is_vendored_with(rel, false), "v1 excludes {rel}");
+            assert!(is_vendored_with(rel, true), "v2 excludes {rel}");
+        }
+        // production paths stay in under both
+        for rel in ["src/thirdparty_import.rs", "lib/third.rs", "src/main.cpp"] {
+            assert!(!is_vendored_with(rel, false), "v1 keeps {rel}");
+            assert!(!is_vendored_with(rel, true), "v2 keeps {rel}");
+        }
     }
 
     /// WS2c vendored-C guard: the new VENDOR_RE alternates exclude

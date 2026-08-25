@@ -259,8 +259,12 @@ struct Args {
     /// every language, with _test.<ext> broadened to all extensions.
     /// Non-code files in doc-like dirs keep the damp. Also lifts the
     /// structural-expansion / testbridge / docsbridge exclusions for
-    /// no-longer-damped files (all key off impl_prior). Re-keys the index
-    /// cache (def_index is impl_prior-gated at build time). Default OFF.
+    /// no-longer-damped files (all key off impl_prior), and adds the
+    /// one-word `thirdparty` component to the vendor guard (the WS3a cpp
+    /// arm measured nlohmann's vendored Google Benchmark displacing gold
+    /// once undamped; VENDOR_RE only knew `third_party`). Re-keys the
+    /// index cache (def_index is impl_prior-gated at build time). Default
+    /// OFF.
     #[arg(long)]
     impl_prior_v2: bool,
 
