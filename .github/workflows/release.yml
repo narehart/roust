@@ -4,8 +4,7 @@ name: Release
 # `dry_run` (default true) builds every artifact but skips every publish
 # step. See RELEASE.md.
 #
-# Distribution channels (PyPI was dropped -- roust is a Rust binary, not a
-# Python package, and the maturin wheel indirection bought nothing):
+# Distribution channels:
 #   1. GitHub Release  -- raw per-platform binaries + .sha256 checksums
 #   2. npm             -- `roust-<platform>` packages carrying the binary,
 #                         pulled in as optionalDependencies of `roust`

@@ -13,11 +13,6 @@ Prebuilt targets: `x86_64-apple-darwin`, `aarch64-apple-darwin`,
 `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`,
 `x86_64-pc-windows-msvc`.
 
-**PyPI is not a channel.** roust is a Rust binary; the maturin
-`bindings = "bin"` wheel was an indirection that added a build system and a
-registry without adding a user. `pyproject.toml` stays only so `pip install .`
-keeps working as a local source build.
-
 All of it is built and published by `.github/workflows/release.yml`, triggered
 by pushing a tag matching the strict `v[0-9]+.[0-9]+.[0-9]+` pattern (`vX.Y.Z`
 only -- a typo'd or pre-release-suffixed tag does not trigger a publish).
@@ -30,8 +25,8 @@ Everything except the tag push is done, on branch `release-0.3.0` (PR #70):
 
 - versions bumped to 0.3.0 (`pyproject.toml`, `roust-rs/Cargo.toml`, `Cargo.lock`);
 - `CHANGELOG.md` has the 0.3.0 section;
-- distribution reworked: PyPI dropped, npm added (`npm/` package + platform
-  packages), crates.io and GitHub Releases kept;
+- distribution: npm (`npm/` package + platform packages), crates.io, and
+  GitHub Releases;
 - **both registry secrets configured** (see below);
 - dry run green on all five platform targets.
 

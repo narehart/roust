@@ -51,8 +51,6 @@ cargo install --path roust-rs
 
 Prebuilt binaries cover darwin-x64, darwin-arm64, linux-x64, linux-arm64, and
 win32-x64. Any other platform builds from source via `cargo install roust`.
-roust is not published to PyPI — it is a Rust binary, not a Python package,
-and the wheel indirection bought nothing over the three channels above.
 
 `git` should be on `PATH` if you want the commit-history signal (roust
 degrades gracefully without it).
@@ -302,7 +300,7 @@ subprocess call with structured `--json` output when you need it.
 Every component above was added to fix a concrete, measured miss, and every
 number in this README is reproduced in the pipeline's research log,
 including negative results and a pre-registered held-out validation run:
-see [`lab/README.md`](lab/README.md).
+see [`lab/README.md`](https://github.com/narehart/roust/blob/main/lab/README.md).
 
 ## Scoreboard
 
@@ -508,8 +506,7 @@ Adapter + protocol: `lab/contextbench/`; aggregate:
 - First release (npm + crates.io + GitHub Releases) — **pending the tag
   push only**: the pipeline is committed (`.github/workflows/release.yml`),
   both registry secrets (`NPM_TOKEN`, `CARGO_REGISTRY_TOKEN`) are configured,
-  and a dry run builds every platform artifact. PyPI was dropped as a channel
-  — see `RELEASE.md`.
+  and a dry run builds every platform artifact — see `RELEASE.md`.
 - MCP server.
 - Incremental index updates (avoid full reindex on every change).
 - Homebrew tap.
@@ -517,7 +514,7 @@ Adapter + protocol: `lab/contextbench/`; aggregate:
 ---
 
 Research artifacts -- benchmark JSONLs, diagnostics, and pre-registered
-held-out predictions -- live in [`lab/`](lab/README.md). `lab/` is a frozen
+held-out predictions -- live in [`lab/`](https://github.com/narehart/roust/blob/main/lab/README.md). `lab/` is a frozen
 Python research sandbox (including `lab/lanes2.py`, the oracle the parity
 gates were built against) -- it is never the source of truth for shipped
 behavior, which is `roust-rs/` end to end.

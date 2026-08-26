@@ -1,0 +1,14 @@
+{
+  "name": "roust-repo",
+  "private": true,
+  "description": "Repo tooling for roust (docs site build). The published npm package lives in npm/roust.",
+  "type": "module",
+  "scripts": {
+    "docs:build": "node scripts/build-docs.mjs",
+    "docs:preview": "python3 -m http.server 8931 -d _site",
+    "docs:test": "node --test scripts/build-docs.test.mjs"
+  },
+  "devDependencies": {
+    "marked": "^18.0.5"
+  }
+}

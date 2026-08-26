@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>roust — docs</title>
+    <meta
+      name="description"
+      content="roust is recall-first code retrieval for coding agents: one ranked, token-budgeted bundle per query. No model, no embeddings, no API key. Written in Rust."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="stylesheet" href="assets/docs.css" />
+  </head>
+  <body>
+    <div class="page">
+      <div class="masthead">
+        <strong>roust</strong><span class="dim"> — 25 files, 8366 tokens, 160ms</span>
+      </div>
+      <p class="sub">
+        Point a coding agent at roust and it gets one ranked, token-budgeted
+        bundle of the relevant code back in a single call — no model, no
+        embeddings, no API key, no training. Written in Rust.
+      </p>
+      <div class="cmds">
+        <a class="cmd" href="https://www.npmjs.com/package/roust"
+          >$ npx roust "connection pooling"</a
+        >
+        <a class="cmd cmd-alt" href="https://crates.io/crates/roust"
+          >$ cargo install roust</a
+        >
+      </div>
+      <div class="cb">
+        <div class="cbar">SWE-bench Lite — Agentless "% correct location"</div>
+        <pre class="cbody"><span class="cmt"># no model in the retrieval path</span>
+roust              FILE 92.3   FUNCTION 54.7   LINE 44.0
+Agentless GPT-4o   FILE 69.7   FUNCTION 52.0   LINE 35.3
+archex (BM25)      FILE 56.0   FUNCTION 38.3   LINE 25.7
+
+<span class="cmt"># structural packing, eight languages, one mechanism</span>
+<span class="pass">✓</span> python  <span class="pass">✓</span> javascript  <span class="pass">✓</span> typescript  <span class="pass">✓</span> java
+<span class="pass">✓</span> go      <span class="pass">✓</span> rust        <span class="pass">✓</span> c           <span class="pass">✓</span> c++</pre>
+      </div>
+      <!-- nav-tree -->
+      <div class="foot">
+        <span>MIT License</span>
+        <a class="flink" href="https://github.com/narehart/roust"
+          >github.com/narehart/roust</a
+        >
+      </div>
+    </div>
+  </body>
+</html>

@@ -12,10 +12,7 @@ published). Distributed through three channels — **npm** (`npm i -g roust` /
 `npx roust`, with the platform binary delivered as an `optionalDependencies`
 package, the esbuild/Biome model), **crates.io** (`cargo install roust`, and
 the build-from-source path for platforms without a prebuilt binary), and
-**GitHub Releases** (raw per-platform binaries with `.sha256` checksums).
-PyPI was dropped as a channel: roust is a Rust binary, not a Python package,
-and the maturin wheel added a build system and a registry without adding a
-user (`pyproject.toml` stays for local `pip install .` source builds). Headline: roust stopped being a
+**GitHub Releases** (raw per-platform binaries with `.sha256` checksums). Headline: roust stopped being a
 Python-shaped tool. Structural region packing now covers eight languages
 via pinned tree-sitter grammars, C-family sources are indexed at all, and
 stack traces from four ecosystems feed the file-boost channel -- each
@@ -148,10 +145,10 @@ Lite 92.33 FILE / 54.67 FUNCTION / 44.00 LINE / .52728 fraction, Verified
   regressed. New flags: `--no-trace-boost` (escape hatch), flag-gated
   `--lexboost`/`--lexboost-graph` (E20 experiment, default off, gate
   REJECT - not a default).
-- Release infrastructure: tag-triggered PyPI (trusted publishing) + crates.io
-  + GitHub Releases (`.github/workflows/release.yml`, `RELEASE.md`).
+- Release infrastructure: tag-triggered npm + crates.io + GitHub Releases
+  (`.github/workflows/release.yml`, `npm/`, `RELEASE.md`).
 
-## [0.2.0] - UNRELEASED (not yet published to PyPI or crates.io) - Single Rust engine
+## [0.2.0] - UNRELEASED (development milestone, never published) - Single Rust engine
 
 - `pip install roust` (from a source checkout) now delivers the Rust binary
   directly (maturin `bindings = "bin"`), replacing the parallel Python
