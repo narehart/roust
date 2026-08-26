@@ -158,7 +158,8 @@ def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
               max_siblings: int = 0, route: bool = False,
               route_test_penalty: float = 0.0, lexboost: float = 0.0,
               lexboost_graph: str = "", trace_boost: bool = False,
-              no_trace_boost: bool = False) -> tuple[dict | None, str | None]:
+              no_trace_boost: bool = False, file_score: str = "",
+              test_bridge: float = 0.0) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path),
             *EXTRA_ENGINE_FLAGS]
     if route:
@@ -186,6 +187,15 @@ def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
     if no_trace_boost:
         # Escape hatch: reproduces the pre-adoption (pre-PR #52) engine.
         argv += ["--no-trace-boost"]
+    if file_score:
+        # E21 (campaign #4 wave 5): chunk-aggregated FILE scoring. ""
+        # (default) omits the flag -> the binary's own default (accum).
+        argv += ["--file-score", file_score]
+    if test_bridge != 0.0:
+        # E22 (campaign #4 wave 5): static test-bridge FILE channel. 0.0
+        # (default) is this script's "omit the flag" sentinel, matching the
+        # binary's own disabled default.
+        argv += ["--test-bridge", str(test_bridge)]
     if family_enum:
         # E19 (campaign #4 wave 5): def-name-family sibling enumeration.
         # Omitted (the default) -> the binary's own default (off).
@@ -267,7 +277,8 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
                        max_siblings: int = 0, repos_dir: Path | None = None,
                        route: bool = False, route_test_penalty: float = 0.0,
                        lexboost: float = 0.0, lexboost_graph: str = "",
-                       trace_boost: bool = False, no_trace_boost: bool = False) -> dict:
+                       trace_boost: bool = False, no_trace_boost: bool = False,
+                       file_score: str = "", test_bridge: float = 0.0) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -295,7 +306,8 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
 
     obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp,
                          family_enum, sibling_sim, max_siblings, route, route_test_penalty,
-                         lexboost, lexboost_graph, trace_boost, no_trace_boost)
+                         lexboost, lexboost_graph, trace_boost, no_trace_boost,
+                         file_score, test_bridge)
     if err:
         rec["error"] = err
         return rec
@@ -316,6 +328,12 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
     # (lexboost: direct-vs-neighbor anatomy; trace_boost: frame files/ranks).
     rec["lexboost"] = stats.get("lexboost")
     rec["trace_boost"] = stats.get("trace_boost")
+    # E21/E22 diagnostics -- present only when the corresponding flag was
+    # passed; None otherwise. Consumed by the gate's flip itemization
+    # (file_score: old-vs-new score + winning chunk; test_bridge: the
+    # query->test->file path + per-query bridged-file counts).
+    rec["file_score"] = stats.get("file_score")
+    rec["test_bridge"] = stats.get("test_bridge")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]
@@ -403,6 +421,14 @@ def main() -> None:
                      help="passthrough to roust's --route-test-penalty (E11 conditional "
                           "test-path downweight); 0.0 (default) omits the flag, i.e. the "
                           "binary's own default (0.85); only meaningful with --route")
+    ap.add_argument("--file-score", type=str, default="",
+                     help="passthrough to roust's --file-score (E21 chunk-aggregated FILE "
+                          "scoring: accum|chunk-max|chunk-top2); empty (default) omits the "
+                          "flag, i.e. the binary's own default (accum)")
+    ap.add_argument("--test-bridge", type=float, default=0.0,
+                     help="passthrough to roust's --test-bridge (E22 static test-bridge FILE "
+                          "channel weight); 0.0 (default) omits the flag, i.e. the binary's "
+                          "own disabled default")
     ap.add_argument("--cfamily-ext", action="store_true",
                      help="WS2b (campaign #56): append --cfamily-ext to every roust invocation "
                           "(index .c/.h/.cc/.cpp/.cxx/.hpp/.hh); omitted by default (binary "
@@ -470,7 +496,7 @@ def main() -> None:
                                      args.family_enum, args.sibling_sim, args.max_siblings,
                                      args.repos_dir, args.route, args.route_test_penalty,
                                      args.lexboost, args.lexboost_graph, args.trace_boost,
-                                     args.no_trace_boost)
+                                     args.no_trace_boost, args.file_score, args.test_bridge)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

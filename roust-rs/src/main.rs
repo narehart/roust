@@ -349,6 +349,25 @@ struct Args {
     /// query time).
     #[arg(long, default_value = "import")]
     lexboost_graph: String,
+
+    /// E21 (campaign #4 wave 5): FILE-score aggregation. "accum" (default,
+    /// byte-identical to the engine without this flag) = whole-file BM25F
+    /// accumulation; "chunk-max" = the content channel is scored per packer
+    /// chunk (python_blocks / window fallback) and aggregated per file by
+    /// MAX chunk score (BRTracer segmentation, hub-attractor defense);
+    /// "chunk-top2" = mean of the top-2 chunk scores.
+    #[arg(long, default_value = "accum")]
+    file_score: String,
+
+    /// E22 (campaign #4 wave 5): static test-bridge FILE channel weight.
+    /// Bridges the query to production files via lexically-matching test
+    /// files' imports + call expressions (IssueExec's issue->tests->code
+    /// pathway, statically approximated; capped at 5 bridged files/query),
+    /// adding weight * top_score * strength to the pre-normalization file
+    /// score. 0 (default) = OFF, byte-identical to the engine without this
+    /// flag.
+    #[arg(long, default_value_t = 0.0)]
+    test_bridge: f64,
 }
 
 fn main() {
@@ -402,6 +421,19 @@ fn main() {
     }
     if args.lexboost_graph != "import" && args.lexboost_graph != "knn" {
         eprintln!("roust: error: --lexboost-graph must be 'import' or 'knn'");
+        std::process::exit(2);
+    }
+    let file_score_mode = match args.file_score.as_str() {
+        "accum" => roust::core::FileScoreMode::Accum,
+        "chunk-max" => roust::core::FileScoreMode::ChunkMax,
+        "chunk-top2" => roust::core::FileScoreMode::ChunkTop2,
+        _ => {
+            eprintln!("roust: error: --file-score must be 'accum', 'chunk-max', or 'chunk-top2'");
+            std::process::exit(2);
+        }
+    };
+    if !args.test_bridge.is_finite() || !(0.0..=1.0).contains(&args.test_bridge) {
+        eprintln!("roust: error: --test-bridge must be in [0, 1]");
         std::process::exit(2);
     }
     if args.route && args.trace_boost {
@@ -521,6 +553,8 @@ fn main() {
         lexboost: args.lexboost,
         lexboost_nbrs: lexboost_nbrs.as_ref(),
         lexboost_hubs: lexboost_hub_set.as_ref(),
+        file_score: file_score_mode,
+        test_bridge: args.test_bridge,
         ..Default::default()
     };
     let (mut files, scores, explain) = select_files(&corpus, &terms, true, &params);
@@ -602,6 +636,27 @@ fn main() {
         stats["trace_boost"] = serde_json::json!({
             "trace_files": boost_files,
             "formats_v2": use_trace_formats_v2,
+        });
+    }
+    if file_score_mode != roust::core::FileScoreMode::Accum {
+        // Present only under --file-score chunk-* (defaults stay byte-
+        // identical): the old-vs-new score anatomy `(file, chunk_score,
+        // accum_score, best_chunk_content, best_chunk_start,
+        // best_chunk_end)`, consumed by the E21 gate's flip itemization.
+        stats["file_score"] = serde_json::json!({
+            "mode": args.file_score,
+            "top": &explain.file_score_top,
+        });
+    }
+    if args.test_bridge > 0.0 {
+        // Present only under --test-bridge (defaults stay byte-identical):
+        // the bridged files `(file, via_test, strength, added, call_hits)`
+        // + count, consumed by the E22 gate's bridge-path anatomy and the
+        // flooding check.
+        stats["test_bridge"] = serde_json::json!({
+            "weight": args.test_bridge,
+            "n_bridged": explain.test_bridge.len(),
+            "bridged": &explain.test_bridge,
         });
     }
     if args.lexboost > 0.0 {

@@ -2090,6 +2090,177 @@ impl Corpus {
         }
     }
 
+    /// E21 (campaign #4 wave 5): chunk-aggregated BM25F -- the CONTENT
+    /// channel of `bm25_params` is replaced by chunk-level scoring over the
+    /// packer's OWN existing units (`python_blocks` for .py; `window_blocks`
+    /// over `hit_lines` with the packer's radius 30 otherwise), aggregated
+    /// per file by MAX chunk score (`top2 == false`) or the mean of the top
+    /// two chunk scores (`top2 == true`). Path bonus, comment channel, and
+    /// the impl_prior multiplier are byte-identical to `bm25_params` -- the
+    /// only change is which aggregate the content channel contributes
+    /// (BRTracer ICSME 2014 segmentation; cAST arXiv:2506.15655; spec
+    /// `lab/research/wave5/file-ranking-and-routing.md` a4).
+    ///
+    /// Each chunk is scored with the same Okapi formula and the same
+    /// corpus-level statistics as a whole file would be (per-term idf from
+    /// `self.df`/`self.n_docs`; length normalization against the corpus
+    /// `avg_len`), so chunk scores from different files are mutually
+    /// comparable: a 4,000-line hub file's scattered generic-term overlap no
+    /// longer ACCUMULATES into one giant document score, while a gold file
+    /// with one dense on-topic region keeps its peak.
+    ///
+    /// Coverage guard (documented deviation from the packer's empty-hit
+    /// fallback): for a non-.py file where `hit_lines` finds nothing (a
+    /// stemmed term need not be a substring of any line), the whole file is
+    /// scored as ONE chunk -- which reproduces that file's accumulated
+    /// content score exactly -- instead of the packer's head-of-file window,
+    /// so no file can lose its entire content channel to the fallback.
+    ///
+    /// Determinism: files are visited in `self.files` order; terms are
+    /// summed in `terms` order; chunk ties break to the earliest span.
+    /// Returns `(scores, best_chunk)` where `best_chunk[rel] = (a, b,
+    /// content_chunk_score)` is the winning chunk per scored file (for the
+    /// gate's flip anatomy).
+    pub fn bm25_chunk(&self, terms: &[String], top2: bool) -> (IndexMap<String, f64>, HashMap<String, (usize, usize, f64)>) {
+        self.bm25_chunk_params(terms, 1.2, 0.75, 2.5, true, 0.5, top2)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn bm25_chunk_params(
+        &self,
+        terms: &[String],
+        k1: f64,
+        b: f64,
+        path_weight: f64,
+        use_prior: bool,
+        comment_weight: f64,
+        top2: bool,
+    ) -> (IndexMap<String, f64>, HashMap<String, (usize, usize, f64)>) {
+        // Per-term idf, in `terms` order, restricted (exactly like
+        // `bm25_params`' content loop) to terms present in the body df.
+        let mut qterms: Vec<(&String, f64)> = Vec::new();
+        let mut qidx: HashMap<&str, usize> = HashMap::new();
+        for term in terms {
+            if let Some(&dfv) = self.df.get(term) {
+                if !qidx.contains_key(term.as_str()) {
+                    let idf = (1.0 + (self.n_docs as f64 - dfv as f64 + 0.5) / (dfv as f64 + 0.5)).ln();
+                    qidx.insert(term.as_str(), qterms.len());
+                    qterms.push((term, idf));
+                }
+            }
+        }
+        let tset: HashSet<String> = terms.iter().cloned().collect();
+        let m = qterms.len();
+
+        let mut scores: IndexMap<String, f64> = IndexMap::new();
+        let mut best_chunk: HashMap<String, (usize, usize, f64)> = HashMap::new();
+
+        // Content channel, chunk-aggregated, corpus.files order.
+        for rel in &self.files {
+            if m == 0 {
+                break;
+            }
+            let tfm = match self.tf.get(rel) {
+                Some(t) => t,
+                None => continue,
+            };
+            if !qterms.iter().any(|(t, _)| tfm.contains_key(t.as_str())) {
+                continue;
+            }
+            let text = &self.text[rel];
+            let lines = py_splitlines(text);
+            let n = lines.len();
+            // Per-line query-term counts + token lengths, folded into prefix
+            // sums. tokenize() is line-local (IDENT_RE never matches across a
+            // newline), so per-line tokenization sums to the whole-file tf.
+            let mut cum: Vec<u32> = vec![0; (n + 1) * m];
+            let mut cum_len: Vec<u32> = vec![0; n + 1];
+            for (i, ln) in lines.iter().enumerate() {
+                let toks = tokenize(ln);
+                let (dst, src) = cum[i * m..(i + 2) * m].split_at_mut(m);
+                src.copy_from_slice(dst);
+                cum_len[i + 1] = cum_len[i] + toks.len() as u32;
+                for tok in &toks {
+                    if let Some(&j) = qidx.get(tok.as_str()) {
+                        cum[(i + 1) * m + j] += 1;
+                    }
+                }
+            }
+            let spans: Vec<(usize, usize)> = if rel.ends_with(".py") {
+                python_blocks(text)
+            } else {
+                let hits = hit_lines(text, &tset);
+                if hits.is_empty() {
+                    vec![(1, n)] // coverage guard, see doc comment
+                } else {
+                    window_blocks(text, &hits, 30)
+                }
+            };
+            let mut chunk_scores: Vec<(f64, usize, usize)> = Vec::new();
+            for (a, bb) in spans {
+                if a == 0 || bb < a || a > n {
+                    continue;
+                }
+                let bb = bb.min(n);
+                let len_c = (cum_len[bb] - cum_len[a - 1]) as f64;
+                let mut sc = 0.0;
+                for (j, (_t, idf)) in qterms.iter().enumerate() {
+                    let tfv = (cum[bb * m + j] - cum[(a - 1) * m + j]) as f64;
+                    if tfv > 0.0 {
+                        let denom = tfv + k1 * (1.0 - b + b * len_c / self.avg_len);
+                        sc += idf * (tfv * (k1 + 1.0) / denom);
+                    }
+                }
+                if sc > 0.0 {
+                    chunk_scores.push((sc, a, bb));
+                }
+            }
+            if chunk_scores.is_empty() {
+                continue;
+            }
+            chunk_scores.sort_by(|x, y| y.0.total_cmp(&x.0).then(x.1.cmp(&y.1)).then(x.2.cmp(&y.2)));
+            let agg = if top2 && chunk_scores.len() >= 2 {
+                (chunk_scores[0].0 + chunk_scores[1].0) / 2.0
+            } else {
+                chunk_scores[0].0
+            };
+            scores.insert(rel.clone(), agg);
+            best_chunk.insert(rel.clone(), (chunk_scores[0].1, chunk_scores[0].2, chunk_scores[0].0));
+        }
+
+        // Path bonus + comment channel: byte-identical loops to bm25_params.
+        for term in terms {
+            if let Some(&dfv) = self.df.get(term) {
+                let idf = (1.0 + (self.n_docs as f64 - dfv as f64 + 0.5) / (dfv as f64 + 0.5)).ln();
+                for rel in &self.files {
+                    if self.ptoks.get(rel).map(|s| s.contains(term)).unwrap_or(false) {
+                        *scores.entry(rel.clone()).or_insert(0.0) += path_weight * idf;
+                    }
+                }
+            }
+            if self.use_comments && !self.com_tf.is_empty() && self.n_com_docs > 0 {
+                if let Some(&cdf) = self.com_df.get(term) {
+                    let idf_com = (1.0 + (self.n_com_docs as f64 - cdf as f64 + 0.5) / (cdf as f64 + 0.5)).ln();
+                    for rel in &self.files {
+                        if let Some(ctf_counter) = self.com_tf.get(rel) {
+                            if let Some(&ctf) = ctf_counter.get(term) {
+                                let ctf = ctf as f64;
+                                *scores.entry(rel.clone()).or_insert(0.0) +=
+                                    comment_weight * idf_com * (ctf * (k1 + 1.0) / (ctf + k1));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        let scores = if use_prior {
+            scores.into_iter().map(|(rel, s)| (rel.clone(), s * impl_prior(&rel))).collect()
+        } else {
+            scores
+        };
+        (scores, best_chunk)
+    }
+
     /// Standalone Okapi BM25 over the commit-message field only.
     pub fn msg_bm25(&self, terms: &[String]) -> IndexMap<String, f64> {
         self.msg_bm25_params(terms, 1.2, 0.5, true)
@@ -2614,6 +2785,21 @@ pub struct Explain {
     /// default) whenever smoothing is off -- populated only under
     /// `--lexboost`, for the experiment harness's flip anatomy.
     pub lexboost_top: Vec<(String, f64, f64, f64, bool)>,
+    /// E21 chunk-scoring diagnostics: union of the top-15 files by the
+    /// chunk-aggregated score and the top-15 by the accumulated score, as
+    /// `(file, chunk_mode_score, accum_score, best_chunk_content_score,
+    /// best_chunk_start, best_chunk_end)`, ordered by chunk-mode score
+    /// desc then path. Empty (the default) under Accum -- populated only
+    /// under `--file-score chunk-*`, for the gate's old-vs-new flip anatomy.
+    pub file_score_top: Vec<(String, f64, f64, f64, usize, usize)>,
+    /// E22 test-bridge diagnostics: the bridged production files as
+    /// `(file, via_test, strength, added, call_hits)` where `strength` is
+    /// the raw bridge strength normalized to the strongest bridged file and
+    /// `added` is the score actually added pre-normalization. Empty (the
+    /// default) when the channel is off -- populated only under
+    /// `--test-bridge`, for the gate's query->test->file bridge anatomy and
+    /// the flooding check (bridged-file counts per query).
+    pub test_bridge: Vec<(String, String, f64, f64, i64)>,
 }
 
 fn normalize(scores: &IndexMap<String, f64>) -> IndexMap<String, f64> {
@@ -2783,6 +2969,88 @@ fn apply_testbridge_promotions(
     (out, records)
 }
 
+/// E22 (campaign #4 wave 5): call-expression identifiers in a test file's
+/// text -- `name(` including attribute calls (`obj.name(` captures `name`).
+/// Tokenizer-level, no execution (static approximation of IssueExec's
+/// issue -> tests -> code pathway, arXiv:2607.17286; spec
+/// `lab/research/wave5/fresh-sota-scan.md`).
+static CALL_IDENT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\b([A-Za-z_]\w*)\s*\(").unwrap());
+
+/// E22 static test-bridge FILE channel: tests are a human-curated index from
+/// behavior vocabulary to code identifiers. Two-hop bridge, fully static:
+/// (1) rank test-like files by their OWN score in the pristine fused map
+/// `bm` (name/path + content lexical match to the query), keep the top 3
+/// positive-scoring tests; (2) for each, take the non-test production files
+/// its text imports (`file_import_targets`, directed) and count how many of
+/// the test's call-expression identifiers each imported file defines
+/// (`corpus.def_index`); (3) score each bridged production file
+/// `sum_t (s_t / s_top) * (1 + min(call_hits, 3))` over the contributing
+/// tests, and return the TOP 5 by that raw strength (the flooding cap: the
+/// ledger's post-hoc additive bonuses failed 0-for-5 by unbounded spraying).
+///
+/// The caller adds `w * top_score * (raw / raw_max)` to the PRISTINE
+/// pre-normalization score map (the way existing channels integrate), so a
+/// bridged file absent from the lexical pool is INSERTED -- this channel can
+/// reach lexically-flat gold files the pointwise signals cannot.
+///
+/// Determinism: tests processed in (score desc, path asc) order; import
+/// targets sorted; output sorted (raw desc, path asc). Returns
+/// `(file, via_test, raw_strength, call_hits)`.
+fn compute_test_bridge(corpus: &Corpus, bm: &IndexMap<String, f64>) -> Vec<(String, String, f64, i64)> {
+    let testlike: Vec<&String> = corpus
+        .files
+        .iter()
+        .filter(|f| TESTLIKE_RE.is_match(f) && TESTBRIDGE_EXTS.contains(&suffix_of(f)))
+        .collect();
+    let mut ranked_tests: Vec<(&String, f64)> =
+        testlike.iter().map(|f| (*f, bm.get(f.as_str()).copied().unwrap_or(0.0))).collect();
+    ranked_tests.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(b.0)));
+    let top_tests: Vec<(&String, f64)> = ranked_tests.into_iter().filter(|(_, s)| *s > 0.0).take(3).collect();
+    if top_tests.is_empty() {
+        return Vec::new();
+    }
+    let s_top = top_tests[0].1;
+
+    let pyidx = py_module_index(&corpus.files);
+    let fileset: HashSet<&String> = corpus.files.iter().collect();
+    // file -> (raw_strength_sum, via_test, via_contrib, call_hits_via)
+    let mut cand: IndexMap<String, (f64, String, f64, i64)> = IndexMap::new();
+    for (t, s_t) in &top_tests {
+        let text = match corpus.text.get(t.as_str()) {
+            Some(x) => x,
+            None => continue,
+        };
+        let mut targets: Vec<String> = file_import_targets(t, text, &pyidx, &fileset)
+            .into_iter()
+            .filter(|f| impl_prior(f) == 1.0)
+            .collect();
+        targets.sort();
+        if targets.is_empty() {
+            continue;
+        }
+        let calls: HashSet<&str> = CALL_IDENT_RE.captures_iter(text).map(|c| c.get(1).unwrap().as_str()).collect();
+        for f in targets {
+            let hits = calls
+                .iter()
+                .filter(|c| corpus.def_index.get(**c).map(|v| v.contains(&f)).unwrap_or(false))
+                .count() as i64;
+            let contrib = (s_t / s_top) * (1.0 + hits.min(3) as f64);
+            let entry = cand.entry(f).or_insert((0.0, (*t).clone(), contrib, hits));
+            entry.0 += contrib;
+            if contrib > entry.2 {
+                entry.1 = (*t).clone();
+                entry.2 = contrib;
+                entry.3 = hits;
+            }
+        }
+    }
+    let mut out: Vec<(String, String, f64, i64)> =
+        cand.into_iter().map(|(f, (raw, via, _c, hits))| (f, via, raw, hits)).collect();
+    out.sort_by(|a, b| b.2.total_cmp(&a.2).then_with(|| a.0.cmp(&b.0)));
+    out.truncate(5);
+    out
+}
+
 static DOTTED_PATH_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\b[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*){2,}\b").unwrap());
 static SPHINX_DIRECTIVE_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"(?:automodule|currentmodule|module|autoclass|autofunction)::\s*([\w.]+)").unwrap());
@@ -2871,6 +3139,18 @@ fn apply_docsbridge_promotions(
     (out, records)
 }
 
+/// E21 FILE-score aggregation mode (see `Corpus::bm25_chunk`).
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum FileScoreMode {
+    /// Whole-file accumulation (`Corpus::bm25`) -- the default, byte-
+    /// identical to the pre-E21 engine.
+    Accum,
+    /// File content score = MAX chunk score.
+    ChunkMax,
+    /// File content score = mean of the top-2 chunk scores.
+    ChunkTop2,
+}
+
 pub struct SelectParams<'a> {
     pub k_lex: usize,
     pub floor_ratio: f64,
@@ -2899,6 +3179,13 @@ pub struct SelectParams<'a> {
     /// E20 hub-guard set (`lexboost_hubs`): files excluded from RECEIVING
     /// the neighbor term. None = no hub exclusion.
     pub lexboost_hubs: Option<&'a HashSet<String>>,
+    /// E21 FILE-score aggregation (see `Corpus::bm25_chunk`). Accum
+    /// (default) = byte-identical to the pre-E21 engine.
+    pub file_score: FileScoreMode,
+    /// E22 static test-bridge FILE channel weight (see
+    /// `compute_test_bridge`). 0.0 (default) = channel absent, byte-
+    /// identical to the pre-E22 engine.
+    pub test_bridge: f64,
 }
 
 impl<'a> Default for SelectParams<'a> {
@@ -2916,6 +3203,8 @@ impl<'a> Default for SelectParams<'a> {
             lexboost: 0.0,
             lexboost_nbrs: None,
             lexboost_hubs: None,
+            file_score: FileScoreMode::Accum,
+            test_bridge: 0.0,
         }
     }
 }
@@ -2933,11 +3222,66 @@ pub fn select_files(
     use_ppr: bool,
     params: &SelectParams,
 ) -> (Vec<String>, IndexMap<String, f64>, Explain) {
-    let bm = corpus.bm25(terms);
+    // E21 FILE-score aggregation: Accum (default) is the pre-E21 code path,
+    // byte-identical. Chunk modes swap the whole fused map for the chunk-
+    // aggregated one (`Corpus::bm25_chunk`) -- every consumer downstream
+    // (lex_picks, the `scores` budget map, the legacy testbridge promotions'
+    // test ranking, top_score) coherently sees the same aggregate.
+    let mut file_score_top: Vec<(String, f64, f64, f64, usize, usize)> = Vec::new();
+    let bm = match params.file_score {
+        FileScoreMode::Accum => corpus.bm25(terms),
+        mode => {
+            let (chunk_bm, best_chunk) = corpus.bm25_chunk(terms, mode == FileScoreMode::ChunkTop2);
+            // Flip-anatomy diagnostics: old-vs-new score + winning chunk for
+            // the union of both top-15 lists.
+            let accum_bm = corpus.bm25(terms);
+            let top15 = |m: &IndexMap<String, f64>| -> Vec<String> {
+                let mut v: Vec<(String, f64)> = m.iter().map(|(k, s)| (k.clone(), *s)).collect();
+                v.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+                v.into_iter().take(15).map(|(k, _)| k).collect()
+            };
+            let mut union: Vec<String> = top15(&chunk_bm);
+            for f in top15(&accum_bm) {
+                if !union.contains(&f) {
+                    union.push(f);
+                }
+            }
+            file_score_top = union
+                .into_iter()
+                .map(|f| {
+                    let (a, b, csc) = best_chunk.get(&f).copied().unwrap_or((0, 0, 0.0));
+                    (f.clone(), chunk_bm.get(&f).copied().unwrap_or(0.0), accum_bm.get(&f).copied().unwrap_or(0.0), csc, a, b)
+                })
+                .collect();
+            file_score_top.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+            chunk_bm
+        }
+    };
+    let mut bm = bm;
     if bm.is_empty() {
         return (Vec::new(), IndexMap::new(), Explain::default());
     }
     let top_score = bm.values().cloned().fold(0.0_f64, f64::max);
+
+    // E22 static test-bridge channel: applied to the PRISTINE fused map
+    // BEFORE normalization (the way existing channels integrate), scaled by
+    // the map's own top score so the weight is comparable across repos.
+    // top_score above is computed pre-bridge (it is the lexical-confidence
+    // signal, not a channel sum). Flag-gated: test_bridge == 0.0 = this
+    // block is dead code and bm is byte-identical to the pre-E22 engine.
+    let mut test_bridge_diag: Vec<(String, String, f64, f64, i64)> = Vec::new();
+    if params.test_bridge > 0.0 && top_score > 0.0 {
+        let recs = compute_test_bridge(corpus, &bm);
+        if !recs.is_empty() {
+            let raw_max = recs[0].2;
+            for (f, via, raw, hits) in recs {
+                let strength = raw / raw_max;
+                let added = params.test_bridge * top_score * strength;
+                *bm.entry(f.clone()).or_insert(0.0) += added;
+                test_bridge_diag.push((f, via, strength, added, hits));
+            }
+        }
+    }
     let mut bm_n = normalize(&bm);
 
     // E20 LexBoost neighbor smoothing -- applied to the normalized fused
@@ -3040,6 +3384,8 @@ pub fn select_files(
             docsbridge: db_records,
             top_score,
             lexboost_top,
+            file_score_top,
+            test_bridge: test_bridge_diag,
             ..Default::default()
         };
         return (lex_out, scores, explain);
@@ -3296,6 +3642,8 @@ pub fn select_files(
         docsbridge: db_records,
         top_score,
         lexboost_top,
+        file_score_top,
+        test_bridge: test_bridge_diag,
     };
 
     (out, scores, explain)
@@ -7024,6 +7372,285 @@ def omega_worker(pp):
         std::fs::remove_dir_all(&tmp).ok();
     }
 
+    // ------------------------------------------------------------ E21/E22
+
+    /// E21 toy corpus: a "hub" file whose query-term overlap is SCATTERED
+    /// across three separate defs (each term repeated, so whole-file
+    /// accumulation is large) vs a "gold" file with one compact def dense in
+    /// ALL query terms. Filler files stabilize df/avg_len.
+    fn e21_corpus(tag: &str) -> (std::path::PathBuf, Corpus) {
+        let tmp = std::env::temp_dir().join(format!("roust_e21_{tag}_{}", std::process::id()));
+        std::fs::create_dir_all(tmp.join("pkg")).unwrap();
+        // Asymmetric blocks (6/5/4 term repeats) so the hub's chunk scores
+        // are distinct: top-2 mean is then strictly between max/2 and max.
+        let mut hub = String::new();
+        for (i, (term, reps)) in [("frobnicate", 8), ("widget", 6), ("quux", 5)].iter().enumerate() {
+            hub.push_str(&format!("def helper{i}(x):\n"));
+            for j in 0..*reps {
+                hub.push_str(&format!("    {term}_{j} = {term}\n"));
+            }
+            for j in 0..(20 - *reps) {
+                hub.push_str(&format!("    filler{i}{j} = unrelated{i}{j}\n"));
+            }
+        }
+        std::fs::write(tmp.join("pkg/hub.py"), hub).unwrap();
+        std::fs::write(
+            tmp.join("pkg/gold.py"),
+            "def golden(x):\n    frobnicate = x\n    widget = frobnicate\n    quux = widget\n    return quux\n",
+        )
+        .unwrap();
+        for i in 0..3 {
+            let mut filler = format!("def filler_fn{i}():\n");
+            for j in 0..30 {
+                filler.push_str(&format!("    pad{i}{j} = pad_value{i}{j}\n"));
+            }
+            std::fs::write(tmp.join(format!("pkg/filler{i}.py")), filler).unwrap();
+        }
+        let corpus = Corpus::build(&tmp, None, false, false);
+        (tmp, corpus)
+    }
+
+    /// tokenize() is line-local: per-line token counts sum exactly to the
+    /// whole-file tf the index stores -- the invariant `bm25_chunk`'s
+    /// prefix sums rely on.
+    #[test]
+    fn e21_per_line_tokenize_sums_to_file_tf() {
+        let text = "def parseHTTPResponse2(self, data):\n    validators = self.get_validators()\n    snake_case_name = XMLHttpRequest\n    return validators\n";
+        let whole = counter_from_tokens(&tokenize(text));
+        let mut summed: IndexMap<String, u32> = IndexMap::new();
+        for ln in py_splitlines(text) {
+            for t in tokenize(&ln) {
+                *summed.entry(t).or_insert(0) += 1;
+            }
+        }
+        let whole_sorted: std::collections::BTreeMap<_, _> = whole.iter().collect();
+        let summed_sorted: std::collections::BTreeMap<_, _> = summed.iter().collect();
+        assert_eq!(whole_sorted, summed_sorted);
+    }
+
+    /// The chunk score of a known single-block file matches the Okapi
+    /// formula computed by hand from the corpus's own tf/df/avg_len, and
+    /// the assembled map applies path bonus + prior exactly like
+    /// `bm25_params`.
+    #[test]
+    fn e21_chunk_scoring_math_matches_manual() {
+        let (tmp, corpus) = e21_corpus("math");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let (chunk_bm, best) = corpus.bm25_chunk(&terms, false);
+        // gold.py is a single def block (plus no preamble): its best chunk
+        // is the whole content, so tf/len equal the file-level stats.
+        let rel = "pkg/gold.py";
+        let (k1, b) = (1.2, 0.75);
+        let doclen = corpus.doclen[rel] as f64;
+        let mut expected = 0.0;
+        for t in &terms {
+            let dfv = match corpus.df.get(t) {
+                Some(&v) => v as f64,
+                None => continue,
+            };
+            let tfv = corpus.tf[rel].get(t).map(|&v| v as f64).unwrap_or(0.0);
+            if tfv == 0.0 {
+                continue;
+            }
+            let idf = (1.0 + (corpus.n_docs as f64 - dfv + 0.5) / (dfv + 0.5)).ln();
+            expected += idf * (tfv * (k1 + 1.0) / (tfv + k1 * (1.0 - b + b * doclen / corpus.avg_len)));
+        }
+        let (a, bb, csc) = best[rel];
+        assert_eq!((a, bb), (1, 5), "gold's winning chunk is its whole single def block");
+        assert!((csc - expected).abs() < 1e-12, "chunk content score {csc} != manual {expected}");
+        // Assembled map: content + path bonus (none here: no query term in
+        // path tokens), x prior (1.0). So the map value equals the content.
+        assert!((chunk_bm[rel] - expected).abs() < 1e-12);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// The mechanism claim itself: whole-file accumulation ranks the
+    /// scattered-overlap hub file above gold; chunk-max inverts that
+    /// without any exclusion list, and gold's winning chunk is its dense
+    /// def while the hub keeps only its best single-term block.
+    #[test]
+    fn e21_chunk_max_demotes_scattered_hub_keeps_dense_gold() {
+        let (tmp, corpus) = e21_corpus("mech");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let accum = corpus.bm25(&terms);
+        let (chunk_bm, best) = corpus.bm25_chunk(&terms, false);
+        assert!(
+            accum["pkg/hub.py"] > accum["pkg/gold.py"],
+            "toy premise: accumulation favors the hub (hub {} vs gold {})",
+            accum["pkg/hub.py"],
+            accum["pkg/gold.py"]
+        );
+        assert!(
+            chunk_bm["pkg/gold.py"] > chunk_bm["pkg/hub.py"],
+            "chunk-max inverts: gold {} vs hub {}",
+            chunk_bm["pkg/gold.py"],
+            chunk_bm["pkg/hub.py"]
+        );
+        assert_eq!(best["pkg/gold.py"].0, 1, "gold wins on its dense def");
+        // End-to-end: select_files under ChunkMax ranks gold first.
+        let params = SelectParams { file_score: FileScoreMode::ChunkMax, ..Default::default() };
+        let picked = select_files(&corpus, &terms, true, &params);
+        assert_eq!(picked.2.lex_picks[0], "pkg/gold.py", "lex_picks: {:?}", picked.2.lex_picks);
+        assert!(!picked.2.file_score_top.is_empty(), "anatomy diagnostics populated");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// chunk-top2 = mean of the two best chunk scores; degenerates to the
+    /// single chunk score when only one chunk scores.
+    #[test]
+    fn e21_chunk_top2_mean_semantics() {
+        let (tmp, corpus) = e21_corpus("top2");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let (mx, best) = corpus.bm25_chunk(&terms, false);
+        let (t2, best2) = corpus.bm25_chunk(&terms, true);
+        // gold.py has exactly one scoring block: top2 == max.
+        assert_eq!(mx["pkg/gold.py"], t2["pkg/gold.py"]);
+        // hub.py has three scoring blocks: top2 is strictly between
+        // max/2 and max (the second-best block scores > 0 but < best).
+        let h_max = mx["pkg/hub.py"];
+        let h_t2 = t2["pkg/hub.py"];
+        assert!(h_t2 < h_max && h_t2 > h_max / 2.0, "top2 {h_t2} vs max {h_max}");
+        assert_eq!(best["pkg/hub.py"], best2["pkg/hub.py"], "winning chunk unchanged");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Coverage guard: a non-.py file whose stemmed query term is invisible
+    /// to hit_lines' substring scan ("happy" stems to "happi", not a
+    /// substring of any line) falls back to ONE whole-file chunk, which
+    /// reproduces the accumulated content score exactly.
+    #[test]
+    fn e21_non_py_empty_hit_fallback_equals_accum() {
+        let tmp = std::env::temp_dir().join(format!("roust_e21_fallback_{}", std::process::id()));
+        std::fs::create_dir_all(tmp.join("src")).unwrap();
+        std::fs::write(tmp.join("src/mood.js"), "function mood() {\n    return happy;\n}\n").unwrap();
+        std::fs::write(tmp.join("src/other.js"), "function other() {\n    return unrelated;\n}\n").unwrap();
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("happy", &[]);
+        assert!(corpus.df.contains_key("happi"), "premise: stemmed term indexed");
+        let accum = corpus.bm25(&terms);
+        let (chunk_bm, _) = corpus.bm25_chunk(&terms, false);
+        let rel = "src/mood.js";
+        assert!(accum[rel] > 0.0);
+        assert!((chunk_bm[rel] - accum[rel]).abs() < 1e-12, "fallback chunk == accum ({} vs {})", chunk_bm[rel], accum[rel]);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// E22 toy corpus: gold.py is lexically flat for the query, but
+    /// tests/test_frob.py matches the query strongly, imports gold, and
+    /// calls its function.
+    fn e22_corpus(tag: &str) -> (std::path::PathBuf, Corpus) {
+        let tmp = std::env::temp_dir().join(format!("roust_e22_{tag}_{}", std::process::id()));
+        std::fs::create_dir_all(tmp.join("pkg")).unwrap();
+        std::fs::create_dir_all(tmp.join("tests")).unwrap();
+        std::fs::write(tmp.join("pkg/gold.py"), "def golden_path(x):\n    return x + 1\n").unwrap();
+        std::fs::write(tmp.join("pkg/other.py"), "def unrelated_helper():\n    return 2\n").unwrap();
+        std::fs::write(
+            tmp.join("tests/test_frob.py"),
+            "from pkg.gold import golden_path\n\ndef test_frobnicate_widget():\n    frobnicate = golden_path(1)\n    widget = frobnicate\n    assert widget\n",
+        )
+        .unwrap();
+        // Weak direct competitor so the bm map is non-empty beyond the test.
+        std::fs::write(tmp.join("pkg/decoy.py"), "def decoy():\n    widget = 1\n    return widget\n").unwrap();
+        let corpus = Corpus::build(&tmp, None, false, false);
+        (tmp, corpus)
+    }
+
+    /// The bridge path: query -> matching test -> imported+called
+    /// production file, with call-hit evidence; and the channel INSERTS a
+    /// zero-direct-score gold into the lexical ranking pre-normalization.
+    #[test]
+    fn e22_test_bridge_bridges_and_inserts() {
+        let (tmp, corpus) = e22_corpus("bridge");
+        let terms = query_terms("frobnicate widget", &[]);
+        let bm = corpus.bm25(&terms);
+        assert!(!bm.contains_key("pkg/gold.py"), "premise: gold lexically flat");
+        let recs = compute_test_bridge(&corpus, &bm);
+        assert!(!recs.is_empty(), "bridge found");
+        let gold = recs.iter().find(|r| r.0 == "pkg/gold.py").expect("gold bridged");
+        assert_eq!(gold.1, "tests/test_frob.py", "via the matching test");
+        assert!(gold.3 >= 1, "call-expression evidence (golden_path called): {}", gold.3);
+        // End-to-end: default off leaves gold out of lex_picks; w=0.3
+        // brings it in, and the diagnostics carry the path.
+        let base = select_files(&corpus, &terms, true, &SelectParams::default());
+        assert!(!base.2.lex_picks.contains(&"pkg/gold.py".to_string()));
+        assert!(base.2.test_bridge.is_empty(), "no diagnostics when off");
+        let params = SelectParams { test_bridge: 0.3, ..Default::default() };
+        let bridged = select_files(&corpus, &terms, true, &params);
+        assert!(bridged.2.lex_picks.contains(&"pkg/gold.py".to_string()), "lex_picks: {:?}", bridged.2.lex_picks);
+        let diag = bridged.2.test_bridge.iter().find(|r| r.0 == "pkg/gold.py").expect("diag");
+        assert!(diag.2 > 0.0 && diag.3 > 0.0);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Flooding cap: a test importing many production modules bridges at
+    /// most 5 files, ranked by bridge strength (call-evidenced imports
+    /// outrank plain imports).
+    #[test]
+    fn e22_test_bridge_caps_at_five() {
+        let tmp = std::env::temp_dir().join(format!("roust_e22_cap_{}", std::process::id()));
+        std::fs::create_dir_all(tmp.join("pkg")).unwrap();
+        std::fs::create_dir_all(tmp.join("tests")).unwrap();
+        let mut test_text = String::new();
+        for i in 0..8 {
+            std::fs::write(
+                tmp.join(format!("pkg/mod{i}.py")),
+                format!("def func{i}():\n    return {i}\n"),
+            )
+            .unwrap();
+            test_text.push_str(&format!("from pkg.mod{i} import func{i}\n"));
+        }
+        test_text.push_str("\ndef test_frobnicate_widget():\n    frobnicate = func0()\n    widget = func1()\n    assert frobnicate and widget\n");
+        std::fs::write(tmp.join("tests/test_many.py"), test_text).unwrap();
+        let corpus = Corpus::build(&tmp, None, false, false);
+        let terms = query_terms("frobnicate widget", &[]);
+        let bm = corpus.bm25(&terms);
+        let recs = compute_test_bridge(&corpus, &bm);
+        assert!(recs.len() <= 5, "cap: {recs:?}");
+        assert!(recs.len() >= 2);
+        // Called imports outrank plain imports.
+        let names: Vec<&str> = recs.iter().map(|r| r.0.as_str()).collect();
+        assert!(names[0] == "pkg/mod0.py" || names[0] == "pkg/mod1.py", "call-evidenced first: {names:?}");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Determinism: both new channels produce identical results (values AND
+    /// iteration order) across repeated computation.
+    #[test]
+    fn e21_e22_deterministic_across_runs() {
+        let (tmp, corpus) = e21_corpus("det");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let (a1, b1) = corpus.bm25_chunk(&terms, false);
+        let (a2, b2) = corpus.bm25_chunk(&terms, false);
+        assert_eq!(a1, a2);
+        let k1: Vec<&String> = a1.keys().collect();
+        let k2: Vec<&String> = a2.keys().collect();
+        assert_eq!(k1, k2, "insertion order identical");
+        let m1: std::collections::BTreeMap<_, _> = b1.iter().collect();
+        let m2: std::collections::BTreeMap<_, _> = b2.iter().collect();
+        assert_eq!(m1, m2);
+        std::fs::remove_dir_all(&tmp).ok();
+        let (tmp2, corpus2) = e22_corpus("det");
+        let terms2 = query_terms("frobnicate widget", &[]);
+        let bm = corpus2.bm25(&terms2);
+        assert_eq!(compute_test_bridge(&corpus2, &bm), compute_test_bridge(&corpus2, &bm));
+        std::fs::remove_dir_all(&tmp2).ok();
+    }
+
+    /// Defaults-off guarantee at the API level: SelectParams::default()
+    /// (Accum, bridge 0.0) and explicitly-disabled configurations produce
+    /// identical output.
+    #[test]
+    fn e21_e22_defaults_off_identical() {
+        let (tmp, corpus) = e21_corpus("off");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let a = select_files(&corpus, &terms, true, &SelectParams::default());
+        let params = SelectParams { file_score: FileScoreMode::Accum, test_bridge: 0.0, ..Default::default() };
+        let b = select_files(&corpus, &terms, true, &params);
+        assert_eq!(a.0, b.0);
+        assert_eq!(a.1, b.1);
+        assert!(a.2.file_score_top.is_empty() && a.2.test_bridge.is_empty());
+        std::fs::remove_dir_all(&tmp).ok();
+    }
     // ------------------------------------------------------------ E23 tests
 
     /// E23 JS fixture: arrow-function-in-const, export default, nested
