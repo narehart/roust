@@ -15,6 +15,31 @@ only -- a typo'd or pre-release-suffixed tag does not trigger a publish).
 
 ---
 
+## v0.3.0 status (as of 2026-08-26)
+
+Per-release steps 1-4 are **done** on branch `release-0.3.0` (PR #70):
+versions bumped to 0.3.0 in `pyproject.toml`, `roust-rs/Cargo.toml`, and
+`Cargo.lock`; `CHANGELOG.md` has the 0.3.0 section; the dry run
+([workflow run 32916543102](https://github.com/narehart/roust/actions/runs/32916543102))
+came back green on all five wheel targets plus the sdist, with every
+publish job correctly skipped.
+
+What is left, in order:
+
+1. **[USER]** ACTION A below — PyPI pending publisher.
+2. **[USER]** ACTION B below — `gh secret set CARGO_REGISTRY_TOKEN`.
+3. **[either]** Merge PR #70, then tag:
+   ```
+   git checkout main && git pull
+   git tag v0.3.0 && git push origin v0.3.0
+   ```
+
+Steps 1 and 2 are the only ones that need your credentials. Nothing is
+reserved on PyPI or crates.io until the tag push runs the real publish
+jobs — the `roust` name on both registries is still unclaimed (issue #13).
+
+---
+
 ## One-time setup (USER ACTIONS)
 
 These cannot be done by an agent — they require your PyPI and crates.io
