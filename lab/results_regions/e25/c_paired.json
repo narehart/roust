@@ -1,0 +1,297 @@
+{
+ "label": "c",
+ "default": {
+  "n": 128,
+  "n_errors": 1,
+  "file_pct": 46.88,
+  "file_n": 60,
+  "function_pct": 28.12,
+  "function_n": 36,
+  "line_pct": 10.94,
+  "line_n": 14,
+  "mean_fraction": 0.20216720650734812
+ },
+ "shape": {
+  "n": 128,
+  "n_errors": 1,
+  "file_pct": 46.88,
+  "file_n": 60,
+  "function_pct": 28.91,
+  "function_n": 37,
+  "line_pct": 12.5,
+  "line_n": 16,
+  "mean_fraction": 0.21779412307539098
+ },
+ "delta": {
+  "file": 0.0,
+  "function": 0.79,
+  "line": 1.56,
+  "mean_fraction": 0.015627
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_shape_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 1,
+   "c_shape_only": 2,
+   "p": 1.0
+  },
+  "LINE": {
+   "b_def_only": 0,
+   "c_shape_only": 2,
+   "p": 0.5
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 26,
+   "statistic": 99.0,
+   "p": 0.05251908302307129,
+   "n_up": 18,
+   "n_down": 8
+  }
+ },
+ "n_changed": 26,
+ "changed": [
+  {
+   "instance_id": "facebook__zstd-2130",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2473->0.0000",
+   "fraction_delta": -0.247312
+  },
+  {
+   "instance_id": "ponylang__ponyc-4017",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.5556->0.3704",
+   "fraction_delta": -0.185185
+  },
+  {
+   "instance_id": "jqlang__jq-2824",
+   "repo": "jqlang/jq",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1724->0.0000",
+   "fraction_delta": -0.172414
+  },
+  {
+   "instance_id": "facebook__zstd-2094",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2148->0.1333",
+   "fraction_delta": -0.081481
+  },
+  {
+   "instance_id": "ponylang__ponyc-4182",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6000->0.5625",
+   "fraction_delta": -0.0375
+  },
+  {
+   "instance_id": "facebook__zstd-836",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1181->0.1076",
+   "fraction_delta": -0.010417
+  },
+  {
+   "instance_id": "jqlang__jq-2821",
+   "repo": "jqlang/jq",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0661->0.0579",
+   "fraction_delta": -0.008264
+  },
+  {
+   "instance_id": "ponylang__ponyc-2168",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0339->0.0329",
+   "fraction_delta": -0.000969
+  },
+  {
+   "instance_id": "facebook__zstd-3530",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2885->0.3077",
+   "fraction_delta": 0.019231
+  },
+  {
+   "instance_id": "ponylang__ponyc-3746",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1419->0.1645",
+   "fraction_delta": 0.022581
+  },
+  {
+   "instance_id": "ponylang__ponyc-3293",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4049->0.4296",
+   "fraction_delta": 0.024648
+  },
+  {
+   "instance_id": "ponylang__ponyc-3953",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0268",
+   "fraction_delta": 0.026786
+  },
+  {
+   "instance_id": "facebook__zstd-1008",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1062->0.1375",
+   "fraction_delta": 0.03125
+  },
+  {
+   "instance_id": "facebook__zstd-1540",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0673->0.0998",
+   "fraction_delta": 0.032419
+  },
+  {
+   "instance_id": "jqlang__jq-2646",
+   "repo": "jqlang/jq",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.5385",
+   "fraction_delta": 0.038462
+  },
+  {
+   "instance_id": "facebook__zstd-1390",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0833->0.1296",
+   "fraction_delta": 0.046296
+  },
+  {
+   "instance_id": "facebook__zstd-3223",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0143->0.0857",
+   "fraction_delta": 0.071429
+  },
+  {
+   "instance_id": "ponylang__ponyc-2586",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.9268->1.0000",
+   "fraction_delta": 0.073171
+  },
+  {
+   "instance_id": "facebook__zstd-1416",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1454->0.2199",
+   "fraction_delta": 0.074468
+  },
+  {
+   "instance_id": "facebook__zstd-1530",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6082->0.7310",
+   "fraction_delta": 0.122807
+  },
+  {
+   "instance_id": "facebook__zstd-1532",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0463->0.1944",
+   "fraction_delta": 0.148148
+  },
+  {
+   "instance_id": "ponylang__ponyc-2853",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1579",
+   "fraction_delta": 0.157895
+  },
+  {
+   "instance_id": "ponylang__ponyc-2660",
+   "repo": "ponylang/ponyc",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1725",
+   "fraction_delta": 0.172549
+  },
+  {
+   "instance_id": "facebook__zstd-1837",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3861->0.5644",
+   "fraction_delta": 0.178218
+  },
+  {
+   "instance_id": "facebook__zstd-1459",
+   "repo": "facebook/zstd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.4878",
+   "fraction_delta": 0.487805
+  },
+  {
+   "instance_id": "jqlang__jq-2839",
+   "repo": "jqlang/jq",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "0->1",
+   "fraction": "0.0000->1.0000",
+   "fraction_delta": 1.0
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "shape_only": []
+ }
+}

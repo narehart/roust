@@ -1,0 +1,24 @@
+{
+ "label": "go",
+ "n_gold_files": 1434,
+ "both": {
+  "function_declaration": 7717,
+  "method_declaration": 3586
+ },
+ "allowlist_only": {
+  "type_declaration": 3790,
+  "method_declaration": 76,
+  "function_declaration": 6
+ },
+ "allowlist_only_multiline": {
+  "type_declaration": 3526
+ },
+ "allowlist_only_oneline": {
+  "type_declaration": 264,
+  "method_declaration": 76,
+  "function_declaration": 6
+ },
+ "shape_only": {
+  "send_statement": 6
+ }
+}

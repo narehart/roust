@@ -1,0 +1,602 @@
+[
+ {
+  "bench": "lite",
+  "instance_id": "astropy__astropy-12907",
+  "repo": "astropy/astropy",
+  "grammar_files": 215,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "1cf3085f0e4d6101ad1d63083d4f8db4",
+  "hash_on": "1cf3085f0e4d6101ad1d63083d4f8db4"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-11001",
+  "repo": "django/django",
+  "grammar_files": 94,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "e09b94252320a41a8cf3ee525b1b363d",
+  "hash_on": "e09b94252320a41a8cf3ee525b1b363d"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-11283",
+  "repo": "django/django",
+  "grammar_files": 94,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "58ba7b273f48e5e5b8c8c22679ddfafa",
+  "hash_on": "58ba7b273f48e5e5b8c8c22679ddfafa"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-11815",
+  "repo": "django/django",
+  "grammar_files": 106,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "6be1487e1801cdca2074b221b1971229",
+  "hash_on": "6be1487e1801cdca2074b221b1971229"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-12184",
+  "repo": "django/django",
+  "grammar_files": 106,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "007f2ba37834aea922c70a34b15ff69e",
+  "hash_on": "007f2ba37834aea922c70a34b15ff69e"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-12589",
+  "repo": "django/django",
+  "grammar_files": 104,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "fcdff931ea95b42da0b70e9062ae7bbc",
+  "hash_on": "fcdff931ea95b42da0b70e9062ae7bbc"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-13028",
+  "repo": "django/django",
+  "grammar_files": 101,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "30c19212732bf6bfb827d2f511bef337",
+  "hash_on": "30c19212732bf6bfb827d2f511bef337"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-13401",
+  "repo": "django/django",
+  "grammar_files": 101,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "34e49920a65250b220356a5d2b1e71a5",
+  "hash_on": "34e49920a65250b220356a5d2b1e71a5"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-13710",
+  "repo": "django/django",
+  "grammar_files": 108,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "746feeb315c7662d3c35ffe1a24290c5",
+  "hash_on": "746feeb315c7662d3c35ffe1a24290c5"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-14155",
+  "repo": "django/django",
+  "grammar_files": 101,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "d749d9b191c1784e779143aee4f7a5fa",
+  "hash_on": "d749d9b191c1784e779143aee4f7a5fa"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-14672",
+  "repo": "django/django",
+  "grammar_files": 108,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "a10936f586f7268dde97e23d9406d08b",
+  "hash_on": "a10936f586f7268dde97e23d9406d08b"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-14999",
+  "repo": "django/django",
+  "grammar_files": 108,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "19c14bc2cb27bd8f9cc9b42f91161e33",
+  "hash_on": "19c14bc2cb27bd8f9cc9b42f91161e33"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-15400",
+  "repo": "django/django",
+  "grammar_files": 104,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "d469b2f44222c8cfc9987a850b4ff16e",
+  "hash_on": "d469b2f44222c8cfc9987a850b4ff16e"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-15819",
+  "repo": "django/django",
+  "grammar_files": 106,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "c69d8d8ee8e4bd64d02ebf8bb622dd83",
+  "hash_on": "c69d8d8ee8e4bd64d02ebf8bb622dd83"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-16229",
+  "repo": "django/django",
+  "grammar_files": 107,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "47e5059ada5c74739acd53140c3389dd",
+  "hash_on": "47e5059ada5c74739acd53140c3389dd"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "django__django-16820",
+  "repo": "django/django",
+  "grammar_files": 111,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "ea220abacac434905c99d117e76d788e",
+  "hash_on": "ea220abacac434905c99d117e76d788e"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "matplotlib__matplotlib-23299",
+  "repo": "matplotlib/matplotlib",
+  "grammar_files": 224,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "fa62d85ac8be9867580cfdaebf2da8d9",
+  "hash_on": "fa62d85ac8be9867580cfdaebf2da8d9"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "matplotlib__matplotlib-23987",
+  "repo": "matplotlib/matplotlib",
+  "grammar_files": 224,
+  "deterministic": true,
+  "identical": false,
+  "hash_off": "26a60a5e99926a5fb1c07482f211f58f",
+  "hash_on": "5dd82258c0a02f4c8a31017f1bdadb75"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "matplotlib__matplotlib-25433",
+  "repo": "matplotlib/matplotlib",
+  "grammar_files": 224,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "789befc3df5902542552f28c23db678c",
+  "hash_on": "789befc3df5902542552f28c23db678c"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "mwaskom__seaborn-3407",
+  "repo": "mwaskom/seaborn",
+  "grammar_files": 1,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "2c797fa5ec8e6c06035298b2533ca5b0",
+  "hash_on": "2c797fa5ec8e6c06035298b2533ca5b0"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "psf__requests-2674",
+  "repo": "psf/requests",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "ccc0e4db57a27104d9ef371a6928d516",
+  "hash_on": "ccc0e4db57a27104d9ef371a6928d516"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "pylint-dev__pylint-5859",
+  "repo": "pylint-dev/pylint",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "f65c322a49400a9879736db6ee8c8bdc",
+  "hash_on": "f65c322a49400a9879736db6ee8c8bdc"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "pytest-dev__pytest-5103",
+  "repo": "pytest-dev/pytest",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "0b6acb730ad11f5bbe05f0e9d1277379",
+  "hash_on": "0b6acb730ad11f5bbe05f0e9d1277379"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "pytest-dev__pytest-7168",
+  "repo": "pytest-dev/pytest",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "83fbb7eef5632f13c29987f9dd687bcc",
+  "hash_on": "83fbb7eef5632f13c29987f9dd687bcc"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "scikit-learn__scikit-learn-10297",
+  "repo": "scikit-learn/scikit-learn",
+  "grammar_files": 80,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "1a550b0a831deac095dfdbc46332308c",
+  "hash_on": "1a550b0a831deac095dfdbc46332308c"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "scikit-learn__scikit-learn-13439",
+  "repo": "scikit-learn/scikit-learn",
+  "grammar_files": 23,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "ffc3b75af13e8ab516fdc0c0a56bafdd",
+  "hash_on": "ffc3b75af13e8ab516fdc0c0a56bafdd"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "scikit-learn__scikit-learn-14894",
+  "repo": "scikit-learn/scikit-learn",
+  "grammar_files": 23,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "2f16083cb078fe2a414a2fe9042944fb",
+  "hash_on": "2f16083cb078fe2a414a2fe9042944fb"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sphinx-doc__sphinx-10325",
+  "repo": "sphinx-doc/sphinx",
+  "grammar_files": 109,
+  "deterministic": true,
+  "identical": false,
+  "hash_off": "b4347ec80f8caea344ca1ab4a13f8246",
+  "hash_on": "b7f84682d9847e172f5aaef982c60284"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sphinx-doc__sphinx-8435",
+  "repo": "sphinx-doc/sphinx",
+  "grammar_files": 82,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "b829e4d3422ed89b758789e5253da117",
+  "hash_on": "b829e4d3422ed89b758789e5253da117"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sphinx-doc__sphinx-8801",
+  "repo": "sphinx-doc/sphinx",
+  "grammar_files": 83,
+  "deterministic": true,
+  "identical": false,
+  "hash_off": "54c577feff02da5b211c46cb58ec3ccf",
+  "hash_on": "9969a2d73efc1ca8eb71782972f86b38"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-12481",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "b944d46cd2f34c1f33b995a67d37e5c6",
+  "hash_on": "b944d46cd2f34c1f33b995a67d37e5c6"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-13647",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "6097a7f9f8f5b9a661bb9ff9d0851ab5",
+  "hash_on": "6097a7f9f8f5b9a661bb9ff9d0851ab5"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-14317",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "0c84c0981ec072c622c9809715c64f08",
+  "hash_on": "0c84c0981ec072c622c9809715c64f08"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-15609",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "903f292b3f2450f22921649ac28c2e10",
+  "hash_on": "903f292b3f2450f22921649ac28c2e10"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-17139",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "1851f58b8ce6d0805fc2892a91710294",
+  "hash_on": "1851f58b8ce6d0805fc2892a91710294"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-18532",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "287316141ea5b2a01315b3e3f6303341",
+  "hash_on": "287316141ea5b2a01315b3e3f6303341"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-20154",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "54c6981f69eb38bb42e4cfe17111cb1f",
+  "hash_on": "54c6981f69eb38bb42e4cfe17111cb1f"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-21379",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "4b3c6533c5fd3978c8523b9ce2b66973",
+  "hash_on": "4b3c6533c5fd3978c8523b9ce2b66973"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-22840",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "9d9a1794d1bd4c2234216f2139666899",
+  "hash_on": "9d9a1794d1bd4c2234216f2139666899"
+ },
+ {
+  "bench": "lite",
+  "instance_id": "sympy__sympy-24909",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "1dd839e0c74357098f293725ef796b39",
+  "hash_on": "1dd839e0c74357098f293725ef796b39"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "astropy__astropy-13033",
+  "repo": "astropy/astropy",
+  "grammar_files": 215,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "a9fcfbc86ee3614ca851cabce995f262",
+  "hash_on": "a9fcfbc86ee3614ca851cabce995f262"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-10973",
+  "repo": "django/django",
+  "grammar_files": 96,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "c4017fcf4413bd3974477efcc03e3ae3",
+  "hash_on": "c4017fcf4413bd3974477efcc03e3ae3"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-11490",
+  "repo": "django/django",
+  "grammar_files": 94,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "218c5cc3304b286a5346b304a6fa5dbe",
+  "hash_on": "218c5cc3304b286a5346b304a6fa5dbe"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-12273",
+  "repo": "django/django",
+  "grammar_files": 106,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "65cd55d66cbc0053bf8c3b3b632976d7",
+  "hash_on": "65cd55d66cbc0053bf8c3b3b632976d7"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-13212",
+  "repo": "django/django",
+  "grammar_files": 101,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "ea9a525396a8b146168ef7c9daefd293",
+  "hash_on": "ea9a525396a8b146168ef7c9daefd293"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-13810",
+  "repo": "django/django",
+  "grammar_files": 101,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "40fe03633ede8b9fed70d8ba73605954",
+  "hash_on": "40fe03633ede8b9fed70d8ba73605954"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-14500",
+  "repo": "django/django",
+  "grammar_files": 108,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "cbd1212efa699cabedd19b0cf7f39bf9",
+  "hash_on": "cbd1212efa699cabedd19b0cf7f39bf9"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-15375",
+  "repo": "django/django",
+  "grammar_files": 104,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "41cb583612fb5e0e98224d5258f836c3",
+  "hash_on": "41cb583612fb5e0e98224d5258f836c3"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-15987",
+  "repo": "django/django",
+  "grammar_files": 107,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "1998b26f99eca674677ac91a05007e23",
+  "hash_on": "1998b26f99eca674677ac91a05007e23"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "django__django-16661",
+  "repo": "django/django",
+  "grammar_files": 110,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "ac8ddeede07577472ca565ba0d222e47",
+  "hash_on": "ac8ddeede07577472ca565ba0d222e47"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "matplotlib__matplotlib-22865",
+  "repo": "matplotlib/matplotlib",
+  "grammar_files": 227,
+  "deterministic": true,
+  "identical": false,
+  "hash_off": "e2205ea465ca0fa16a129c54651ab421",
+  "hash_on": "ee2b012c13c03fb70db9656e2af7e2f1"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "pallets__flask-5014",
+  "repo": "pallets/flask",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "8350dce42df01810912e85daf83ca7d4",
+  "hash_on": "8350dce42df01810912e85daf83ca7d4"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "pydata__xarray-6599",
+  "repo": "pydata/xarray",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "ba139aea90d3a54b983ddd19af964651",
+  "hash_on": "ba139aea90d3a54b983ddd19af964651"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "pytest-dev__pytest-5787",
+  "repo": "pytest-dev/pytest",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "2cb06d531752f8c0a0b10e8effd4ae80",
+  "hash_on": "2cb06d531752f8c0a0b10e8effd4ae80"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "scikit-learn__scikit-learn-13328",
+  "repo": "scikit-learn/scikit-learn",
+  "grammar_files": 23,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "a254f8996d9e97ecac7321a386060984",
+  "hash_on": "a254f8996d9e97ecac7321a386060984"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "sphinx-doc__sphinx-7454",
+  "repo": "sphinx-doc/sphinx",
+  "grammar_files": 82,
+  "deterministic": true,
+  "identical": false,
+  "hash_off": "d822b0c7c6640410a731047d41b1e979",
+  "hash_on": "c5a9a104ff4f1e112342422747a75aac"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "sphinx-doc__sphinx-9230",
+  "repo": "sphinx-doc/sphinx",
+  "grammar_files": 100,
+  "deterministic": true,
+  "identical": false,
+  "hash_off": "7840c96011493b1811f675f1fc0bf7d2",
+  "hash_on": "c3a5f50e3698e67d0eba88108ef0184a"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "sympy__sympy-13852",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "878a4474006525c4fcfe2c6264fb93ca",
+  "hash_on": "878a4474006525c4fcfe2c6264fb93ca"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "sympy__sympy-19346",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "4425e18e15aeda41b2694ef6b559a10e",
+  "hash_on": "4425e18e15aeda41b2694ef6b559a10e"
+ },
+ {
+  "bench": "verified",
+  "instance_id": "sympy__sympy-24661",
+  "repo": "sympy/sympy",
+  "grammar_files": 0,
+  "deterministic": true,
+  "identical": true,
+  "hash_off": "170131958c4c2fd01791348fae9f8bc7",
+  "hash_on": "170131958c4c2fd01791348fae9f8bc7"
+ }
+]

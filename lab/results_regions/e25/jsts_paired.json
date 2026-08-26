@@ -1,0 +1,828 @@
+{
+ "label": "jsts",
+ "default": {
+  "n": 580,
+  "n_errors": 1,
+  "file_pct": 46.38,
+  "file_n": 269,
+  "function_pct": 31.21,
+  "function_n": 181,
+  "line_pct": 14.14,
+  "line_n": 82,
+  "mean_fraction": 0.2615590303466884
+ },
+ "shape": {
+  "n": 580,
+  "n_errors": 1,
+  "file_pct": 46.38,
+  "file_n": 269,
+  "function_pct": 30.52,
+  "function_n": 177,
+  "line_pct": 13.79,
+  "line_n": 80,
+  "mean_fraction": 0.2634299967154599
+ },
+ "delta": {
+  "file": 0.0,
+  "function": -0.69,
+  "line": -0.35,
+  "mean_fraction": 0.001871
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_shape_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 5,
+   "c_shape_only": 1,
+   "p": 0.21875
+  },
+  "LINE": {
+   "b_def_only": 4,
+   "c_shape_only": 2,
+   "p": 0.6875
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 83,
+   "statistic": 1716.5,
+   "p": 0.9042343961109116,
+   "n_up": 40,
+   "n_down": 43
+  }
+ },
+ "n_changed": 85,
+ "changed": [
+  {
+   "instance_id": "iamkun__dayjs-1010",
+   "repo": "iamkun/dayjs",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7059->0.0588",
+   "fraction_delta": -0.647059
+  },
+  {
+   "instance_id": "mui__material-ui-25105",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.5556",
+   "fraction_delta": -0.444444
+  },
+  {
+   "instance_id": "mui__material-ui-26170",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8214->0.4643",
+   "fraction_delta": -0.357143
+  },
+  {
+   "instance_id": "iamkun__dayjs-1023",
+   "repo": "iamkun/dayjs",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.6667",
+   "fraction_delta": -0.333333
+  },
+  {
+   "instance_id": "mui__material-ui-33934",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.6667",
+   "fraction_delta": -0.333333
+  },
+  {
+   "instance_id": "iamkun__dayjs-668",
+   "repo": "iamkun/dayjs",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8644->0.5424",
+   "fraction_delta": -0.322034
+  },
+  {
+   "instance_id": "iamkun__dayjs-337",
+   "repo": "iamkun/dayjs",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.2500",
+   "fraction_delta": -0.25
+  },
+  {
+   "instance_id": "iamkun__dayjs-1209",
+   "repo": "iamkun/dayjs",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.7857",
+   "fraction_delta": -0.214286
+  },
+  {
+   "instance_id": "mui__material-ui-34229",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.2059->0.0000",
+   "fraction_delta": -0.205882
+  },
+  {
+   "instance_id": "mui__material-ui-33873",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.8140->0.6105",
+   "fraction_delta": -0.203488
+  },
+  {
+   "instance_id": "mui__material-ui-26098",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2821->0.1026",
+   "fraction_delta": -0.179487
+  },
+  {
+   "instance_id": "sveltejs__svelte-10655",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2143->0.0714",
+   "fraction_delta": -0.142857
+  },
+  {
+   "instance_id": "sveltejs__svelte-9754",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2148->0.1007",
+   "fraction_delta": -0.114094
+  },
+  {
+   "instance_id": "sveltejs__svelte-10700",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2381->0.1429",
+   "fraction_delta": -0.095238
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-2491",
+   "repo": "anuraghazra/github-readme-stats",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5273->0.4545",
+   "fraction_delta": -0.072727
+  },
+  {
+   "instance_id": "mui__material-ui-33797",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2609->0.1884",
+   "fraction_delta": -0.072464
+  },
+  {
+   "instance_id": "vuejs__core-11761",
+   "repo": "vuejs/core",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1346->0.0673",
+   "fraction_delta": -0.067308
+  },
+  {
+   "instance_id": "mui__material-ui-37716",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1023->0.0379",
+   "fraction_delta": -0.064394
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-1314",
+   "repo": "anuraghazra/github-readme-stats",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8141->0.7564",
+   "fraction_delta": -0.057692
+  },
+  {
+   "instance_id": "sveltejs__svelte-13540",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3333->0.2778",
+   "fraction_delta": -0.055556
+  },
+  {
+   "instance_id": "darkreader__darkreader-6747",
+   "repo": "darkreader/darkreader",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.5946->0.5405",
+   "fraction_delta": -0.054054
+  },
+  {
+   "instance_id": "mui__material-ui-35946",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2379->0.1865",
+   "fraction_delta": -0.05142
+  },
+  {
+   "instance_id": "mui__material-ui-26460",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4675->0.4320",
+   "fraction_delta": -0.035503
+  },
+  {
+   "instance_id": "sveltejs__svelte-12460",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4400->0.4100",
+   "fraction_delta": -0.03
+  },
+  {
+   "instance_id": "mui__material-ui-24968",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0992->0.0744",
+   "fraction_delta": -0.024793
+  },
+  {
+   "instance_id": "sveltejs__svelte-11276",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0562->0.0337",
+   "fraction_delta": -0.022472
+  },
+  {
+   "instance_id": "mui__material-ui-26186",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4427->0.4211",
+   "fraction_delta": -0.021672
+  },
+  {
+   "instance_id": "sveltejs__svelte-11059",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0753->0.0538",
+   "fraction_delta": -0.021505
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-3442",
+   "repo": "anuraghazra/github-readme-stats",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3383->0.3192",
+   "fraction_delta": -0.0191
+  },
+  {
+   "instance_id": "sveltejs__svelte-13568",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2364->0.2182",
+   "fraction_delta": -0.018182
+  },
+  {
+   "instance_id": "mui__material-ui-36400",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1363->0.1232",
+   "fraction_delta": -0.013083
+  },
+  {
+   "instance_id": "mui__material-ui-35178",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1617->0.1489",
+   "fraction_delta": -0.012766
+  },
+  {
+   "instance_id": "mui__material-ui-29488",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1910->0.1809",
+   "fraction_delta": -0.01005
+  },
+  {
+   "instance_id": "mui__material-ui-25245",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1708->0.1615",
+   "fraction_delta": -0.009317
+  },
+  {
+   "instance_id": "mui__material-ui-34401",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0426->0.0340",
+   "fraction_delta": -0.008511
+  },
+  {
+   "instance_id": "mui__material-ui-29579",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0107->0.0036",
+   "fraction_delta": -0.007143
+  },
+  {
+   "instance_id": "mui__material-ui-34158",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2087->0.2025",
+   "fraction_delta": -0.006231
+  },
+  {
+   "instance_id": "sveltejs__svelte-14445",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2283->0.2237",
+   "fraction_delta": -0.004566
+  },
+  {
+   "instance_id": "mui__material-ui-34216",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1479->0.1444",
+   "fraction_delta": -0.003521
+  },
+  {
+   "instance_id": "sveltejs__svelte-14629",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0920->0.0889",
+   "fraction_delta": -0.003128
+  },
+  {
+   "instance_id": "mui__material-ui-37667",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0207->0.0183",
+   "fraction_delta": -0.002412
+  },
+  {
+   "instance_id": "sveltejs__svelte-9723",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0367->0.0347",
+   "fraction_delta": -0.001931
+  },
+  {
+   "instance_id": "mui__material-ui-24857",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1270->0.1251",
+   "fraction_delta": -0.001905
+  },
+  {
+   "instance_id": "iamkun__dayjs-2231",
+   "repo": "iamkun/dayjs",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-10077",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "mui__material-ui-30524",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0101->0.0112",
+   "fraction_delta": 0.001121
+  },
+  {
+   "instance_id": "mui__material-ui-26173",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2473->0.2527",
+   "fraction_delta": 0.005495
+  },
+  {
+   "instance_id": "sveltejs__svelte-10656",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1338->0.1401",
+   "fraction_delta": 0.006369
+  },
+  {
+   "instance_id": "sveltejs__svelte-14456",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0342->0.0406",
+   "fraction_delta": 0.00641
+  },
+  {
+   "instance_id": "mui__material-ui-35994",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0204->0.0286",
+   "fraction_delta": 0.008163
+  },
+  {
+   "instance_id": "mui__material-ui-31172",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3269->0.3365",
+   "fraction_delta": 0.009585
+  },
+  {
+   "instance_id": "mui__material-ui-34829",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0174->0.0271",
+   "fraction_delta": 0.009671
+  },
+  {
+   "instance_id": "sveltejs__svelte-9988",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0376->0.0487",
+   "fraction_delta": 0.011062
+  },
+  {
+   "instance_id": "sveltejs__svelte-14353",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0115->0.0229",
+   "fraction_delta": 0.01145
+  },
+  {
+   "instance_id": "mui__material-ui-38916",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0391->0.0530",
+   "fraction_delta": 0.01392
+  },
+  {
+   "instance_id": "mui__material-ui-35963",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1150->0.1357",
+   "fraction_delta": 0.020649
+  },
+  {
+   "instance_id": "mui__material-ui-36401",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6543->0.6790",
+   "fraction_delta": 0.024691
+  },
+  {
+   "instance_id": "mui__material-ui-25390",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1411->0.1688",
+   "fraction_delta": 0.027708
+  },
+  {
+   "instance_id": "mui__material-ui-34258",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1604->0.1887",
+   "fraction_delta": 0.028302
+  },
+  {
+   "instance_id": "mui__material-ui-23073",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3955->0.4254",
+   "fraction_delta": 0.029851
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-2844",
+   "repo": "anuraghazra/github-readme-stats",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0196->0.0587",
+   "fraction_delta": 0.039106
+  },
+  {
+   "instance_id": "sveltejs__svelte-10266",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0980->0.1373",
+   "fraction_delta": 0.039216
+  },
+  {
+   "instance_id": "mui__material-ui-26026",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1207->0.1724",
+   "fraction_delta": 0.051724
+  },
+  {
+   "instance_id": "mui__material-ui-39353",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.2461->0.3008",
+   "fraction_delta": 0.054688
+  },
+  {
+   "instance_id": "vuejs__core-11517",
+   "repo": "vuejs/core",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2150->0.2710",
+   "fraction_delta": 0.056075
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-1608",
+   "repo": "anuraghazra/github-readme-stats",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7407->0.8025",
+   "fraction_delta": 0.061728
+  },
+  {
+   "instance_id": "sveltejs__svelte-10391",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0143->0.0857",
+   "fraction_delta": 0.071429
+  },
+  {
+   "instance_id": "iamkun__dayjs-602",
+   "repo": "iamkun/dayjs",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7826->0.8696",
+   "fraction_delta": 0.086957
+  },
+  {
+   "instance_id": "mui__material-ui-36426",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0923",
+   "fraction_delta": 0.092308
+  },
+  {
+   "instance_id": "mui__material-ui-35088",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1029",
+   "fraction_delta": 0.102941
+  },
+  {
+   "instance_id": "mui__material-ui-32185",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5303->0.6364",
+   "fraction_delta": 0.106061
+  },
+  {
+   "instance_id": "mui__material-ui-30118",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3529->0.4706",
+   "fraction_delta": 0.117647
+  },
+  {
+   "instance_id": "axios__axios-5338",
+   "repo": "axios/axios",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4165->0.5365",
+   "fraction_delta": 0.12
+  },
+  {
+   "instance_id": "sveltejs__svelte-10430",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1250->0.2500",
+   "fraction_delta": 0.125
+  },
+  {
+   "instance_id": "mui__material-ui-34247",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1429",
+   "fraction_delta": 0.142857
+  },
+  {
+   "instance_id": "mui__material-ui-30515",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1463->0.2927",
+   "fraction_delta": 0.146341
+  },
+  {
+   "instance_id": "mui__material-ui-33312",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1176->0.2824",
+   "fraction_delta": 0.164706
+  },
+  {
+   "instance_id": "sveltejs__svelte-9497",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3333->0.5000",
+   "fraction_delta": 0.166667
+  },
+  {
+   "instance_id": "mui__material-ui-29898",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1034->0.2759",
+   "fraction_delta": 0.172414
+  },
+  {
+   "instance_id": "mui__material-ui-30899",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5652->0.7826",
+   "fraction_delta": 0.217391
+  },
+  {
+   "instance_id": "sveltejs__svelte-9471",
+   "repo": "sveltejs/svelte",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.2812",
+   "fraction_delta": 0.28125
+  },
+  {
+   "instance_id": "mui__material-ui-28645",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2544->0.6228",
+   "fraction_delta": 0.368421
+  },
+  {
+   "instance_id": "expressjs__express-5555",
+   "repo": "expressjs/express",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.7000",
+   "fraction_delta": 0.7
+  },
+  {
+   "instance_id": "mui__material-ui-30561",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.0000->1.0000",
+   "fraction_delta": 1.0
+  },
+  {
+   "instance_id": "mui__material-ui-35086",
+   "repo": "mui/material-ui",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.0000->1.0000",
+   "fraction_delta": 1.0
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "shape_only": []
+ }
+}

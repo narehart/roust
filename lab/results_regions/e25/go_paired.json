@@ -1,0 +1,1557 @@
+{
+ "label": "go",
+ "default": {
+  "n": 428,
+  "n_errors": 1,
+  "file_pct": 64.95,
+  "file_n": 278,
+  "function_pct": 28.97,
+  "function_n": 124,
+  "line_pct": 16.59,
+  "line_n": 71,
+  "mean_fraction": 0.4102055631337121
+ },
+ "shape": {
+  "n": 428,
+  "n_errors": 1,
+  "file_pct": 64.95,
+  "file_n": 278,
+  "function_pct": 30.84,
+  "function_n": 132,
+  "line_pct": 15.89,
+  "line_n": 68,
+  "mean_fraction": 0.39457272296577445
+ },
+ "delta": {
+  "file": 0.0,
+  "function": 1.87,
+  "line": -0.7,
+  "mean_fraction": -0.015633
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_shape_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 10,
+   "c_shape_only": 18,
+   "p": 0.1849333420395851
+  },
+  "LINE": {
+   "b_def_only": 12,
+   "c_shape_only": 9,
+   "p": 0.6636238098144531
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 159,
+   "statistic": 5238.0,
+   "p": 0.05366782456664775,
+   "n_up": 69,
+   "n_down": 90
+  }
+ },
+ "n_changed": 166,
+ "changed": [
+  {
+   "instance_id": "cli__cli-3827",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "cli__cli-5985",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "cli__cli-4090",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8800->0.2400",
+   "fraction_delta": -0.64
+  },
+  {
+   "instance_id": "cli__cli-4862",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.3611",
+   "fraction_delta": -0.638889
+  },
+  {
+   "instance_id": "cli__cli-2282",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.4634",
+   "fraction_delta": -0.536585
+  },
+  {
+   "instance_id": "cli__cli-6706",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.0000",
+   "fraction_delta": -0.5
+  },
+  {
+   "instance_id": "cli__cli-9938",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.5000",
+   "fraction_delta": -0.5
+  },
+  {
+   "instance_id": "cli__cli-4845",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8378->0.3514",
+   "fraction_delta": -0.486486
+  },
+  {
+   "instance_id": "cli__cli-2209",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6744->0.2093",
+   "fraction_delta": -0.465116
+  },
+  {
+   "instance_id": "cli__cli-5675",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6190->0.1905",
+   "fraction_delta": -0.428571
+  },
+  {
+   "instance_id": "cli__cli-7621",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.6000",
+   "fraction_delta": -0.4
+  },
+  {
+   "instance_id": "cli__cli-8146",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3667->0.0000",
+   "fraction_delta": -0.366667
+  },
+  {
+   "instance_id": "cli__cli-8235",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.6429",
+   "fraction_delta": -0.357143
+  },
+  {
+   "instance_id": "cli__cli-8141",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.3529->0.0000",
+   "fraction_delta": -0.352941
+  },
+  {
+   "instance_id": "cli__cli-7249",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.1667",
+   "fraction_delta": -0.333333
+  },
+  {
+   "instance_id": "cli__cli-7866",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3333->0.0333",
+   "fraction_delta": -0.3
+  },
+  {
+   "instance_id": "cli__cli-5537",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.2125",
+   "fraction_delta": -0.2875
+  },
+  {
+   "instance_id": "cli__cli-3578",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.5556->0.2778",
+   "fraction_delta": -0.277778
+  },
+  {
+   "instance_id": "cli__cli-9520",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.6667->0.3889",
+   "fraction_delta": -0.277778
+  },
+  {
+   "instance_id": "cli__cli-8552",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.7347",
+   "fraction_delta": -0.265306
+  },
+  {
+   "instance_id": "cli__cli-3997",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.8071->0.5429",
+   "fraction_delta": -0.264286
+  },
+  {
+   "instance_id": "cli__cli-5396",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.7500",
+   "fraction_delta": -0.25
+  },
+  {
+   "instance_id": "cli__cli-9863",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2500->0.0000",
+   "fraction_delta": -0.25
+  },
+  {
+   "instance_id": "cli__cli-7347",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3235->0.0882",
+   "fraction_delta": -0.235294
+  },
+  {
+   "instance_id": "cli__cli-7747",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2195->0.0000",
+   "fraction_delta": -0.219512
+  },
+  {
+   "instance_id": "cli__cli-8935",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5122->0.2927",
+   "fraction_delta": -0.219512
+  },
+  {
+   "instance_id": "cli__cli-9845",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5079->0.3016",
+   "fraction_delta": -0.206349
+  },
+  {
+   "instance_id": "cli__cli-1867",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2000->0.0000",
+   "fraction_delta": -0.2
+  },
+  {
+   "instance_id": "cli__cli-5692",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1930->0.0000",
+   "fraction_delta": -0.192982
+  },
+  {
+   "instance_id": "cli__cli-2146",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.2708->0.1042",
+   "fraction_delta": -0.166667
+  },
+  {
+   "instance_id": "cli__cli-8180",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1613->0.0000",
+   "fraction_delta": -0.16129
+  },
+  {
+   "instance_id": "cli__cli-7879",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2000->0.0400",
+   "fraction_delta": -0.16
+  },
+  {
+   "instance_id": "grpc__grpc-go-2629",
+   "repo": "grpc/grpc-go",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4533->0.2933",
+   "fraction_delta": -0.16
+  },
+  {
+   "instance_id": "cli__cli-4654",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4940->0.3373",
+   "fraction_delta": -0.156627
+  },
+  {
+   "instance_id": "cli__cli-962",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.3846->0.2308",
+   "fraction_delta": -0.153846
+  },
+  {
+   "instance_id": "cli__cli-6074",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6061->0.4545",
+   "fraction_delta": -0.151515
+  },
+  {
+   "instance_id": "cli__cli-1155",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6667->0.5185",
+   "fraction_delta": -0.148148
+  },
+  {
+   "instance_id": "cli__cli-4748",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2857->0.1429",
+   "fraction_delta": -0.142857
+  },
+  {
+   "instance_id": "cli__cli-690",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3143->0.1714",
+   "fraction_delta": -0.142857
+  },
+  {
+   "instance_id": "cli__cli-2250",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6250->0.5000",
+   "fraction_delta": -0.125
+  },
+  {
+   "instance_id": "cli__cli-7709",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4821->0.3571",
+   "fraction_delta": -0.125
+  },
+  {
+   "instance_id": "cli__cli-665",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.8784",
+   "fraction_delta": -0.121622
+  },
+  {
+   "instance_id": "cli__cli-7080",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3467->0.2267",
+   "fraction_delta": -0.12
+  },
+  {
+   "instance_id": "cli__cli-4467",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1124->0.0000",
+   "fraction_delta": -0.112426
+  },
+  {
+   "instance_id": "cli__cli-549",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4632->0.3529",
+   "fraction_delta": -0.110294
+  },
+  {
+   "instance_id": "cli__cli-5539",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2182->0.1091",
+   "fraction_delta": -0.109091
+  },
+  {
+   "instance_id": "cli__cli-2138",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.8929",
+   "fraction_delta": -0.107143
+  },
+  {
+   "instance_id": "cli__cli-3769",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2105->0.1053",
+   "fraction_delta": -0.105263
+  },
+  {
+   "instance_id": "cli__cli-7311",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1447->0.0418",
+   "fraction_delta": -0.102894
+  },
+  {
+   "instance_id": "cli__cli-2108",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1452->0.0484",
+   "fraction_delta": -0.096774
+  },
+  {
+   "instance_id": "grpc__grpc-go-2735",
+   "repo": "grpc/grpc-go",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4185->0.3261",
+   "fraction_delta": -0.092391
+  },
+  {
+   "instance_id": "cli__cli-4534",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2442->0.1551",
+   "fraction_delta": -0.089109
+  },
+  {
+   "instance_id": "cli__cli-1476",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3514->0.2703",
+   "fraction_delta": -0.081081
+  },
+  {
+   "instance_id": "cli__cli-2004",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2903->0.2097",
+   "fraction_delta": -0.080645
+  },
+  {
+   "instance_id": "cli__cli-7451",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0704->0.0000",
+   "fraction_delta": -0.070423
+  },
+  {
+   "instance_id": "cli__cli-4656",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1047->0.0349",
+   "fraction_delta": -0.069767
+  },
+  {
+   "instance_id": "grpc__grpc-go-2951",
+   "repo": "grpc/grpc-go",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0818->0.0136",
+   "fraction_delta": -0.068143
+  },
+  {
+   "instance_id": "cli__cli-7363",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4000->0.3333",
+   "fraction_delta": -0.066667
+  },
+  {
+   "instance_id": "cli__cli-728",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4689->0.4025",
+   "fraction_delta": -0.06639
+  },
+  {
+   "instance_id": "cli__cli-4453",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2294->0.1647",
+   "fraction_delta": -0.064706
+  },
+  {
+   "instance_id": "cli__cli-2224",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7895->0.7263",
+   "fraction_delta": -0.063158
+  },
+  {
+   "instance_id": "cli__cli-5229",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3333->0.2727",
+   "fraction_delta": -0.060606
+  },
+  {
+   "instance_id": "cli__cli-5251",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4464->0.3929",
+   "fraction_delta": -0.053571
+  },
+  {
+   "instance_id": "cli__cli-1639",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2098->0.1574",
+   "fraction_delta": -0.052459
+  },
+  {
+   "instance_id": "cli__cli-5801",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0500->0.0000",
+   "fraction_delta": -0.05
+  },
+  {
+   "instance_id": "cli__cli-7873",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.9524",
+   "fraction_delta": -0.047619
+  },
+  {
+   "instance_id": "cli__cli-10139",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0465->0.0000",
+   "fraction_delta": -0.046512
+  },
+  {
+   "instance_id": "cli__cli-2034",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.7955->0.7500",
+   "fraction_delta": -0.045455
+  },
+  {
+   "instance_id": "cli__cli-3414",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1396->0.0967",
+   "fraction_delta": -0.042965
+  },
+  {
+   "instance_id": "cli__cli-4655",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5625->0.5208",
+   "fraction_delta": -0.041667
+  },
+  {
+   "instance_id": "cli__cli-9868",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0415->0.0000",
+   "fraction_delta": -0.041451
+  },
+  {
+   "instance_id": "cli__cli-5272",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3939->0.3545",
+   "fraction_delta": -0.039394
+  },
+  {
+   "instance_id": "cli__cli-2157",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.4615",
+   "fraction_delta": -0.038462
+  },
+  {
+   "instance_id": "cli__cli-7353",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0357->0.0000",
+   "fraction_delta": -0.035714
+  },
+  {
+   "instance_id": "cli__cli-5569",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4237->0.3898",
+   "fraction_delta": -0.033898
+  },
+  {
+   "instance_id": "cli__cli-5570",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4237->0.3898",
+   "fraction_delta": -0.033898
+  },
+  {
+   "instance_id": "cli__cli-10009",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4597->0.4274",
+   "fraction_delta": -0.032258
+  },
+  {
+   "instance_id": "cli__cli-667",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6832->0.6535",
+   "fraction_delta": -0.029703
+  },
+  {
+   "instance_id": "cli__cli-4293",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0985->0.0690",
+   "fraction_delta": -0.029557
+  },
+  {
+   "instance_id": "cli__cli-4519",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1245->0.1004",
+   "fraction_delta": -0.024096
+  },
+  {
+   "instance_id": "cli__cli-4199",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1322->0.1083",
+   "fraction_delta": -0.023932
+  },
+  {
+   "instance_id": "cli__cli-9933",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2619->0.2381",
+   "fraction_delta": -0.02381
+  },
+  {
+   "instance_id": "cli__cli-2316",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1278->0.1049",
+   "fraction_delta": -0.022871
+  },
+  {
+   "instance_id": "cli__cli-2896",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3750->0.3523",
+   "fraction_delta": -0.022727
+  },
+  {
+   "instance_id": "cli__cli-3461",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.4792",
+   "fraction_delta": -0.020833
+  },
+  {
+   "instance_id": "cli__cli-8516",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0670->0.0464",
+   "fraction_delta": -0.020619
+  },
+  {
+   "instance_id": "cli__cli-5479",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0351->0.0219",
+   "fraction_delta": -0.013158
+  },
+  {
+   "instance_id": "cli__cli-4904",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3529->0.3399",
+   "fraction_delta": -0.013072
+  },
+  {
+   "instance_id": "cli__cli-3308",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0329->0.0231",
+   "fraction_delta": -0.009885
+  },
+  {
+   "instance_id": "cli__cli-3286",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0414->0.0395",
+   "fraction_delta": -0.001838
+  },
+  {
+   "instance_id": "cli__cli-10364",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-5356",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-638",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "cli__cli-7906",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-9088",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-9115",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "zeromicro__go-zero-2537",
+   "repo": "zeromicro/go-zero",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "cli__cli-9433",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2722->0.2781",
+   "fraction_delta": 0.005917
+  },
+  {
+   "instance_id": "cli__cli-9128",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5155->0.5217",
+   "fraction_delta": 0.006211
+  },
+  {
+   "instance_id": "cli__cli-885",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4925->0.5000",
+   "fraction_delta": 0.007463
+  },
+  {
+   "instance_id": "cli__cli-2892",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5356->0.5467",
+   "fraction_delta": 0.011111
+  },
+  {
+   "instance_id": "cli__cli-2058",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3375->0.3500",
+   "fraction_delta": 0.0125
+  },
+  {
+   "instance_id": "cli__cli-8157",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0996->0.1157",
+   "fraction_delta": 0.016097
+  },
+  {
+   "instance_id": "cli__cli-1373",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2417->0.2583",
+   "fraction_delta": 0.016667
+  },
+  {
+   "instance_id": "cli__cli-7646",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0926->0.1111",
+   "fraction_delta": 0.018519
+  },
+  {
+   "instance_id": "cli__cli-5306",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4141->0.4343",
+   "fraction_delta": 0.020202
+  },
+  {
+   "instance_id": "cli__cli-7960",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1064->0.1277",
+   "fraction_delta": 0.021277
+  },
+  {
+   "instance_id": "cli__cli-9037",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1648->0.1875",
+   "fraction_delta": 0.022727
+  },
+  {
+   "instance_id": "cli__cli-4886",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1488->0.1736",
+   "fraction_delta": 0.024793
+  },
+  {
+   "instance_id": "cli__cli-5648",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0248",
+   "fraction_delta": 0.024845
+  },
+  {
+   "instance_id": "cli__cli-10354",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0256",
+   "fraction_delta": 0.025641
+  },
+  {
+   "instance_id": "cli__cli-1479",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4444->0.4722",
+   "fraction_delta": 0.027778
+  },
+  {
+   "instance_id": "cli__cli-7954",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.6364->0.6667",
+   "fraction_delta": 0.030303
+  },
+  {
+   "instance_id": "zeromicro__go-zero-2116",
+   "repo": "zeromicro/go-zero",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3231->0.3538",
+   "fraction_delta": 0.030769
+  },
+  {
+   "instance_id": "cli__cli-9083",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1374->0.1693",
+   "fraction_delta": 0.031949
+  },
+  {
+   "instance_id": "cli__cli-3898",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5902->0.6230",
+   "fraction_delta": 0.032787
+  },
+  {
+   "instance_id": "cli__cli-4794",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0855->0.1214",
+   "fraction_delta": 0.035897
+  },
+  {
+   "instance_id": "cli__cli-6043",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1614->0.2000",
+   "fraction_delta": 0.038596
+  },
+  {
+   "instance_id": "cli__cli-9934",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1739->0.2319",
+   "fraction_delta": 0.057971
+  },
+  {
+   "instance_id": "cli__cli-9642",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5588->0.6176",
+   "fraction_delta": 0.058824
+  },
+  {
+   "instance_id": "cli__cli-5597",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0597",
+   "fraction_delta": 0.059701
+  },
+  {
+   "instance_id": "cli__cli-7589",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3072->0.3725",
+   "fraction_delta": 0.065359
+  },
+  {
+   "instance_id": "cli__cli-5564",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2095->0.2762",
+   "fraction_delta": 0.066667
+  },
+  {
+   "instance_id": "cli__cli-9608",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.8000->0.8667",
+   "fraction_delta": 0.066667
+  },
+  {
+   "instance_id": "cli__cli-4005",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.4699->0.5422",
+   "fraction_delta": 0.072289
+  },
+  {
+   "instance_id": "cli__cli-857",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6667->0.7500",
+   "fraction_delta": 0.083333
+  },
+  {
+   "instance_id": "cli__cli-3270",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5882->0.6863",
+   "fraction_delta": 0.098039
+  },
+  {
+   "instance_id": "cli__cli-7886",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.2000->0.3000",
+   "fraction_delta": 0.1
+  },
+  {
+   "instance_id": "grpc__grpc-go-3476",
+   "repo": "grpc/grpc-go",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "0->1",
+   "fraction": "0.8929->1.0000",
+   "fraction_delta": 0.107143
+  },
+  {
+   "instance_id": "cli__cli-4146",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1667->0.2778",
+   "fraction_delta": 0.111111
+  },
+  {
+   "instance_id": "cli__cli-8632",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3111->0.4222",
+   "fraction_delta": 0.111111
+  },
+  {
+   "instance_id": "cli__cli-3244",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3265->0.4388",
+   "fraction_delta": 0.112245
+  },
+  {
+   "instance_id": "cli__cli-3924",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1837->0.3061",
+   "fraction_delta": 0.122449
+  },
+  {
+   "instance_id": "cli__cli-2982",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.8750->1.0000",
+   "fraction_delta": 0.125
+  },
+  {
+   "instance_id": "cli__cli-5524",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.8750->1.0000",
+   "fraction_delta": 0.125
+  },
+  {
+   "instance_id": "cli__cli-5588",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2123->0.3396",
+   "fraction_delta": 0.127358
+  },
+  {
+   "instance_id": "cli__cli-5069",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1277",
+   "fraction_delta": 0.12766
+  },
+  {
+   "instance_id": "cli__cli-4136",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1290",
+   "fraction_delta": 0.129032
+  },
+  {
+   "instance_id": "cli__cli-5681",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3627->0.4922",
+   "fraction_delta": 0.129534
+  },
+  {
+   "instance_id": "cli__cli-2301",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2791->0.4186",
+   "fraction_delta": 0.139535
+  },
+  {
+   "instance_id": "cli__cli-5799",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.8605->1.0000",
+   "fraction_delta": 0.139535
+  },
+  {
+   "instance_id": "cli__cli-3490",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4750->0.6250",
+   "fraction_delta": 0.15
+  },
+  {
+   "instance_id": "cli__cli-4663",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1500",
+   "fraction_delta": 0.15
+  },
+  {
+   "instance_id": "cli__cli-2997",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.4237->0.5763",
+   "fraction_delta": 0.152542
+  },
+  {
+   "instance_id": "grpc__grpc-go-3119",
+   "repo": "grpc/grpc-go",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1009->0.2569",
+   "fraction_delta": 0.155963
+  },
+  {
+   "instance_id": "cli__cli-6969",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6000->0.7600",
+   "fraction_delta": 0.16
+  },
+  {
+   "instance_id": "cli__cli-3445",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.8378->1.0000",
+   "fraction_delta": 0.162162
+  },
+  {
+   "instance_id": "cli__cli-4310",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.3370->0.5109",
+   "fraction_delta": 0.173913
+  },
+  {
+   "instance_id": "cli__cli-4007",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0392->0.2157",
+   "fraction_delta": 0.176471
+  },
+  {
+   "instance_id": "cli__cli-5595",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0303->0.2121",
+   "fraction_delta": 0.181818
+  },
+  {
+   "instance_id": "zeromicro__go-zero-2032",
+   "repo": "zeromicro/go-zero",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6316->0.8158",
+   "fraction_delta": 0.184211
+  },
+  {
+   "instance_id": "cli__cli-1462",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.2059",
+   "fraction_delta": 0.205882
+  },
+  {
+   "instance_id": "cli__cli-6085",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.2289",
+   "fraction_delta": 0.228916
+  },
+  {
+   "instance_id": "cli__cli-4489",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0410->0.2787",
+   "fraction_delta": 0.237705
+  },
+  {
+   "instance_id": "cli__cli-2239",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5357->0.7857",
+   "fraction_delta": 0.25
+  },
+  {
+   "instance_id": "cli__cli-5973",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.7391->1.0000",
+   "fraction_delta": 0.26087
+  },
+  {
+   "instance_id": "cli__cli-6158",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.2692",
+   "fraction_delta": 0.269231
+  },
+  {
+   "instance_id": "cli__cli-9794",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.7692",
+   "fraction_delta": 0.269231
+  },
+  {
+   "instance_id": "cli__cli-7314",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.3000",
+   "fraction_delta": 0.3
+  },
+  {
+   "instance_id": "cli__cli-4562",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.6842->1.0000",
+   "fraction_delta": 0.315789
+  },
+  {
+   "instance_id": "cli__cli-8337",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.6842->1.0000",
+   "fraction_delta": 0.315789
+  },
+  {
+   "instance_id": "cli__cli-9385",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.5556->0.8889",
+   "fraction_delta": 0.333333
+  },
+  {
+   "instance_id": "cli__cli-3611",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.4286->0.7714",
+   "fraction_delta": 0.342857
+  },
+  {
+   "instance_id": "cli__cli-6053",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1781->0.5479",
+   "fraction_delta": 0.369863
+  },
+  {
+   "instance_id": "cli__cli-1283",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4722->0.9722",
+   "fraction_delta": 0.5
+  },
+  {
+   "instance_id": "cli__cli-9774",
+   "repo": "cli/cli",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.3235->1.0000",
+   "fraction_delta": 0.676471
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "shape_only": []
+ }
+}

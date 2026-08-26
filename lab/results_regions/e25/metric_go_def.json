@@ -1,0 +1,4326 @@
+{
+  "convention": "errors-count-as-wrong-at-all-levels/v1: FILE, FUNCTION, and LINE share the same denominator (n = all loaded records); engine errors and git_show failures count as WRONG and are reported separately (*_counted_wrong / n_engine_errors keys).",
+  "source": {
+    "predictions": [
+      "lab/results_regions/e25/go_def.jsonl"
+    ],
+    "gold": "lab/mswe_go.parquet",
+    "n_instances": 428,
+    "n_region_eval_errors": 1,
+    "engine_shas_seen": [
+      "abb96af"
+    ],
+    "engine_dirty_seen": [
+      false
+    ],
+    "bm25_only": false,
+    "pipeline": "shipped roust-rs engine, --budget 8192, confidence-scheduled packing (parity/region_eval_full.py Part A, no-LLM), FULL SWE-bench test split (paper eval wave)"
+  },
+  "all_instances": {
+    "n": 428,
+    "file": {
+      "pct_correct": 64.95,
+      "n": 428,
+      "n_correct": 278,
+      "n_engine_errors": 1
+    },
+    "function": {
+      "pct_correct": 28.97,
+      "n": 428,
+      "n_judged": 427,
+      "n_correct": 124,
+      "n_engine_errors_counted_wrong": 1,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "cli__cli-10009",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10016",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10043",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10048",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10072",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10074",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10078",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10124",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10139",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10154",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10158",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10180",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10239",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10329",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 74,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10354",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10362",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10363",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10364",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10388",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1069",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1103",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1155",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1279",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1282",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1283",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1337",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 53,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1343",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1359",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1363",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1366",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1373",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1387",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 65,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1388",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1457",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1462",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1476",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1479",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1494",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1534",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1567",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1580",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1582",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 28,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1639",
+          "n_gold_functions": 24,
+          "n_predicted_functions": 26,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1642",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 34,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1763",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1766",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1867",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1882",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1893",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1986",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2004",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2034",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2058",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2108",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2138",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2146",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2157",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2209",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2221",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2222",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2224",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2239",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 27,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2249",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2250",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2251",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2255",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2263",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2264",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2265",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2279",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2282",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 27,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2301",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2316",
+          "n_gold_functions": 71,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2351",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2404",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2466",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2519",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2671",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-278",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 56,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2785",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2843",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2888",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2892",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2896",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2898",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2909",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 38,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2982",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 33,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2997",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-302",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3192",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3244",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3270",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3286",
+          "n_gold_functions": 72,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3308",
+          "n_gold_functions": 117,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3351",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3414",
+          "n_gold_functions": 44,
+          "n_predicted_functions": 29,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3445",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3461",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3472",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3490",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3498",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3517",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3519",
+          "n_gold_functions": 27,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-352",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3529",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3576",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3578",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3608",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3611",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-362",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3658",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3663",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3769",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3774",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3779",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3827",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3832",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3833",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3898",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3924",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3972",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3982",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3992",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3997",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4003",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 28,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4005",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4007",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-402",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-405",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4090",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4136",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4146",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4199",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4253",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4293",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4302",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4310",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4318",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4410",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4416",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4450",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4451",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4453",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4467",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4489",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4519",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4525",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4534",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4543",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4559",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4562",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4654",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4655",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4656",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4663",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4676",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-474",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4747",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 38,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4748",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4769",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-477",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4794",
+          "n_gold_functions": 39,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4803",
+          "n_gold_functions": 16,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4845",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4861",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4862",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4886",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4904",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4921",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-495",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5019",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 25,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5028",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5044",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5047",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 63,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5049",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5069",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5092",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5108",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 29,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-513",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5160",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5219",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5229",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5251",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5254",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5272",
+          "n_gold_functions": 23,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5306",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5316",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5356",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-538",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5380",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5396",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-545",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5452",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5462",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5464",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5479",
+          "n_gold_functions": 24,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-549",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5503",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5524",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5537",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5538",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5539",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5564",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5567",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5569",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5570",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5588",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5595",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5597",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5617",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5642",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5648",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5656",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5671",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5675",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5681",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5692",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5698",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5750",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5793",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5799",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5801",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5885",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-590",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5973",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 67,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5985",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6043",
+          "n_gold_functions": 29,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6053",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6074",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6075",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6079",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 53,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6085",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6107",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6122",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6144",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6158",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-617",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 73,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-624",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-625",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6292",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-638",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6404",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6453",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6530",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6567",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6578",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6647",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-665",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-667",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-668",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6706",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6739",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-683",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-690",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6915",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-696",
+          "n_gold_functions": 19,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6962",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6969",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7003",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-708",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7080",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7105",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7110",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7180",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7185",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7201",
+          "n_gold_functions": 189,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7203",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7205",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7212",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7224",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7236",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7246",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7249",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7254",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7257",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7259",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7268",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-727",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7270",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-728",
+          "n_gold_functions": 16,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7288",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7305",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7311",
+          "n_gold_functions": 16,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7314",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7330",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7347",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7352",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7353",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7363",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7376",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7398",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7440",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7441",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7451",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7477",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7560",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7587",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7589",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7621",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7626",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7645",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7646",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 22,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7647",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7709",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7747",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7759",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7768",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7837",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7861",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7866",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7873",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7879",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7886",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7902",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7906",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7954",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7960",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8030",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8037",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 21,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-810",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8141",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8146",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8157",
+          "n_gold_functions": 50,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8180",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8202",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8229",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8235",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 71,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8238",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 59,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8337",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8361",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8393",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8395",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-842",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8447",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8459",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8487",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8516",
+          "n_gold_functions": 17,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8525",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 67,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8552",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-857",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8595",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 81,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8632",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-864",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 74,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-869",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8711",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8773",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 73,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8778",
+          "n_gold_functions": 30,
+          "n_predicted_functions": 77,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-879",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 62,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8824",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 28,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-885",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8893",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8905",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8934",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8935",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8953",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8969",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9008",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9037",
+          "n_gold_functions": 19,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9083",
+          "n_gold_functions": 16,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9088",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 63,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9106",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9113",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9115",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9128",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9162",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9240",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9256",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9271",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9307",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9385",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9411",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9431",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9433",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9452",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 64,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9465",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9471",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9477",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9491",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9520",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 62,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9608",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-962",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 55,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9642",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-970",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9701",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9774",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9794",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-981",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9845",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9863",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9866",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9868",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-992",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9933",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9934",
+          "n_gold_functions": 22,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9938",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9983",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2371",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2629",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 89,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-2630",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 61,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2631",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 82,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2735",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-2744",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2760",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-2932",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 77,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-2951",
+          "n_gold_functions": 41,
+          "n_predicted_functions": 80,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-2996",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 75,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-3119",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-3201",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-3258",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-3351",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 154,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-3361",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-3476",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 149,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1456",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 142,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1783",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 90,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1821",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 83,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1907",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 85,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1964",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 96,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1969",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 115,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2032",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 90,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2116",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 127,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2283",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 87,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2363",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 89,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2463",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 124,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2537",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 89,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2787",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 73,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-964",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-990",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 54,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 16.59,
+      "n": 428,
+      "n_correct_all_or_nothing": 71,
+      "mean_fraction_covered": 0.41020556313371215,
+      "median_fraction_covered": 0.3333333333333333,
+      "n_engine_errors": 1
+    },
+    "region_precision": {
+      "mean_precision": 0.017716927659977497,
+      "median_precision": 0.010471204188481676,
+      "n": 427,
+      "n_excluded": 1,
+      "mean_total_region_lines_per_instance": 1164.423887587822,
+      "median_total_region_lines_per_instance": 1163.0
+    }
+  },
+  "file_correct_subset": {
+    "n": 278,
+    "file": {
+      "pct_correct": 100.0,
+      "n": 278,
+      "n_correct": 278,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 43.88,
+      "n": 278,
+      "n_judged": 278,
+      "n_correct": 122,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "cli__cli-10009",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10016",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10072",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10074",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10078",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10139",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10158",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10239",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10329",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 74,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-10354",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10363",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10364",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-10388",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1069",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1103",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1282",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1283",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1337",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 53,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1343",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1359",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1363",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1366",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1373",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1387",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 65,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1388",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1457",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1462",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1476",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1479",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1494",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1534",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1567",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1580",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1582",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 28,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1642",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 34,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1763",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1766",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1867",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-1882",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1893",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-1986",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2034",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2108",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2138",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2146",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2157",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2209",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2222",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2224",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2239",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 27,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2249",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2250",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2251",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2263",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2264",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2265",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2279",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2282",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 27,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2351",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2404",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2466",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2519",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2671",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-278",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 56,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2785",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2843",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2888",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2892",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2896",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-2909",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 38,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2982",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 33,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-2997",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-302",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3270",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3351",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3445",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3472",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3490",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3498",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3517",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-352",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3529",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3608",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3611",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-362",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3663",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3774",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3827",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3832",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3898",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-3982",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-3997",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4003",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 28,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4005",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-402",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-405",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4090",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4146",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4253",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4310",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4519",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4543",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4559",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4562",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4654",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4655",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4676",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-474",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4748",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4769",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-477",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4845",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4862",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-4904",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-4921",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-495",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5019",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 25,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5028",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5044",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5047",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 63,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5069",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5092",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5108",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 29,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-513",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5160",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5219",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5229",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5254",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5356",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-538",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5380",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5396",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-545",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5464",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5524",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5537",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5539",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5569",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5570",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5671",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5675",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5681",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5692",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5698",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5750",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5793",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5799",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5801",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-590",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-5973",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 67,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-5985",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6053",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6074",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6075",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6079",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 53,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6107",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6122",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-617",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 73,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-624",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-625",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-638",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6453",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6567",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-6647",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-665",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-668",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6706",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6739",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-683",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-690",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-6969",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-708",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7080",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7105",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7110",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7180",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7224",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7236",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7249",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7268",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-727",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7288",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7314",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7330",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7347",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7353",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7363",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7398",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7441",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7477",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7560",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7589",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7621",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7626",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7645",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7709",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7759",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7768",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7837",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7861",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7873",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-7879",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7886",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7906",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-7954",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8030",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-810",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8141",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8146",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8180",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8235",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 71,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8238",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 59,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8337",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8361",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-842",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8447",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8459",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8487",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8525",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 67,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8552",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-857",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8632",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-864",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 74,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-869",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8711",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8773",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 73,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-879",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 62,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-885",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-8893",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8905",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8969",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9008",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9088",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 63,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9113",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9115",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9240",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9256",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9271",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9307",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9385",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9433",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9491",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9520",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 62,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9608",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-962",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 55,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9701",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9774",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9794",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-981",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9845",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9863",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-992",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9933",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9938",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-9983",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2371",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2630",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 61,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2631",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 82,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2744",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2760",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-2932",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 77,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-2996",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 75,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-3201",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-3258",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-3351",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 154,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-3361",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "grpc__grpc-go-3476",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 149,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1783",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 90,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1821",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 83,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1907",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 85,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-1964",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 96,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2032",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 90,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2283",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 87,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2363",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 89,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2463",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 124,
+          "correct": false
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2537",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 89,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-2787",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 73,
+          "correct": true
+        },
+        {
+          "instance_id": "zeromicro__go-zero-990",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 54,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 25.54,
+      "n": 278,
+      "n_correct_all_or_nothing": 71,
+      "mean_fraction_covered": 0.5464663312222419,
+      "median_fraction_covered": 0.505906238464378,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.01722088161664873,
+      "median_precision": 0.011265436743618882,
+      "n": 278,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1175.1618705035971,
+      "median_total_region_lines_per_instance": 1175.0
+    },
+    "note": "restricted to instances where FILE-level was already correct -- isolates region/line/function quality from file recall"
+  },
+  "agentless_gpt4o_published": {
+    "file": 69.7,
+    "function": 52.0,
+    "line": 35.3
+  },
+  "agentless_note": "AGENTLESS_GPT4O numbers are Agentless's published SWE-bench LITE localization rates (arXiv:2407.01489 Table 1) -- context only; no published Agentless full-split localization numbers exist to compare against directly."
+}

@@ -1,0 +1,35 @@
+{
+ "label": "c",
+ "n_gold_files": 387,
+ "both": {
+  "function_definition": 11105,
+  "struct_specifier": 192,
+  "enum_specifier": 38,
+  "union_specifier": 1,
+  "class_specifier": 4
+ },
+ "allowlist_only": {
+  "preproc_function_def": 521,
+  "type_definition": 812,
+  "enum_specifier": 296,
+  "function_definition": 243,
+  "struct_specifier": 222,
+  "union_specifier": 3
+ },
+ "allowlist_only_multiline": {
+  "preproc_function_def": 521,
+  "type_definition": 502,
+  "struct_specifier": 206,
+  "enum_specifier": 191,
+  "union_specifier": 3
+ },
+ "allowlist_only_oneline": {
+  "type_definition": 310,
+  "enum_specifier": 105,
+  "function_definition": 243,
+  "struct_specifier": 16
+ },
+ "shape_only": {
+  "for_range_loop": 2
+ }
+}

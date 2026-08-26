@@ -1,0 +1,41 @@
+{
+ "label": "rust",
+ "n_gold_files": 881,
+ "both": {
+  "function_item": 29260,
+  "enum_item": 508,
+  "struct_item": 1131,
+  "mod_item": 263,
+  "trait_item": 97
+ },
+ "allowlist_only": {
+  "impl_item": 4734,
+  "struct_item": 373,
+  "macro_definition": 373,
+  "function_item": 205,
+  "trait_item": 72,
+  "mod_item": 1
+ },
+ "allowlist_only_multiline": {
+  "impl_item": 4430,
+  "macro_definition": 373
+ },
+ "allowlist_only_oneline": {
+  "struct_item": 373,
+  "impl_item": 304,
+  "function_item": 205,
+  "trait_item": 72,
+  "mod_item": 1
+ },
+ "shape_only": {
+  "let_declaration": 1602,
+  "struct_expression": 2778,
+  "field_initializer": 84,
+  "enum_variant": 249,
+  "match_arm": 265,
+  "field_expression": 55,
+  "const_item": 11,
+  "reference_expression": 34,
+  "static_item": 18
+ }
+}

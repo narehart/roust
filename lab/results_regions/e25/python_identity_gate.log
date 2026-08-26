@@ -1,0 +1,66 @@
+sampled 40 lite + 20 verified instances
+  [lite    ] astropy__astropy-12907                 grammar_files=  215 det=OK shape=IDENTICAL
+  [lite    ] django__django-11001                   grammar_files=   94 det=OK shape=IDENTICAL
+  [lite    ] django__django-11283                   grammar_files=   94 det=OK shape=IDENTICAL
+  [lite    ] django__django-11815                   grammar_files=  106 det=OK shape=IDENTICAL
+  [lite    ] django__django-12184                   grammar_files=  106 det=OK shape=IDENTICAL
+  [lite    ] django__django-12589                   grammar_files=  104 det=OK shape=IDENTICAL
+  [lite    ] django__django-13028                   grammar_files=  101 det=OK shape=IDENTICAL
+  [lite    ] django__django-13401                   grammar_files=  101 det=OK shape=IDENTICAL
+  [lite    ] django__django-13710                   grammar_files=  108 det=OK shape=IDENTICAL
+  [lite    ] django__django-14155                   grammar_files=  101 det=OK shape=IDENTICAL
+  [lite    ] django__django-14672                   grammar_files=  108 det=OK shape=IDENTICAL
+  [lite    ] django__django-14999                   grammar_files=  108 det=OK shape=IDENTICAL
+  [lite    ] django__django-15400                   grammar_files=  104 det=OK shape=IDENTICAL
+  [lite    ] django__django-15819                   grammar_files=  106 det=OK shape=IDENTICAL
+  [lite    ] django__django-16229                   grammar_files=  107 det=OK shape=IDENTICAL
+  [lite    ] django__django-16820                   grammar_files=  111 det=OK shape=IDENTICAL
+  [lite    ] matplotlib__matplotlib-23299           grammar_files=  224 det=OK shape=IDENTICAL
+  [lite    ] matplotlib__matplotlib-23987           grammar_files=  224 det=OK shape=DIFFERS
+  [lite    ] matplotlib__matplotlib-25433           grammar_files=  224 det=OK shape=IDENTICAL
+  [lite    ] mwaskom__seaborn-3407                  grammar_files=    1 det=OK shape=IDENTICAL
+  [lite    ] psf__requests-2674                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] pylint-dev__pylint-5859                grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] pytest-dev__pytest-5103                grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] pytest-dev__pytest-7168                grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] scikit-learn__scikit-learn-10297       grammar_files=   80 det=OK shape=IDENTICAL
+  [lite    ] scikit-learn__scikit-learn-13439       grammar_files=   23 det=OK shape=IDENTICAL
+  [lite    ] scikit-learn__scikit-learn-14894       grammar_files=   23 det=OK shape=IDENTICAL
+  [lite    ] sphinx-doc__sphinx-10325               grammar_files=  109 det=OK shape=DIFFERS
+  [lite    ] sphinx-doc__sphinx-8435                grammar_files=   82 det=OK shape=IDENTICAL
+  [lite    ] sphinx-doc__sphinx-8801                grammar_files=   83 det=OK shape=DIFFERS
+  [lite    ] sympy__sympy-12481                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-13647                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-14317                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-15609                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-17139                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-18532                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-20154                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-21379                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-22840                     grammar_files=    0 det=OK shape=IDENTICAL
+  [lite    ] sympy__sympy-24909                     grammar_files=    0 det=OK shape=IDENTICAL
+  [verified] astropy__astropy-13033                 grammar_files=  215 det=OK shape=IDENTICAL
+  [verified] django__django-10973                   grammar_files=   96 det=OK shape=IDENTICAL
+  [verified] django__django-11490                   grammar_files=   94 det=OK shape=IDENTICAL
+  [verified] django__django-12273                   grammar_files=  106 det=OK shape=IDENTICAL
+  [verified] django__django-13212                   grammar_files=  101 det=OK shape=IDENTICAL
+  [verified] django__django-13810                   grammar_files=  101 det=OK shape=IDENTICAL
+  [verified] django__django-14500                   grammar_files=  108 det=OK shape=IDENTICAL
+  [verified] django__django-15375                   grammar_files=  104 det=OK shape=IDENTICAL
+  [verified] django__django-15987                   grammar_files=  107 det=OK shape=IDENTICAL
+  [verified] django__django-16661                   grammar_files=  110 det=OK shape=IDENTICAL
+  [verified] matplotlib__matplotlib-22865           grammar_files=  227 det=OK shape=DIFFERS
+  [verified] pallets__flask-5014                    grammar_files=    0 det=OK shape=IDENTICAL
+  [verified] pydata__xarray-6599                    grammar_files=    0 det=OK shape=IDENTICAL
+  [verified] pytest-dev__pytest-5787                grammar_files=    0 det=OK shape=IDENTICAL
+  [verified] scikit-learn__scikit-learn-13328       grammar_files=   23 det=OK shape=IDENTICAL
+  [verified] sphinx-doc__sphinx-7454                grammar_files=   82 det=OK shape=DIFFERS
+  [verified] sphinx-doc__sphinx-9230                grammar_files=  100 det=OK shape=DIFFERS
+  [verified] sympy__sympy-13852                     grammar_files=    0 det=OK shape=IDENTICAL
+  [verified] sympy__sympy-19346                     grammar_files=    0 det=OK shape=IDENTICAL
+  [verified] sympy__sympy-24661                     grammar_files=    0 det=OK shape=IDENTICAL
+
+checked 60 instances (40 whose tree contains >=1 grammar-covered non-.py file)
+determinism failures: 0; shape-differs: 6
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/python_identity_gate.json
+E25_PYTHON_GATE_DONE

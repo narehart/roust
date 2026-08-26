@@ -1,0 +1,164 @@
+[
+ {
+  "slice": "jsts",
+  "baseline_artifact": "ws3d/agentless_metric_ws3d_jsts_guard.json",
+  "baseline_reproduces_brief": true,
+  "baseline": {
+   "n": 580,
+   "sha": "82c8d2f",
+   "file": 46.38,
+   "function": 31.21,
+   "line": 14.14,
+   "mean_fraction": 0.2615590303466884
+  },
+  "abb96af_default": {
+   "n": 580,
+   "sha": "abb96af",
+   "file": 46.38,
+   "function": 31.21,
+   "line": 14.14,
+   "mean_fraction": 0.2615590303466884
+  },
+  "drift": {
+   "file": 0.0,
+   "function": 0.0,
+   "line": 0.0,
+   "mean_fraction": 0.0
+  }
+ },
+ {
+  "slice": "java",
+  "baseline_artifact": "ws3c/agentless_metric_ws3c_java_v2.json",
+  "baseline_reproduces_brief": true,
+  "baseline": {
+   "n": 128,
+   "sha": "10967da",
+   "file": 49.22,
+   "function": 35.16,
+   "line": 14.84,
+   "mean_fraction": 0.39691079709064214
+  },
+  "abb96af_default": {
+   "n": 128,
+   "sha": "abb96af",
+   "file": 49.22,
+   "function": 35.16,
+   "line": 14.84,
+   "mean_fraction": 0.39691079709064214
+  },
+  "drift": {
+   "file": 0.0,
+   "function": 0.0,
+   "line": 0.0,
+   "mean_fraction": 0.0
+  }
+ },
+ {
+  "slice": "go",
+  "baseline_artifact": "ws2/agentless_metric_mswe_go_exp.json",
+  "baseline_reproduces_brief": true,
+  "baseline": {
+   "n": 428,
+   "sha": "aa9cb15",
+   "file": 63.79,
+   "function": 29.21,
+   "line": 16.59,
+   "mean_fraction": 0.4114039661545162
+  },
+  "abb96af_default": {
+   "n": 428,
+   "sha": "abb96af",
+   "file": 64.95,
+   "function": 28.97,
+   "line": 16.59,
+   "mean_fraction": 0.41020556313371215
+  },
+  "drift": {
+   "file": 1.16,
+   "function": -0.24,
+   "line": 0.0,
+   "mean_fraction": -0.001198
+  }
+ },
+ {
+  "slice": "rust",
+  "baseline_artifact": "ws3c/agentless_metric_ws3c_rust_v2.json",
+  "baseline_reproduces_brief": true,
+  "baseline": {
+   "n": 239,
+   "sha": "10967da",
+   "file": 60.25,
+   "function": 19.67,
+   "line": 7.53,
+   "mean_fraction": 0.24314738869424607
+  },
+  "abb96af_default": {
+   "n": 239,
+   "sha": "abb96af",
+   "file": 60.25,
+   "function": 19.67,
+   "line": 7.53,
+   "mean_fraction": 0.24314738869424607
+  },
+  "drift": {
+   "file": 0.0,
+   "function": 0.0,
+   "line": 0.0,
+   "mean_fraction": 0.0
+  }
+ },
+ {
+  "slice": "c",
+  "baseline_artifact": "ws3b/agentless_metric_ws3b_c_base.json",
+  "baseline_reproduces_brief": true,
+  "baseline": {
+   "n": 128,
+   "sha": "0c0fc79",
+   "file": 46.88,
+   "function": 26.56,
+   "line": 10.94,
+   "mean_fraction": 0.1976820809114829
+  },
+  "abb96af_default": {
+   "n": 128,
+   "sha": "abb96af",
+   "file": 46.88,
+   "function": 28.12,
+   "line": 10.94,
+   "mean_fraction": 0.20216720650734812
+  },
+  "drift": {
+   "file": 0.0,
+   "function": 1.56,
+   "line": 0.0,
+   "mean_fraction": 0.004485
+  }
+ },
+ {
+  "slice": "cpp",
+  "baseline_artifact": "ws3b/agentless_metric_ws3b_cpp_base.json",
+  "baseline_reproduces_brief": true,
+  "baseline": {
+   "n": 129,
+   "sha": "0c0fc79",
+   "file": 65.12,
+   "function": 17.83,
+   "line": 6.98,
+   "mean_fraction": 0.29476168923543167
+  },
+  "abb96af_default": {
+   "n": 129,
+   "sha": "abb96af",
+   "file": 65.89,
+   "function": 17.83,
+   "line": 6.98,
+   "mean_fraction": 0.29865746830569545
+  },
+  "drift": {
+   "file": 0.77,
+   "function": 0.0,
+   "line": 0.0,
+   "mean_fraction": 0.003896
+  }
+ }
+]

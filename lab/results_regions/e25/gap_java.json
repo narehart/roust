@@ -1,0 +1,32 @@
+{
+ "label": "java",
+ "n_gold_files": 200,
+ "both": {
+  "interface_declaration": 23,
+  "method_declaration": 6518,
+  "class_declaration": 319,
+  "constructor_declaration": 444,
+  "enum_declaration": 27,
+  "function_declaration": 10,
+  "annotation_type_declaration": 1
+ },
+ "allowlist_only": {
+  "static_initializer": 19,
+  "method_declaration": 564,
+  "enum_declaration": 14,
+  "constructor_declaration": 29
+ },
+ "allowlist_only_multiline": {
+  "static_initializer": 19,
+  "method_declaration": 46
+ },
+ "allowlist_only_oneline": {
+  "method_declaration": 518,
+  "enum_declaration": 14,
+  "constructor_declaration": 29
+ },
+ "shape_only": {
+  "enhanced_for_statement": 349,
+  "variable_declarator": 14
+ }
+}
