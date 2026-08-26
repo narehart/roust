@@ -1,0 +1,139 @@
+{
+ "exact_token": {
+  "gold_newcomers_mentioned_of_499": 1,
+  "ceiling135_recoverable": 1,
+  "ceiling135_recoverable_instances": [
+   "mui__material-ui-23806"
+  ],
+  "gate_fire_mswe580": 92,
+  "gate_fire_lite300": 25
+ },
+ "exact_regexrun_unidir": {
+  "gold_newcomers_mentioned_of_499": 1,
+  "ceiling135_recoverable": 1,
+  "ceiling135_recoverable_instances": [
+   "mui__material-ui-23806"
+  ],
+  "gate_fire_mswe580": 56,
+  "gate_fire_lite300": 13
+ },
+ "exact_regexrun_bidir": {
+  "gold_newcomers_mentioned_of_499": 1,
+  "ceiling135_recoverable": 1,
+  "ceiling135_recoverable_instances": [
+   "mui__material-ui-23806"
+  ],
+  "gate_fire_mswe580": 200,
+  "gate_fire_lite300": 14
+ },
+ "stem_K1": {
+  "gold_newcomers_mentioned_of_499": 7,
+  "ceiling135_recoverable": 2,
+  "ceiling135_recoverable_instances": [
+   "anuraghazra__github-readme-stats-88",
+   "mui__material-ui-23806"
+  ],
+  "gate_fire_mswe580": 468,
+  "gate_fire_lite300": 252
+ },
+ "stem_K2": {
+  "gold_newcomers_mentioned_of_499": 26,
+  "ceiling135_recoverable": 5,
+  "ceiling135_recoverable_instances": [
+   "anuraghazra__github-readme-stats-148",
+   "anuraghazra__github-readme-stats-2075",
+   "anuraghazra__github-readme-stats-721",
+   "anuraghazra__github-readme-stats-88",
+   "mui__material-ui-23806"
+  ],
+  "gate_fire_mswe580": 477,
+  "gate_fire_lite300": 258
+ },
+ "stem_K4": {
+  "gold_newcomers_mentioned_of_499": 49,
+  "ceiling135_recoverable": 8,
+  "ceiling135_recoverable_instances": [
+   "anuraghazra__github-readme-stats-148",
+   "anuraghazra__github-readme-stats-2075",
+   "anuraghazra__github-readme-stats-721",
+   "anuraghazra__github-readme-stats-88",
+   "mui__material-ui-23806",
+   "mui__material-ui-32401",
+   "mui__material-ui-33801",
+   "mui__material-ui-39196"
+  ],
+  "gate_fire_mswe580": 479,
+  "gate_fire_lite300": 270
+ },
+ "stem_K8": {
+  "gold_newcomers_mentioned_of_499": 94,
+  "ceiling135_recoverable": 11,
+  "ceiling135_recoverable_instances": [
+   "anuraghazra__github-readme-stats-148",
+   "anuraghazra__github-readme-stats-2075",
+   "anuraghazra__github-readme-stats-721",
+   "anuraghazra__github-readme-stats-88",
+   "mui__material-ui-23806",
+   "mui__material-ui-24202",
+   "mui__material-ui-32401",
+   "mui__material-ui-33582",
+   "mui__material-ui-33801",
+   "mui__material-ui-38182",
+   "mui__material-ui-39196"
+  ],
+  "gate_fire_mswe580": 514,
+  "gate_fire_lite300": 270
+ },
+ "stem_K16": {
+  "gold_newcomers_mentioned_of_499": 100,
+  "ceiling135_recoverable": 11,
+  "ceiling135_recoverable_instances": [
+   "anuraghazra__github-readme-stats-148",
+   "anuraghazra__github-readme-stats-2075",
+   "anuraghazra__github-readme-stats-721",
+   "anuraghazra__github-readme-stats-88",
+   "mui__material-ui-23806",
+   "mui__material-ui-24202",
+   "mui__material-ui-32401",
+   "mui__material-ui-33582",
+   "mui__material-ui-33801",
+   "mui__material-ui-38182",
+   "mui__material-ui-39196"
+  ],
+  "gate_fire_mswe580": 514,
+  "gate_fire_lite300": 270
+ },
+ "titlestem_K4_L5": {
+  "gold_newcomers_mentioned_of_499": 21,
+  "ceiling135_recoverable": 2,
+  "ceiling135_recoverable_instances": [
+   "mui__material-ui-23806",
+   "mui__material-ui-39196"
+  ],
+  "gate_fire_mswe580": 222,
+  "gate_fire_lite300": 118
+ },
+ "titlestem_K8_L5": {
+  "gold_newcomers_mentioned_of_499": 44,
+  "ceiling135_recoverable": 4,
+  "ceiling135_recoverable_instances": [
+   "mui__material-ui-23806",
+   "mui__material-ui-24202",
+   "mui__material-ui-33582",
+   "mui__material-ui-39196"
+  ],
+  "gate_fire_mswe580": 267,
+  "gate_fire_lite300": 119
+ },
+ "titlestem_K8_L6": {
+  "gold_newcomers_mentioned_of_499": 37,
+  "ceiling135_recoverable": 3,
+  "ceiling135_recoverable_instances": [
+   "mui__material-ui-23806",
+   "mui__material-ui-24202",
+   "mui__material-ui-39196"
+  ],
+  "gate_fire_mswe580": 229,
+  "gate_fire_lite300": 102
+ }
+}
