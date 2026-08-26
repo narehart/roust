@@ -14,3 +14,10 @@ err.log
 explain.log
 out.json
 lab/contextbench_repos/
+
+# Generated at release time by npm/prepare-platform-package.mjs
+npm/roust-*/
+
+# docs site build output
+_site/
+node_modules/

@@ -1,0 +1,41 @@
+{
+  "name": "roust",
+  "version": "0.3.0",
+  "description": "Recall-first code retrieval for coding agents: deterministic, training-free localization with no model, no embeddings, and no API key",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/narehart/roust.git"
+  },
+  "homepage": "https://github.com/narehart/roust#readme",
+  "bugs": {
+    "url": "https://github.com/narehart/roust/issues"
+  },
+  "keywords": [
+    "code-search",
+    "retrieval",
+    "bm25",
+    "coding-agent",
+    "context",
+    "localization",
+    "tree-sitter",
+    "rust",
+    "cli"
+  ],
+  "bin": {
+    "roust": "bin/roust.mjs"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "optionalDependencies": {
+    "roust-darwin-arm64": "0.3.0",
+    "roust-darwin-x64": "0.3.0",
+    "roust-linux-arm64": "0.3.0",
+    "roust-linux-x64": "0.3.0",
+    "roust-win32-x64": "0.3.0"
+  }
+}

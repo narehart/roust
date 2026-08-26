@@ -5,6 +5,39 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-26 - Language-agnostic engine (first published release)
+
+First published release (0.1.0 and 0.2.0 were development milestones, never
+published). Distributed through three channels — **npm** (`npm i -g roust` /
+`npx roust`, with the platform binary delivered as an `optionalDependencies`
+package, the esbuild/Biome model), **crates.io** (`cargo install roust`, and
+the build-from-source path for platforms without a prebuilt binary), and
+**GitHub Releases** (raw per-platform binaries with `.sha256` checksums). Headline: roust stopped being a
+Python-shaped tool. Structural region packing now covers eight languages
+via pinned tree-sitter grammars, C-family sources are indexed at all, and
+stack traces from four ecosystems feed the file-boost channel -- each
+change gated per-language on Multi-SWE-bench slices with the Python
+benchmarks proven byte-identical or measured non-negative (campaign issue
+#56; per-round evidence in `lab/research/langagnostic/`).
+
+Measured effect, Multi-SWE-bench (corrected tree-sitter scorer; the
+pre-campaign FUNCTION figures on non-Python slices were vacuous, produced
+by a Python-AST-only gold extractor, and are retired):
+
+| slice | FUNCTION | LINE | fraction |
+|---|---|---|---|
+| JS/TS (580) | 21.21 -> 31.21 | 9.31 -> 14.14 | .1805 -> .26156 |
+| Java (128) | 21.88 -> 35.16 | 13.28 -> 14.84 | .2385 -> .39691 |
+| Go (428) | 22.66 -> 29.21 | 19.39 -> 16.59 | .3545 -> .4114 |
+| Rust (239) | 9.21 -> 19.67 | 3.77 -> 7.53 | .0976 -> .24315 |
+| C (128) | not indexed -> 26.56 | -> 10.94 | -> .1961 |
+| C++ (129) | not indexed -> 18.60 | -> 7.75 | -> .29672 |
+
+Python references moved only where an adoption measured a gain: SWE-bench
+Lite 92.33 FILE / 54.67 FUNCTION / 44.00 LINE / .52728 fraction, Verified
+92.38 / 47.17 / 35.14 / .47635.
+
+
 - **Behavior change - fixture-dir anchor displacement guard on by
   default** (issue #56 campaign, WS3d, PR #68, adopted 2026-08-26 under
   the standing language-agnostic directive): files under a `*.test/` or
@@ -112,10 +145,10 @@ All notable changes to `roust` are documented here. Format loosely follows
   regressed. New flags: `--no-trace-boost` (escape hatch), flag-gated
   `--lexboost`/`--lexboost-graph` (E20 experiment, default off, gate
   REJECT - not a default).
-- Release infrastructure: tag-triggered PyPI (trusted publishing) + crates.io
-  + GitHub Releases (`.github/workflows/release.yml`, `RELEASE.md`).
+- Release infrastructure: tag-triggered npm + crates.io + GitHub Releases
+  (`.github/workflows/release.yml`, `npm/`, `RELEASE.md`).
 
-## [0.2.0] - UNRELEASED (not yet published to PyPI or crates.io) - Single Rust engine
+## [0.2.0] - UNRELEASED (development milestone, never published) - Single Rust engine
 
 - `pip install roust` (from a source checkout) now delivers the Rust binary
   directly (maturin `bindings = "bin"`), replacing the parallel Python
