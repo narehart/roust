@@ -31,7 +31,7 @@ packing they power — grammar bumps are gated dependency changes).
 Every install path below builds the same `roust-rs` engine — there is no
 separate Python implementation.
 
-**v0.3.0 is published.** Install it one of three ways:
+**Published** on npm and crates.io. Install it one of three ways:
 
 ```bash
 # npm — downloads the prebuilt binary for your platform (no Node runtime cost;
