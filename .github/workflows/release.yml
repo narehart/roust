@@ -128,8 +128,11 @@ jobs:
         shell: bash
         run: |
           PKG_DIR=$(node npm/prepare-platform-package.mjs --target ${{ matrix.target }})
-          NAME=$(node -p "require('$PKG_DIR/package.json').name")
-          VERSION=$(node -p "require('$PKG_DIR/package.json').version")
+          # Read via argv, not an interpolated require() path: on Windows
+          # PKG_DIR contains backslashes, which require() eats as escapes.
+          read_field() { node -e "const fs=require('fs');console.log(JSON.parse(fs.readFileSync(process.argv[1],'utf8'))[process.argv[2]])" "$1" "$2"; }
+          NAME=$(read_field "$PKG_DIR/package.json" name)
+          VERSION=$(read_field "$PKG_DIR/package.json" version)
           # npm versions are immutable: a re-run of a partially-successful
           # release must skip what already published rather than hard-fail.
           if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
@@ -166,8 +169,8 @@ jobs:
       - name: Publish main package
         working-directory: npm/roust-cli
         run: |
-          NAME=$(node -p "require('./package.json').name")
-          VERSION=$(node -p "require('./package.json').version")
+          NAME=$(node -e "console.log(require('./package.json').name)")
+          VERSION=$(node -e "console.log(require('./package.json').version)")
           if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
             echo "::notice::$NAME@$VERSION already published -- skipping"
           else
