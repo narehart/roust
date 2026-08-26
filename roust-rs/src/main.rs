@@ -197,6 +197,28 @@ struct Args {
     #[arg(long)]
     no_trace_boost: bool,
 
+    /// WS3b multi-format trace-frame extraction -- ADOPTED as the engine
+    /// default (campaign #56, audit finding 2, PR #66, standing
+    /// language-agnostic directive 2026-08-26). Adds Java (`at
+    /// pkg.Cls.m(Cls.java:123)`, FQCN->path), Node (`at fn
+    /// (path.js:1:2)`), Go panic locator, and Rust backtrace `at` frame
+    /// parsing alongside the CPython format; frames feed the SAME
+    /// rank-decayed E11b boost channel, raise-site first per format's own
+    /// convention. Python parsing unchanged; query text byte-untouched;
+    /// provably byte-identical on all Python slices (zero new-format
+    /// matches on Lite/Verified/full). ON by default; passing this flag
+    /// explicitly is accepted-but-redundant (kept for harness
+    /// compatibility). Disable with --no-trace-formats-v2. No-op under
+    /// --no-trace-boost / --route.
+    #[arg(long)]
+    trace_formats_v2: bool,
+
+    /// disable WS3b multi-format trace-frame extraction (CPython-only
+    /// frame parsing, reproducing the pre-adoption engine
+    /// byte-identically)
+    #[arg(long)]
+    no_trace_formats_v2: bool,
+
     /// E20 (campaign #4 wave 5): LexBoost neighbor score smoothing lambda
     /// (arXiv:2409.05882). Final file score = lambda*S + (1-lambda)*
     /// prior*mean(neighbor S) over the graph chosen by --lexboost-graph,
@@ -205,6 +227,121 @@ struct Args {
     /// is 0.7.
     #[arg(long, default_value_t = 0.0)]
     lexboost: f64,
+
+    /// language-agnostic structural block extraction -- ADOPTED as the
+    /// engine default (E23, campaign #4 wave 5, PR #55, user-approved
+    /// 2026-08-25, language-agnostic directive; first entry of the #56
+    /// campaign). Structural region candidates come from each language's
+    /// parser: Python natively; .js/.jsx/.ts/.tsx (E23) and, since the
+    /// WS2 grammar batch, .java/.go/.rs plus the C family
+    /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh, indexed only under --cfamily-ext)
+    /// via pinned tree-sitter CST walks (functions, methods, classes,
+    /// impl/trait blocks, structs/enums, templates; same nested
+    /// class-span + member-span shape python_blocks emits); fixed
+    /// +/-30-line windows for anything else. ON by default; passing this
+    /// flag explicitly is accepted-but-redundant (kept for harness
+    /// compatibility; hidden alias: --ts-blocks). Disable with
+    /// --no-structural-blocks.
+    #[arg(long, alias = "ts-blocks")]
+    structural_blocks: bool,
+
+    /// disable structural block extraction for languages beyond Python
+    /// (reproduces the pre-adoption engine byte-identically:
+    /// .js/.jsx/.ts/.tsx -- and the WS2 grammar-batch languages -- fall
+    /// back to fixed +/-30-line windows; Python's native structural
+    /// packing is unaffected in either state; hidden alias: --no-ts-blocks)
+    #[arg(long, alias = "no-ts-blocks")]
+    no_structural_blocks: bool,
+
+    /// WS2 (campaign #56): ALSO index the C-family extensions
+    /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh) in the corpus walk. ON by default
+    /// since WS2c: the vendored-C VENDOR_RE guard (cextern/, extern/,
+    /// libsvm/, liblinear/ path components) excludes the bundled-C class
+    /// that made default-ON unsafe in the WS2b gate (vendored libsvm
+    /// displacing gold on sklearn), and the WS2c re-gate held all four
+    /// metrics on Lite-300 with MSWE C/C++ payload-identical. Passing this
+    /// flag explicitly is accepted-but-redundant (kept for harness
+    /// compatibility). Disable with --no-cfamily-ext. Either state re-keys
+    /// the index cache (a flag-off cache is never served to a flag-on run,
+    /// or vice versa).
+    #[arg(long, default_value_t = true)]
+    cfamily_ext: bool,
+
+    /// disable C-family indexing (reproduces the pre-WS2c corpus walk:
+    /// .c/.h/.cc/.cpp/.cxx/.hpp/.hh are not indexed at all)
+    #[arg(long)]
+    no_cfamily_ext: bool,
+
+    /// WS3a (campaign #56, audit finding 1): recalibrated impl_prior.
+    /// Doc-like path components (docs?/examples?/benchmarks?/benches)
+    /// stop damping files with a code extension -- they are production
+    /// dirs outside Python (21.4% of indexed JS/TS gold damped by v1;
+    /// Lite 0.0%). Genuinely test-like paths (test/tests/__tests__/spec
+    /// dirs, test_*/_test.*/.spec./.test. patterns) keep the 0.3 damp in
+    /// every language, with _test.<ext> broadened to all extensions.
+    /// Non-code files in doc-like dirs keep the damp. Also lifts the
+    /// structural-expansion / testbridge / docsbridge exclusions for
+    /// no-longer-damped files (all key off impl_prior), and adds the
+    /// one-word `thirdparty` component to the vendor guard (the WS3a cpp
+    /// arm measured nlohmann's vendored Google Benchmark displacing gold
+    /// once undamped; VENDOR_RE only knew `third_party`). Re-keys the
+    /// index cache (def_index is impl_prior-gated at build time). Default
+    /// OFF.
+    #[arg(long)]
+    impl_prior_v2: bool,
+
+    /// WS3c (campaign #56, audit findings 3+6): structural-symbol
+    /// unification -- ADOPTED as the engine default (standing
+    /// language-agnostic directive, 2026-08-26; PR #67). def_index symbol
+    /// names are sourced from the SAME pinned tree-sitter walks that
+    /// produce structural blocks (union with the legacy per-language def
+    /// regexes) for every grammar-covered non-Python file -- Java/C/C++
+    /// gain a def/anchor channel for the first time; JS/TS arrow
+    /// functions (`const f = () => ..`), object-literal methods and class
+    /// fields become def entries; Rust impl/trait/enum and Go
+    /// grouped-type names are covered. Anchor-forced region seating (the
+    /// query names the exact symbol -> its own structural block is
+    /// force-seated) is un-gated from `.py` to all grammar-covered
+    /// languages. Python's def extraction and seating are byte-identical
+    /// in either state. Either state re-keys the index cache (a flag-off
+    /// cache is never served to a flag-on run, or vice versa). ON by
+    /// default; passing this flag explicitly is accepted-but-redundant
+    /// (kept for harness compatibility). Disable with --no-symbols-v2.
+    #[arg(long)]
+    symbols_v2: bool,
+
+    /// disable WS3c structural-symbol unification (reproduces the
+    /// pre-adoption engine byte-identically: def_index falls back to the
+    /// per-language regex scan alone, and anchor-forced region seating is
+    /// `.py`-only again)
+    #[arg(long)]
+    no_symbols_v2: bool,
+
+    /// WS3d anchor displacement guard -- ADOPTED as the engine default
+    /// (campaign #56, PR #68, standing language-agnostic directive
+    /// 2026-08-26): exclude fixture-directory-shaped files (any `*.test/`
+    /// or `*.spec/` DIRECTORY component -- the jscodeshift codemod
+    /// fixture convention TESTLIKE_RE's file-infix `.test.` match misses)
+    /// from symbol-anchor candidacy. The WS3d fire-level mining found
+    /// this the only shape rule that separates displacing anchor fires
+    /// (mui-34337/34548/35178: fixture pairs defining the same rare
+    /// symbol eat gold's pack budget) from the adopted anchor wins, with
+    /// zero win-fire / zero gold-fire collateral across all mined fires;
+    /// jsts arms LINE 13.97->14.14, fraction +0.0018, FILE/FUNCTION
+    /// invariant, zero win suppression; java/rust/Lite/Verified proven
+    /// inert (fixture census + 31-instance byte-identity micro-gate).
+    /// Ranking-side only; fixture files stay indexed and lexically
+    /// rankable. ON by default; passing this flag explicitly is
+    /// accepted-but-redundant (kept for harness compatibility). Disable
+    /// with --no-displacement-guard.
+    #[arg(long)]
+    displacement_guard: bool,
+
+    /// disable the WS3d fixture-dir anchor displacement guard
+    /// (reproduces the pre-adoption anchor channel byte-identically:
+    /// fixture-dir files compete for anchors again)
+    #[arg(long)]
+    no_displacement_guard: bool,
 
     /// E20 graph substrate for --lexboost: "import" (undirected import
     /// graph, already cached per query) or "knn" (BM25 16-nearest-neighbor
@@ -240,6 +377,28 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
+
+    // WS2: set BEFORE any corpus/cache work -- both the corpus walk and the
+    // cache manifest scan read this process-global exactly once per file.
+    // WS2c: default ON; --no-cfamily-ext wins over the (redundant) on-flag.
+    roust::core::set_cfamily_ext(args.cfamily_ext && !args.no_cfamily_ext);
+
+    // WS3a: same contract as the cfamily global -- set BEFORE any
+    // corpus/cache work (impl_prior gates def_index at build time and the
+    // cache key reads this).
+    roust::core::set_impl_prior_v2(args.impl_prior_v2);
+
+    // WS3c: same contract -- set BEFORE any corpus/cache work (def_index
+    // gains tree-sitter symbols at build time; the cache key reads this;
+    // pack_regions reads it at pack time for anchor seating). ADOPTED
+    // default ON; --no-symbols-v2 is the escape hatch and the explicit
+    // on-flag is accepted-but-redundant (mutual exclusion checked below,
+    // mirroring the trace-formats-v2 pattern).
+    roust::core::set_symbols_v2(!args.no_symbols_v2);
+    // WS3d displacement guard: default ON (adopted); --no-displacement-guard
+    // is the escape hatch and the explicit on-flag is accepted-but-redundant
+    // (mutual exclusion checked below, mirroring the symbols-v2 pattern).
+    roust::core::set_displacement_guard(!args.no_displacement_guard);
 
     if args.budget <= 0 {
         eprintln!("roust: error: --budget must be positive");
@@ -292,6 +451,26 @@ fn main() {
         eprintln!("roust: error: --trace-boost and --no-trace-boost are mutually exclusive");
         std::process::exit(2);
     }
+    if args.trace_formats_v2 && args.no_trace_formats_v2 {
+        eprintln!("roust: error: --trace-formats-v2 and --no-trace-formats-v2 are mutually exclusive");
+        std::process::exit(2);
+    }
+    if args.symbols_v2 && args.no_symbols_v2 {
+        eprintln!("roust: error: --symbols-v2 and --no-symbols-v2 are mutually exclusive");
+        std::process::exit(2);
+    }
+    if args.displacement_guard && args.no_displacement_guard {
+        eprintln!("roust: error: --displacement-guard and --no-displacement-guard are mutually exclusive");
+        std::process::exit(2);
+    }
+    if args.structural_blocks && args.no_structural_blocks {
+        eprintln!("roust: error: --structural-blocks and --no-structural-blocks are mutually exclusive");
+        std::process::exit(2);
+    }
+    // E23 structural blocks are ON by default (adopted);
+    // --no-structural-blocks disables them (--ts-blocks/--no-ts-blocks are
+    // hidden compat aliases).
+    let use_structural_blocks = !args.no_structural_blocks;
     // Trace boost is ON by default (adopted); --no-trace-boost disables it,
     // and --route implies it off (route's own pipeline supplies trace_files).
     let use_trace_boost = !args.no_trace_boost && !args.route;
@@ -343,8 +522,18 @@ fn main() {
     // E11b trace-frame FILE extraction (adopted default; see
     // use_trace_boost above); `terms` above is untouched (byte-identical
     // query text).
-    let boost_files: Vec<String> =
-        if use_trace_boost { trace_frame_files(&args.query, &corpus) } else { Vec::new() };
+    // WS3b multi-format parsing is ON by default (adopted);
+    // --no-trace-formats-v2 restores CPython-only frame extraction.
+    let use_trace_formats_v2 = !args.no_trace_formats_v2;
+    let boost_files: Vec<String> = if use_trace_boost {
+        if use_trace_formats_v2 {
+            roust::core::trace_frame_files_v2(&args.query, &corpus)
+        } else {
+            trace_frame_files(&args.query, &corpus)
+        }
+    } else {
+        Vec::new()
+    };
     let (matched_terms, total_terms) = query_term_coverage(&corpus, &terms);
     let zero_match = matched_terms == 0;
     let anchors = if use_anchors { Some(extract_symbol_anchors(&args.query, &corpus)) } else { None };
@@ -403,6 +592,7 @@ fn main() {
         args.family_enum,
         args.sibling_sim,
         args.max_siblings,
+        use_structural_blocks,
     );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
@@ -452,6 +642,28 @@ fn main() {
         // --no-trace-boost / --route.
         stats["trace_boost"] = serde_json::json!({
             "trace_files": boost_files,
+            "formats_v2": use_trace_formats_v2,
+        });
+    }
+    if file_score_mode != roust::core::FileScoreMode::Accum {
+        // Present only under --file-score chunk-* (defaults stay byte-
+        // identical): the old-vs-new score anatomy `(file, chunk_score,
+        // accum_score, best_chunk_content, best_chunk_start,
+        // best_chunk_end)`, consumed by the E21 gate's flip itemization.
+        stats["file_score"] = serde_json::json!({
+            "mode": args.file_score,
+            "top": &explain.file_score_top,
+        });
+    }
+    if args.test_bridge > 0.0 {
+        // Present only under --test-bridge (defaults stay byte-identical):
+        // the bridged files `(file, via_test, strength, added, call_hits)`
+        // + count, consumed by the E22 gate's bridge-path anatomy and the
+        // flooding check.
+        stats["test_bridge"] = serde_json::json!({
+            "weight": args.test_bridge,
+            "n_bridged": explain.test_bridge.len(),
+            "bridged": &explain.test_bridge,
         });
     }
     if file_score_mode != roust::core::FileScoreMode::Accum {

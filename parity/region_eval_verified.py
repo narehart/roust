@@ -278,6 +278,27 @@ def main() -> None:
                      help="passthrough to roust's --route-test-penalty (E11 conditional "
                           "test-path downweight); 0.0 (default) omits the flag, i.e. the "
                           "binary's own default (0.85); only meaningful with --route")
+    ap.add_argument("--cfamily-ext", action="store_true",
+                     help="WS2b (campaign #56): append --cfamily-ext to every roust invocation "
+                          "(index .c/.h/.cc/.cpp/.cxx/.hpp/.hh); omitted by default (binary "
+                          "default: off). This is the Python-repo dilution gate for flipping "
+                          "the engine default.")
+    ap.add_argument("--impl-prior-v2", action="store_true",
+                     help="WS3a (campaign #56): append --impl-prior-v2 to every roust "
+                          "invocation (doc/example/bench dirs stop damping code files); "
+                          "omitted by default (binary default: off)")
+    ap.add_argument("--trace-formats-v2", action="store_true",
+                     help="WS3b (campaign #56): append --trace-formats-v2 to every roust "
+                          "invocation (Java/Node/Go/Rust trace-frame parsing for the E11b "
+                          "boost); omitted by default (binary default: off)")
+    ap.add_argument("--symbols-v2", action="store_true",
+                     help="WS3c (campaign #56): append --symbols-v2 to every roust "
+                          "invocation (tree-sitter-sourced def_index + un-gated anchor "
+                          "seating); omitted by default (binary default: off)")
+    ap.add_argument("--displacement-guard", action="store_true",
+                     help="WS3d (campaign #56): append --displacement-guard to every roust "
+                          "invocation (fixture-dir anchor exclusion); omitted by default "
+                          "(binary default: off)")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -316,6 +337,21 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.extend(["--file-score", args.file_score])
     if args.test_bridge != 0.0:
         EXTRA_ENGINE_FLAGS.extend(["--test-bridge", str(args.test_bridge)])
+    # WS2b passthrough, same mechanism.
+    if args.cfamily_ext:
+        EXTRA_ENGINE_FLAGS.append("--cfamily-ext")
+    # WS3a passthrough, same mechanism.
+    if args.impl_prior_v2:
+        EXTRA_ENGINE_FLAGS.append("--impl-prior-v2")
+    # WS3b passthrough, same mechanism.
+    if args.trace_formats_v2:
+        EXTRA_ENGINE_FLAGS.append("--trace-formats-v2")
+    # WS3c passthrough, same mechanism.
+    if args.symbols_v2:
+        EXTRA_ENGINE_FLAGS.append("--symbols-v2")
+    # WS3d passthrough, same mechanism.
+    if args.displacement_guard:
+        EXTRA_ENGINE_FLAGS.append("--displacement-guard")
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 

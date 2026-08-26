@@ -1,0 +1,58 @@
+binary: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws3b-trace-formats/roust-rs/target/release/roust -> roust 0.2.0 (0c0fc79, clean)
+binary: /Users/nicholasarehart/programming-projects/bgrep/roust-rs/target/release/roust -> roust 0.2.0 (ac0b63f, clean)
+=== Proof A: NEW defaults == OLD --trace-formats-v2 (19 trace-firing java/rust instances, two runs each) ===
+  alibaba__fastjson2-1245                  OK
+  apache__dubbo-11781                      OK
+  apache__dubbo-7041                       OK
+  clap-rs__clap-2161                       OK
+  clap-rs__clap-3212                       OK
+  clap-rs__clap-3670                       OK
+  clap-rs__clap-4474                       OK
+  clap-rs__clap-5873                       OK
+  elastic__logstash-16681                  OK
+  fasterxml__jackson-core-370              OK
+  fasterxml__jackson-databind-1923         OK
+  fasterxml__jackson-databind-3716         OK
+  fasterxml__jackson-databind-4159         OK
+  fasterxml__jackson-databind-4189         OK
+  fasterxml__jackson-databind-4311         OK
+  fasterxml__jackson-databind-4325         OK
+  fasterxml__jackson-databind-4360         OK
+  googlecontainertools__jib-2542           OK
+  googlecontainertools__jib-2688           OK
+=== Proof B: NEW defaults == OLD defaults (12 Lite Python, two runs each) ===
+  astropy__astropy-12907                   OK
+  django__django-10914                     OK
+  matplotlib__matplotlib-18869             OK
+  mwaskom__seaborn-2848                    OK
+  pallets__flask-4045                      OK
+  psf__requests-1963                       OK
+  pydata__xarray-3364                      OK
+  pylint-dev__pylint-5859                  OK
+  pytest-dev__pytest-11143                 OK
+  scikit-learn__scikit-learn-10297         OK
+  sphinx-doc__sphinx-10325                 OK
+  sympy__sympy-11400                       OK
+=== Proof C: NEW --no-trace-formats-v2 == OLD defaults (19 trace-firing instances, two runs each) ===
+  alibaba__fastjson2-1245                  OK
+  apache__dubbo-11781                      OK
+  apache__dubbo-7041                       OK
+  clap-rs__clap-2161                       OK
+  clap-rs__clap-3212                       OK
+  clap-rs__clap-3670                       OK
+  clap-rs__clap-4474                       OK
+  clap-rs__clap-5873                       OK
+  elastic__logstash-16681                  OK
+  fasterxml__jackson-core-370              OK
+  fasterxml__jackson-databind-1923         OK
+  fasterxml__jackson-databind-3716         OK
+  fasterxml__jackson-databind-4159         OK
+  fasterxml__jackson-databind-4189         OK
+  fasterxml__jackson-databind-4311         OK
+  fasterxml__jackson-databind-4325         OK
+  fasterxml__jackson-databind-4360         OK
+  googlecontainertools__jib-2542           OK
+  googlecontainertools__jib-2688           OK
+
+ADOPTION GATE failures: 0
+ADOPTION_GATE_DONE

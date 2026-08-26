@@ -1,0 +1,41 @@
+binary: lab/results_regions/ws3d/roust_e41c972_pinned -> roust 0.2.0 (e41c972, clean)
+binary: lab/results_regions/ws3d/roust_82c8d2f_pinned -> roust 0.2.0 (82c8d2f, clean)
+=== Gate A: defaults identity, MAIN vs BRANCH, two runs each (17 mixed instances) ===
+  [lite ] astropy__astropy-12907                        OK
+  [lite ] django__django-10914                          OK
+  [lite ] matplotlib__matplotlib-18869                  OK
+  [lite ] scikit-learn__scikit-learn-10297              OK
+  [lite ] sphinx-doc__sphinx-10325                      OK
+  [lite ] sympy__sympy-11400                            OK
+  [jsts ] mui__material-ui-23073                        OK
+  [jsts ] mui__material-ui-23487                        OK
+  [jsts ] axios__axios-5085                             OK
+  [jsts ] vuejs__core-10004                             OK
+  [rust ] BurntSushi__ripgrep-1294                      OK
+  [rust ] serde-rs__serde-2709                          OK
+  [rust ] tokio-rs__tokio-4519                          OK
+  [cpp  ] catchorg__Catch2-1422                         OK
+  [cpp  ] fmtlib__fmt-1171                              OK
+  [java ] elastic__logstash-13825                       OK
+  [java ] fasterxml__jackson-core-1016                  OK
+Gate A failures: 0
+=== Gate B: BRANCH binary flag-ON determinism (2 runs) + defaults-vs-flag itemization (17 instances) ===
+  [lite ] astropy__astropy-12907                        det=OK flag=IDENTICAL
+  [lite ] django__django-10914                          det=OK flag=IDENTICAL
+  [lite ] matplotlib__matplotlib-18869                  det=OK flag=IDENTICAL
+  [lite ] scikit-learn__scikit-learn-10297              det=OK flag=IDENTICAL
+  [lite ] sphinx-doc__sphinx-10325                      det=OK flag=IDENTICAL
+  [lite ] sympy__sympy-11400                            det=OK flag=IDENTICAL
+  [jsts ] mui__material-ui-23073                        det=OK flag=IDENTICAL
+  [jsts ] mui__material-ui-23487                        det=OK flag=IDENTICAL
+  [jsts ] axios__axios-5085                             det=OK flag=IDENTICAL
+  [jsts ] vuejs__core-10004                             det=OK flag=IDENTICAL
+  [rust ] BurntSushi__ripgrep-1294                      det=OK flag=IDENTICAL
+  [rust ] serde-rs__serde-2709                          det=OK flag=IDENTICAL
+  [rust ] tokio-rs__tokio-4519                          det=OK flag=IDENTICAL
+  [cpp  ] catchorg__Catch2-1422                         det=OK flag=IDENTICAL
+  [cpp  ] fmtlib__fmt-1171                              det=OK flag=IDENTICAL
+  [java ] elastic__logstash-13825                       det=OK flag=IDENTICAL
+  [java ] fasterxml__jackson-core-1016                  det=OK flag=IDENTICAL
+Gate B determinism failures: 0; flag-differs: 0 (differs is informational -- itemized by the arms)
+GATES_DONE

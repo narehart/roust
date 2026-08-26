@@ -68,6 +68,11 @@ BUDGET = 8192
 DEFAULT_TIMEOUT_S = 180
 PROGRESS_EVERY = 25
 
+# WS2b (campaign #56): extra flags appended verbatim to every roust
+# invocation -- same mechanism as region_eval_verified.EXTRA_ENGINE_FLAGS /
+# region_eval_full's passthroughs. Populated from argparse in main().
+EXTRA_ENGINE_FLAGS: list[str] = []
+
 
 def engine_version_string() -> str:
     proc = subprocess.run([str(ROUST_BIN), "--version"], capture_output=True, text=True, timeout=30)
@@ -155,7 +160,8 @@ def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
               lexboost_graph: str = "", trace_boost: bool = False,
               no_trace_boost: bool = False, file_score: str = "",
               test_bridge: float = 0.0) -> tuple[dict | None, str | None]:
-    argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
+    argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path),
+            *EXTRA_ENGINE_FLAGS]
     if route:
         # E11 (campaign #4 wave 5): structure-aware query routing. Omitted
         # (the default) -> the binary's own default (off).
@@ -423,6 +429,27 @@ def main() -> None:
                      help="passthrough to roust's --test-bridge (E22 static test-bridge FILE "
                           "channel weight); 0.0 (default) omits the flag, i.e. the binary's "
                           "own disabled default")
+    ap.add_argument("--cfamily-ext", action="store_true",
+                     help="WS2b (campaign #56): append --cfamily-ext to every roust invocation "
+                          "(index .c/.h/.cc/.cpp/.cxx/.hpp/.hh); omitted by default (binary "
+                          "default: off). This is the Python-repo dilution gate for flipping "
+                          "the engine default.")
+    ap.add_argument("--impl-prior-v2", action="store_true",
+                     help="WS3a (campaign #56): append --impl-prior-v2 to every roust "
+                          "invocation (doc/example/bench dirs stop damping code files); "
+                          "omitted by default (binary default: off)")
+    ap.add_argument("--trace-formats-v2", action="store_true",
+                     help="WS3b (campaign #56): append --trace-formats-v2 to every roust "
+                          "invocation (Java/Node/Go/Rust trace-frame parsing for the E11b "
+                          "boost); omitted by default (binary default: off)")
+    ap.add_argument("--symbols-v2", action="store_true",
+                     help="WS3c (campaign #56): append --symbols-v2 to every roust "
+                          "invocation (tree-sitter-sourced def_index + un-gated anchor "
+                          "seating); omitted by default (binary default: off)")
+    ap.add_argument("--displacement-guard", action="store_true",
+                     help="WS3d (campaign #56): append --displacement-guard to every roust "
+                          "invocation (fixture-dir anchor exclusion); omitted by default "
+                          "(binary default: off)")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -435,6 +462,17 @@ def main() -> None:
                           "does not match this worktree's roust-rs/ HEAD/dirty state -- NOT "
                           "recommended for real results")
     args = ap.parse_args()
+
+    if args.cfamily_ext:
+        EXTRA_ENGINE_FLAGS.append("--cfamily-ext")
+    if args.impl_prior_v2:
+        EXTRA_ENGINE_FLAGS.append("--impl-prior-v2")
+    if args.trace_formats_v2:
+        EXTRA_ENGINE_FLAGS.append("--trace-formats-v2")
+    if args.symbols_v2:
+        EXTRA_ENGINE_FLAGS.append("--symbols-v2")
+    if args.displacement_guard:
+        EXTRA_ENGINE_FLAGS.append("--displacement-guard")
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")

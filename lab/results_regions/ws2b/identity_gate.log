@@ -1,0 +1,38 @@
+binary: /private/tmp/claude-501/-Users-nicholasarehart-programming-projects-bgrep/8da5679e-b9a2-4564-be57-3b22e4a483df/scratchpad/bin/roust-main-3069573 -> roust 0.2.0 (3069573, clean)
+binary: /private/tmp/claude-501/-Users-nicholasarehart-programming-projects-bgrep/8da5679e-b9a2-4564-be57-3b22e4a483df/scratchpad/wt-main-3069573/roust-rs/target/release/roust -> roust 0.2.0 (80e9d25, clean)
+gate pool: 12 Lite Python instances across 6 repos
+=== Gate A: defaults identity, MAIN vs BRANCH binary, two runs each ===
+  astropy__astropy-12907                        OK
+  astropy__astropy-14182                        OK
+  django__django-10914                          OK
+  django__django-10924                          OK
+  matplotlib__matplotlib-18869                  OK
+  matplotlib__matplotlib-22711                  OK
+  scikit-learn__scikit-learn-10297              OK
+  scikit-learn__scikit-learn-10508              OK
+  sphinx-doc__sphinx-10325                      OK
+  sphinx-doc__sphinx-10451                      OK
+  sympy__sympy-11400                            OK
+  sympy__sympy-11870                            OK
+=== Gate B (diagnostic): BRANCH binary, defaults vs --cfamily-ext ===
+  astropy__astropy-12907                        DIFFERS
+  astropy__astropy-14182                        DIFFERS
+  django__django-10914                          IDENTICAL
+  django__django-10924                          IDENTICAL
+  matplotlib__matplotlib-18869                  DIFFERS
+  matplotlib__matplotlib-22711                  DIFFERS
+  scikit-learn__scikit-learn-10297              DIFFERS
+  scikit-learn__scikit-learn-10508              DIFFERS
+  sphinx-doc__sphinx-10325                      IDENTICAL
+  sphinx-doc__sphinx-10451                      IDENTICAL
+  sympy__sympy-11400                            IDENTICAL
+  sympy__sympy-11870                            IDENTICAL
+
+Gate A failures: 0
+Gate B diffs: 6
+  astropy__astropy-12907: C-family files in bundle: ['astropy/wcs/src/astropy_wcs.c', 'astropy/wcs/src/wcslib_wrap.c']
+  astropy__astropy-14182: C-family files in bundle: []
+  matplotlib__matplotlib-18869: C-family files in bundle: ['extern/agg24-svn/include/platform/agg_platform_support.h']
+  matplotlib__matplotlib-22711: C-family files in bundle: ['src/_backend_agg_wrapper.cpp']
+  scikit-learn__scikit-learn-10297: C-family files in bundle: []
+  scikit-learn__scikit-learn-10508: C-family files in bundle: []

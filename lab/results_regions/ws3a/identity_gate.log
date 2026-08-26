@@ -1,0 +1,40 @@
+binary: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws3a-main-baseline/roust-rs/target/release/roust -> roust 0.2.0 (3cb92d9, clean)
+binary: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws3a-impl-prior/roust-rs/target/release/roust -> roust 0.2.0 (499ec29, clean)
+gate pool: 16 mixed instances (15 repos)
+=== Gate A: defaults identity, MAIN vs BRANCH binary, two runs each ===
+  astropy__astropy-12907                             OK
+  django__django-10914                               OK
+  matplotlib__matplotlib-18869                       OK
+  scikit-learn__scikit-learn-10297                   OK
+  sphinx-doc__sphinx-10325                           OK
+  sympy__sympy-11400                                 OK
+  mui__material-ui-23073                             OK
+  mui__material-ui-23487                             OK
+  axios__axios-5085                                  OK
+  vuejs__core-10004                                  OK
+  BurntSushi__ripgrep-1294                           OK
+  serde-rs__serde-2709                               OK
+  tokio-rs__tokio-4519                               OK
+  catchorg__Catch2-1422                              OK
+  fmtlib__fmt-1171                                   OK
+  nlohmann__json-1138                                OK
+=== Gate B (diagnostic): BRANCH binary, defaults vs --impl-prior-v2 ===
+  astropy__astropy-12907                             IDENTICAL
+  django__django-10914                               IDENTICAL
+  matplotlib__matplotlib-18869                       DIFFERS; undamped-by-v2 files in bundle: ['doc/conf.py', 'examples/ticks_and_spines/date_concise_formatter.py', 'examples/ticks_and_spines/date_precision_and_epochs.py']
+  scikit-learn__scikit-learn-10297                   DIFFERS; undamped-by-v2 files in bundle: ['benchmarks/bench_sparsify.py']
+  sphinx-doc__sphinx-10325                           DIFFERS; undamped-by-v2 files in bundle: ['doc/usage/extensions/example_google.py', 'doc/usage/extensions/example_numpy.py']
+  sympy__sympy-11400                                 IDENTICAL
+  mui__material-ui-23073                             DIFFERS; undamped-by-v2 files in bundle: ['docs/next.config.js', 'docs/src/pages/components/button-group/DisableElevation.js', 'docs/src/pages/components/button-group/SplitButton.js', 'docs/src/pages/components/button-group/SplitButton.tsx', 'docs/src/pages/components/menus/CustomizedMenus.js', 'docs/src/pages/components/menus/CustomizedMenus.tsx', 'docs/src/pages/components/menus/FadeMenu.js', 'docs/src/pages/components/menus/FadeMenu.tsx', 'docs/src/pages/components/menus/LongMenu.js', 'docs/src/pages/components/menus/LongMenu.tsx', 'docs/src/pages/components/menus/MenuListComposition.js', 'docs/src/pages/components/menus/MenuListComposition.tsx', 'docs/src/pages/components/menus/SimpleListMenu.js', 'docs/src/pages/components/menus/SimpleListMenu.tsx', 'docs/src/pages/components/menus/TypographyMenu.js', 'docs/src/pages/components/menus/TypographyMenu.tsx', 'docs/src/pages/customization/palette/DarkTheme.js']
+  mui__material-ui-23487                             IDENTICAL
+  axios__axios-5085                                  DIFFERS; undamped-by-v2 files in bundle: ['examples/server.js']
+  vuejs__core-10004                                  IDENTICAL
+  BurntSushi__ripgrep-1294                           IDENTICAL
+  serde-rs__serde-2709                               IDENTICAL
+  tokio-rs__tokio-4519                               DIFFERS; undamped-by-v2 files in bundle: ['examples/tinyhttp.rs']
+  catchorg__Catch2-1422                              DIFFERS; undamped-by-v2 files in bundle: ['examples/207-Rpt-TeamCityReporter.cpp', 'examples/210-Evt-EventListeners.cpp']
+  fmtlib__fmt-1171                                   DIFFERS; undamped-by-v2 files in bundle: ['doc/build.py', 'doc/conf.py']
+  nlohmann__json-1138                                DIFFERS; undamped-by-v2 files in bundle: ['benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h', 'benchmarks/thirdparty/benchmark/src/benchmark.cc', 'benchmarks/thirdparty/benchmark/src/benchmark_register.cc', 'benchmarks/thirdparty/benchmark/src/commandlineflags.cc', 'benchmarks/thirdparty/benchmark/src/complexity.cc', 'benchmarks/thirdparty/benchmark/src/console_reporter.cc', 'benchmarks/thirdparty/benchmark/src/csv_reporter.cc', 'benchmarks/thirdparty/benchmark/src/cycleclock.h', 'benchmarks/thirdparty/benchmark/src/sysinfo.cc', 'benchmarks/thirdparty/benchmark/src/timers.cc', 'doc/examples/README.cpp', 'doc/examples/basic_json__value.cpp', 'doc/examples/get__ValueType_const.cpp']
+
+Gate A failures: 0
+Gate B diffs (expected wherever doc-dir code files rank): 9

@@ -1,0 +1,155 @@
+{
+  "base": "lab/results_regions/ws2b/ver407_base.jsonl",
+  "exp": "lab/results_regions/ws2c/ver407_base.jsonl",
+  "n": 407,
+  "n_payload_diff": 17,
+  "n_changed_or_flipped": 17,
+  "fraction_sign_test": {
+    "pos": 0,
+    "neg": 1,
+    "p_two_sided": 1.0
+  },
+  "changed": [
+    {
+      "instance_id": "astropy__astropy-13033",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-13236",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-13398",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-13453",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-13579",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-13977",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14096",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14309",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14369",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14508",
+      "payload_diff": true,
+      "flips": {
+        "LINE": [
+          true,
+          false
+        ]
+      },
+      "frac_delta": -0.06451612903225812,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14539",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-7166",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-7336",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-7606",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-7671",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-8707",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-8872",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    }
+  ]
+}

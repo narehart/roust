@@ -1,0 +1,14 @@
+engine version: roust 0.2.0 (0c0fc79, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_c.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_repos/c_base
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False
+shard 1/1: rows [0:128] of the sorted split (128 instances)
+[25/128] facebook__zstd-637                            elapsed=129s (ok) ok=25 err=0
+[50/128] ponylang__ponyc-1095                          elapsed=245s (ok) ok=50 err=0
+[75/128] ponylang__ponyc-2342                          elapsed=397s (ok) ok=75 err=0
+[100/128] ponylang__ponyc-3819                          elapsed=497s (ok) ok=99 err=1
+[125/128] ponylang__ponyc-4588                          elapsed=569s (ok) ok=124 err=1
+[128/128] ponylang__ponyc-671                           elapsed=579s (ok) ok=127 err=1
+
+engine version: roust 0.2.0 (0c0fc79, clean)
+wrote 128 records (127 ok, 1 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/ws3b/mswe_c_ws3b_base.jsonl

@@ -1,0 +1,168 @@
+{
+  "convention": "errors-count-as-wrong-at-all-levels/v1: FILE, FUNCTION, and LINE share the same denominator (n = all loaded records); engine errors and git_show failures count as WRONG and are reported separately (*_counted_wrong / n_engine_errors keys).",
+  "source": {
+    "predictions": [
+      "lab/results_regions/ws3b/mswe_go_micro_ws3b_v2.jsonl"
+    ],
+    "gold": "lab/ws3b_go_micro.parquet",
+    "n_instances": 6,
+    "n_region_eval_errors": 0,
+    "engine_shas_seen": [
+      "0c0fc79"
+    ],
+    "engine_dirty_seen": [
+      false
+    ],
+    "bm25_only": false,
+    "pipeline": "shipped roust-rs engine, --budget 8192, confidence-scheduled packing (parity/region_eval_full.py Part A, no-LLM), FULL SWE-bench test split (paper eval wave)"
+  },
+  "all_instances": {
+    "n": 6,
+    "file": {
+      "pct_correct": 100.0,
+      "n": 6,
+      "n_correct": 6,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 66.67,
+      "n": 6,
+      "n_judged": 6,
+      "n_correct": 4,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "cli__cli-402",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-405",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-495",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8893",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9307",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2371",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": true
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 50.0,
+      "n": 6,
+      "n_correct_all_or_nothing": 3,
+      "mean_fraction_covered": 0.5,
+      "median_fraction_covered": 0.5,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.004116729491661782,
+      "median_precision": 0.0025983667409057165,
+      "n": 6,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1228.1666666666667,
+      "median_total_region_lines_per_instance": 1230.0
+    }
+  },
+  "file_correct_subset": {
+    "n": 6,
+    "file": {
+      "pct_correct": 100.0,
+      "n": 6,
+      "n_correct": 6,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 66.67,
+      "n": 6,
+      "n_judged": 6,
+      "n_correct": 4,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "cli__cli-402",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-405",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-495",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": true
+        },
+        {
+          "instance_id": "cli__cli-8893",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "cli__cli-9307",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "grpc__grpc-go-2371",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": true
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 50.0,
+      "n": 6,
+      "n_correct_all_or_nothing": 3,
+      "mean_fraction_covered": 0.5,
+      "median_fraction_covered": 0.5,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.004116729491661782,
+      "median_precision": 0.0025983667409057165,
+      "n": 6,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1228.1666666666667,
+      "median_total_region_lines_per_instance": 1230.0
+    },
+    "note": "restricted to instances where FILE-level was already correct -- isolates region/line/function quality from file recall"
+  },
+  "agentless_gpt4o_published": {
+    "file": 69.7,
+    "function": 52.0,
+    "line": 35.3
+  },
+  "agentless_note": "AGENTLESS_GPT4O numbers are Agentless's published SWE-bench LITE localization rates (arXiv:2407.01489 Table 1) -- context only; no published Agentless full-split localization numbers exist to compare against directly."
+}

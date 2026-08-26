@@ -1,0 +1,24 @@
+Computing exact FUNCTION-level metric + region precision via read-only `git show` (this walks every gold + returned .py file's AST)...
+
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/ws3b/agentless_metric_ws3b_jsts_micro_base.json
+
+==============================================================================
+Agentless-style %% Correct Location -- roust (no-LLM) vs GPT-4o Agentless
+(FUNCTION is EXACT, not a proxy -- SWE-bench Verified held-out)
+==============================================================================
+                                            roust   GPT-4o Agentless
+FILE   (predicted ⊇ gold files)             50.0%        69.7%
+FUNCTION (EXACT)                            50.0%        52.0%
+LINE   (all-or-nothing)                      0.0%        35.3%
+
+LINE mean-fraction covered (continuity w/ prior reporting)   0.2232
+REGION PRECISION (gold lines / total returned lines), mean   0.0058  (n=6, excluded=0)
+  mean total region lines / instance                         1101.7
+
+FUNCTION n=6 n_judged=6 n_correct=3 counted_wrong(engine_errors=0, git_show_failures=0)
+
+--- restricted to file-correct subset (n=3/6) ---
+FUNCTION (EXACT)                           100.0%          n/a
+LINE   (all-or-nothing)                      0.0%          n/a
+LINE mean-fraction covered                                   0.4231
+REGION PRECISION, mean                                       0.0107 (n=3)

@@ -1,0 +1,34 @@
+31 fixture-dir-bearing pytest instances (expect 31)
+  [lite    ] pytest-dev__pytest-5103             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-5221             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-5227             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-5413             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-5495             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-5692             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-6116             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-7168             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-7220             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-7373             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-7432             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-7490             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-8365             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-8906             det=OK guard=IDENTICAL
+  [lite    ] pytest-dev__pytest-9359             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-10051            det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-10081            det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-5262             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-5631             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-5787             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-5809             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-5840             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-6197             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-6202             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-7205             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-7236             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-7324             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-7521             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-7571             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-7982             det=OK guard=IDENTICAL
+  [verified] pytest-dev__pytest-8399             det=OK guard=IDENTICAL
+determinism failures: 0; guard-differs: 0
+MICROGATE_DONE

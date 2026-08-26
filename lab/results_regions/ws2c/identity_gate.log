@@ -1,0 +1,19 @@
+binary: /private/tmp/claude-501/-Users-nicholasarehart-programming-projects-bgrep/8da5679e-b9a2-4564-be57-3b22e4a483df/scratchpad/bin/roust-main-3069573 -> roust 0.2.0 (3069573, clean)
+binary: /private/tmp/claude-501/-Users-nicholasarehart-programming-projects-bgrep/8da5679e-b9a2-4564-be57-3b22e4a483df/scratchpad/wt-ws2c/roust-rs/target/release/roust -> roust 0.2.0 (39b0b14, clean)
+=== Gate A: defaults identity, MAIN vs WS2c binary, two runs each (9 instances) ===
+  django__django-10914                          OK
+  django__django-10924                          OK
+  django__django-11001                          OK
+  sphinx-doc__sphinx-10325                      OK
+  sphinx-doc__sphinx-10451                      OK
+  sphinx-doc__sphinx-11445                      OK
+  sympy__sympy-11400                            OK
+  sympy__sympy-11870                            OK
+  sympy__sympy-11897                            OK
+=== Gate B (diagnostic): defaults, MAIN vs WS2c on matching-dir repos ===
+  astropy__astropy-12907                        IDENTICAL
+  astropy__astropy-14182                        IDENTICAL
+  matplotlib__matplotlib-18869                  IDENTICAL
+  scikit-learn__scikit-learn-10297              IDENTICAL
+
+Gate A failures: 0

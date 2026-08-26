@@ -1,0 +1,18 @@
+engine version: roust 0.2.0 (499ec29, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3a_rust.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3a_repos/rust_v2
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=True
+shard 1/1: rows [0:239] of the sorted split (239 instances)
+[25/239] clap-rs__clap-2085                            elapsed=78s (ok) ok=25 err=0
+[50/239] clap-rs__clap-2609                            elapsed=156s (ok) ok=50 err=0
+[75/239] clap-rs__clap-2993                            elapsed=233s (ok) ok=75 err=0
+[100/239] clap-rs__clap-3874                            elapsed=327s (ok) ok=100 err=0
+[125/239] clap-rs__clap-4474                            elapsed=424s (ok) ok=125 err=0
+[150/239] nushell__nushell-10613                        elapsed=558s (ok) ok=150 err=0
+[175/239] sharkdp__fd-1079                              elapsed=674s (ok) ok=175 err=0
+[200/239] tokio-rs__tokio-5244                          elapsed=742s (ok) ok=200 err=0
+[225/239] tokio-rs__tracing-1252                        elapsed=838s (ok) ok=225 err=0
+[239/239] tokio-rs__tracing-2897                        elapsed=897s (ok) ok=239 err=0
+
+engine version: roust 0.2.0 (499ec29, clean)
+wrote 239 records (239 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/ws3a/mswe_rust_ws3a_v2.jsonl

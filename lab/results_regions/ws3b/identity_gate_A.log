@@ -1,0 +1,22 @@
+binary: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws3b-main-baseline/roust-rs/target/release/roust -> roust 0.2.0 (de96114, clean)
+binary: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws3b-trace-formats/roust-rs/target/release/roust -> roust 0.2.0 (0c0fc79, clean)
+=== Gate A: defaults identity, MAIN vs BRANCH, two runs each (17 thirdparty-free mixed instances) ===
+  astropy__astropy-12907                             tp_files=0 OK
+  django__django-10914                               tp_files=0 OK
+  matplotlib__matplotlib-18869                       tp_files=0 OK
+  scikit-learn__scikit-learn-10297                   tp_files=0 OK
+  sphinx-doc__sphinx-10325                           tp_files=0 OK
+  sympy__sympy-11400                                 tp_files=0 OK
+  mui__material-ui-23073                             tp_files=0 OK
+  mui__material-ui-23487                             tp_files=0 OK
+  axios__axios-5085                                  tp_files=0 OK
+  vuejs__core-10004                                  tp_files=0 OK
+  BurntSushi__ripgrep-1294                           tp_files=0 OK
+  serde-rs__serde-2709                               tp_files=0 OK
+  tokio-rs__tokio-4519                               tp_files=0 OK
+  catchorg__Catch2-1422                              tp_files=0 OK
+  fmtlib__fmt-1171                                   tp_files=0 OK
+  elastic__logstash-13825                            tp_files=0 OK
+  fasterxml__jackson-core-1016                       tp_files=0 OK
+Gate A failures: 0
+GATES_DONE
