@@ -2,8 +2,14 @@ name: Release
 
 # Tag push (`vX.Y.Z`) triggers a real release. `workflow_dispatch` with
 # `dry_run` (default true) builds every artifact but skips every publish
-# step -- use it to test this workflow before the PyPI/crates.io/GitHub
-# Release credentials exist. See RELEASE.md.
+# step. See RELEASE.md.
+#
+# Distribution channels (PyPI was dropped -- roust is a Rust binary, not a
+# Python package, and the maturin wheel indirection bought nothing):
+#   1. GitHub Release  -- raw per-platform binaries + .sha256 checksums
+#   2. npm             -- `roust-<platform>` packages carrying the binary,
+#                         pulled in as optionalDependencies of `roust`
+#   3. crates.io       -- `cargo install roust` / build from source
 on:
   push:
     # Strict vX.Y.Z only (per RELEASE.md) -- a loose "v*" would let a typo'd
@@ -13,7 +19,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Build only -- skip PyPI, crates.io, and GitHub Release publish steps"
+        description: "Build only -- skip npm, crates.io, and GitHub Release publish steps"
         type: boolean
         default: true
 
@@ -40,150 +46,153 @@ jobs:
             echo "::notice::Real release for ${{ github.ref_name }} -- publish steps will run."
           fi
 
-  sdist:
-    name: Build sdist
+  build-binaries:
+    name: Build ${{ matrix.name }}
     needs: plan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build sdist
-        uses: PyO3/maturin-action@v1
-        with:
-          command: sdist
-          args: -o dist
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist-sdist
-          path: dist/*.tar.gz
-
-  wheels:
-    name: Build wheel (${{ matrix.target }})
-    needs: plan
-    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: x86_64-apple-darwin
-            # macos-13 (Intel) was retired; macos-15-intel is the standard
-            # Intel runner going forward (supported through Fall 2027 --
-            # https://github.blog/changelog/2025-09-19-github-actions-macos-13-runner-image-is-closing-down/).
-            os: macos-15-intel
+            os: macos-latest
+            name: darwin-x64
           - target: aarch64-apple-darwin
-            os: macos-14
+            os: macos-latest
+            name: darwin-arm64
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
-            manylinux: "2_17"
+            name: linux-x64
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
-            manylinux: "2_17"
+            name: linux-arm64
           - target: x86_64-pc-windows-msvc
             os: windows-latest
+            name: win32-x64
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          python-version: "3.x"
+          targets: ${{ matrix.target }}
 
-      - name: Build wheel
-        uses: PyO3/maturin-action@v1
-        with:
-          command: build
-          args: --release -o dist --compatibility pypi
-          target: ${{ matrix.target }}
-          manylinux: ${{ matrix.manylinux || 'auto' }}
+      - name: Install cross-compilation tools
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
 
-      # The wheel already embeds the raw platform binary (that's the point
-      # of `bindings = "bin"`); pull it back out so the GitHub Release can
-      # ship it directly instead of making users unzip a wheel.
-      - name: Package raw binary for GitHub Release
+      - name: Build binary
+        working-directory: roust-rs
         shell: bash
-        run: python3 scripts/package_binary.py dist/*.whl ${{ matrix.target }} binaries
+        run: cargo build --release --target ${{ matrix.target }}
+        env:
+          # cargo must link aarch64 objects with the cross-gcc, not host ld
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+
+      - name: Package binary and checksum
+        shell: bash
+        run: |
+          # Asset names are what the npm wrapper's download fallback expects:
+          # roust-<target>[.exe] plus a companion .sha256.
+          binary_name="roust"
+          asset_name="roust-${{ matrix.target }}"
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            binary_name="roust.exe"
+            asset_name="${asset_name}.exe"
+          fi
+          mkdir -p release-assets
+          cp "roust-rs/target/${{ matrix.target }}/release/${binary_name}" "release-assets/${asset_name}"
+          cd release-assets
+          # macOS lacks sha256sum; Windows git-bash lacks shasum
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum "${asset_name}" > "${asset_name}.sha256"
+          else
+            shasum -a 256 "${asset_name}" > "${asset_name}.sha256"
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dist-wheel-${{ matrix.target }}
-          path: dist/*.whl
+          name: binary-${{ matrix.name }}
+          path: release-assets/*
 
-      - uses: actions/upload-artifact@v4
+      - name: Set up Node
+        if: needs.plan.outputs.dry_run != 'true'
+        uses: actions/setup-node@v4
         with:
-          name: dist-binary-${{ matrix.target }}
-          path: binaries/*
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
 
-  publish-pypi:
-    name: Publish to PyPI
-    needs: [plan, sdist, wheels]
+      - name: Publish platform package to npm
+        if: needs.plan.outputs.dry_run != 'true'
+        shell: bash
+        run: |
+          PKG_DIR=$(node npm/prepare-platform-package.mjs --target ${{ matrix.target }})
+          npm publish "$PKG_DIR" --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Dry-run platform package (build only)
+        if: needs.plan.outputs.dry_run == 'true'
+        shell: bash
+        run: |
+          PKG_DIR=$(node npm/prepare-platform-package.mjs --target ${{ matrix.target }})
+          echo "::notice::Platform package staged at ${PKG_DIR} (publish skipped)"
+          cat "${PKG_DIR}/package.json"
+
+  publish-npm:
+    name: Publish to npm
+    needs: [plan, build-binaries]
     if: needs.plan.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
-    environment:
-      name: release
-      url: https://pypi.org/project/roust/
-    permissions:
-      # Required for PyPI trusted publishing (OIDC) -- no API token stored.
-      id-token: write
     steps:
-      - name: Download built distributions
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          pattern: dist-sdist
-          merge-multiple: true
-          path: dist
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
 
-      - name: Download built wheels
-        uses: actions/download-artifact@v4
-        with:
-          pattern: dist-wheel-*
-          merge-multiple: true
-          path: dist
+      - name: Pin platform packages as optionalDependencies
+        run: node npm/sync-optional-deps.mjs
 
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: dist
+      - name: Publish main package
+        working-directory: npm/roust
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-crates-io:
     name: Publish to crates.io
-    # Deliberately a separate JOB from publish-pypi and github-release (a
-    # missing or invalid CARGO_REGISTRY_TOKEN fails only this job), but it
-    # still requires the sdist + wheel builds to have SUCCEEDED first: a
-    # cargo publish is irrevocable, so nothing may reach any registry from a
-    # commit whose Python-side artifacts don't even build.
-    needs: [plan, sdist, wheels]
+    needs: [plan, build-binaries]
     if: needs.plan.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
-    continue-on-error: false
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
+      - uses: dtolnay/rust-toolchain@stable
       - name: cargo publish
         working-directory: roust-rs
+        run: cargo publish --allow-dirty
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        run: cargo publish
 
   github-release:
     name: Create GitHub Release
-    needs: [plan, sdist, wheels]
+    needs: [plan, build-binaries]
     if: needs.plan.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Download raw binaries
+      - name: Download all binaries
         uses: actions/download-artifact@v4
         with:
-          pattern: dist-binary-*
+          pattern: binary-*
+          path: dist
           merge-multiple: true
-          path: binaries
 
-      - name: Create release
+      - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
+          files: dist/*
           generate_release_notes: true
-          files: binaries/*

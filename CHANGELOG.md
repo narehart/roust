@@ -7,8 +7,15 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [0.3.0] - 2026-08-26 - Language-agnostic engine (first published release)
 
-First release published to PyPI and crates.io (0.1.0 and 0.2.0 were
-development milestones, never published). Headline: roust stopped being a
+First published release (0.1.0 and 0.2.0 were development milestones, never
+published). Distributed through three channels — **npm** (`npm i -g roust` /
+`npx roust`, with the platform binary delivered as an `optionalDependencies`
+package, the esbuild/Biome model), **crates.io** (`cargo install roust`, and
+the build-from-source path for platforms without a prebuilt binary), and
+**GitHub Releases** (raw per-platform binaries with `.sha256` checksums).
+PyPI was dropped as a channel: roust is a Rust binary, not a Python package,
+and the maturin wheel added a build system and a registry without adding a
+user (`pyproject.toml` stays for local `pip install .` source builds). Headline: roust stopped being a
 Python-shaped tool. Structural region packing now covers eight languages
 via pinned tree-sitter grammars, C-family sources are indexed at all, and
 stack traces from four ecosystems feed the file-boost channel -- each

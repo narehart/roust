@@ -20,22 +20,39 @@ packing for those languages — grammar bumps are gated dependency changes).
 Every install path below builds the same `roust-rs` engine — there is no
 separate Python implementation.
 
-**Not yet on PyPI or crates.io.** The tag-triggered release pipeline is
-committed (`.github/workflows/release.yml`), but the registry credentials
-(PyPI trusted publisher, crates.io token) are not configured and no release
-tag has been pushed — see `RELEASE.md`. Until the first release, install
-from source:
+**Not yet released.** The tag-triggered release pipeline is committed
+(`.github/workflows/release.yml`) and the registry credentials are configured;
+no release tag has been pushed yet — see `RELEASE.md`. Once `v0.3.0` ships,
+these are the install paths:
 
 ```bash
-# From source, via cargo:
+# npm — downloads the prebuilt binary for your platform (no Node runtime cost;
+# the launcher just execs it). Works with npx too.
+npm install -g roust
+npx roust "connection pooling" ~/code/httpx
+```
+
+```bash
+# crates.io — builds from source
+cargo install roust
+```
+
+```bash
+# GitHub Releases — raw per-platform binaries with .sha256 checksums
+# https://github.com/narehart/roust/releases
+```
+
+Until the first tag, build from source:
+
+```bash
 git clone https://github.com/narehart/roust && cd roust
 cargo install --path roust-rs
 ```
 
-```bash
-# From source, via pip (builds the wheel locally with maturin):
-git clone https://github.com/narehart/roust && cd roust && pip install .
-```
+Prebuilt binaries cover darwin-x64, darwin-arm64, linux-x64, linux-arm64, and
+win32-x64. Any other platform builds from source via `cargo install roust`.
+roust is not published to PyPI — it is a Rust binary, not a Python package,
+and the wheel indirection bought nothing over the three channels above.
 
 `git` should be on `PATH` if you want the commit-history signal (roust
 degrades gracefully without it).
@@ -488,11 +505,11 @@ Adapter + protocol: `lab/contextbench/`; aggregate:
   query construction) with Multi-SWE slices as first-class gates. Step one
   (JS/TS/TSX structural packing) shipped in PR
   [#55](https://github.com/narehart/roust/pull/55).
-- Publish to PyPI + crates.io — **pending**: the tag-triggered release
-  pipeline is committed (`.github/workflows/release.yml`), but the two
-  credential steps (PyPI trusted-publisher config, crates.io
-  `CARGO_REGISTRY_TOKEN` secret) and the first `vX.Y.Z` tag push remain —
-  see `RELEASE.md`.
+- First release (npm + crates.io + GitHub Releases) — **pending the tag
+  push only**: the pipeline is committed (`.github/workflows/release.yml`),
+  both registry secrets (`NPM_TOKEN`, `CARGO_REGISTRY_TOKEN`) are configured,
+  and a dry run builds every platform artifact. PyPI was dropped as a channel
+  — see `RELEASE.md`.
 - MCP server.
 - Incremental index updates (avoid full reindex on every change).
 - Homebrew tap.
