@@ -5,12 +5,23 @@
 Point an agent at grep and it has to iterate on search terms, reading through
 a lot of matches to find what it needs. Point it at roust and it gets a
 single, ranked, token-budgeted bundle of the relevant code back in one call,
-with no embeddings, no LLM calls, no API keys, and no training. Validated on
-407 held-out SWE-bench Verified instances (92.1% all-gold-files, never tuned
-on) and on the archex head-to-head benchmark (40/40 tasks at recall 1.00).
-roust is a ranking-and-packing pipeline over plain lexical, structural, and
+with no embeddings, no LLM calls, no API keys, and no training. roust is a
+ranking-and-packing pipeline over plain lexical, structural, and
 version-control signals — it reads like a very disciplined `grep` session,
 compressed into one process call.
+
+**Eight languages**, packed as real functions and classes rather than blind
+line windows: Python, JavaScript, TypeScript, Java, Go, Rust, C, and C++.
+Each one's structural support was gated on its own benchmark slice before
+shipping — the per-language numbers, including where roust is weak, are in
+[Multi-language localization](#multi-language-localization-agentless-metric-all-levels).
+Any other language still indexes and ranks; it just packs windows instead of
+syntactic units.
+
+Validated on 407 held-out SWE-bench Verified instances (92.1% all-gold-files,
+never tuned on), on the archex head-to-head benchmark (40/40 tasks at recall
+1.00), and per-language on Multi-SWE-bench. Python is the strongest slice by
+a wide margin, and the scoreboard says so.
 
 ## Install
 
@@ -97,7 +108,10 @@ roust "connection pooling" ~/code/httpx --json
 # Cap the file count (0 = no cap, the default)
 roust "connection pooling" ~/code/httpx --k 5
 
-# Change the token budget for the packed bundle (default: 8192)
+# Change the token budget for the packed bundle (default: 8192).
+# The budget is a target, not a hard cap: the packer seats a minimum core of
+# regions first, so small budgets can overshoot (measured 1.04-1.22x at 2048-8192
+# on requests/flask). Check stats.bundle_tokens in --json for the actual size.
 roust "connection pooling" ~/code/httpx --budget 4096
 
 # Force a fresh index build even if a cache entry exists

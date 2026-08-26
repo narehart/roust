@@ -5,6 +5,26 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-08-26 - Accurate published docs
+
+Documentation-only release. 0.3.0's crate carried a README written before the
+release that said roust was "not yet released", and the npm package shipped no
+README at all — both registry pages contradicted the artifacts sitting next to
+them. This republishes with the corrected README, and the npm package now
+includes it (`files: ["bin", "README.md"]`, staged from the repo root at
+publish time so there is only ever one source of truth).
+
+Also corrected in the docs, all verified against committed artifacts:
+multi-language support is now stated in the intro rather than buried (eight
+languages, with the honest note that Python is by far the strongest slice);
+the binary-size figure caught up with the grammar batch (~9.7 MB -> ~15 MB,
+~9.3 MB of it pinned tree-sitter grammars); `--budget` is documented as a
+target rather than a hard cap (measured 1.04-1.22x overshoot at 2048-8192);
+and two misstated figures in the research write-up were fixed (the static
+test-bridge null was "no bridged file was ever a missing gold file", not a
+count out of 499; the sibling-sweep regression was from 53.3, not 54.7).
+No engine changes.
+
 ## [0.3.0] - 2026-08-26 - Language-agnostic engine (first published release)
 
 First published release (0.1.0 and 0.2.0 were development milestones, never

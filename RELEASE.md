@@ -19,7 +19,7 @@ only -- a typo'd or pre-release-suffixed tag does not trigger a publish).
 
 ---
 
-## v0.3.0 — shipped 2026-08-26
+## v0.3.0 / v0.3.1 — shipped 2026-08-26
 
 Published and verified:
 
@@ -30,6 +30,22 @@ Published and verified:
 | crates.io `roust` | 0.3.0 | `cargo install roust` |
 | GitHub Release `v0.3.0` | — | 10 assets (5 binaries + 5 `.sha256`) |
 | Docs site | — | https://narehart.github.io/roust/ |
+
+0.3.1 followed immediately, for a reason worth recording: a registry renders
+the README **from the published version**, so 0.3.0's crates.io page carried a
+README that still said "not yet released", and the npm package shipped no
+README at all. Registry pages are documentation; they need the same accuracy
+bar as the repo. The npm package now ships the root README (staged at publish
+time, one source of truth) and the release checklist below includes reading
+the rendered registry pages after publishing.
+
+One provenance wrinkle to know about, specific to the 0.3.0 release: the npm
+binaries were built by the tag run (embedded SHA `c075631`) and the GitHub
+Release assets by the follow-up dispatch (`a726d9d`), so `roust --version`
+reports different SHAs for the same 0.3.0 depending on where you got it. The
+`roust-rs/` diff between those commits is empty — the two builds produce
+byte-identical output on the same input, verified — and future releases avoid
+the split because the publish steps are now re-runnable from the tag itself.
 
 Two things the first attempt taught, both now fixed in the workflow:
 
@@ -99,7 +115,13 @@ out.
    before the main `roust` package that pins them as `optionalDependencies`,
    which is why `publish-npm` `needs: build-binaries`.
 
-7. **Partial failures are contained by design.** Each publish target is its
+7. **Read the rendered registry pages** once the run is green:
+   https://www.npmjs.com/package/roust-cli and
+   https://crates.io/crates/roust. Both render the README from the version
+   just published — a stale sentence there is public in a way a stale line in
+   the repo is not, and it cannot be edited without another version.
+
+8. **Partial failures are contained by design.** Each publish target is its
    own job, so a crates.io token problem cannot block the npm publish or the
    GitHub Release (and vice versa). Fix the cause, then "Re-run failed jobs"
    from the Actions UI, or dispatch `release.yml` against the `vX.Y.Z` tag ref

@@ -166,6 +166,11 @@ jobs:
       - name: Pin platform packages as optionalDependencies
         run: node npm/sync-optional-deps.mjs
 
+      # npm renders the package README on the registry page; the root README
+      # is the single source of truth, so copy rather than maintain a second.
+      - name: Stage README into the package
+        run: cp README.md npm/roust-cli/README.md
+
       - name: Publish main package
         working-directory: npm/roust-cli
         run: |

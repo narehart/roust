@@ -21,3 +21,4 @@ npm/roust-*/
 # docs site build output
 _site/
 node_modules/
+npm/roust-cli/README.md

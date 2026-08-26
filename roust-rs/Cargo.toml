@@ -1,8 +1,8 @@
 [package]
 name = "roust"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2024"
-description = "Recall-first code retrieval for coding agents - one ranked, token-budgeted bundle per query, no model or API key required"
+description = "Recall-first code retrieval for coding agents - one ranked, token-budgeted bundle per query across 8 languages, no model or API key required"
 license = "MIT"
 repository = "https://github.com/narehart/roust"
 readme = "../README.md"

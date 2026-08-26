@@ -1,7 +1,7 @@
 {
   "name": "roust-cli",
-  "version": "0.3.0",
-  "description": "Recall-first code retrieval for coding agents: deterministic, training-free localization with no model, no embeddings, and no API key. Installs the roust binary.",
+  "version": "0.3.1",
+  "description": "Recall-first code retrieval for coding agents: one ranked, token-budgeted bundle of relevant code per query, across Python, JS/TS, Java, Go, Rust, C and C++. No model, no embeddings, no API key. Installs the roust binary.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -26,16 +26,17 @@
     "roust": "bin/roust.mjs"
   },
   "files": [
-    "bin"
+    "bin",
+    "README.md"
   ],
   "engines": {
     "node": ">=18"
   },
   "optionalDependencies": {
-    "roust-darwin-arm64": "0.3.0",
-    "roust-darwin-x64": "0.3.0",
-    "roust-linux-arm64": "0.3.0",
-    "roust-linux-x64": "0.3.0",
-    "roust-win32-x64": "0.3.0"
+    "roust-darwin-arm64": "0.3.1",
+    "roust-darwin-x64": "0.3.1",
+    "roust-linux-arm64": "0.3.1",
+    "roust-linux-x64": "0.3.1",
+    "roust-win32-x64": "0.3.1"
   }
 }
