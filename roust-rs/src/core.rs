@@ -3149,6 +3149,19 @@ pub enum FileScoreMode {
     ChunkMax,
     /// File content score = mean of the top-2 chunk scores.
     ChunkTop2,
+    /// E21b (decoupled): chunk-max decides file SELECTION and ORDER
+    /// (`lex_picks`, structural-expansion sources, the ranked output), but
+    /// the `scores` map handed to `pack_regions` for budget allocation is
+    /// the ORIGINAL accumulation-normalized map -- the E21 gate proved the
+    /// chunk aggregate fixes FILE ranking (hub demotion, both hub-gold
+    /// guards improved) while its damped normalized scores shrink central
+    /// gold files' packed budgets one stage down (8/9 no-FILE-flip FUNCTION
+    /// losses were budget shrinkage). Decoupling keeps the validated
+    /// ranking mechanism and restores baseline budgets.
+    ChunkRankMax,
+    /// E21b decoupled variant of ChunkTop2: top-2-mean chunk aggregate for
+    /// ranking, accumulation-normalized scores for budgets.
+    ChunkRankTop2,
 }
 
 pub struct SelectParams<'a> {
@@ -3227,11 +3240,21 @@ pub fn select_files(
     // aggregated one (`Corpus::bm25_chunk`) -- every consumer downstream
     // (lex_picks, the `scores` budget map, the legacy testbridge promotions'
     // test ranking, top_score) coherently sees the same aggregate.
+    //
+    // E21b (ChunkRank*): the chunk aggregate drives RANKING only; the accum
+    // map rides alongside as `bm_budget` and, after receiving the exact
+    // same post-normalization mutations (test-bridge additions, lexboost
+    // smoothing, trace-boost insertions, test-path penalty), becomes the
+    // `scores` map handed to `pack_regions` -- so on any query whose
+    // selected file set does not flip, the packer sees a budget map
+    // IDENTICAL to the Accum baseline's.
     let mut file_score_top: Vec<(String, f64, f64, f64, usize, usize)> = Vec::new();
+    let mut bm_budget: Option<IndexMap<String, f64>> = None;
     let bm = match params.file_score {
         FileScoreMode::Accum => corpus.bm25(terms),
         mode => {
-            let (chunk_bm, best_chunk) = corpus.bm25_chunk(terms, mode == FileScoreMode::ChunkTop2);
+            let top2 = matches!(mode, FileScoreMode::ChunkTop2 | FileScoreMode::ChunkRankTop2);
+            let (chunk_bm, best_chunk) = corpus.bm25_chunk(terms, top2);
             // Flip-anatomy diagnostics: old-vs-new score + winning chunk for
             // the union of both top-15 lists.
             let accum_bm = corpus.bm25(terms);
@@ -3254,6 +3277,9 @@ pub fn select_files(
                 })
                 .collect();
             file_score_top.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+            if matches!(mode, FileScoreMode::ChunkRankMax | FileScoreMode::ChunkRankTop2) {
+                bm_budget = Some(accum_bm);
+            }
             chunk_bm
         }
     };
@@ -3278,11 +3304,18 @@ pub fn select_files(
                 let strength = raw / raw_max;
                 let added = params.test_bridge * top_score * strength;
                 *bm.entry(f.clone()).or_insert(0.0) += added;
+                if let Some(bb) = bm_budget.as_mut() {
+                    *bb.entry(f.clone()).or_insert(0.0) += added;
+                }
                 test_bridge_diag.push((f, via, strength, added, hits));
             }
         }
     }
     let mut bm_n = normalize(&bm);
+    // E21b: the budget map is normalized independently (against its OWN
+    // max, exactly as the Accum baseline normalizes) and receives the same
+    // downstream channel mutations as `bm_n`.
+    let mut budget_n: Option<IndexMap<String, f64>> = bm_budget.as_ref().map(normalize);
 
     // E20 LexBoost neighbor smoothing -- applied to the normalized fused
     // score BEFORE the E11 trace boost (smoothing reshapes the lexical
@@ -3297,6 +3330,13 @@ pub fn select_files(
             let (sm, diag) = apply_lexboost(&bm_n, corpus, nbrs, hubs, params.lexboost);
             bm_n = sm;
             lexboost_top = diag;
+            if let Some(b) = budget_n.take() {
+                // E21b: smooth the budget map with its own accum-derived
+                // scores, exactly as the Accum baseline would (diag from
+                // the rank map is the one reported).
+                let (sm_b, _diag_b) = apply_lexboost(&b, corpus, nbrs, hubs, params.lexboost);
+                budget_n = Some(sm_b);
+            }
         }
     }
 
@@ -3327,8 +3367,14 @@ pub fn select_files(
             for (i, f) in tfs.iter().enumerate() {
                 let b = if i < 10 { 1.0 / (i as f64 + 1.0) } else { 0.1 };
                 *bm_n.entry(f.clone()).or_insert(0.0) += b;
+                if let Some(bb) = budget_n.as_mut() {
+                    *bb.entry(f.clone()).or_insert(0.0) += b;
+                }
             }
             for f in spill {
+                if let Some(bb) = budget_n.as_mut() {
+                    *bb.entry(f.clone()).or_insert(0.0) += 0.1;
+                }
                 *bm_n.entry(f).or_insert(0.0) += 0.1;
             }
         }
@@ -3346,6 +3392,13 @@ pub fn select_files(
                 *v *= params.test_penalty;
             }
         }
+        if let Some(bb) = budget_n.as_mut() {
+            for (f, v) in bb.iter_mut() {
+                if TESTLIKE_RE.is_match(f) && !direct.contains(f.as_str()) {
+                    *v *= params.test_penalty;
+                }
+            }
+        }
     }
 
     let mut ranked: Vec<(String, f64)> = bm_n.iter().map(|(k, v)| (k.clone(), *v)).collect();
@@ -3359,7 +3412,14 @@ pub fn select_files(
         .map(|(_, (f, _))| f.clone())
         .collect();
 
-    let mut scores: IndexMap<String, f64> = bm_n.clone();
+    // E21b: under ChunkRank* the budget map handed to `pack_regions` is the
+    // accum-normalized one (post identical channel mutations); ranking above
+    // (`lex_picks`) and the structural expansion below stay on `bm_n`, the
+    // chunk-aggregated rank map.
+    let mut scores: IndexMap<String, f64> = match &budget_n {
+        Some(b) => b.clone(),
+        None => bm_n.clone(),
+    };
 
     if !use_ppr {
         let (lex_out, promotions) = apply_anchor_promotions(lex_picks.clone(), params.anchors);
@@ -7651,6 +7711,112 @@ def omega_worker(pp):
         assert!(a.2.file_score_top.is_empty() && a.2.test_bridge.is_empty());
         std::fs::remove_dir_all(&tmp).ok();
     }
+
+    // ------------------------------------------------------------ E21b
+
+    /// The decoupling contract, exactly: under ChunkRankMax the SELECTED
+    /// file list and order are identical to ChunkMax's (chunk aggregate
+    /// decides ranking), while the returned `scores` budget map is
+    /// identical to Accum's (the packer sees accumulation-normalized
+    /// budgets). Tested on the lex-only path (use_ppr = false) where the
+    /// budget map has no additions floors, so FULL map equality holds even
+    /// though the ranking flips gold above the hub.
+    #[test]
+    fn e21b_chunk_rank_selection_is_chunkmax_budget_is_accum() {
+        let (tmp, corpus) = e21_corpus("rank");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let accum = select_files(&corpus, &terms, false, &SelectParams::default());
+        let cmax = select_files(
+            &corpus,
+            &terms,
+            false,
+            &SelectParams { file_score: FileScoreMode::ChunkMax, ..Default::default() },
+        );
+        let crank = select_files(
+            &corpus,
+            &terms,
+            false,
+            &SelectParams { file_score: FileScoreMode::ChunkRankMax, ..Default::default() },
+        );
+        assert_eq!(crank.0, cmax.0, "selection/order follows the chunk aggregate");
+        assert_ne!(cmax.0, accum.0, "toy premise: chunk ranking actually flips the order");
+        assert_eq!(crank.1, accum.1, "budget map is the accum-normalized one, bit-identical");
+        assert_ne!(cmax.1, accum.1, "toy premise: chunk-max's budget map differs from accum");
+        assert!(!crank.2.file_score_top.is_empty(), "anatomy diagnostics populated");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Same contract end-to-end on the full expansion path (use_ppr =
+    /// true): gold ranks first (the E21 hub-demotion mechanism intact) but
+    /// its BUDGET score is the accum-normalized value -- strictly below
+    /// 1.0, with the accumulated hub at the map max -- whereas coupled
+    /// ChunkMax hands the packer gold at 1.0 and a damped hub.
+    #[test]
+    fn e21b_chunk_rank_gold_ranks_first_but_keeps_accum_budget() {
+        let (tmp, corpus) = e21_corpus("rankppr");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let accum_n = normalize(&corpus.bm25(&terms));
+        let cmax = select_files(
+            &corpus,
+            &terms,
+            true,
+            &SelectParams { file_score: FileScoreMode::ChunkMax, ..Default::default() },
+        );
+        let crank = select_files(
+            &corpus,
+            &terms,
+            true,
+            &SelectParams { file_score: FileScoreMode::ChunkRankMax, ..Default::default() },
+        );
+        assert_eq!(crank.2.lex_picks, cmax.2.lex_picks);
+        assert_eq!(crank.2.lex_picks[0], "pkg/gold.py", "ranking mechanism intact");
+        // Coupled: gold IS the chunk max -> budget 1.0. Decoupled: gold's
+        // budget is its accum share; the hub keeps the max.
+        assert_eq!(cmax.1["pkg/gold.py"], 1.0);
+        assert!((crank.1["pkg/gold.py"] - accum_n["pkg/gold.py"]).abs() < 1e-15);
+        assert!(crank.1["pkg/gold.py"] < 1.0);
+        assert_eq!(crank.1["pkg/hub.py"], 1.0, "accum max stays the budget max");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// ChunkRankTop2 = ChunkTop2's selection with Accum's budget map (the
+    /// top2 aggregate feeds ranking only).
+    #[test]
+    fn e21b_chunk_top2_rank_semantics() {
+        let (tmp, corpus) = e21_corpus("t2rank");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let accum = select_files(&corpus, &terms, false, &SelectParams::default());
+        let ct2 = select_files(
+            &corpus,
+            &terms,
+            false,
+            &SelectParams { file_score: FileScoreMode::ChunkTop2, ..Default::default() },
+        );
+        let crt2 = select_files(
+            &corpus,
+            &terms,
+            false,
+            &SelectParams { file_score: FileScoreMode::ChunkRankTop2, ..Default::default() },
+        );
+        assert_eq!(crt2.0, ct2.0, "selection/order follows the top2 chunk aggregate");
+        assert_eq!(crt2.1, accum.1, "budget map is the accum-normalized one");
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    /// Determinism of the decoupled mode across runs (both returned maps
+    /// and the selection).
+    #[test]
+    fn e21b_deterministic_across_runs() {
+        let (tmp, corpus) = e21_corpus("rankdet");
+        let terms = query_terms("frobnicate widget quux", &[]);
+        let p = SelectParams { file_score: FileScoreMode::ChunkRankMax, ..Default::default() };
+        let a = select_files(&corpus, &terms, true, &p);
+        let b = select_files(&corpus, &terms, true, &p);
+        assert_eq!(a.0, b.0);
+        assert_eq!(a.1, b.1);
+        std::fs::remove_dir_all(&tmp).ok();
+    }
+
     // ------------------------------------------------------------ E23 tests
 
     /// E23 JS fixture: arrow-function-in-const, export default, nested

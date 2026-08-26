@@ -355,7 +355,12 @@ struct Args {
     /// accumulation; "chunk-max" = the content channel is scored per packer
     /// chunk (python_blocks / window fallback) and aggregated per file by
     /// MAX chunk score (BRTracer segmentation, hub-attractor defense);
-    /// "chunk-top2" = mean of the top-2 chunk scores.
+    /// "chunk-top2" = mean of the top-2 chunk scores. E21b decoupled
+    /// modes: "chunk-rank" / "chunk-top2-rank" = the chunk aggregate
+    /// decides file selection and order ONLY, while pack_regions receives
+    /// the original accumulation-normalized score map for budget
+    /// allocation (the E21 gate showed the chunk map's damped scores
+    /// shrink central gold files' packed budgets).
     #[arg(long, default_value = "accum")]
     file_score: String,
 
@@ -427,8 +432,10 @@ fn main() {
         "accum" => roust::core::FileScoreMode::Accum,
         "chunk-max" => roust::core::FileScoreMode::ChunkMax,
         "chunk-top2" => roust::core::FileScoreMode::ChunkTop2,
+        "chunk-rank" => roust::core::FileScoreMode::ChunkRankMax,
+        "chunk-top2-rank" => roust::core::FileScoreMode::ChunkRankTop2,
         _ => {
-            eprintln!("roust: error: --file-score must be 'accum', 'chunk-max', or 'chunk-top2'");
+            eprintln!("roust: error: --file-score must be 'accum', 'chunk-max', 'chunk-top2', 'chunk-rank', or 'chunk-top2-rank'");
             std::process::exit(2);
         }
     };
@@ -636,6 +643,27 @@ fn main() {
         stats["trace_boost"] = serde_json::json!({
             "trace_files": boost_files,
             "formats_v2": use_trace_formats_v2,
+        });
+    }
+    if file_score_mode != roust::core::FileScoreMode::Accum {
+        // Present only under --file-score chunk-* (defaults stay byte-
+        // identical): the old-vs-new score anatomy `(file, chunk_score,
+        // accum_score, best_chunk_content, best_chunk_start,
+        // best_chunk_end)`, consumed by the E21 gate's flip itemization.
+        stats["file_score"] = serde_json::json!({
+            "mode": args.file_score,
+            "top": &explain.file_score_top,
+        });
+    }
+    if args.test_bridge > 0.0 {
+        // Present only under --test-bridge (defaults stay byte-identical):
+        // the bridged files `(file, via_test, strength, added, call_hits)`
+        // + count, consumed by the E22 gate's bridge-path anatomy and the
+        // flooding check.
+        stats["test_bridge"] = serde_json::json!({
+            "weight": args.test_bridge,
+            "n_bridged": explain.test_bridge.len(),
+            "bridged": &explain.test_bridge,
         });
     }
     if file_score_mode != roust::core::FileScoreMode::Accum {
