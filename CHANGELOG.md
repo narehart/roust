@@ -8,8 +8,8 @@ All notable changes to `roust` are documented here. Format loosely follows
 ## [0.3.0] - 2026-08-26 - Language-agnostic engine (first published release)
 
 First published release (0.1.0 and 0.2.0 were development milestones, never
-published). Distributed through three channels — **npm** (`npm i -g roust` /
-`npx roust`, with the platform binary delivered as an `optionalDependencies`
+published). Distributed through three channels — **npm** (`npm i -g roust-cli` /
+`npx roust-cli`, installing the `roust` command, with the platform binary delivered as an `optionalDependencies`
 package, the esbuild/Biome model), **crates.io** (`cargo install roust`, and
 the build-from-source path for platforms without a prebuilt binary), and
 **GitHub Releases** (raw per-platform binaries with `.sha256` checksums). Headline: roust stopped being a

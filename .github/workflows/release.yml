@@ -128,7 +128,15 @@ jobs:
         shell: bash
         run: |
           PKG_DIR=$(node npm/prepare-platform-package.mjs --target ${{ matrix.target }})
-          npm publish "$PKG_DIR" --access public
+          NAME=$(node -p "require('$PKG_DIR/package.json').name")
+          VERSION=$(node -p "require('$PKG_DIR/package.json').version")
+          # npm versions are immutable: a re-run of a partially-successful
+          # release must skip what already published rather than hard-fail.
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "::notice::$NAME@$VERSION already published -- skipping"
+          else
+            npm publish "$PKG_DIR" --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -156,8 +164,15 @@ jobs:
         run: node npm/sync-optional-deps.mjs
 
       - name: Publish main package
-        working-directory: npm/roust
-        run: npm publish --access public
+        working-directory: npm/roust-cli
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "::notice::$NAME@$VERSION already published -- skipping"
+          else
+            npm publish --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -171,7 +186,15 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: cargo publish
         working-directory: roust-rs
-        run: cargo publish --allow-dirty
+        run: |
+          VERSION=$(grep -m1 '^version = ' Cargo.toml | cut -d'"' -f2)
+          # crates.io versions are immutable, same re-run reasoning as npm
+          if curl -sf -H "User-Agent: roust-release" \
+               "https://crates.io/api/v1/crates/roust/$VERSION" >/dev/null; then
+            echo "::notice::roust@$VERSION already on crates.io -- skipping"
+          else
+            cargo publish --allow-dirty
+          fi
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
@@ -193,5 +216,6 @@ jobs:
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.3.0' }}
           files: dist/*
           generate_release_notes: true

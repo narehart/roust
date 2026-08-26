@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 import { TARGETS } from "./prepare-platform-package.mjs";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
-const manifestPath = path.join(ROOT, "npm", "roust", "package.json");
+const manifestPath = path.join(ROOT, "npm", "roust-cli", "package.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 
 manifest.optionalDependencies = Object.fromEntries(

@@ -27,9 +27,10 @@ these are the install paths:
 
 ```bash
 # npm — downloads the prebuilt binary for your platform (no Node runtime cost;
-# the launcher just execs it). Works with npx too.
-npm install -g roust
-npx roust "connection pooling" ~/code/httpx
+# the launcher just execs it). The package is `roust-cli`; the command it
+# installs is `roust`. Works with npx too.
+npm install -g roust-cli
+npx roust-cli "connection pooling" ~/code/httpx
 ```
 
 ```bash

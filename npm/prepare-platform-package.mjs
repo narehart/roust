@@ -33,7 +33,7 @@ export function preparePlatformPackage(target, rootDir = ROOT) {
   if (!info) {
     throw new Error(`Unknown target: ${target}. Known: ${Object.keys(TARGETS).join(", ")}`);
   }
-  const main = JSON.parse(fs.readFileSync(path.join(rootDir, "npm", "roust", "package.json"), "utf8"));
+  const main = JSON.parse(fs.readFileSync(path.join(rootDir, "npm", "roust-cli", "package.json"), "utf8"));
   const binaryName = info.os === "win32" ? "roust.exe" : "roust";
   const built = path.join(rootDir, "roust-rs", "target", target, "release", binaryName);
   if (!fs.existsSync(built)) throw new Error(`Built binary not found: ${built}`);

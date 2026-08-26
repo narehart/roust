@@ -5,7 +5,7 @@
 | Artifact | What it is | Where it goes |
 |---|---|---|
 | **Platform npm packages** (`roust-darwin-arm64`, `roust-linux-x64`, …) | The compiled binary plus a minimal `package.json` carrying `os`/`cpu`/`libc` constraints. npm installs exactly one of them through the main package's `optionalDependencies` (the esbuild/Biome model — no postinstall script, no runtime download). | npm |
-| **Main npm package** (`roust`) | A launcher (`bin/roust.mjs`) that resolves the platform package and execs the binary, forwarding argv/stdio/exit code. `npm i -g roust`, `npx roust`. | npm |
+| **Main npm package** (`roust-cli`) | A launcher (`bin/roust.mjs`) that resolves the platform package and execs the binary, forwarding argv/stdio/exit code. `npm i -g roust-cli`, `npx roust-cli` — the installed command is `roust`. The bare `roust` name is rejected by npm's typosquat guard ("too similar to existing packages"), which is why this is `-cli` suffixed, same as sibling projects. | npm |
 | **Crate** (`roust` on crates.io) | The `roust-rs/` Rust source, for `cargo install roust` and library use. This is the build-from-source path for platforms without a prebuilt binary. | crates.io |
 | **GitHub Release** | The raw per-platform binaries with `.sha256` checksums, plus auto-generated notes. | GitHub Releases |
 
@@ -37,7 +37,7 @@ git checkout main && git pull
 git tag v0.3.0 && git push origin v0.3.0
 ```
 
-That single push publishes the five platform npm packages, the main `roust`
+That single push publishes the five platform npm packages, the main `roust-cli`
 npm package with pinned `optionalDependencies`, the crate, and the GitHub
 Release with checksummed binaries.
 

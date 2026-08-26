@@ -1,7 +1,7 @@
 {
-  "name": "roust",
+  "name": "roust-cli",
   "version": "0.3.0",
-  "description": "Recall-first code retrieval for coding agents: deterministic, training-free localization with no model, no embeddings, and no API key",
+  "description": "Recall-first code retrieval for coding agents: deterministic, training-free localization with no model, no embeddings, and no API key. Installs the roust binary.",
   "license": "MIT",
   "repository": {
     "type": "git",
