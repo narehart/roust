@@ -3930,6 +3930,107 @@ fn ts_header_start(node: &tree_sitter::Node) -> Option<usize> {
     Some(start)
 }
 
+// --------------------------------------------- E25: shape-based headers
+//
+// The zero-configuration alternative to the per-language node-kind
+// allowlists. Instead of naming the kinds a grammar calls a definition
+// ("function_declaration", "impl_item", ...), ask a structural question
+// that any grammar can answer through tree-sitter's OWN field-name
+// convention: does this node bind a name to a body?
+//
+// Two rules, no language table:
+//   1. a node with a `body` field AND a `name`/`declarator` field
+//      (function_item, method_declaration, class_declaration, C's
+//      function_definition, ...)
+//   2. a node whose `value` field is itself body-bearing -- the
+//      expression-bound shapes (`const f = () => {}`, `{ k: function(){} }`)
+//      that rule 1 cannot see because the name and the body live in
+//      different children.
+//
+// Both require the node to span more than one line, which is what keeps
+// one-line declarations out of the header set. Hoisting is likewise
+// structural: climb while the parent's only named child is this node,
+// which absorbs `export`/ambient wrappers without naming them.
+//
+// If this matches the hand-written allowlists on the gate, the allowlists
+// are dead weight and a new language costs a linked grammar and nothing
+// else. Where it loses, the loss is the measured price of the config.
+/// Which unit the packer cuts a file into. `Structural` is the shipped
+/// default (per-language node-kind allowlists); `Shape` is E25's
+/// zero-configuration alternative; `Windows` is the pre-E23 fallback.
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+pub enum BlockMode {
+    Windows,
+    #[default]
+    Structural,
+    Shape,
+}
+
+fn shape_spans_lines(node: &tree_sitter::Node) -> bool {
+    node.end_position().row > node.start_position().row
+}
+
+fn shape_hoisted_start(node: &tree_sitter::Node) -> usize {
+    let mut cur = *node;
+    // Two levels is the same bound the JS/TS allowlist uses; deeper climbs
+    // start swallowing unrelated statements.
+    for _ in 0..2 {
+        let Some(parent) = cur.parent() else { break };
+        if parent.named_child_count() == 1 && parent.start_byte() <= cur.start_byte() {
+            cur = parent;
+        } else {
+            break;
+        }
+    }
+    cur.start_byte()
+}
+
+fn shape_header_start(node: &tree_sitter::Node) -> Option<usize> {
+    if !shape_spans_lines(node) {
+        return None;
+    }
+    // Rule 1: names (or declares) something, and has a body.
+    let has_body = node.child_by_field_name("body").is_some();
+    let is_named = node.child_by_field_name("name").is_some()
+        || node.child_by_field_name("declarator").is_some();
+    if has_body && is_named {
+        return Some(shape_hoisted_start(node));
+    }
+    // Rule 2: binds a body-bearing value (arrow functions, function
+    // expressions assigned to a name).
+    if let Some(value) = node.child_by_field_name("value") {
+        if value.child_by_field_name("body").is_some() {
+            return Some(shape_hoisted_start(node));
+        }
+    }
+    None
+}
+
+/// Shape-based blocks for any grammar-covered file: same span contract as
+/// `ts_blocks`/`grammar_blocks`, but with `shape_header_start` in place of
+/// the per-language allowlist. Returns None when no grammar is linked for
+/// the file, so the caller can fall back exactly as before.
+fn shape_blocks(text: &str, rel: &str) -> Option<Vec<(usize, usize)>> {
+    let language: tree_sitter::Language = if is_ts_family(rel) {
+        if rel.ends_with(".tsx") {
+            tree_sitter_typescript::LANGUAGE_TSX.into()
+        } else if rel.ends_with(".ts") {
+            tree_sitter_typescript::LANGUAGE_TYPESCRIPT.into()
+        } else {
+            tree_sitter_javascript::LANGUAGE.into()
+        }
+    } else {
+        match sitter_family(rel)? {
+            SitterFamily::Java => tree_sitter_java::LANGUAGE.into(),
+            SitterFamily::Go => tree_sitter_go::LANGUAGE.into(),
+            SitterFamily::Rust => tree_sitter_rust::LANGUAGE.into(),
+            SitterFamily::C => tree_sitter_c::LANGUAGE.into(),
+            SitterFamily::Cpp => tree_sitter_cpp::LANGUAGE.into(),
+        }
+    };
+    Some(sitter_blocks(text, language, &shape_header_start))
+}
+
 /// `python_blocks` for the JS/TS family via tree-sitter. Same output
 /// contract (see the E23 block comment above); `rel` picks the grammar
 /// (.tsx -> TSX, .ts -> TypeScript, .js/.jsx -> JavaScript, which parses
@@ -4852,7 +4953,7 @@ pub fn pack_regions(
     family_enum: bool,
     sibling_sim: f64,
     max_siblings: usize,
-    use_ts_blocks: bool,
+    blocks: BlockMode,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
@@ -4895,8 +4996,13 @@ pub fn pack_regions(
         // E23: with --ts-blocks, the JS/TS family gets tree-sitter structural
         // blocks instead of fixed windows -- the flag-OFF path is
         // byte-identical to the pre-E23 engine (same two branches).
+        let use_ts_blocks = blocks != BlockMode::Windows;
         let spans = if rel.ends_with(".py") {
             python_blocks(text)
+        } else if let Some(shape) = shape_blocks(text, rel).filter(|_| blocks == BlockMode::Shape) {
+            // E25: same walker, headers chosen by shape instead of by a
+            // per-language node-kind list.
+            shape
         } else if use_ts_blocks && is_ts_family(rel) {
             ts_blocks(text, rel)
         } else if let Some(fam) = sitter_family(rel).filter(|_| use_ts_blocks) {
@@ -5968,10 +6074,10 @@ mod tests {
             spans["core.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans_off, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert_eq!(sym_of(&spans_off), Some("subtokens".to_string()), "pre-fix (w_name=0.0) reproduces the bug: body term-density picks the wrong region");
 
-        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans_on, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert_eq!(sym_of(&spans_on), Some("pack_regions".to_string()), "w_name=1.0 must select pack_regions via name-score anchoring");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -6026,14 +6132,14 @@ mod tests {
             spans["mod.py"].first().and_then(|&(a, b)| region_symbol(&def_lines, a, b)).map(|s| s.to_string())
         };
 
-        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans_linear, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert_eq!(
             sym_of(&spans_linear),
             Some("stub_widget".to_string()),
             "len_exp=1.0 (pre-E14 linear gain/tok) must reproduce the crushed-long-fix failure mode: stub wins"
         );
 
-        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, false);
+        let (spans_softened, _) = pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, BlockMode::Windows);
         assert_eq!(
             sym_of(&spans_softened),
             Some("real_gadget_sprocket_cog_lever".to_string()),
@@ -6081,8 +6187,8 @@ mod tests {
         // Large budget so pass 2's greedy loop actually runs over multiple
         // remaining candidates (pass 1 alone would only ever touch one span
         // per file).
-        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
-        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans1, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
+        let (spans2, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert_eq!(spans1, spans2, "pack_regions must be deterministic given identical (NaN/inf-bearing) inputs");
         assert!(!spans1.is_empty(), "pack_regions should still select regions despite NaN/inf scores");
 
@@ -6131,10 +6237,10 @@ mod tests {
         // remaining candidates per iteration -- the exact scenario that
         // triggers repeated `marginal(i)` calls for the same `i` within a
         // single sort.
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls given many equal/near-equal marginal scores (and must never panic)"
@@ -6171,7 +6277,7 @@ mod tests {
         let files = vec!["needles.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         let got = &spans["needles.py"];
         assert_eq!(got, &vec![(1, 5), (6, 8)], "pad_lines=0 must keep the two naturally-adjacent spans as separate, unmerged entries (pre-E12 behavior)");
 
@@ -6196,7 +6302,7 @@ mod tests {
         let files = vec!["needles.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1, 1.0, false, 0.0, 3, false);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 1, 1.0, false, 0.0, 3, BlockMode::Windows);
         let got = &spans["needles.py"];
         assert_eq!(got, &vec![(1, 8)], "pad_lines=1 must merge the two adjacent spans into one (1,8) covering the whole file");
         // merged text must be the FULL file content, not a truncated slice.
@@ -6221,7 +6327,7 @@ mod tests {
         let files = vec!["tiny.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 500, 1.0, false, 0.0, 3, false);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 500, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert_eq!(spans["tiny.py"], vec![(1, 3)], "pad_lines far exceeding the file's own length must clamp to (1, n_lines)");
 
         std::fs::remove_dir_all(&tmp).ok();
@@ -6272,13 +6378,13 @@ mod tests {
         // ignoring budget) -- it only gates pass 2 and the post-padding
         // de-escalation/eviction step, so both hi.py and lo.py's pass-1
         // spans are seated before padding/eviction ever runs.
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert!(
             spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
             "pad=0 baseline seats BOTH pass-1 spans (unconditionally), overshooting budget"
         );
 
-        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0, false, 0.0, 3, false);
+        let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 2, 1.0, false, 0.0, 3, BlockMode::Windows);
         let got: HashSet<&String> = spans.keys().collect();
         let baseline: HashSet<&String> = spans0.keys().collect();
         assert_eq!(
@@ -6325,10 +6431,10 @@ mod tests {
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
         let budget: i64 = 800;
 
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 0.85, false, 0.0, 3, false);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 0.85, false, 0.0, 3, BlockMode::Windows);
         assert_eq!(spans0.len(), 25, "pad=0 baseline must select all 25 files (pass 1 seats unconditionally)");
 
-        let (spans5, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 5, 0.85, false, 0.0, 3, false);
+        let (spans5, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 5, 0.85, false, 0.0, 3, BlockMode::Windows);
         let got: HashSet<&String> = spans5.keys().collect();
         let baseline: HashSet<&String> = spans0.keys().collect();
         assert_eq!(
@@ -6384,7 +6490,7 @@ mod tests {
 
         // pad=0 baseline: both files' own needle spans are seated
         // unconditionally by pass 1 and comfortably fit budget on their own.
-        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans0, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert!(
             spans0.contains_key("hi.py") && spans0.contains_key("lo.py"),
             "pad_lines=0 baseline must select both files"
@@ -6392,7 +6498,7 @@ mod tests {
         let baseline: HashSet<&String> = spans0.keys().collect();
 
         for pad in [2usize, 6, 15] {
-            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad, 1.0, false, 0.0, 3, false);
+            let (spans, _bundle) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, pad, 1.0, false, 0.0, 3, BlockMode::Windows);
             let got: HashSet<&String> = spans.keys().collect();
             assert_eq!(
                 got, baseline,
@@ -6451,10 +6557,10 @@ mod tests {
         let t_needle = count_tokens(&needle_text) as i64;
         let budget = 2 * t_needle + 3;
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3, false);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3, false);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, budget, &count_tokens, None, 0.0, 15, 1.0, false, 0.0, 3, BlockMode::Windows);
             assert_eq!(
                 spans, first,
                 "pack_regions with the E12b guard active must produce byte-identical spans across repeated calls"
@@ -6484,10 +6590,10 @@ mod tests {
         let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3, false);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3, false);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 3, 1.0, false, 0.0, 3, BlockMode::Windows);
             assert_eq!(
                 spans, first,
                 "pack_regions with pad_lines>0 must produce byte-identical spans across repeated calls"
@@ -6518,7 +6624,7 @@ mod tests {
         let files = vec!["a.py".to_string()];
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &scores, 8192, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
 
         let expected_spans: IndexMap<String, Vec<(usize, usize)>> =
             [("a.py".to_string(), vec![(1usize, 2usize)])].into_iter().collect();
@@ -6552,10 +6658,10 @@ mod tests {
         let scores: IndexMap<String, f64> = [("many.py".to_string(), 1.0)].into_iter().collect();
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
-        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, false);
+        let (first, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, BlockMode::Windows);
         assert!(!first.is_empty());
         for _ in 0..10 {
-            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, false);
+            let (spans, _) = pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 0.7, false, 0.0, 3, BlockMode::Windows);
             assert_eq!(
                 spans, first,
                 "pack_regions must produce byte-identical spans across repeated calls at len_exp=0.7"
@@ -6613,7 +6719,7 @@ mod tests {
         assert!(files.contains(&"pkg/validators.py".to_string()));
 
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
-        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3, false);
+        let (spans, bundle) = pack_regions(&corpus, &files, &terms, &_scores, 4096, &count_tokens, None, 1.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         assert!(!bundle.is_empty());
         assert!(spans.contains_key("pkg/router.py"));
 
@@ -6707,7 +6813,7 @@ mod tests {
         // Beta.transform's span starts at its def line (7); Gamma's at 12.
         // Delta.unrelated_thing (17) is NOT family.
         let (spans_off, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         let starts_off: Vec<usize> = spans_off["mod.py"].iter().map(|s| s.0).collect();
         assert!(
             !starts_off.contains(&7) && !starts_off.contains(&12),
@@ -6715,7 +6821,7 @@ mod tests {
         );
 
         let (spans_on, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3, false);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3, BlockMode::Windows);
         let starts_on: Vec<usize> = spans_on["mod.py"].iter().map(|s| s.0).collect();
         assert!(
             starts_on.contains(&7) && starts_on.contains(&12),
@@ -6763,7 +6869,7 @@ def omega_worker(pp):
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
         let (spans, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3, false);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, true, 0.0, 3, BlockMode::Windows);
         let starts: Vec<usize> = spans["handlers.py"].iter().map(|s| s.0).collect();
         for (start, who) in [(5usize, "beta_handler"), (8, "gamma_handler"), (11, "delta_handler")] {
             assert!(starts.contains(&start), "suffix family must add {who} (line {start}), got {starts:?}");
@@ -6798,7 +6904,7 @@ def omega_worker(pp):
         // Layout: seed_fn at 1 (body 3-5), clone_one at 7 (body 8-10),
         // clone_two at 12 (body 13-15), weird_other at 17.
         let (spans_off, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         let starts_off: Vec<usize> = spans_off["clones.py"].iter().map(|s| s.0).collect();
         assert!(
             !starts_off.contains(&7) && !starts_off.contains(&12),
@@ -6806,7 +6912,7 @@ def omega_worker(pp):
         );
 
         let (spans_on, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 3, false);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 3, BlockMode::Windows);
         let starts_on: Vec<usize> = spans_on["clones.py"].iter().map(|s| s.0).collect();
         assert!(
             starts_on.contains(&7) && starts_on.contains(&12),
@@ -6821,7 +6927,7 @@ def omega_worker(pp):
         // sibling; equal-overlap ties break by ascending span start
         // (clone_one before clone_two).
         let (spans_cap, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 1, false);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.7, 1, BlockMode::Windows);
         let starts_cap: Vec<usize> = spans_cap["clones.py"].iter().map(|s| s.0).collect();
         assert!(
             starts_cap.contains(&7) && !starts_cap.contains(&12),
@@ -6847,7 +6953,7 @@ def omega_worker(pp):
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
         let (spans, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, true, 0.7, 3, false);
+            pack_regions(&corpus, &files, &terms, &scores, 1, &count_tokens, None, 0.0, 0, 1.0, true, 0.7, 3, BlockMode::Windows);
         assert_eq!(
             spans["mod.py"].len(),
             1,
@@ -8063,9 +8169,9 @@ def omega_worker(pp):
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
         let (spans_off, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         let (spans_on, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, true);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Structural);
 
         let java_starts_off: Vec<usize> = spans_off["A.java"].iter().map(|s| s.0).collect();
         let java_starts_on: Vec<usize> = spans_on["A.java"].iter().map(|s| s.0).collect();
@@ -8121,9 +8227,9 @@ def omega_worker(pp):
         let count_tokens = |s: &str| -> usize { s.split_whitespace().count() };
 
         let (spans_off, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, false);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Windows);
         let (spans_on, _) =
-            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, true);
+            pack_regions(&corpus, &files, &terms, &scores, 100_000, &count_tokens, None, 0.0, 0, 1.0, false, 0.0, 3, BlockMode::Structural);
 
         let js_starts_off: Vec<usize> = spans_off["a.js"].iter().map(|s| s.0).collect();
         let js_starts_on: Vec<usize> = spans_on["a.js"].iter().map(|s| s.0).collect();
@@ -8322,4 +8428,48 @@ def omega_worker(pp):
             assert!(starts.contains(&line), "C++ def {name} at line {line} has no span start in {starts:?}");
         }
     }
+    // ------------------------------------------------------- E25 shape blocks
+
+    /// The zero-config detector must find the same definitions the
+    /// per-language allowlists do, on one fixture per grammar family.
+    #[test]
+    fn shape_blocks_finds_definitions_without_a_node_kind_list() {
+        let cases: Vec<(&str, &str, usize)> = vec![
+            ("a.go", "package p\n\nimport \"fmt\"\n\nfunc Alpha(x int) int {\n\treturn x\n}\n\nfunc Beta() {\n\tfmt.Println(1)\n}\n", 2),
+            ("a.java", "package p;\n\nclass Widget {\n    int alpha(int x) {\n        return x;\n    }\n\n    void beta() {\n        return;\n    }\n}\n", 3),
+            ("a.rs", "use std::fmt;\n\nfn alpha(x: i32) -> i32 {\n    x\n}\n\nstruct Widget {\n    a: i32,\n}\n", 2),
+            ("a.c", "#include <stdio.h>\n\nint alpha(int x) {\n    return x;\n}\n\nvoid beta(void) {\n    return;\n}\n", 2),
+            ("a.js", "import x from 'y';\n\nfunction alpha(a) {\n  return a;\n}\n\nconst beta = (b) => {\n  return b;\n};\n", 2),
+        ];
+        for (rel, src, want_at_least) in cases {
+            let spans = shape_blocks(src, rel).unwrap_or_else(|| panic!("no grammar for {rel}"));
+            // preamble + one span per definition; count non-preamble spans
+            let defs = spans.len().saturating_sub(1);
+            assert!(
+                defs >= want_at_least,
+                "{rel}: shape detector found {defs} definitions ({spans:?}), wanted >= {want_at_least}"
+            );
+        }
+    }
+
+    /// Shape headers must respect the same span contract as the allowlist
+    /// path: 1-indexed, non-overlapping at the top level, covering the file.
+    #[test]
+    fn shape_blocks_obey_the_span_contract() {
+        let src = "package p\n\nfunc Alpha() {\n\treturn\n}\n\nfunc Beta() {\n\treturn\n}\n";
+        let spans = shape_blocks(src, "a.go").unwrap();
+        assert!(spans.iter().all(|&(a, b)| a >= 1 && b >= a), "{spans:?}");
+        for w in spans.windows(2) {
+            assert!(w[0].1 <= w[1].0, "spans overlap: {spans:?}");
+        }
+    }
+
+    /// A one-line declaration is not a header (the multi-line requirement).
+    #[test]
+    fn shape_blocks_ignore_one_line_declarations() {
+        let src = "package p\n\ntype A = int\ntype B = int\n\nfunc Alpha() {\n\treturn\n}\n";
+        let spans = shape_blocks(src, "a.go").unwrap();
+        assert!(spans.len() <= 2, "one-liners became headers: {spans:?}");
+    }
+
 }

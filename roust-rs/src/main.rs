@@ -253,6 +253,16 @@ struct Args {
     #[arg(long, alias = "no-ts-blocks")]
     no_structural_blocks: bool,
 
+    /// E25 (campaign #56 follow-on): choose packing-unit headers by SHAPE
+    /// (any node that binds a name to a body, per tree-sitter's own field
+    /// convention) instead of the per-language node-kind allowlists. The
+    /// zero-configuration path: a newly linked grammar works with no code
+    /// from us. Experimental, default OFF -- byte-identical to the shipped
+    /// engine when unset. Python is unaffected either way (it uses the
+    /// native block scanner, not a grammar).
+    #[arg(long, conflicts_with = "no_structural_blocks")]
+    shape_blocks: bool,
+
     /// WS2 (campaign #56): ALSO index the C-family extensions
     /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh) in the corpus walk. ON by default
     /// since WS2c: the vendored-C VENDOR_RE guard (cextern/, extern/,
@@ -470,7 +480,13 @@ fn main() {
     // E23 structural blocks are ON by default (adopted);
     // --no-structural-blocks disables them (--ts-blocks/--no-ts-blocks are
     // hidden compat aliases).
-    let use_structural_blocks = !args.no_structural_blocks;
+    let block_mode = if args.shape_blocks {
+        roust::core::BlockMode::Shape
+    } else if args.no_structural_blocks {
+        roust::core::BlockMode::Windows
+    } else {
+        roust::core::BlockMode::Structural
+    };
     // Trace boost is ON by default (adopted); --no-trace-boost disables it,
     // and --route implies it off (route's own pipeline supplies trace_files).
     let use_trace_boost = !args.no_trace_boost && !args.route;
@@ -592,7 +608,7 @@ fn main() {
         args.family_enum,
         args.sibling_sim,
         args.max_siblings,
-        use_structural_blocks,
+        block_mode,
     );
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
