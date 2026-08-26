@@ -564,9 +564,15 @@ fn index_all_cache_isolation_and_incremental() {
     }
 
     // Back on defaults over the SAME repo (flagged cache now on disk):
-    // must not be served the flagged corpus.
-    let (corpus, _e, _h, _hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
-    assert_eq!(kind, "full", "unflagged run must not be served by the flagged cache");
+    // must not be served the flagged corpus. WS1b strengthened this from
+    // "full rebuild" to "served its OWN untouched cache": the flagged
+    // corpus lives in its own cache file (rust-index-a1.bin), so the
+    // unflagged cache seeded above is still on disk, still valid (the
+    // .json edit is invisible to the unflagged manifest), and still
+    // json-free -- flagged runs can never clobber it.
+    let (corpus, _e, _h, hit, kind) = cache::load_or_build_ex(&repo, false, false, true, false, false);
+    assert_eq!(kind, "unchanged", "unflagged run must be served its own untouched cache, not the flagged one");
+    assert!(hit);
     assert!(!corpus.files.contains(&"pkg/config.json".to_string()));
 
     std::fs::remove_dir_all(&repo).ok();

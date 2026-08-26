@@ -1,0 +1,12 @@
+resuming 96 instances -> lab/results_regions/mswe_jsts_ws1b_additive_resume.jsonl
+[10/96] sveltejs__svelte-14699                        elapsed=41s ok=10 err=0
+[20/96] sveltejs__svelte-15083                        elapsed=81s ok=20 err=0
+[30/96] sveltejs__svelte-9626                         elapsed=121s ok=30 err=0
+[40/96] sveltejs__svelte-9789                         elapsed=164s ok=40 err=0
+[50/96] vuejs__core-10027                             elapsed=203s ok=50 err=0
+[60/96] vuejs__core-10869                             elapsed=230s ok=60 err=0
+[70/96] vuejs__core-11502                             elapsed=257s ok=70 err=0
+[80/96] vuejs__core-8365                              elapsed=285s ok=80 err=0
+[90/96] vuejs__core-9213                              elapsed=313s ok=90 err=0
+[96/96] vuejs__core-9751                              elapsed=329s ok=96 err=0
+done: 96 ok, 0 err

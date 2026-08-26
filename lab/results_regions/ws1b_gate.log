@@ -1,0 +1,39 @@
+=== Gate A: defaults identity, ref(/private/tmp/claude-501/-Users-nicholasarehart-programming-projects-bgrep/8da5679e-b9a2-4564-be57-3b22e4a483df/scratchpad/wt-main-ref/roust-rs/target/release/roust) vs new(/Users/nicholasarehart/programming-projects/bgrep/roust-rs/target/release/roust), two runs each, 18 instances (12 Lite + 6 MSWE) ===
+  mwaskom__seaborn-2848                         OK
+  mwaskom__seaborn-3010                         OK
+  pallets__flask-4045                           OK
+  pallets__flask-4992                           OK
+  psf__requests-1963                            OK
+  psf__requests-2148                            OK
+  pydata__xarray-3364                           OK
+  pydata__xarray-4094                           OK
+  pylint-dev__pylint-5859                       OK
+  pylint-dev__pylint-6506                       OK
+  pytest-dev__pytest-11143                      OK
+  pytest-dev__pytest-11148                      OK
+  axios__axios-5085                             OK
+  axios__axios-5338                             OK
+  expressjs__express-3495                       OK
+  expressjs__express-3695                       OK
+  iamkun__dayjs-1008                            OK
+  iamkun__dayjs-1010                            OK
+=== Gate B: --index-all-additive invariant, new binary, 18 instances ===
+  mwaskom__seaborn-2848                         OK +0 newcomers, 0 tok of 0 leftover
+  mwaskom__seaborn-3010                         OK +0 newcomers, 0 tok of 0 leftover
+  pallets__flask-4045                           OK +0 newcomers, 0 tok of 0 leftover
+  pallets__flask-4992                           OK +0 newcomers, 0 tok of 0 leftover
+  psf__requests-1963                            OK +0 newcomers, 0 tok of 0 leftover
+  psf__requests-2148                            OK +0 newcomers, 0 tok of 0 leftover
+  pydata__xarray-3364                           OK +0 newcomers, 0 tok of 0 leftover
+  pydata__xarray-4094                           OK +0 newcomers, 0 tok of 0 leftover
+  pylint-dev__pylint-5859                       OK +0 newcomers, 0 tok of 0 leftover
+  pylint-dev__pylint-6506                       OK +0 newcomers, 0 tok of 0 leftover
+  pytest-dev__pytest-11143                      OK +0 newcomers, 0 tok of 0 leftover
+  pytest-dev__pytest-11148                      OK +0 newcomers, 0 tok of 0 leftover
+  axios__axios-5085                             OK +0 newcomers, 0 tok of 0 leftover
+  axios__axios-5338                             OK +0 newcomers, 0 tok of 0 leftover
+  expressjs__express-3495                       OK +0 newcomers, 0 tok of 0 leftover
+  expressjs__express-3695                       OK +1 newcomers, 127 tok of 130 leftover
+  iamkun__dayjs-1008                            OK +0 newcomers, 0 tok of 25 leftover
+  iamkun__dayjs-1010                            OK +0 newcomers, 0 tok of 0 leftover
+=== GATE PASS ===

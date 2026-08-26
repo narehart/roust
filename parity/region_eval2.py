@@ -153,8 +153,21 @@ def run_roust(query: str, repo_path: Path, timeout: float, pad_lines: int = 0,
               max_siblings: int = 0, route: bool = False,
               route_test_penalty: float = 0.0, lexboost: float = 0.0,
               lexboost_graph: str = "", trace_boost: bool = False,
-              no_trace_boost: bool = False, index_all: bool = False) -> tuple[dict | None, str | None]:
+              no_trace_boost: bool = False, index_all: bool = False,
+              index_all_additive: bool = False,
+              newcomer_reserve: float = 0.0) -> tuple[dict | None, str | None]:
     argv = [str(ROUST_BIN), "--json", "--budget", str(BUDGET), query, str(repo_path)]
+    if newcomer_reserve != 0.0:
+        # WS1b reserve variant: core packs against budget*(1-frac) to
+        # guarantee newcomer headroom; only meaningful with
+        # --index-all-additive. 0.0 (default) omits the flag.
+        argv += ["--newcomer-reserve", str(newcomer_reserve)]
+    if index_all_additive:
+        # WS1b (campaign #56): additive-only universal indexing -- the
+        # unflagged pipeline runs byte-identically first, then newcomer
+        # files are admitted strictly into leftover budget. Omitted (the
+        # default) -> the binary's own default (off).
+        argv += ["--index-all-additive"]
     if index_all:
         # WS1 (campaign #56): content-sniffed universal indexing instead of
         # the extension allowlist. Omitted (the default) -> the binary's own
@@ -267,7 +280,8 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
                        route: bool = False, route_test_penalty: float = 0.0,
                        lexboost: float = 0.0, lexboost_graph: str = "",
                        trace_boost: bool = False, no_trace_boost: bool = False,
-                       index_all: bool = False) -> dict:
+                       index_all: bool = False, index_all_additive: bool = False,
+                       newcomer_reserve: float = 0.0) -> dict:
     instance_id = row["instance_id"]
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
@@ -295,7 +309,8 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
 
     obj, err = run_roust(row["problem_statement"], repo_path, timeout, pad_lines, len_exp,
                          family_enum, sibling_sim, max_siblings, route, route_test_penalty,
-                         lexboost, lexboost_graph, trace_boost, no_trace_boost, index_all)
+                         lexboost, lexboost_graph, trace_boost, no_trace_boost, index_all,
+                         index_all_additive, newcomer_reserve)
     if err:
         rec["error"] = err
         return rec
@@ -320,6 +335,11 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
     # + their suffix breakdown) -- present only when --index-all was passed;
     # None otherwise. Consumed by the gate's smoke checks / flip anatomy.
     rec["index_all_stats"] = stats.get("index_all")
+    # WS1b: superset-corpus composition + newcomer candidate/admission
+    # anatomy + budget accounting -- present only when --index-all-additive
+    # was passed; None otherwise. Consumed by the gate's invariant checks
+    # (core untouched) and the anatomy itemization (budget consumed).
+    rec["index_all_additive_stats"] = stats.get("index_all_additive")
 
     # (1) hunk-file-covered
     covered_files = [f for f in gold_files if f in files_in_regions]
@@ -411,6 +431,15 @@ def main() -> None:
                      help="passthrough to roust's --index-all (WS1, campaign #56: content-"
                           "sniffed universal indexing instead of the extension allowlist); "
                           "omitted by default (binary default: off)")
+    ap.add_argument("--index-all-additive", action="store_true",
+                     help="passthrough to roust's --index-all-additive (WS1b, campaign #56: "
+                          "additive-only universal indexing -- unflagged selection byte-"
+                          "identical, newcomers admitted into leftover budget only); "
+                          "omitted by default (binary default: off)")
+    ap.add_argument("--newcomer-reserve", type=float, default=0.0,
+                     help="passthrough to roust's --newcomer-reserve (WS1b reserve variant: "
+                          "core packs against budget*(1-frac)); 0.0 (default) omits the "
+                          "flag; only meaningful with --index-all-additive")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -446,7 +475,8 @@ def main() -> None:
                                      args.family_enum, args.sibling_sim, args.max_siblings,
                                      args.repos_dir, args.route, args.route_test_penalty,
                                      args.lexboost, args.lexboost_graph, args.trace_boost,
-                                     args.no_trace_boost, args.index_all)
+                                     args.no_trace_boost, args.index_all,
+                                     args.index_all_additive, args.newcomer_reserve)
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

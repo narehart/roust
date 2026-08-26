@@ -55,6 +55,15 @@ use std::path::{Path, PathBuf};
 pub const CACHE_VERSION: i64 = 3;
 pub use crate::core::CACHE_DIRNAME;
 const INDEX_FILENAME: &str = "rust-index.bin";
+/// WS1b: the --index-all superset corpus is cached in its OWN file, not just
+/// under its own key. `--index-all-additive` loads BOTH corpora in a single
+/// invocation; with one shared file the two keyed payloads would evict each
+/// other on every run (permanent rebuild thrash), and an additive run would
+/// clobber the default cache a plain unflagged run had warmed. Separate
+/// files make the default cache byte-untouched by any flagged run. The `:a1`
+/// key suffix is kept as well (belt and suspenders: a payload copied across
+/// filenames still can't be served to the wrong corpus).
+const INDEX_ALL_FILENAME: &str = "rust-index-a1.bin";
 
 /// `{relpath: (mtime_ns, size)}` for every candidate-extension file, as of
 /// the snapshot a cached Corpus was built from.
@@ -188,12 +197,20 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool, index_all: b
     format!("{sha}:h{}:d{}{suffix}", with_history as i32, with_docs as i32)
 }
 
-fn cache_path(repo_path: &Path) -> PathBuf {
-    repo_path.join(CACHE_DIRNAME).join(INDEX_FILENAME)
+fn cache_filename(index_all: bool) -> &'static str {
+    if index_all {
+        INDEX_ALL_FILENAME
+    } else {
+        INDEX_FILENAME
+    }
 }
 
-fn load(repo_path: &Path, key: &str) -> Option<CachePayload> {
-    let path = cache_path(repo_path);
+fn cache_path(repo_path: &Path, index_all: bool) -> PathBuf {
+    repo_path.join(CACHE_DIRNAME).join(cache_filename(index_all))
+}
+
+fn load(repo_path: &Path, key: &str, index_all: bool) -> Option<CachePayload> {
+    let path = cache_path(repo_path, index_all);
     if !path.exists() {
         return None;
     }
@@ -209,20 +226,28 @@ fn load(repo_path: &Path, key: &str) -> Option<CachePayload> {
 /// Cache directory not writable (read-only checkout, permissions, disk
 /// full, ...): degrade to "no cache" rather than fail the query, mirroring
 /// `roust.cache._save`'s `except OSError: pass`.
-fn save(repo_path: &Path, key: &str, corpus: &Corpus, edges: &EdgeMap, history: &Option<HistoryData>, manifest: &Manifest) {
+fn save(
+    repo_path: &Path,
+    key: &str,
+    index_all: bool,
+    corpus: &Corpus,
+    edges: &EdgeMap,
+    history: &Option<HistoryData>,
+    manifest: &Manifest,
+) {
     let cache_dir = repo_path.join(CACHE_DIRNAME);
     if std::fs::create_dir_all(&cache_dir).is_err() {
         return;
     }
     let payload = CachePayloadRef { version: CACHE_VERSION, key, corpus, edges, history, manifest };
-    let final_path = cache_path(repo_path);
+    let final_path = cache_path(repo_path, index_all);
     // Per-pid tmp name: two concurrent roust processes saving the cache of
     // the same repo must not interleave writes into ONE shared tmp file
     // (yielding a corrupt rename into place); each writes its own tmp and
     // the final atomic rename settles last-writer-wins on the real path. A
     // crashed process can orphan its pid-suffixed tmp, which is harmless
     // (never read; `load` only opens the final path) and tiny.
-    let tmp_path = cache_dir.join(format!("{INDEX_FILENAME}.{}.tmp", std::process::id()));
+    let tmp_path = cache_dir.join(format!("{}.{}.tmp", cache_filename(index_all), std::process::id()));
     let write_result: std::io::Result<()> = (|| {
         let file = std::fs::File::create(&tmp_path)?;
         let writer = std::io::BufWriter::new(file);
@@ -361,14 +386,14 @@ pub fn load_or_build_ex(
     let key = cache_key(repo_path, with_history, with_docs, index_all);
 
     if use_cache && !force_reindex {
-        if let Some(payload) = load(repo_path, &key) {
+        if let Some(payload) = load(repo_path, &key, index_all) {
             let CachePayload { mut corpus, mut edges, history, manifest, .. } = payload;
             let (verdict, new_manifest, modified) = classify_changes(repo_path, with_docs, index_all, &manifest);
             match verdict {
                 Verdict::Unchanged => return (corpus, edges, history, true, "unchanged"),
                 Verdict::Modified => {
                     if try_incremental_update(&mut corpus, &mut edges, &modified) {
-                        save(repo_path, &key, &corpus, &edges, &history, &new_manifest);
+                        save(repo_path, &key, index_all, &corpus, &edges, &history, &new_manifest);
                         return (corpus, edges, history, true, "incremental");
                     }
                     // Shaped like an add/remove after all (declined patch):
@@ -383,7 +408,7 @@ pub fn load_or_build_ex(
     let (corpus, edges, history) = build_fresh(repo_path, with_history, with_docs, index_all);
     let manifest = scan_manifest(repo_path, with_docs, index_all);
     if use_cache {
-        save(repo_path, &key, &corpus, &edges, &history, &manifest);
+        save(repo_path, &key, index_all, &corpus, &edges, &history, &manifest);
     }
     (corpus, edges, history, false, "full")
 }
