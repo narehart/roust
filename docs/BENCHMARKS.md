@@ -69,10 +69,10 @@ python — Lite (300)       92.33      54.67   44.00     .527
 python — Verified (407)   92.38      47.17   35.14     .476
 javascript/typescript     46.38      31.21   14.14     .262
 java (128)                49.22      35.16   14.84     .397
-go (428)                  63.79      29.21   16.59     .411
+go (428)                  64.95      28.97   16.59     .410
 rust (239)                60.25      19.67    7.53     .243
-c (128)                   46.88      26.56   10.94     .196
-c++ (129)                 65.12      17.83    6.98     .295
+c (128)                   46.88      28.12   10.94     .202
+c++ (129)                 65.89      17.83    6.98     .299
 ```
 
 Two corrections are baked into this table. The function-level scorer
@@ -84,6 +84,14 @@ slice, 50 of 128 instances returned nothing at all.
 Cross-language FILE differences are dominated by corpus shape (the JS/TS slice
 has a ~76.7 extension ceiling; Go is 397/428 one repository), so compare within
 a row, not down the column.
+
+All eight rows were re-measured on a single engine commit in August 2026. Three
+of them moved when we did: the Go, C, and C++ figures previously published had
+been measured before adoptions that changed those very slices, and re-running
+them on one commit moved Go FILE 63.79 → 64.95, C FUNCTION 26.56 → 28.12, and
+C++ FILE 65.12 → 65.89. The other five reproduced to the digit, which is what
+makes that attributable to engine drift rather than to noise. It is a reminder
+that a per-language scoreboard decays unless every row is re-run together.
 
 ## Agent loop <!-- note: does better retrieval change outcomes -->
 
