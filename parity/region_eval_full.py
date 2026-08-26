@@ -122,6 +122,35 @@ def main() -> None:
                           "(same no-sentinel semantics as region_eval_verified.py)")
     ap.add_argument("--len-exp", type=float, default=rev.DEFAULT_LEN_EXP,
                      help="passthrough to roust's --len-exp; ALWAYS forwarded")
+    ap.add_argument("--ts-blocks", action="store_true",
+                     help="E23: append --ts-blocks to every roust invocation "
+                          "(tree-sitter structural blocks for .js/.jsx/.ts/.tsx; "
+                          "rides the same EXTRA_ENGINE_FLAGS mechanism as --bm25-only)")
+    ap.add_argument("--cfamily-ext", action="store_true",
+                     help="WS2 (campaign #56): append --cfamily-ext to every roust "
+                          "invocation (index .c/.h/.cc/.cpp/.cxx/.hpp/.hh -- required "
+                          "for the C/C++ MSWE arms; rides EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--no-structural-blocks", action="store_true",
+                     help="WS2: append --no-structural-blocks to every roust invocation "
+                          "(window-fallback control arm isolating structure from "
+                          "indexing on the same binary; rides EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--impl-prior-v2", action="store_true",
+                     help="WS3a (campaign #56): append --impl-prior-v2 to every roust "
+                          "invocation (doc/example/bench dirs stop damping code files; "
+                          "rides EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--trace-formats-v2", action="store_true",
+                     help="WS3b (campaign #56): append --trace-formats-v2 to every roust "
+                          "invocation (Java/Node/Go/Rust trace-frame parsing for the E11b "
+                          "boost; rides EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--symbols-v2", action="store_true",
+                     help="WS3c (campaign #56): append --symbols-v2 to every roust "
+                          "invocation (tree-sitter-sourced def_index for all grammar-covered "
+                          "languages + anchor-forced seating un-gated from .py; rides "
+                          "EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--displacement-guard", action="store_true",
+                     help="WS3d (campaign #56): append --displacement-guard to every roust "
+                          "invocation (fixture-dir anchor exclusion; rides "
+                          "EXTRA_ENGINE_FLAGS)")
     ap.add_argument("--allow-stale-engine", action="store_true",
                      help="override the blocking engine-provenance guard (loud warning "
                           "instead of refusal) -- NOT recommended for real results")
@@ -143,12 +172,32 @@ def main() -> None:
     rev.SWEBENCH_REPOS = args.repos_dir
     if args.bm25_only:
         rev.EXTRA_ENGINE_FLAGS = BM25_ONLY_FLAGS
+    if args.ts_blocks:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ts-blocks"]
+    if args.cfamily_ext:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--cfamily-ext"]
+    if args.no_structural_blocks:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--no-structural-blocks"]
+    if args.impl_prior_v2:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--impl-prior-v2"]
+    if args.trace_formats_v2:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--trace-formats-v2"]
+    if args.symbols_v2:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--symbols-v2"]
+    if args.displacement_guard:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--displacement-guard"]
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
     print(f"repos dir: {args.repos_dir}", file=sys.stderr)
     print(f"pad_lines={args.pad_lines} len_exp={args.len_exp} "
-          f"bm25_only={args.bm25_only}", file=sys.stderr)
+          f"bm25_only={args.bm25_only} ts_blocks={args.ts_blocks} "
+          f"cfamily_ext={args.cfamily_ext} "
+          f"no_structural_blocks={args.no_structural_blocks} "
+          f"impl_prior_v2={args.impl_prior_v2} "
+          f"trace_formats_v2={args.trace_formats_v2} "
+          f"symbols_v2={args.symbols_v2} "
+          f"displacement_guard={args.displacement_guard}", file=sys.stderr)
 
     rows = rev.load_verified_rows(args.gold_parquet, limit=0)
     start, end = parse_shard(args.shard, len(rows))
@@ -167,6 +216,13 @@ def main() -> None:
             rec = rev.eval_verified_instance(row, args.timeout, args.pad_lines, args.len_exp)
             rec["shard"] = args.shard
             rec["bm25_only"] = args.bm25_only
+            rec["ts_blocks"] = args.ts_blocks
+            rec["cfamily_ext"] = args.cfamily_ext
+            rec["no_structural_blocks"] = args.no_structural_blocks
+            rec["impl_prior_v2"] = args.impl_prior_v2
+            rec["trace_formats_v2"] = args.trace_formats_v2
+            rec["symbols_v2"] = args.symbols_v2
+            rec["displacement_guard"] = args.displacement_guard
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

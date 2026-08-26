@@ -1,0 +1,9 @@
+engine version: roust 0.2.0 (0c0fc79, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_jsts_micro.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_repos/jsts_v2
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=True
+shard 1/1: rows [0:6] of the sorted split (6 instances)
+[6/6] vuejs__core-8511                              elapsed=30s (ok) ok=6 err=0
+
+engine version: roust 0.2.0 (0c0fc79, clean)
+wrote 6 records (6 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/ws3b/mswe_jsts_micro_ws3b_v2.jsonl

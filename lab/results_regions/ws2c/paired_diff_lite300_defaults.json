@@ -1,0 +1,64 @@
+{
+  "base": "lab/results_regions/ws2b/lite300_base.jsonl",
+  "exp": "lab/results_regions/ws2c/lite300_base.jsonl",
+  "n": 300,
+  "n_payload_diff": 5,
+  "n_changed_or_flipped": 5,
+  "fraction_sign_test": {
+    "pos": 1,
+    "neg": 0,
+    "p_two_sided": 1.0
+  },
+  "changed": [
+    {
+      "instance_id": "astropy__astropy-12907",
+      "payload_diff": true,
+      "flips": {
+        "FUNCTION": [
+          false,
+          true
+        ]
+      },
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14365",
+      "payload_diff": true,
+      "flips": {
+        "FUNCTION": [
+          true,
+          false
+        ]
+      },
+      "frac_delta": 0.5,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-14995",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-6938",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    },
+    {
+      "instance_id": "astropy__astropy-7746",
+      "payload_diff": true,
+      "flips": {},
+      "frac_delta": 0.0,
+      "cfamily_files_in_exp_bundle": [],
+      "attribution": "indirect"
+    }
+  ]
+}

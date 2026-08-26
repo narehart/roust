@@ -5,6 +5,100 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+- **Behavior change - fixture-dir anchor displacement guard on by
+  default** (issue #56 campaign, WS3d, PR #68, adopted 2026-08-26 under
+  the standing language-agnostic directive): files under a `*.test/` or
+  `*.spec/` DIRECTORY component (the jscodeshift codemod fixture
+  convention -- e.g. mui's `jss-to-styled.test/first.actual.js` --
+  which the testlike damp's file-infix `.test.` match misses) are
+  excluded from symbol-anchor candidacy. Fire-level mining over the
+  WS3b/WS3c loss anatomies found this the only rule separating
+  displacing anchor fires from the adopted wins (0 win fires, 0 gold
+  fires matched across all 306 mined fires). Measured (Multi-SWE JS/TS
+  580): LINE 13.97 -> 14.14 (+1/-0: mui-34337 recovers 0 -> 1.0),
+  fraction .25979 -> .26156, FILE and FUNCTION invariant with zero
+  per-instance flips; base reproduced the WS3c reference digit-exact.
+  All other slices proven untouched: java/rust carry zero fixture-dir
+  paths in any evaluated tree (per-instance-sha `git ls-tree` census);
+  the entire Python exposure (31 pytest Lite/Verified instances, all
+  the single path `extra/setup-py.test/setup.py`) is byte-identical
+  under the guard. Ranking-side only (fixture files stay indexed and
+  lexically rankable; no cache re-key needed). `--displacement-guard`
+  is now accepted-but-redundant; `--no-displacement-guard` reproduces
+  the pre-adoption anchor channel byte-identically. The WS3c-queued
+  GENERAL anchor/trace displacement guard was investigated and closed
+  NO-GO: culprit fires are shape-identical to the adoption wins' gold
+  fires (mining tables in
+  `lab/research/langagnostic/ws3d-displacement-guard.md`).
+
+- **Behavior change - structural-symbol unification on by default**
+  (issue #56 campaign, WS3c, PR #67, adopted 2026-08-26 under the
+  standing language-agnostic directive): definition-symbol names for the
+  def/anchor channel are now sourced from the same pinned tree-sitter
+  walks that produce structural blocks, for every grammar-covered
+  language (union with the legacy per-language def regexes), and
+  anchor-forced region seating is un-gated from `.py`. Java and the C
+  family gain a def/anchor channel for the first time; JS/TS arrow
+  functions, object-literal methods and class fields become def
+  entries; Rust impl/trait/enum and Go grouped-type names are covered.
+  Measured (Multi-SWE): Java 47.66/34.38/14.06/.393 ->
+  49.22/35.16/14.84/.397 (all four up); JS/TS 46.21/30.86/13.45/.258 ->
+  46.38/31.21/13.97/.260 (all four up); Rust FILE 59.83 -> 60.25 and
+  fraction +.0013 with a FUNCTION 20.50 -> 19.67 displacement cost
+  (+0/-2, itemized in `lab/research/langagnostic/ws3c-symbols.md`).
+  Python is held exactly: Lite-300 and Verified-407 all four metrics
+  digit-identical per instance (zero FUNCTION flips). `--symbols-v2` is
+  now accepted-but-redundant; `--no-symbols-v2` reproduces the
+  pre-adoption engine byte-identically. Either state re-keys the index
+  cache (`:sv2` marker), so pre-adoption caches rebuild automatically.
+  Known anatomy shared with WS3b's trace boost (queued follow-up
+  guard): a weak anchor on a non-gold file can displace gold-region
+  budget (mui-34337, jackson-databind-4219, clap-4059/5227).
+
+- **Behavior change - multi-format trace-frame boost on by default**
+  (issue #56 campaign, WS3b, PR #66, adopted 2026-08-26 under the
+  standing language-agnostic directive): the E11b trace-frame FILE boost
+  now parses Java (`at pkg.Cls.m(Cls.java:123)`, FQCN->path), Node/V8,
+  Go panic locator, and Rust backtrace frames alongside CPython
+  tracebacks. Measured: Multi-SWE Java FUNCTION 33.59 -> 34.38 (+1/-0)
+  with zero losses on any java metric; rust headline-flat; Python
+  provably byte-identical (zero new-format regex matches across
+  Lite/Verified/full; 91/91 trace-bearing instances byte-identical in
+  both flag states, two runs each). `--trace-formats-v2` is now
+  accepted-but-redundant; `--no-trace-formats-v2` reproduces
+  CPython-only parsing byte-identically. Known micro-scale anatomy
+  (queued follow-up guard): traces that resolve to non-gold files can
+  displace gold (svelte-11104, clap-2161).
+- **Behavior change - one-word `thirdparty` path component joins the
+  vendor guard unconditionally** (WS3b, PR #66; promoted from WS3a's
+  flag-gate after zero gold matches across all 8 benchmark slices and
+  zero thirdparty paths in every evaluated tree outside nlohmann/json):
+  files under a `thirdparty/` component are no longer indexed. Index
+  cache format version 3 -> 4 (stale caches rebuild automatically).
+  Fresh references: MSWE C++ 65.12/17.83/6.98/.295 (was
+  65.89/18.60/7.75/.297; confined to nlohmann, itemized in
+  `lab/research/langagnostic/ws3b-trace-formats.md`), MSWE C unchanged
+  digit-exact.
+- **Behavior change - tree-sitter JS/TS structural blocks on by default**
+  (issue #4 campaign, E23, PR #55, user-approved adoption 2026-08-25; step
+  one of the language-agnostic campaign, issue #56): .js/.jsx/.ts/.tsx
+  files now get tree-sitter CST structural block candidates (functions,
+  methods, classes, declarator-bound arrow functions - the same nested
+  span shape `python_blocks` emits) in place of fixed +/-30-line windows.
+  Measured on the 580-instance Multi-SWE-bench JS/TS slice: FUNCTION
+  21.21 -> 31.03 (+68/-11, p=3.5e-11; the previously published 99.83 was
+  a vacuous Python-only-scorer artifact, now retired), LINE 9.31 -> 13.28,
+  mean fraction .1805 -> .2582, FILE invariant (per-instance identical).
+  Python bundles are provably untouched (Lite-300 reproduces the v12
+  reference exactly; byte-identity proven per instance in both flag
+  states). The flag is named for the mechanism's scope, not one language:
+  `--structural-blocks` (ON by default, accepted-but-redundant) /
+  `--no-structural-blocks` (escape hatch, reproduces the pre-adoption
+  engine byte-identically); `--ts-blocks` / `--no-ts-blocks` remain as
+  hidden compat aliases for existing harness scripts and artifact
+  provenance. Cost: binary +3.39 MB (three exactly-pinned grammars);
+  warm JS/TS structural queries ~2.2 s on axios-scale repos (the packer's
+  known structural-candidate cost profile, shared with the Python path).
 - **Behavior change - trace-frame FILE boost on by default** (issue #4
   campaign, E11b, PR #52, user-approved adoption): files named in a
   traceback in the query receive a rank-decayed additive file-score boost

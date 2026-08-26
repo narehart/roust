@@ -1,0 +1,152 @@
+binary: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws3b-main-baseline/roust-rs/target/release/roust -> roust 0.2.0 (de96114, clean)
+binary: /Users/nicholasarehart/programming-projects/bgrep-worktrees/ws3b-trace-formats/roust-rs/target/release/roust -> roust 0.2.0 (0c0fc79, clean)
+=== Gate B: thirdparty itemization, MAIN vs BRANCH defaults, all 55 nlohmann instances ===
+  nlohmann__json-1138            tp_files_in_tree= 214 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1221            tp_files_in_tree= 214 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1301            tp_files_in_tree= 214 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1303            tp_files_in_tree= 214 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1314            tp_files_in_tree= 214 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1323            tp_files_in_tree= 214 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1343            tp_files_in_tree= 214 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1446            tp_files_in_tree= 236 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1555            tp_files_in_tree= 236 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1769            tp_files_in_tree= 242 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-18              tp_files_in_tree=   0 IDENTICAL tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-1821            tp_files_in_tree= 242 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2019            tp_files_in_tree= 242 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2099            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2212            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2225            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2258            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2273            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2297            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2319            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2332            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2352            tp_files_in_tree= 239 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2576            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2866            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2963            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-2989            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3008            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3037            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3073            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3109            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3332            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3415            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3446            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3463            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3514            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3523            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3543            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3564            tp_files_in_tree= 164 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3590            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3601            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3605            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3663            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-3664            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-4512            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-4525            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-4536            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-4537            tp_files_in_tree= 161 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-508             tp_files_in_tree= 157 DIFFERS tp_in_main_bundle=['test/thirdparty/Fuzzer/FuzzerLoop.cpp', 'test/thirdparty/Fuzzer/FuzzerMerge.cpp', 'test/thirdparty/Fuzzer/FuzzerMerge.h', 'test/thirdparty/Fuzzer/afl/afl_driver.cpp', 'test/thirdparty/catch/catch.hpp'] tp_in_new_bundle=[]
+  nlohmann__json-545             tp_files_in_tree= 157 DIFFERS tp_in_main_bundle=['test/thirdparty/Fuzzer/FuzzerLoop.cpp', 'test/thirdparty/Fuzzer/FuzzerUtilDarwin.cpp', 'test/thirdparty/Fuzzer/afl/afl_driver.cpp', 'test/thirdparty/catch/catch.hpp'] tp_in_new_bundle=[]
+  nlohmann__json-609             tp_files_in_tree= 157 DIFFERS tp_in_main_bundle=['test/thirdparty/Fuzzer/FuzzerLoop.cpp', 'test/thirdparty/Fuzzer/FuzzerTracePC.cpp', 'test/thirdparty/Fuzzer/FuzzerTraceState.cpp', 'test/thirdparty/Fuzzer/afl/afl_driver.cpp', 'test/thirdparty/catch/catch.hpp'] tp_in_new_bundle=[]
+  nlohmann__json-708             tp_files_in_tree= 157 DIFFERS tp_in_main_bundle=['test/thirdparty/Fuzzer/FuzzerLoop.cpp', 'test/thirdparty/Fuzzer/FuzzerMutate.cpp', 'test/thirdparty/Fuzzer/FuzzerTracePC.cpp', 'test/thirdparty/Fuzzer/FuzzerTracePC.h', 'test/thirdparty/Fuzzer/afl/afl_driver.cpp', 'test/thirdparty/catch/catch.hpp'] tp_in_new_bundle=[]
+  nlohmann__json-807             tp_files_in_tree= 163 DIFFERS tp_in_main_bundle=['benchmarks/thirdparty/cxxopts/cxxopts.hpp', 'test/thirdparty/Fuzzer/FuzzerDriver.cpp', 'test/thirdparty/Fuzzer/FuzzerLoop.cpp', 'test/thirdparty/Fuzzer/FuzzerMerge.cpp', 'test/thirdparty/Fuzzer/afl/afl_driver.cpp', 'test/thirdparty/catch/catch.hpp'] tp_in_new_bundle=[]
+  nlohmann__json-944             tp_files_in_tree= 212 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-969             tp_files_in_tree= 212 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+  nlohmann__json-986             tp_files_in_tree= 212 DIFFERS tp_in_main_bundle=[] tp_in_new_bundle=[]
+=== Gate C: --trace-formats-v2 Python disjointness, BRANCH binary, two runs each (91 CPython-trace-bearing instances) ===
+  [lite    ] astropy__astropy-14182                        OK
+  [lite    ] django__django-11583                          OK
+  [lite    ] django__django-11964                          OK
+  [lite    ] django__django-12113                          OK
+  [lite    ] django__django-12184                          OK
+  [lite    ] django__django-12915                          OK
+  [lite    ] django__django-13028                          OK
+  [lite    ] django__django-13321                          OK
+  [lite    ] django__django-13448                          OK
+  [lite    ] django__django-13660                          OK
+  [lite    ] django__django-14238                          OK
+  [lite    ] django__django-14580                          OK
+  [lite    ] django__django-14672                          OK
+  [lite    ] django__django-14997                          OK
+  [lite    ] django__django-15202                          OK
+  [lite    ] django__django-15814                          OK
+  [lite    ] django__django-16255                          OK
+  [lite    ] django__django-16379                          OK
+  [lite    ] django__django-16408                          OK
+  [lite    ] django__django-16816                          OK
+  [lite    ] django__django-16873                          OK
+  [lite    ] matplotlib__matplotlib-22711                  OK
+  [lite    ] matplotlib__matplotlib-22835                  OK
+  [lite    ] matplotlib__matplotlib-23476                  OK
+  [lite    ] matplotlib__matplotlib-23563                  OK
+  [lite    ] matplotlib__matplotlib-23964                  OK
+  [lite    ] matplotlib__matplotlib-25079                  OK
+  [lite    ] matplotlib__matplotlib-25442                  OK
+  [lite    ] matplotlib__matplotlib-25498                  OK
+  [lite    ] matplotlib__matplotlib-26020                  OK
+  [lite    ] psf__requests-2148                            OK
+  [lite    ] pylint-dev__pylint-6506                       OK
+  [lite    ] pylint-dev__pylint-7228                       OK
+  [lite    ] scikit-learn__scikit-learn-10508              OK
+  [lite    ] scikit-learn__scikit-learn-13142              OK
+  [lite    ] scikit-learn__scikit-learn-14894              OK
+  [lite    ] scikit-learn__scikit-learn-25570              OK
+  [lite    ] sympy__sympy-12454                            OK
+  [lite    ] sympy__sympy-13471                            OK
+  [lite    ] sympy__sympy-13480                            OK
+  [lite    ] sympy__sympy-13773                            OK
+  [lite    ] sympy__sympy-14817                            OK
+  [lite    ] sympy__sympy-15678                            OK
+  [lite    ] sympy__sympy-17139                            OK
+  [lite    ] sympy__sympy-17630                            OK
+  [lite    ] sympy__sympy-18621                            OK
+  [lite    ] sympy__sympy-18835                            OK
+  [lite    ] sympy__sympy-22714                            OK
+  [lite    ] sympy__sympy-23117                            OK
+  [lite    ] sympy__sympy-24213                            OK
+  [verified] astropy__astropy-14096                        OK
+  [verified] astropy__astropy-14309                        OK
+  [verified] astropy__astropy-7336                         OK
+  [verified] django__django-10554                          OK
+  [verified] django__django-11087                          OK
+  [verified] django__django-11265                          OK
+  [verified] django__django-11532                          OK
+  [verified] django__django-12663                          OK
+  [verified] django__django-12774                          OK
+  [verified] django__django-13121                          OK
+  [verified] django__django-13406                          OK
+  [verified] django__django-13807                          OK
+  [verified] django__django-14140                          OK
+  [verified] django__django-14349                          OK
+  [verified] django__django-14351                          OK
+  [verified] django__django-14493                          OK
+  [verified] django__django-15104                          OK
+  [verified] django__django-15380                          OK
+  [verified] django__django-15503                          OK
+  [verified] django__django-15525                          OK
+  [verified] django__django-15973                          OK
+  [verified] django__django-16136                          OK
+  [verified] django__django-16454                          OK
+  [verified] django__django-16667                          OK
+  [verified] django__django-16938                          OK
+  [verified] matplotlib__matplotlib-20859                  OK
+  [verified] matplotlib__matplotlib-24026                  OK
+  [verified] psf__requests-1724                            OK
+  [verified] pydata__xarray-3677                           OK
+  [verified] pylint-dev__pylint-8898                       OK
+  [verified] scikit-learn__scikit-learn-12585              OK
+  [verified] scikit-learn__scikit-learn-14496              OK
+  [verified] sphinx-doc__sphinx-7462                       OK
+  [verified] sympy__sympy-13372                            OK
+  [verified] sympy__sympy-13877                            OK
+  [verified] sympy__sympy-17318                            OK
+  [verified] sympy__sympy-19954                            OK
+  [verified] sympy__sympy-20428                            OK
+  [verified] sympy__sympy-20438                            OK
+  [verified] sympy__sympy-23824                            OK
+  [verified] sympy__sympy-23950                            OK
+Gate C failures: 0
+GATES_DONE

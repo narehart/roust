@@ -1,0 +1,68 @@
+
+==== sveltejs__svelte-11104  gold=['.changeset/gold-tools-nail.md', 'packages/svelte/src/compiler/phases/3-transform/server/transform-server.js']
+  [default] gold_rank=None n_packed=33 cov={'.changeset/gold-tools-nail.md': '0/5', 'packages/svelte/src/compiler/phases/3-transform/server/transform-server.js': '0/22'}
+    trace_files: ['packages/svelte/src/internal/server/index.js', 'packages/svelte/src/legacy/legacy-server.js']
+    anchors:     ['packages/svelte/src/compiler/legacy.js(2.5,insert,head)', 'packages/svelte/src/compiler/types/template.d.ts(2.5,move,head)', 'packages/svelte/src/internal/client/dom/blocks/svelte-component.js(1.0,insert,tail)', 'packages/svelte/src/internal/client/loop.js(1.0,insert,tail)']
+  [no_trace_v2] gold_rank=30 n_packed=30 cov={'.changeset/gold-tools-nail.md': '0/5', 'packages/svelte/src/compiler/phases/3-transform/server/transform-server.js': '8/22'}
+    anchors:     ['packages/svelte/src/compiler/legacy.js(2.5,insert,head)', 'packages/svelte/src/compiler/types/template.d.ts(2.5,move,head)', 'packages/svelte/src/internal/client/dom/blocks/svelte-component.js(1.0,insert,tail)', 'packages/svelte/src/internal/client/loop.js(1.0,insert,tail)']
+  [no_symbols_v2] gold_rank=None n_packed=34 cov={'.changeset/gold-tools-nail.md': '0/5', 'packages/svelte/src/compiler/phases/3-transform/server/transform-server.js': '0/22'}
+    trace_files: ['packages/svelte/src/internal/server/index.js', 'packages/svelte/src/legacy/legacy-server.js']
+    anchors:     ['packages/svelte/src/internal/client/dom/blocks/snippet.js(2.0,insert,head)', 'packages/svelte/src/internal/client/dom/template.js(2.0,insert,head)', 'packages/svelte/src/internal/client/dom/blocks/svelte-component.js(1.0,insert,tail)', 'packages/svelte/src/internal/client/loop.js(1.0,insert,tail)']
+  [both_off] gold_rank=31 n_packed=31 cov={'.changeset/gold-tools-nail.md': '0/5', 'packages/svelte/src/compiler/phases/3-transform/server/transform-server.js': '8/22'}
+    anchors:     ['packages/svelte/src/internal/client/dom/blocks/snippet.js(2.0,insert,head)', 'packages/svelte/src/internal/client/dom/template.js(2.0,insert,head)', 'packages/svelte/src/internal/client/dom/blocks/svelte-component.js(1.0,insert,tail)', 'packages/svelte/src/internal/client/loop.js(1.0,insert,tail)']
+    non-gold fired files ABSENT from both_off pack: ['packages/svelte/src/compiler/legacy.js']
+
+==== mui__material-ui-34337  gold=['packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx']
+  [default] gold_rank=1 n_packed=32 cov={'packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx': '0/10'}
+    anchors:     ['packages/mui-codemod/src/v5.0.0/jss-to-styled.test/first.actual.js(1.0,insert,tail)*T', 'packages/mui-codemod/src/v5.0.0/jss-to-styled.test/first.expected.js(1.0,insert,tail)*T']
+  [no_trace_v2] gold_rank=1 n_packed=32 cov={'packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx': '0/10'}
+    anchors:     ['packages/mui-codemod/src/v5.0.0/jss-to-styled.test/first.actual.js(1.0,insert,tail)*T', 'packages/mui-codemod/src/v5.0.0/jss-to-styled.test/first.expected.js(1.0,insert,tail)*T']
+  [no_symbols_v2] gold_rank=1 n_packed=30 cov={'packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx': '6/10'}
+  [both_off] gold_rank=1 n_packed=30 cov={'packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx': '6/10'}
+    non-gold fired files ABSENT from both_off pack: ['packages/mui-codemod/src/v5.0.0/jss-to-styled.test/first.actual.js', 'packages/mui-codemod/src/v5.0.0/jss-to-styled.test/first.expected.js']
+
+==== clap-rs__clap-2161  gold=['src/build/app/mod.rs', 'src/parse/parser.rs']
+  [default] gold_rank=2 n_packed=33 cov={'src/build/app/mod.rs': '10/15', 'src/parse/parser.rs': '1/1'}
+    trace_files: ['src/derive.rs']
+    anchors:     ['clap_derive/src/derives/from_arg_matches.rs(2.5,insert,head)', 'clap_derive/src/dummies.rs(2.5,insert,head)', 'src/util/fnv.rs(1.0,insert,tail)', 'clap_derive/src/parse.rs(1.0,insert,tail)']
+  [no_trace_v2] gold_rank=1 n_packed=32 cov={'src/build/app/mod.rs': '0/15', 'src/parse/parser.rs': '0/1'}
+    anchors:     ['src/derive.rs(2.5,move,head)', 'clap_derive/src/derives/from_arg_matches.rs(2.5,insert,head)', 'src/util/fnv.rs(1.0,insert,tail)', 'clap_derive/src/parse.rs(1.0,insert,tail)']
+  [no_symbols_v2] gold_rank=2 n_packed=33 cov={'src/build/app/mod.rs': '0/15', 'src/parse/parser.rs': '1/1'}
+    trace_files: ['src/derive.rs']
+    anchors:     ['clap_derive/src/derives/from_arg_matches.rs(2.5,insert,head)', 'clap_derive/src/dummies.rs(2.5,insert,head)', 'src/util/fnv.rs(1.0,insert,tail)', 'clap_derive/src/parse.rs(1.0,insert,tail)']
+  [both_off] gold_rank=1 n_packed=32 cov={'src/build/app/mod.rs': '10/15', 'src/parse/parser.rs': '1/1'}
+    anchors:     ['src/derive.rs(2.5,move,head)', 'clap_derive/src/derives/from_arg_matches.rs(2.5,insert,head)', 'src/util/fnv.rs(1.0,insert,tail)', 'clap_derive/src/parse.rs(1.0,insert,tail)']
+    non-gold fired files ABSENT from both_off pack: ['clap_derive/src/dummies.rs']
+
+==== clap-rs__clap-4059  gold=['src/builder/arg.rs', 'src/macros.rs']
+  [default] gold_rank=4 n_packed=31 cov={'src/builder/arg.rs': '0/1', 'src/macros.rs': '0/4'}
+    anchors:     ['src/output/help.rs(2.5,move,head)', 'src/builder/action.rs(2.5,move,head)', 'src/parser/matches/matched_arg.rs(1.0,insert,tail)', 'src/parser/features/suggestions.rs(1.0,insert,tail)']
+  [no_trace_v2] gold_rank=4 n_packed=31 cov={'src/builder/arg.rs': '0/1', 'src/macros.rs': '0/4'}
+    anchors:     ['src/output/help.rs(2.5,move,head)', 'src/builder/action.rs(2.5,move,head)', 'src/parser/matches/matched_arg.rs(1.0,insert,tail)', 'src/parser/features/suggestions.rs(1.0,insert,tail)']
+  [no_symbols_v2] gold_rank=4 n_packed=30 cov={'src/builder/arg.rs': '1/1', 'src/macros.rs': '0/4'}
+    anchors:     ['src/builder/possible_value.rs(2.0,move,head)', 'src/output/help.rs(2.0,move,head)', 'src/parser/features/suggestions.rs(1.0,insert,tail)']
+  [both_off] gold_rank=4 n_packed=30 cov={'src/builder/arg.rs': '1/1', 'src/macros.rs': '0/4'}
+    anchors:     ['src/builder/possible_value.rs(2.0,move,head)', 'src/output/help.rs(2.0,move,head)', 'src/parser/features/suggestions.rs(1.0,insert,tail)']
+    non-gold fired files ABSENT from both_off pack: ['src/parser/matches/matched_arg.rs']
+
+==== clap-rs__clap-5227  gold=['clap_builder/src/output/help_template.rs', 'examples/git-derive.md', 'examples/git.md']
+  [default] gold_rank=1 n_packed=32 cov={'clap_builder/src/output/help_template.rs': '0/2', 'examples/git-derive.md': '0/1', 'examples/git.md': '0/1'}
+    anchors:     ['clap_builder/src/builder/resettable.rs(2.5,insert,head)', 'clap_builder/src/builder/arg_group.rs(2.5,move,head)', 'clap_complete/src/dynamic/completer.rs(1.0,insert,tail)', 'clap_complete/src/dynamic/shells/mod.rs(1.0,insert,tail)']
+  [no_trace_v2] gold_rank=1 n_packed=32 cov={'clap_builder/src/output/help_template.rs': '0/2', 'examples/git-derive.md': '0/1', 'examples/git.md': '0/1'}
+    anchors:     ['clap_builder/src/builder/resettable.rs(2.5,insert,head)', 'clap_builder/src/builder/arg_group.rs(2.5,move,head)', 'clap_complete/src/dynamic/completer.rs(1.0,insert,tail)', 'clap_complete/src/dynamic/shells/mod.rs(1.0,insert,tail)']
+  [no_symbols_v2] gold_rank=1 n_packed=31 cov={'clap_builder/src/output/help_template.rs': '2/2', 'examples/git-derive.md': '0/1', 'examples/git.md': '0/1'}
+    anchors:     ['clap_builder/src/builder/arg_group.rs(2.5,move,head)', 'clap_complete/src/generator/utils.rs(2.0,move,head)', 'clap_complete/src/dynamic/shells/mod.rs(1.0,insert,tail)', 'clap_complete/src/dynamic/completer.rs(1.0,insert,tail)']
+  [both_off] gold_rank=1 n_packed=31 cov={'clap_builder/src/output/help_template.rs': '2/2', 'examples/git-derive.md': '0/1', 'examples/git.md': '0/1'}
+    anchors:     ['clap_builder/src/builder/arg_group.rs(2.5,move,head)', 'clap_complete/src/generator/utils.rs(2.0,move,head)', 'clap_complete/src/dynamic/shells/mod.rs(1.0,insert,tail)', 'clap_complete/src/dynamic/completer.rs(1.0,insert,tail)']
+    non-gold fired files ABSENT from both_off pack: ['clap_builder/src/builder/resettable.rs']
+
+==== fasterxml__jackson-databind-4219  gold=['release-notes/VERSION-2.x', 'src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java']
+  [default] gold_rank=1 n_packed=32 cov={'release-notes/VERSION-2.x': '0/6', 'src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java': '0/5'}
+    anchors:     ['src/main/java/com/fasterxml/jackson/databind/JsonDeserializer.java(2.5,insert,head)', 'src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java(2.5,insert,head)', 'src/main/java/com/fasterxml/jackson/databind/cfg/DeserializerFactoryConfig.java(1.0,insert,tail)']
+  [no_trace_v2] gold_rank=1 n_packed=32 cov={'release-notes/VERSION-2.x': '0/6', 'src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java': '0/5'}
+    anchors:     ['src/main/java/com/fasterxml/jackson/databind/JsonDeserializer.java(2.5,insert,head)', 'src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java(2.5,insert,head)', 'src/main/java/com/fasterxml/jackson/databind/cfg/DeserializerFactoryConfig.java(1.0,insert,tail)']
+  [no_symbols_v2] gold_rank=1 n_packed=29 cov={'release-notes/VERSION-2.x': '0/6', 'src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java': '5/5'}
+  [both_off] gold_rank=1 n_packed=29 cov={'release-notes/VERSION-2.x': '0/6', 'src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java': '5/5'}
+    non-gold fired files ABSENT from both_off pack: ['src/main/java/com/fasterxml/jackson/databind/JsonDeserializer.java', 'src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java', 'src/main/java/com/fasterxml/jackson/databind/cfg/DeserializerFactoryConfig.java']
+
+wrote lab/results_regions/ws3d/seed_explain.json

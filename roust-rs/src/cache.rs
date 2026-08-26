@@ -52,7 +52,10 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
-pub const CACHE_VERSION: i64 = 3;
+// v3 -> v4 (WS3b): the one-word `thirdparty` vendor alternate joined
+// VENDOR_RE unconditionally -- default-index contents change for
+// thirdparty-bearing repos, so pre-WS3b caches must never be served.
+pub const CACHE_VERSION: i64 = 4;
 pub const CACHE_DIRNAME: &str = ".roust";
 const INDEX_FILENAME: &str = "rust-index.bin";
 
@@ -116,6 +119,11 @@ fn git_head_sha(repo_path: &Path) -> String {
 /// rebuild), which is always safe; it can never cause a stale hit.
 fn scan_manifest(repo_path: &Path, with_docs: bool) -> Manifest {
     let mut exts: HashSet<&str> = core::CODE_EXTENSIONS.iter().copied().collect();
+    if core::cfamily_ext_enabled() {
+        // WS2 (--cfamily-ext): the manifest scan must track the corpus
+        // walk's suffix set exactly (see core::code_suffix_allowed).
+        exts.extend(core::CFAMILY_EXTENSIONS.iter().copied());
+    }
     if with_docs {
         exts.extend(core::DOCS_EXTENSIONS.iter().copied());
     }
@@ -177,7 +185,23 @@ fn classify_changes(repo_path: &Path, with_docs: bool, manifest: &Manifest) -> (
 
 fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     let sha = git_head_sha(repo_path);
-    format!("{sha}:h{}:d{}", with_history as i32, with_docs as i32)
+    // WS2: the ":cf1" marker appears ONLY under --cfamily-ext, so a cache
+    // written with the flag on can never be served to a flag-off run (and
+    // vice versa) -- the two index different file sets. Flag-off keys are
+    // byte-identical to main's format.
+    let cf = if core::cfamily_ext_enabled() { ":cf1" } else { "" };
+    // WS3a: impl_prior participates at index time (def_index construction
+    // is impl_prior-gated), so --impl-prior-v2 re-keys the cache the same
+    // way. Flag-off keys are byte-identical to main's format.
+    let ip = if core::impl_prior_v2_enabled() { ":ipv2" } else { "" };
+    // WS3c: symbols_v2 changes def_index contents at build time
+    // (tree-sitter-sourced symbols for grammar-covered non-Python files),
+    // so it re-keys the cache the same way. ADOPTED default ON (PR #67):
+    // the ":sv2" marker now appears on default keys, so a pre-adoption
+    // cache is never served to the new defaults; --no-symbols-v2 keys are
+    // byte-identical to the pre-adoption format.
+    let sv = if core::symbols_v2_enabled() { ":sv2" } else { "" };
+    format!("{sha}:h{}:d{}{cf}{ip}{sv}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {
@@ -267,7 +291,7 @@ fn collect_current_code_files(repo_path: &Path) -> HashSet<String> {
 /// entirely (never save or return them) whenever this returns `false`,
 /// falling back to a full rebuild instead.
 fn try_incremental_update(corpus: &mut Corpus, edges: &mut EdgeMap, modified: &[String]) -> bool {
-    let code_rels: Vec<String> = modified.iter().filter(|r| core::CODE_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect();
+    let code_rels: Vec<String> = modified.iter().filter(|r| core::code_suffix_allowed(core::suffix_of(r))).cloned().collect();
     let docs_rels: Vec<String> = modified.iter().filter(|r| core::DOCS_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect();
 
     // Defensive: `scan_manifest` doesn't apply Corpus::build's own
