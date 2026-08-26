@@ -14,16 +14,13 @@ compressed into one process call.
 
 ## Install
 
-roust is a single Rust binary (~9.7 MB release build; +3.39 MB of that is
-the exactly-pinned tree-sitter JS/TS/TSX grammars that power structural
-packing for those languages — grammar bumps are gated dependency changes).
+roust is a single Rust binary (~15 MB release build; ~9.3 MB of that is the
+exactly-pinned tree-sitter grammars for the eight languages whose structural
+packing they power — grammar bumps are gated dependency changes).
 Every install path below builds the same `roust-rs` engine — there is no
 separate Python implementation.
 
-**Not yet released.** The tag-triggered release pipeline is committed
-(`.github/workflows/release.yml`) and the registry credentials are configured;
-no release tag has been pushed yet — see `RELEASE.md`. Once `v0.3.0` ships,
-these are the install paths:
+**v0.3.0 is published.** Install it one of three ways:
 
 ```bash
 # npm — downloads the prebuilt binary for your platform (no Node runtime cost;
@@ -43,7 +40,7 @@ cargo install roust
 # https://github.com/narehart/roust/releases
 ```
 
-Until the first tag, build from source:
+Or from a checkout:
 
 ```bash
 git clone https://github.com/narehart/roust && cd roust
@@ -504,10 +501,9 @@ Adapter + protocol: `lab/contextbench/`; aggregate:
   query construction) with Multi-SWE slices as first-class gates. Step one
   (JS/TS/TSX structural packing) shipped in PR
   [#55](https://github.com/narehart/roust/pull/55).
-- First release (npm + crates.io + GitHub Releases) — **pending the tag
-  push only**: the pipeline is committed (`.github/workflows/release.yml`),
-  both registry secrets (`NPM_TOKEN`, `CARGO_REGISTRY_TOKEN`) are configured,
-  and a dry run builds every platform artifact — see `RELEASE.md`.
+- ~~First release~~ **shipped**: v0.3.0 is on npm (`roust-cli` plus five
+  platform binary packages), crates.io (`roust`), and GitHub Releases, with
+  docs at https://narehart.github.io/roust/ — see `RELEASE.md`.
 - MCP server.
 - Incremental index updates (avoid full reindex on every change).
 - Homebrew tap.

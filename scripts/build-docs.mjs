@@ -271,7 +271,9 @@ export function firstParagraph(md) {
  */
 export function generateLlmsTxt() {
   const readme = fs.readFileSync(path.join(ROOT, "README.md"), "utf8");
-  const summary = firstParagraph(readme);
+  // llms.txt is plain text: strip inline emphasis so the summary doesn't
+  // ship literal ** markers to a consumer that won't render them.
+  const summary = firstParagraph(readme).replace(/\*\*?([^*]+)\*\*?/g, "$1");
 
   const docs = MD_PAGES.map(
     (p) => `- [${p.name}](${SITE_URL}/${p.out}): ${p.note.replace(/^#\s*/, "")}`

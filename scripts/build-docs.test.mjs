@@ -88,6 +88,7 @@ test("generateLlmsTxt derives from the page registry and README intro", () => {
   assert.match(txt, /\[benchmarks\]/);
   assert.match(txt, /\[research\]/);
   assert.doesNotMatch(txt, /^- \[\w+\]\([^)]*\): #/m); // note markers stripped
+  assert.doesNotMatch(txt, /\*\*/); // plain text: no markdown emphasis survives
 });
 
 test("toComponents emits design-system classes", () => {

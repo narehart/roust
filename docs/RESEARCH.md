@@ -54,8 +54,8 @@ neighbor score smoothing      FILE +1 is churn (p=1.0); hub guard taxes gold
 chunk-max file scoring        FILE +0.3, FUNCTION -2.7 (budget shrinkage)
 chunk ranking, decoupled      tax halved; residual from list composition
 query-type routing            Lite +1.7 LINE, Verified -2.2 FUNCTION
-static test bridge            0 of 499 bridged files was a missing gold file
-sibling-sweep expansion       FUNCTION 54.7 -> 27.7 (depth charged too early)
+static test bridge            no bridged file was ever a missing gold file
+sibling-sweep expansion       FUNCTION 53.3 -> 27.7 (depth charged too early)
 universal indexing            FILE 46.4 -> 31.2 (boilerplate displaces code)
 newcomer reserve budget       buys template admissions at region cost
 issue-mention gating          1 of 499 gold files named in its issue

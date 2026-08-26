@@ -19,27 +19,28 @@ only -- a typo'd or pre-release-suffixed tag does not trigger a publish).
 
 ---
 
-## v0.3.0 status (as of 2026-08-26)
+## v0.3.0 — shipped 2026-08-26
 
-Everything except the tag push is done, on branch `release-0.3.0` (PR #70):
+Published and verified:
 
-- versions bumped to 0.3.0 (`pyproject.toml`, `roust-rs/Cargo.toml`, `Cargo.lock`);
-- `CHANGELOG.md` has the 0.3.0 section;
-- distribution: npm (`npm/` package + platform packages), crates.io, and
-  GitHub Releases;
-- **both registry secrets configured** (see below);
-- dry run green on all five platform targets.
+| Artifact | Version | Check |
+|---|---|---|
+| npm `roust-cli` | 0.3.0 | `npm install roust-cli` pulls exactly one platform package and the `roust` command runs |
+| npm `roust-{darwin-arm64,darwin-x64,linux-arm64,linux-x64,win32-x64}` | 0.3.0 | published from their own build jobs |
+| crates.io `roust` | 0.3.0 | `cargo install roust` |
+| GitHub Release `v0.3.0` | — | 10 assets (5 binaries + 5 `.sha256`) |
+| Docs site | — | https://narehart.github.io/roust/ |
 
-Remaining: **merge PR #70, then**
+Two things the first attempt taught, both now fixed in the workflow:
 
-```
-git checkout main && git pull
-git tag v0.3.0 && git push origin v0.3.0
-```
-
-That single push publishes the five platform npm packages, the main `roust-cli`
-npm package with pinned `optionalDependencies`, the crate, and the GitHub
-Release with checksummed binaries.
+1. **npm rejects the bare name `roust`** — "too similar to existing packages
+   must,rbush", its typosquat guard. The published package is `roust-cli`
+   (the installed command is still `roust`), matching the convention sibling
+   projects already use. The platform packages were not affected.
+2. **Every publish step is now idempotent.** npm and crates.io versions are
+   immutable, so a partially-successful release used to be unrecoverable
+   without a version bump; each step now checks the registry and skips what
+   is already there. A re-run resumes rather than failing.
 
 ## One-time setup — DONE
 

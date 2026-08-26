@@ -39,6 +39,12 @@ archex (vector/hybrid)      57.30     40.70   27.70        —
 Verified is held out: no adoption decision was ever made on it. It exists to
 catch tuning-set mirages, and it has — twice.
 
+Two caveats on the comparison rows, both in the baselines' favour. The
+Agentless figures are from its own paper on its own harness, not a re-run
+here. And the archex FUNCTION numbers exclude two timed-out instances from
+their denominator, where roust counts its own errors as wrong; scoring archex
+by roust's convention would give 38.0 rather than 38.3.
+
 Artifacts: `lab/results_regions/ws2c/agentless_metric_ws2c_lite300_cfamily.json`,
 `lab/results_regions/ws2c/agentless_metric_ws2c_ver407_cfamily.json`.
 
@@ -103,10 +109,19 @@ Artifact: `lab/latency/latency_v1.json`.
 
 ## Reproducing <!-- note: run any of these yourself -->
 
+The harnesses evaluate against local clones of the twelve SWE-bench
+repositories, checked out per instance, so they need those clones present
+first — `lab/README.md` documents the layout. With them in place:
+
 ```bash title="shell — reproduce the Lite table"
+cargo build --release --manifest-path roust-rs/Cargo.toml
 python parity/region_eval2.py --report /tmp/lite.jsonl
 python lab/agentless_metric_v4.py --predictions /tmp/lite.jsonl --out /tmp/lite.json
 ```
 
-The harnesses refuse to run against a binary whose embedded git SHA does not
-match the tree under test, so a stale build cannot silently produce a result.
+Two guards make a wrong answer hard to produce by accident. The harness
+refuses to run against a binary whose embedded git SHA does not match the
+tree under test, so a stale build cannot silently score. And because the
+harness rewrites the clones as it walks instances, concurrent runs must use
+private copies (`--repos-dir`) — a shared checkout races itself and quietly
+corrupts both runs.
