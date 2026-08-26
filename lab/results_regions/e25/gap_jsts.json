@@ -1,0 +1,36 @@
+{
+ "label": "jsts",
+ "n_gold_files": 2203,
+ "both": {
+  "function_declaration": 13205,
+  "interface_declaration": 4782,
+  "pair": 2517,
+  "variable_declarator": 3181,
+  "method_definition": 6239,
+  "enum_declaration": 24,
+  "module": 399,
+  "internal_module": 129,
+  "class_declaration": 402,
+  "field_definition": 1
+ },
+ "allowlist_only": {
+  "pair": 2041,
+  "interface_declaration": 214,
+  "variable_declarator": 249,
+  "method_definition": 146,
+  "function_declaration": 10
+ },
+ "allowlist_only_multiline": {},
+ "allowlist_only_oneline": {
+  "pair": 2041,
+  "interface_declaration": 214,
+  "variable_declarator": 249,
+  "method_definition": 146,
+  "function_declaration": 10
+ },
+ "shape_only": {
+  "function_expression": 575,
+  "export_statement": 44,
+  "class": 3
+ }
+}

@@ -147,6 +147,8 @@ def main() -> None:
                           "invocation (tree-sitter-sourced def_index for all grammar-covered "
                           "languages + anchor-forced seating un-gated from .py; rides "
                           "EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--shape-blocks", action="store_true",
+                     help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
     ap.add_argument("--displacement-guard", action="store_true",
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion; rides "
@@ -186,6 +188,8 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--symbols-v2"]
     if args.displacement_guard:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--displacement-guard"]
+    if args.shape_blocks:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--shape-blocks"]
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)

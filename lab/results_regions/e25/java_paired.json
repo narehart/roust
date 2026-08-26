@@ -1,0 +1,252 @@
+{
+ "label": "java",
+ "default": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 49.22,
+  "file_n": 63,
+  "function_pct": 35.16,
+  "function_n": 45,
+  "line_pct": 14.84,
+  "line_n": 19,
+  "mean_fraction": 0.39691079709064214
+ },
+ "shape": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 49.22,
+  "file_n": 63,
+  "function_pct": 37.5,
+  "function_n": 48,
+  "line_pct": 14.06,
+  "line_n": 18,
+  "mean_fraction": 0.4017537932668336
+ },
+ "delta": {
+  "file": 0.0,
+  "function": 2.34,
+  "line": -0.78,
+  "mean_fraction": 0.004843
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_shape_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 1,
+   "c_shape_only": 4,
+   "p": 0.375
+  },
+  "LINE": {
+   "b_def_only": 1,
+   "c_shape_only": 0,
+   "p": 1.0
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 21,
+   "statistic": 98.0,
+   "p": 0.5620746612548828,
+   "n_up": 11,
+   "n_down": 10
+  }
+ },
+ "n_changed": 21,
+ "changed": [
+  {
+   "instance_id": "mockito__mockito-3424",
+   "repo": "mockito/mockito",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4565->0.3043",
+   "fraction_delta": -0.152174
+  },
+  {
+   "instance_id": "elastic__logstash-15008",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6599->0.5510",
+   "fraction_delta": -0.108844
+  },
+  {
+   "instance_id": "elastic__logstash-15000",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7075->0.6054",
+   "fraction_delta": -0.102041
+  },
+  {
+   "instance_id": "elastic__logstash-14058",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5167->0.4167",
+   "fraction_delta": -0.1
+  },
+  {
+   "instance_id": "fasterxml__jackson-core-1172",
+   "repo": "fasterxml/jackson-core",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.7869->0.7377",
+   "fraction_delta": -0.04918
+  },
+  {
+   "instance_id": "elastic__logstash-15964",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.9583",
+   "fraction_delta": -0.041667
+  },
+  {
+   "instance_id": "elastic__logstash-13825",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0423->0.0053",
+   "fraction_delta": -0.037037
+  },
+  {
+   "instance_id": "elastic__logstash-14898",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7241->0.6897",
+   "fraction_delta": -0.034483
+  },
+  {
+   "instance_id": "mockito__mockito-3173",
+   "repo": "mockito/mockito",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.5938->0.5625",
+   "fraction_delta": -0.03125
+  },
+  {
+   "instance_id": "elastic__logstash-13997",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1371->0.1320",
+   "fraction_delta": -0.005076
+  },
+  {
+   "instance_id": "elastic__logstash-14000",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0036",
+   "fraction_delta": 0.003567
+  },
+  {
+   "instance_id": "google__gson-1787",
+   "repo": "google/gson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6338->0.6479",
+   "fraction_delta": 0.014085
+  },
+  {
+   "instance_id": "fasterxml__jackson-core-1263",
+   "repo": "fasterxml/jackson-core",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.7455->0.8000",
+   "fraction_delta": 0.054545
+  },
+  {
+   "instance_id": "elastic__logstash-14027",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3902->0.4756",
+   "fraction_delta": 0.085366
+  },
+  {
+   "instance_id": "fasterxml__jackson-core-729",
+   "repo": "fasterxml/jackson-core",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1714->0.2571",
+   "fraction_delta": 0.085714
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4365",
+   "repo": "fasterxml/jackson-databind",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5476->0.6369",
+   "fraction_delta": 0.089286
+  },
+  {
+   "instance_id": "elastic__logstash-16195",
+   "repo": "elastic/logstash",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1194->0.2090",
+   "fraction_delta": 0.089552
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4132",
+   "repo": "fasterxml/jackson-databind",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6250->0.7188",
+   "fraction_delta": 0.09375
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4228",
+   "repo": "fasterxml/jackson-databind",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.2000",
+   "fraction_delta": 0.2
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4230",
+   "repo": "fasterxml/jackson-databind",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.2500",
+   "fraction_delta": 0.25
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4219",
+   "repo": "fasterxml/jackson-databind",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.3158",
+   "fraction_delta": 0.315789
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "shape_only": []
+ }
+}

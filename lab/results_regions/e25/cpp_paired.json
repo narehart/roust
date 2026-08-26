@@ -1,0 +1,729 @@
+{
+ "label": "cpp",
+ "default": {
+  "n": 129,
+  "n_errors": 0,
+  "file_pct": 65.89,
+  "file_n": 85,
+  "function_pct": 17.83,
+  "function_n": 23,
+  "line_pct": 6.98,
+  "line_n": 9,
+  "mean_fraction": 0.2986574683056954
+ },
+ "shape": {
+  "n": 129,
+  "n_errors": 0,
+  "file_pct": 65.89,
+  "file_n": 85,
+  "function_pct": 21.71,
+  "function_n": 28,
+  "line_pct": 6.98,
+  "line_n": 9,
+  "mean_fraction": 0.2814220926126296
+ },
+ "delta": {
+  "file": 0.0,
+  "function": 3.88,
+  "line": 0.0,
+  "mean_fraction": -0.017235
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_shape_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 2,
+   "c_shape_only": 7,
+   "p": 0.1796875
+  },
+  "LINE": {
+   "b_def_only": 3,
+   "c_shape_only": 3,
+   "p": 1.0
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 71,
+   "statistic": 1066.5,
+   "p": 0.22556015658691686,
+   "n_up": 30,
+   "n_down": 41
+  }
+ },
+ "n_changed": 74,
+ "changed": [
+  {
+   "instance_id": "fmtlib__fmt-3713",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "fmtlib__fmt-2610",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8750->0.3750",
+   "fraction_delta": -0.5
+  },
+  {
+   "instance_id": "fmtlib__fmt-1390",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4615->0.0000",
+   "fraction_delta": -0.461538
+  },
+  {
+   "instance_id": "catchorg__Catch2-2288",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.5714",
+   "fraction_delta": -0.428571
+  },
+  {
+   "instance_id": "fmtlib__fmt-3732",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6818->0.2727",
+   "fraction_delta": -0.409091
+  },
+  {
+   "instance_id": "fmtlib__fmt-1407",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3571->0.0000",
+   "fraction_delta": -0.357143
+  },
+  {
+   "instance_id": "nlohmann__json-2258",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2667->0.0000",
+   "fraction_delta": -0.266667
+  },
+  {
+   "instance_id": "simdjson__simdjson-2150",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6250->0.3750",
+   "fraction_delta": -0.25
+  },
+  {
+   "instance_id": "nlohmann__json-3664",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2609->0.0507",
+   "fraction_delta": -0.210145
+  },
+  {
+   "instance_id": "fmtlib__fmt-3555",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2800->0.0800",
+   "fraction_delta": -0.2
+  },
+  {
+   "instance_id": "nlohmann__json-1323",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1875->0.0000",
+   "fraction_delta": -0.1875
+  },
+  {
+   "instance_id": "nlohmann__json-2989",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7885->0.6538",
+   "fraction_delta": -0.134615
+  },
+  {
+   "instance_id": "catchorg__Catch2-1609",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1279->0.0000",
+   "fraction_delta": -0.127946
+  },
+  {
+   "instance_id": "fmtlib__fmt-1837",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8333->0.7222",
+   "fraction_delta": -0.111111
+  },
+  {
+   "instance_id": "fmtlib__fmt-3750",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8571->0.7714",
+   "fraction_delta": -0.085714
+  },
+  {
+   "instance_id": "nlohmann__json-2866",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3378->0.2568",
+   "fraction_delta": -0.081081
+  },
+  {
+   "instance_id": "fmtlib__fmt-3824",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4286->0.3571",
+   "fraction_delta": -0.071429
+  },
+  {
+   "instance_id": "simdjson__simdjson-2016",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2353->0.1647",
+   "fraction_delta": -0.070588
+  },
+  {
+   "instance_id": "nlohmann__json-2212",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0941->0.0242",
+   "fraction_delta": -0.069892
+  },
+  {
+   "instance_id": "fmtlib__fmt-1171",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0625->0.0000",
+   "fraction_delta": -0.0625
+  },
+  {
+   "instance_id": "catchorg__Catch2-2128",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.9877->0.9259",
+   "fraction_delta": -0.061728
+  },
+  {
+   "instance_id": "catchorg__Catch2-2849",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2118->0.1527",
+   "fraction_delta": -0.059113
+  },
+  {
+   "instance_id": "nlohmann__json-3073",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5079->0.4503",
+   "fraction_delta": -0.057592
+  },
+  {
+   "instance_id": "catchorg__Catch2-1422",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0568->0.0000",
+   "fraction_delta": -0.056818
+  },
+  {
+   "instance_id": "fmtlib__fmt-2310",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8500->0.8000",
+   "fraction_delta": -0.05
+  },
+  {
+   "instance_id": "nlohmann__json-3564",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3363->0.2924",
+   "fraction_delta": -0.04386
+  },
+  {
+   "instance_id": "simdjson__simdjson-2026",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0856->0.0428",
+   "fraction_delta": -0.042781
+  },
+  {
+   "instance_id": "nlohmann__json-1301",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1600->0.1200",
+   "fraction_delta": -0.04
+  },
+  {
+   "instance_id": "simdjson__simdjson-543",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1737->0.1344",
+   "fraction_delta": -0.039275
+  },
+  {
+   "instance_id": "simdjson__simdjson-545",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0680->0.0291",
+   "fraction_delta": -0.038835
+  },
+  {
+   "instance_id": "fmtlib__fmt-3729",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5385->0.5000",
+   "fraction_delta": -0.038462
+  },
+  {
+   "instance_id": "catchorg__Catch2-1614",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2289->0.1928",
+   "fraction_delta": -0.036145
+  },
+  {
+   "instance_id": "fmtlib__fmt-1663",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6567->0.6269",
+   "fraction_delta": -0.029851
+  },
+  {
+   "instance_id": "nlohmann__json-18",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.9706",
+   "fraction_delta": -0.029412
+  },
+  {
+   "instance_id": "simdjson__simdjson-958",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2059->0.1765",
+   "fraction_delta": -0.029412
+  },
+  {
+   "instance_id": "simdjson__simdjson-954",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1353->0.1128",
+   "fraction_delta": -0.022453
+  },
+  {
+   "instance_id": "nlohmann__json-4512",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2875->0.2750",
+   "fraction_delta": -0.0125
+  },
+  {
+   "instance_id": "fmtlib__fmt-974",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3391->0.3304",
+   "fraction_delta": -0.008696
+  },
+  {
+   "instance_id": "nlohmann__json-3446",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0742->0.0657",
+   "fraction_delta": -0.008444
+  },
+  {
+   "instance_id": "simdjson__simdjson-524",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0203->0.0123",
+   "fraction_delta": -0.008072
+  },
+  {
+   "instance_id": "nlohmann__json-3590",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0153->0.0147",
+   "fraction_delta": -0.000589
+  },
+  {
+   "instance_id": "fmtlib__fmt-2317",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "fmtlib__fmt-3537",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "nlohmann__json-3543",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "nlohmann__json-1303",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0139->0.0156",
+   "fraction_delta": 0.001736
+  },
+  {
+   "instance_id": "nlohmann__json-3415",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0260->0.0293",
+   "fraction_delta": 0.003222
+  },
+  {
+   "instance_id": "simdjson__simdjson-559",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1129->0.1193",
+   "fraction_delta": 0.006354
+  },
+  {
+   "instance_id": "simdjson__simdjson-485",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0488->0.0561",
+   "fraction_delta": 0.007233
+  },
+  {
+   "instance_id": "catchorg__Catch2-1616",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0294->0.0380",
+   "fraction_delta": 0.008636
+  },
+  {
+   "instance_id": "nlohmann__json-2273",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2409->0.2555",
+   "fraction_delta": 0.014599
+  },
+  {
+   "instance_id": "catchorg__Catch2-2723",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6000->0.6182",
+   "fraction_delta": 0.018182
+  },
+  {
+   "instance_id": "simdjson__simdjson-644",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2161->0.2500",
+   "fraction_delta": 0.033898
+  },
+  {
+   "instance_id": "simdjson__simdjson-1695",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0353",
+   "fraction_delta": 0.035294
+  },
+  {
+   "instance_id": "nlohmann__json-2576",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0818->0.1256",
+   "fraction_delta": 0.043779
+  },
+  {
+   "instance_id": "nlohmann__json-3332",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5833->0.6310",
+   "fraction_delta": 0.047619
+  },
+  {
+   "instance_id": "nlohmann__json-545",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.2778->0.3333",
+   "fraction_delta": 0.055556
+  },
+  {
+   "instance_id": "nlohmann__json-1821",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0562->0.1124",
+   "fraction_delta": 0.05618
+  },
+  {
+   "instance_id": "fmtlib__fmt-1361",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3438->0.4062",
+   "fraction_delta": 0.0625
+  },
+  {
+   "instance_id": "fmtlib__fmt-3271",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3882->0.4588",
+   "fraction_delta": 0.070588
+  },
+  {
+   "instance_id": "fmtlib__fmt-2940",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6429->0.7143",
+   "fraction_delta": 0.071429
+  },
+  {
+   "instance_id": "catchorg__Catch2-1448",
+   "repo": "catchorg/Catch2",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0508->0.1271",
+   "fraction_delta": 0.076271
+  },
+  {
+   "instance_id": "nlohmann__json-3663",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2278->0.3089",
+   "fraction_delta": 0.081081
+  },
+  {
+   "instance_id": "nlohmann__json-1555",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0291->0.1165",
+   "fraction_delta": 0.087379
+  },
+  {
+   "instance_id": "fmtlib__fmt-3912",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6699->0.7864",
+   "fraction_delta": 0.116505
+  },
+  {
+   "instance_id": "fmtlib__fmt-3913",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6699->0.7864",
+   "fraction_delta": 0.116505
+  },
+  {
+   "instance_id": "nlohmann__json-2319",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1964->0.3214",
+   "fraction_delta": 0.125
+  },
+  {
+   "instance_id": "fmtlib__fmt-3260",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2029->0.3478",
+   "fraction_delta": 0.144928
+  },
+  {
+   "instance_id": "fmtlib__fmt-2158",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.8148->1.0000",
+   "fraction_delta": 0.185185
+  },
+  {
+   "instance_id": "nlohmann__json-708",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "0->1",
+   "fraction": "0.8125->1.0000",
+   "fraction_delta": 0.1875
+  },
+  {
+   "instance_id": "nlohmann__json-969",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "0->1",
+   "fraction": "0.8000->1.0000",
+   "fraction_delta": 0.2
+  },
+  {
+   "instance_id": "nlohmann__json-3523",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.2857",
+   "fraction_delta": 0.285714
+  },
+  {
+   "instance_id": "simdjson__simdjson-1899",
+   "repo": "simdjson/simdjson",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.3333",
+   "fraction_delta": 0.333333
+  },
+  {
+   "instance_id": "nlohmann__json-2019",
+   "repo": "nlohmann/json",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.5000",
+   "fraction_delta": 0.5
+  },
+  {
+   "instance_id": "fmtlib__fmt-3569",
+   "repo": "fmtlib/fmt",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.6000",
+   "fraction_delta": 0.6
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "shape_only": []
+ }
+}

@@ -1,0 +1,13 @@
+scored jsts_def
+scored jsts_shape
+scored java_def
+scored java_shape
+scored go_def
+scored go_shape
+scored rust_def
+scored rust_shape
+scored c_def
+scored c_shape
+scored cpp_def
+scored cpp_shape
+E25_SCORING_DONE

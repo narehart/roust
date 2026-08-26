@@ -1,0 +1,73 @@
+{
+ "label": "ver407",
+ "default": {
+  "n": 407,
+  "n_errors": 0,
+  "file_pct": 92.38,
+  "file_n": 376,
+  "function_pct": 47.17,
+  "function_n": 192,
+  "line_pct": 35.14,
+  "line_n": 143,
+  "mean_fraction": 0.47634740438766354
+ },
+ "shape": {
+  "n": 407,
+  "n_errors": 0,
+  "file_pct": 92.38,
+  "file_n": 376,
+  "function_pct": 47.42,
+  "function_n": 193,
+  "line_pct": 35.14,
+  "line_n": 143,
+  "mean_fraction": 0.476392077159609
+ },
+ "delta": {
+  "file": 0.0,
+  "function": 0.25,
+  "line": 0.0,
+  "mean_fraction": 4.5e-05
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_shape_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 0,
+   "c_shape_only": 1,
+   "p": 1.0
+  },
+  "LINE": {
+   "b_def_only": 0,
+   "c_shape_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 1,
+   "statistic": 0.0,
+   "p": 1.0,
+   "n_up": 1,
+   "n_down": 0
+  }
+ },
+ "n_changed": 1,
+ "changed": [
+  {
+   "instance_id": "sphinx-doc__sphinx-8035",
+   "repo": "sphinx-doc/sphinx",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.4182->0.4364",
+   "fraction_delta": 0.018182
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "shape_only": []
+ }
+}

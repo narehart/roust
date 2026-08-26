@@ -1,0 +1,972 @@
+{
+ "label": "rust",
+ "default": {
+  "n": 239,
+  "n_errors": 0,
+  "file_pct": 60.25,
+  "file_n": 144,
+  "function_pct": 19.67,
+  "function_n": 47,
+  "line_pct": 7.53,
+  "line_n": 18,
+  "mean_fraction": 0.2431473886942461
+ },
+ "shape": {
+  "n": 239,
+  "n_errors": 0,
+  "file_pct": 60.25,
+  "file_n": 144,
+  "function_pct": 20.92,
+  "function_n": 50,
+  "line_pct": 7.11,
+  "line_n": 17,
+  "mean_fraction": 0.23000591620609778
+ },
+ "delta": {
+  "file": 0.0,
+  "function": 1.25,
+  "line": -0.42,
+  "mean_fraction": -0.013141
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_shape_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 5,
+   "c_shape_only": 8,
+   "p": 0.5810546875
+  },
+  "LINE": {
+   "b_def_only": 2,
+   "c_shape_only": 1,
+   "p": 1.0
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 93,
+   "statistic": 1944.0,
+   "p": 0.3547921715107739,
+   "n_up": 44,
+   "n_down": 49
+  }
+ },
+ "n_changed": 101,
+ "changed": [
+  {
+   "instance_id": "BurntSushi__ripgrep-954",
+   "repo": "BurntSushi/ripgrep",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1236",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "clap-rs__clap-3196",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.9091->0.0000",
+   "fraction_delta": -0.909091
+  },
+  {
+   "instance_id": "clap-rs__clap-2253",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.8421->0.0000",
+   "fraction_delta": -0.842105
+  },
+  {
+   "instance_id": "clap-rs__clap-4909",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6842->0.3158",
+   "fraction_delta": -0.368421
+  },
+  {
+   "instance_id": "sharkdp__fd-555",
+   "repo": "sharkdp/fd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5385->0.1923",
+   "fraction_delta": -0.346154
+  },
+  {
+   "instance_id": "clap-rs__clap-2990",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2500->0.0000",
+   "fraction_delta": -0.25
+  },
+  {
+   "instance_id": "rayon-rs__rayon-986",
+   "repo": "rayon-rs/rayon",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.2727->0.0455",
+   "fraction_delta": -0.227273
+  },
+  {
+   "instance_id": "serde-rs__serde-2709",
+   "repo": "serde-rs/serde",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2083->0.0000",
+   "fraction_delta": -0.208333
+  },
+  {
+   "instance_id": "clap-rs__clap-3212",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4759->0.2733",
+   "fraction_delta": -0.202572
+  },
+  {
+   "instance_id": "BurntSushi__ripgrep-1642",
+   "repo": "BurntSushi/ripgrep",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3462->0.1538",
+   "fraction_delta": -0.192308
+  },
+  {
+   "instance_id": "clap-rs__clap-1710",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4615->0.2885",
+   "fraction_delta": -0.173077
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1252",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5256->0.3718",
+   "fraction_delta": -0.153846
+  },
+  {
+   "instance_id": "sharkdp__fd-658",
+   "repo": "sharkdp/fd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2857->0.1429",
+   "fraction_delta": -0.142857
+  },
+  {
+   "instance_id": "sharkdp__fd-497",
+   "repo": "sharkdp/fd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5111->0.3778",
+   "fraction_delta": -0.133333
+  },
+  {
+   "instance_id": "sharkdp__fd-866",
+   "repo": "sharkdp/fd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4528->0.3208",
+   "fraction_delta": -0.132075
+  },
+  {
+   "instance_id": "clap-rs__clap-2093",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1304->0.0000",
+   "fraction_delta": -0.130435
+  },
+  {
+   "instance_id": "clap-rs__clap-2882",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1562->0.0312",
+   "fraction_delta": -0.125
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1045",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4074->0.2963",
+   "fraction_delta": -0.111111
+  },
+  {
+   "instance_id": "clap-rs__clap-4080",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1340->0.0309",
+   "fraction_delta": -0.103093
+  },
+  {
+   "instance_id": "tokio-rs__bytes-547",
+   "repo": "tokio-rs/bytes",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1268->0.0282",
+   "fraction_delta": -0.098592
+  },
+  {
+   "instance_id": "tokio-rs__tokio-5144",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2857->0.1905",
+   "fraction_delta": -0.095238
+  },
+  {
+   "instance_id": "sharkdp__bat-2665",
+   "repo": "sharkdp/bat",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3766->0.2857",
+   "fraction_delta": -0.090909
+  },
+  {
+   "instance_id": "clap-rs__clap-4635",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3667->0.2889",
+   "fraction_delta": -0.077778
+  },
+  {
+   "instance_id": "clap-rs__clap-3975",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1338->0.0568",
+   "fraction_delta": -0.076994
+  },
+  {
+   "instance_id": "tokio-rs__tokio-6290",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4667->0.4000",
+   "fraction_delta": -0.066667
+  },
+  {
+   "instance_id": "tokio-rs__tokio-6345",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5484->0.4839",
+   "fraction_delta": -0.064516
+  },
+  {
+   "instance_id": "nushell__nushell-13870",
+   "repo": "nushell/nushell",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1270->0.0688",
+   "fraction_delta": -0.058201
+  },
+  {
+   "instance_id": "clap-rs__clap-2075",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.9091->0.8636",
+   "fraction_delta": -0.045455
+  },
+  {
+   "instance_id": "tokio-rs__tokio-6205",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2228->0.1782",
+   "fraction_delta": -0.044554
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1853",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4200->0.3875",
+   "fraction_delta": -0.032483
+  },
+  {
+   "instance_id": "tokio-rs__tracing-2335",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1073->0.0847",
+   "fraction_delta": -0.022599
+  },
+  {
+   "instance_id": "clap-rs__clap-5206",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0208->0.0000",
+   "fraction_delta": -0.020833
+  },
+  {
+   "instance_id": "nushell__nushell-13357",
+   "repo": "nushell/nushell",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0635->0.0459",
+   "fraction_delta": -0.017637
+  },
+  {
+   "instance_id": "tokio-rs__tracing-2001",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7667->0.7500",
+   "fraction_delta": -0.016667
+  },
+  {
+   "instance_id": "clap-rs__clap-4056",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0579->0.0428",
+   "fraction_delta": -0.015113
+  },
+  {
+   "instance_id": "clap-rs__clap-3402",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0898->0.0757",
+   "fraction_delta": -0.014025
+  },
+  {
+   "instance_id": "sharkdp__bat-1402",
+   "repo": "sharkdp/bat",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6625->0.6500",
+   "fraction_delta": -0.0125
+  },
+  {
+   "instance_id": "clap-rs__clap-4103",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0458->0.0364",
+   "fraction_delta": -0.00947
+  },
+  {
+   "instance_id": "clap-rs__clap-1869",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0610->0.0516",
+   "fraction_delta": -0.00939
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1228",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5653->0.5562",
+   "fraction_delta": -0.009119
+  },
+  {
+   "instance_id": "clap-rs__clap-4248",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4333->0.4250",
+   "fraction_delta": -0.008333
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1015",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0560->0.0513",
+   "fraction_delta": -0.004703
+  },
+  {
+   "instance_id": "clap-rs__clap-4072",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0354->0.0309",
+   "fraction_delta": -0.004552
+  },
+  {
+   "instance_id": "clap-rs__clap-2758",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2018->0.1973",
+   "fraction_delta": -0.004484
+  },
+  {
+   "instance_id": "clap-rs__clap-4081",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0311->0.0272",
+   "fraction_delta": -0.003891
+  },
+  {
+   "instance_id": "rayon-rs__rayon-863",
+   "repo": "rayon-rs/rayon",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8645->0.8621",
+   "fraction_delta": -0.002336
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1523",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0711->0.0693",
+   "fraction_delta": -0.001872
+  },
+  {
+   "instance_id": "clap-rs__clap-3732",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0469->0.0452",
+   "fraction_delta": -0.001696
+  },
+  {
+   "instance_id": "BurntSushi__ripgrep-1367",
+   "repo": "BurntSushi/ripgrep",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "clap-rs__clap-2771",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "clap-rs__clap-3169",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "clap-rs__clap-3311",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "clap-rs__clap-3960",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "clap-rs__clap-5227",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sharkdp__fd-986",
+   "repo": "sharkdp/fd",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1297",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "BurntSushi__ripgrep-2610",
+   "repo": "BurntSushi/ripgrep",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0206->0.0223",
+   "fraction_delta": 0.001673
+  },
+  {
+   "instance_id": "clap-rs__clap-2669",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1180->0.1198",
+   "fraction_delta": 0.001815
+  },
+  {
+   "instance_id": "clap-rs__clap-4601",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0102->0.0135",
+   "fraction_delta": 0.003384
+  },
+  {
+   "instance_id": "nushell__nushell-10381",
+   "repo": "nushell/nushell",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0983->0.1062",
+   "fraction_delta": 0.007968
+  },
+  {
+   "instance_id": "clap-rs__clap-3968",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1522->0.1630",
+   "fraction_delta": 0.01087
+  },
+  {
+   "instance_id": "BurntSushi__ripgrep-2626",
+   "repo": "BurntSushi/ripgrep",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0714->0.0824",
+   "fraction_delta": 0.010947
+  },
+  {
+   "instance_id": "tokio-rs__tokio-5179",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2883->0.3006",
+   "fraction_delta": 0.01227
+  },
+  {
+   "instance_id": "clap-rs__clap-3684",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1062->0.1187",
+   "fraction_delta": 0.0125
+  },
+  {
+   "instance_id": "clap-rs__clap-2190",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7324->0.7465",
+   "fraction_delta": 0.014085
+  },
+  {
+   "instance_id": "clap-rs__clap-5080",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0143",
+   "fraction_delta": 0.014286
+  },
+  {
+   "instance_id": "clap-rs__clap-2677",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1007->0.1171",
+   "fraction_delta": 0.016393
+  },
+  {
+   "instance_id": "clap-rs__clap-2749",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2615->0.2785",
+   "fraction_delta": 0.016923
+  },
+  {
+   "instance_id": "tokio-rs__tokio-6742",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0816->0.0986",
+   "fraction_delta": 0.017007
+  },
+  {
+   "instance_id": "clap-rs__clap-2878",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4828->0.5000",
+   "fraction_delta": 0.017241
+  },
+  {
+   "instance_id": "clap-rs__clap-2297",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0195->0.0375",
+   "fraction_delta": 0.017915
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1983",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0204->0.0408",
+   "fraction_delta": 0.020408
+  },
+  {
+   "instance_id": "sharkdp__bat-1518",
+   "repo": "sharkdp/bat",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2276->0.2483",
+   "fraction_delta": 0.02069
+  },
+  {
+   "instance_id": "clap-rs__clap-1958",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3827->0.4074",
+   "fraction_delta": 0.024691
+  },
+  {
+   "instance_id": "clap-rs__clap-2296",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2105->0.2421",
+   "fraction_delta": 0.031579
+  },
+  {
+   "instance_id": "tokio-rs__tokio-4613",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4194->0.4516",
+   "fraction_delta": 0.032258
+  },
+  {
+   "instance_id": "clap-rs__clap-3678",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0318->0.0682",
+   "fraction_delta": 0.036364
+  },
+  {
+   "instance_id": "tokio-rs__tokio-5520",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4933->0.5333",
+   "fraction_delta": 0.04
+  },
+  {
+   "instance_id": "tokio-rs__tracing-2892",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0448",
+   "fraction_delta": 0.044776
+  },
+  {
+   "instance_id": "tokio-rs__tracing-2897",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0448",
+   "fraction_delta": 0.044776
+  },
+  {
+   "instance_id": "clap-rs__clap-3453",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0154->0.0615",
+   "fraction_delta": 0.046154
+  },
+  {
+   "instance_id": "clap-rs__clap-3990",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2075->0.2689",
+   "fraction_delta": 0.061321
+  },
+  {
+   "instance_id": "sharkdp__bat-1276",
+   "repo": "sharkdp/bat",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3125->0.3750",
+   "fraction_delta": 0.0625
+  },
+  {
+   "instance_id": "tokio-rs__tokio-5781",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0280->0.0909",
+   "fraction_delta": 0.062937
+  },
+  {
+   "instance_id": "tokio-rs__tokio-5566",
+   "repo": "tokio-rs/tokio",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1220->0.1854",
+   "fraction_delta": 0.063415
+  },
+  {
+   "instance_id": "tokio-rs__tracing-2008",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0659->0.1319",
+   "fraction_delta": 0.065934
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1017",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0401->0.1067",
+   "fraction_delta": 0.066526
+  },
+  {
+   "instance_id": "sharkdp__fd-558",
+   "repo": "sharkdp/fd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1049->0.1783",
+   "fraction_delta": 0.073427
+  },
+  {
+   "instance_id": "clap-rs__clap-5489",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0743",
+   "fraction_delta": 0.074286
+  },
+  {
+   "instance_id": "nushell__nushell-11169",
+   "repo": "nushell/nushell",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1000",
+   "fraction_delta": 0.1
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1291",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4350->0.5498",
+   "fraction_delta": 0.114804
+  },
+  {
+   "instance_id": "sharkdp__fd-569",
+   "repo": "sharkdp/fd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2951->0.4262",
+   "fraction_delta": 0.131148
+  },
+  {
+   "instance_id": "nushell__nushell-12118",
+   "repo": "nushell/nushell",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1200->0.2600",
+   "fraction_delta": 0.14
+  },
+  {
+   "instance_id": "clap-rs__clap-5298",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1609",
+   "fraction_delta": 0.16092
+  },
+  {
+   "instance_id": "clap-rs__clap-2168",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.2222",
+   "fraction_delta": 0.222222
+  },
+  {
+   "instance_id": "clap-rs__clap-2930",
+   "repo": "clap-rs/clap",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.3333",
+   "fraction_delta": 0.333333
+  },
+  {
+   "instance_id": "tokio-rs__bytes-732",
+   "repo": "tokio-rs/bytes",
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.3500->0.7000",
+   "fraction_delta": 0.35
+  },
+  {
+   "instance_id": "tokio-rs__bytes-643",
+   "repo": "tokio-rs/bytes",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3167->0.6833",
+   "fraction_delta": 0.366667
+  },
+  {
+   "instance_id": "sharkdp__fd-590",
+   "repo": "sharkdp/fd",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0213->0.5957",
+   "fraction_delta": 0.574468
+  },
+  {
+   "instance_id": "tokio-rs__tracing-2090",
+   "repo": "tokio-rs/tracing",
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.0000->1.0000",
+   "fraction_delta": 1.0
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "shape_only": []
+ }
+}

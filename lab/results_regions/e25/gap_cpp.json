@@ -1,0 +1,45 @@
+{
+ "label": "cpp",
+ "n_gold_files": 494,
+ "both": {
+  "namespace_definition": 3151,
+  "function_definition": 47948,
+  "class_specifier": 1810,
+  "struct_specifier": 4036,
+  "enum_specifier": 279,
+  "union_specifier": 90
+ },
+ "allowlist_only": {
+  "namespace_definition": 133,
+  "function_definition": 6390,
+  "struct_specifier": 1784,
+  "template_declaration": 21968,
+  "preproc_function_def": 12245,
+  "enum_specifier": 313,
+  "union_specifier": 24,
+  "type_definition": 91
+ },
+ "allowlist_only_multiline": {
+  "namespace_definition": 125,
+  "template_declaration": 21155,
+  "preproc_function_def": 12245,
+  "union_specifier": 24,
+  "struct_specifier": 15,
+  "enum_specifier": 47,
+  "type_definition": 16,
+  "function_definition": 31
+ },
+ "allowlist_only_oneline": {
+  "function_definition": 6359,
+  "struct_specifier": 1769,
+  "enum_specifier": 266,
+  "type_definition": 75,
+  "template_declaration": 813,
+  "namespace_definition": 8
+ },
+ "shape_only": {
+  "for_range_loop": 1935,
+  "lambda_expression": 1411,
+  "init_declarator": 448
+ }
+}
