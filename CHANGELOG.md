@@ -5,6 +5,15 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-08-26 - Evergreen install banner
+
+Documentation-only release. The README's install banner named a specific
+version ("v0.3.0 is published"), which is accurate the day it ships and stale
+the next release — and on a registry page it cannot be corrected without
+publishing again. It now reads "Published on npm and crates.io", so the
+rendered pages stay true without a docs release chasing every version bump.
+No engine changes.
+
 ## [0.3.1] - 2026-08-26 - Accurate published docs
 
 Documentation-only release. 0.3.0's crate carried a README written before the
