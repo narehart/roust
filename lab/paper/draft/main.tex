@@ -1,0 +1,366 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{amsmath}
+\usepackage{listings}
+
+\title{Deterministic, Training-Free Code Localization for Agent Context}
+\author{DRAFT --- author list TBD}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Coding agents spend a large fraction of their budget deciding \emph{what code
+to look at}. The two dominant answers are an LLM navigating the repository
+with tools, and a neural retriever trained on issue--code pairs; both add a
+model to the loop, and with it cost, nondeterminism, and a training
+dependency. We present \textsc{roust}, a code localizer that uses no model at
+all: a lexical field-weighted retrieval stage over structural and
+version-control channels, followed by a region packer that fills a fixed token
+budget with syntactically-delimited code spans. Every output is a
+deterministic function of the repository state and the query text ---
+byte-reproducible across runs and machines.
+
+On SWE-bench Lite, \textsc{roust} localizes 92.3\% of instances at file level
+and, under the Agentless ``\% correct location'' protocol, 54.7\% at function
+level and 44.0\% at line level, exceeding the reported Agentless GPT-4o
+pipeline at both function (52.0) and line (35.3) level without any model
+inference. The region-quality result replicates out-of-sample on the 407
+held-out SWE-bench Verified instances. We additionally report, to our
+knowledge, the first fine-grained localization numbers on the \emph{complete}
+2{,}294-instance SWE-bench split, and a per-language table across eight
+languages via Multi-SWE-bench.
+
+The engineering method is as much the contribution as the system. Every
+mechanism was adopted or rejected by a pre-registered dual gate (a tuning set
+and a held-out set, both required), and we report the rejections: nine
+mechanisms with strong literature priors --- graph-based neighbor smoothing,
+chunk-max file scoring, query-type routing, static test bridging, universal
+indexing --- were measured and dropped. The negative results localize a
+single recurring mechanism: in this corpus, gold files are disproportionately
+large and central, so any intervention that redistributes weight away from
+large central files taxes the very files it aims to rescue.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+A coding agent asked to fix an issue~\cite{swebench} must first find the code. The retrieval
+step is not incidental: it determines what enters the context window, and the
+context window is the scarce resource. Current practice takes one of two
+routes. \emph{Agentic localization} gives an LLM tools --- grep, file listing,
+AST search --- and lets it navigate~\cite{agentless,locagent,cosil,orcaloca};
+\emph{trained retrieval} fine-tunes an encoder on issue--code
+pairs~\cite{swerank}. Both work. Both put a model in the retrieval path.
+
+That has costs beyond the API bill. A model in the loop makes the retrieval
+step nondeterministic, so an agent trajectory cannot be replayed exactly; it
+makes retrieval quality a function of a model version that will be deprecated;
+and it requires sending repository content to an inference endpoint, which is
+not always permitted. It also inverts the economics for the smallest and most
+frequent use case --- ``show me the code relevant to this issue'' --- where
+the retrieval call can cost more than the edit it enables.
+
+We ask what the ceiling is without a model. \textsc{roust} is a single
+statically-linked binary that indexes a repository in a few hundred
+milliseconds, answers a query in tens to hundreds of milliseconds against a
+warm cache, and emits a token-budgeted bundle of code regions. It uses BM25F
+over lexical, path, documentation, and version-control channels; tree-sitter
+grammars for eight languages to delimit packing units; and a greedy packer
+with span padding and sub-linear length normalization. There is no embedding
+model, no LLM call, no training corpus, and no network access.
+
+Contributions:
+
+\begin{enumerate}
+  \item \textbf{A training-free localizer competitive at the fine-grained
+  levels.} On SWE-bench Lite it exceeds the reported Agentless GPT-4o pipeline
+  at function and line level (Section~\ref{sec:eval}), and the gains replicate
+  on held-out SWE-bench Verified.
+  \item \textbf{Complete-split fine-grained results.} We report file,
+  function, and line localization on all 2{,}294 SWE-bench instances; prior
+  work reports fine-grained numbers on Lite (300) or Verified (500) subsets.
+  \item \textbf{Language-agnostic structure without per-language logic.} One
+  CST-walking mechanism plus a $\sim$10-entry node-type allowlist per language
+  covers Python, JavaScript, TypeScript, Java, Go, Rust, C, and C++, with
+  per-language gates on Multi-SWE-bench~\cite{multiswebench}
+  (Section~\ref{sec:multilang}).
+  \item \textbf{A measurement discipline and its negative results.} Nine
+  literature-motivated mechanisms were implemented behind flags, gated, and
+  rejected. Section~\ref{sec:negative} reports them and the shared mechanism
+  they expose.
+\end{enumerate}
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Retrieval stage}
+Documents are files. Scoring is BM25~\cite{bm25} over a field-weighted term
+representation: file content, path components, extracted documentation
+comments, and definition symbols each contribute, with identifier splitting
+(snake, camel, kebab) applied symmetrically to query and document terms. Two
+non-lexical channels adjust file scores before selection: a version-control
+channel derived from commit history over the indexed files, and a
+\emph{trace-frame} channel --- when the query text contains a stack trace,
+files named in its frames receive a rank-decayed additive boost, following the
+classical bug-localization result that trace frames are high-precision
+evidence~\cite{brtracer}. Trace parsing covers CPython, Java (fully-qualified
+class names resolved to paths), Node, Go panics, and Rust backtraces; the
+query text itself is never rewritten.
+
+\subsection{Region packing}
+Localization output is not a file list but a budgeted bundle of regions. The
+packer receives the selected files with their scores and fills a token budget
+(default 8192) with spans, choosing greedily by gain per token:
+\[
+  \text{gain}(s) / \text{tok}(s)^{\lambda}, \qquad \lambda = 0.85 .
+\]
+The sub-linear exponent $\lambda$ is the length-normalization term; with
+$\lambda = 1$ the packer systematically prefers many small spans and starves
+the long functions that gold patches disproportionately touch. Selected spans
+are padded by 5 lines on each side, under a guard that never evicts a file's
+last remaining span --- padding without that guard measurably drops files from
+the bundle.
+
+Packing units are structural. For each grammar-covered language a CST walk
+emits nested class-span and member-span pairs from a per-language node-type
+allowlist (\texttt{function\_declaration}, \texttt{method\_definition},
+\texttt{arrow\_function}, \texttt{impl\_item}, \dots); files in other
+languages fall back to fixed windows. The same walks supply the definition
+index used for symbol anchoring, so a query term matching a definition name
+can force that definition's span into the bundle. This is the mechanism cAST
+quantifies for retrieval chunking~\cite{cast}; we apply it at packing time and
+gate it per language.
+
+\subsection{Determinism}
+Determinism is a design constraint, not a side effect. Score comparators never
+recompute floating-point sums (a comparator that re-derives a score from an
+unordered map is not a total order); IDF summation runs in canonical sorted
+order; all float comparisons use total ordering. Two runs of the same binary
+on the same repository state produce byte-identical output, verified by
+digest. The binary embeds its git SHA and a dirty flag, and the evaluation
+harness refuses to score a binary whose provenance does not match the tree
+under test --- a guard added after a stale-binary incident silently
+contaminated an early result.
+
+\section{Evaluation}
+\label{sec:eval}
+
+\subsection{Protocol}
+We use the Agentless ``\% correct location'' metric~\cite{agentless} at three
+granularities. \textsc{file}: every gold file appears in the returned set.
+\textsc{function}: the gold AST function spans are a subset of the predicted
+spans (exact, not overlap). \textsc{line}: all-or-nothing coverage of gold
+lines; we additionally report mean line-fraction covered as a continuity
+measure. Engine errors count as \emph{wrong} at every level and share the
+denominator with successes --- a convention we adopted after finding that
+excluding them from one level's denominator flatters that level.
+
+\subsection{SWE-bench Lite and held-out Verified}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+System & \textsc{file} & \textsc{function} & \textsc{line} & fraction \\
+\midrule
+Agentless (GPT-4o)~\cite{agentless} & 69.7 & 52.0 & 35.3 & --- \\
+archex (BM25 default)               & 56.0 & 38.3 & 25.7 & --- \\
+archex (vector/hybrid)              & 57.3 & 40.7 & 27.7 & --- \\
+\textbf{roust} (Lite, 300)          & \textbf{92.3} & \textbf{54.7} & \textbf{44.0} & .527 \\
+\textbf{roust} (Verified, 407 held-out) & 92.4 & 47.2 & 35.1 & .476 \\
+\bottomrule
+\end{tabular}
+\caption{Agentless-metric localization. The Verified row is a held-out set:
+no adoption decision in this work was made on it. Sources: \texttt{lab/results\_regions/ws2c/agentless\_metric\_ws2c\_\{lite300,ver407\}\_cfamily.json}.}
+\end{table}
+
+\textsc{roust} exceeds the reported Agentless GPT-4o pipeline at function and
+line level with no model inference. The \textsc{file} comparison is not
+like-for-like in \textsc{roust}'s favour and we flag it: our \textsc{file}
+number requires \emph{all} gold files anywhere in a $\sim$35-file return,
+while the Acc@10 numbers reported by trained retrievers require \emph{one}
+gold file in the top 10. On the depth-aligned metric --- all gold files within
+the top 10 --- \textsc{roust} scores 83.3, below SweRankEmbed-Small's 90.9
+Acc@10~\cite{swerank}. File ranking against trained retrievers is
+\textsc{roust}'s weakest axis and we report it as such.
+
+\subsection{Complete-split results}
+On all 2{,}294 SWE-bench instances: \textsc{file} 85.7, \textsc{function}
+38.9, \textsc{line} 28.1, fraction .438 (\texttt{lab/results\_regions/agentless\_metric\_full2294.json}).
+We are not aware of another system reporting fine-grained localization on the
+complete split; published work uses Lite, Verified, or a bespoke subset. Note
+this table was measured at an earlier engine revision (pre-dating the trace
+boost and the structural-block adoptions) and is therefore a lower bound on
+the current engine; a re-measurement is scheduled.
+
+\subsection{Downstream effect}
+In an agent loop (live Claude Sonnet 4.5, identical scaffold and task set,
+retrieval tool varied), \textsc{roust} yields task success on 93.3\% of tasks
+versus 26.7\% for grep and 80.0\% for embedding-RAG (9-trial mean), $n = 15$;
+this is a partial run stopped at a spend cap and we report it as indicative,
+not as a headline result. Median end-to-end cost per successful run was
+\$0.93.
+
+\section{Multi-language results}
+\label{sec:multilang}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Slice ($n$) & \textsc{file} & \textsc{function} & \textsc{line} & fraction \\
+\midrule
+Python --- Lite (300)      & 92.33 & 54.67 & 44.00 & .527 \\
+Python --- Verified (407)  & 92.38 & 47.17 & 35.14 & .476 \\
+JS/TS --- MSWE (580)       & 46.38 & 31.21 & 14.14 & .262 \\
+Java --- MSWE (128)        & 49.22 & 35.16 & 14.84 & .397 \\
+Go --- MSWE (428)          & 63.79 & 29.21 & 16.59 & .411 \\
+Rust --- MSWE (239)        & 60.25 & 19.67 & 7.53  & .243 \\
+C --- MSWE (128)           & 46.88 & 26.56 & 10.94 & .196 \\
+C++ --- MSWE (129)         & 65.12 & 17.83 & 6.98  & .295 \\
+\bottomrule
+\end{tabular}
+\caption{Per-language localization at shipped defaults. Cross-language
+\textsc{file} differences are dominated by corpus shape and should be read
+within a row, not down the column.}
+\end{table}
+
+Two measurement corrections are worth stating because they affected published
+numbers. First, our function-level scorer originally extracted gold spans with
+a Python-only AST parser; on non-Python slices it produced empty gold sets and
+a vacuous 99.8 score. Replacing it with a tree-sitter extractor gave the first
+real numbers for those languages --- and revealed that the pre-correction
+baselines were meaningless. Second, C and C++ source extensions were absent
+from the indexer's allowlist entirely: on the C slice, 50 of 128 instances
+returned nothing at all. Indexing them (behind a vendored-code guard, since
+scientific-Python repositories bundle C that must not compete with their
+Python sources) moved C from 0 to 46.9 \textsc{file}.
+
+Each language's structural support was gated on its own slice before adoption.
+Two caveats are on the record: Go's line-level score decreases slightly, and
+the losses concentrate in multi-site edits where a fixed window happened to
+straddle sibling call sites that a single function span misses; and Rust's
+function level loses two instances to anchor displacement.
+
+\section{Negative results}
+\label{sec:negative}
+
+Nine mechanisms with literature support were implemented behind flags,
+measured, and rejected. We report them because the pattern is informative.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llp{6.2cm}}
+\toprule
+Mechanism & Prior & Outcome \\
+\midrule
+Neighbor score smoothing & \cite{lexboost,gar} & \textsc{file} $+1$ is churn ($p=1.0$); hub-exclusion guard taxes gold \\
+Chunk-max file scoring & \cite{brtracer,cast} & \textsc{file} $+0.3$, \textsc{function} $-2.7$ (budget shrinkage) \\
+Chunk ranking, decoupled budgets & --- & tax reduced to $-1.0$; residual from selection-list composition \\
+Query-type routing & \cite{blizzard,chaparro,mills} & Lite $+1.7$ \textsc{line}, Verified $-2.2$ \textsc{function} ($p=.049$) \\
+Static test bridge & --- & no bridged file was ever a missing gold file (0/499) \\
+Sibling-sweep expansion & \cite{hercules,sourcerercc} & \textsc{function} $54.7 \to 27.7$; depth charged before packing \\
+Universal indexing & --- & \textsc{file} $46.4 \to 31.2$; boilerplate displaces code \\
+Newcomer reserve budget & --- & buys admission for templates at region cost \\
+Issue-mention gating & --- & 1 of 499 gold files named by filename in its issue \\
+\bottomrule
+\end{tabular}
+\caption{Rejected mechanisms. Each was flag-gated with defaults proven
+byte-identical, gated on the same protocol as the adoptions, and left in the
+repository with its artifacts.}
+\end{table}
+
+\paragraph{The recurring mechanism.} Three independent rejections share one
+cause. Neighbor smoothing excludes high-degree nodes to avoid boosting hubs
+--- but gold files \emph{are} disproportionately graph-central, so the guard
+zeroes support for the files it should rescue. Chunk-max damps large files'
+aggregate scores --- but gold files are disproportionately large, so their
+packing budgets shrink. Decoupling the budget map from the ranking aggregate
+recovers most of that, and the residual traces to a third face of the same
+effect: changing which files are selected changes which files compete for
+budget. In this corpus, \emph{any} mechanism that redistributes weight away
+from large central files taxes gold. Interventions that succeeded instead
+changed the budget economy directly (padding, length normalization) or added
+evidence-gated boosts that fire rarely on strong signals (trace frames).
+
+\paragraph{Dual gating caught two mirages.} Query-type routing and one
+sibling-expansion variant were positive on the tuning set and negative
+held-out. Both would have shipped under single-set evaluation.
+
+\section{Limitations}
+\label{sec:limits}
+
+Line-level mean fraction is .527 against a measured lexical ceiling of .93 for
+this corpus --- the gap is real and mostly consists of instances whose gold
+patch touches many sibling functions, where no single-site mechanism suffices.
+File ranking trails trained retrievers by roughly seven points on the
+depth-aligned metric. JavaScript/TypeScript file-level performance is bounded
+near 76.7 by files outside the indexer's extension set, and our attempts to
+lift that bound by indexing everything made results worse, not better. The
+complete-split table predates the most recent adoptions. The agent-loop
+experiment is under-powered. Finally, all results are on SWE-bench-derived
+corpora of open-source repositories with English issue text; we have not
+measured private codebases, non-English issues, or non-issue queries.
+
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Agentic localization.} Agentless~\cite{agentless} showed a fixed
+pipeline with an LLM beats many agent scaffolds; LocAgent~\cite{locagent},
+CoSIL~\cite{cosil}, and OrcaLoca~\cite{orcaloca} add graph structure and
+search policies around an LLM navigator. These systems' advantage over
+lexical retrieval is concentrated in file selection judgement; their
+span-level extraction is not obviously better than a deterministic packer.
+
+\paragraph{Trained retrieval.} SweRank~\cite{swerank} fine-tunes retrieval and
+reranking on issue--code pairs and leads published Acc@10. This is the
+strongest comparison point and \textsc{roust} does not beat it at file
+ranking; the contribution here is how much is reachable at zero inference
+cost.
+
+\paragraph{Classical IR-based bug localization.} Our trace channel follows
+BRTracer~\cite{brtracer}; query-part selection follows
+Chaparro~\cite{chaparro} and the term-selection analysis of
+Mills~\cite{mills}, whose result --- that reports usually contain enough
+signal and the failure is selection --- motivated our routing experiment even
+though it did not survive gating. BLIZZARD~\cite{blizzard} is the deterministic
+query-router we replicated. Corpus-graph
+re-ranking~\cite{lexboost,gar}, entropy-weighted lexical
+scoring~\cite{bmx}, fusion analysis~\cite{bruch}, structural
+chunking~\cite{cast}, positional feedback~\cite{prm}, multi-hunk sibling
+localization~\cite{hercules}, and clone detection~\cite{sourcerercc} informed
+the mechanisms in Section~\ref{sec:negative}.
+
+\section{Conclusion}
+
+A deterministic, model-free localizer reaches function- and line-level
+accuracy above a published LLM pipeline, replicates held-out, and runs in
+milliseconds at zero marginal cost. It does not match trained retrievers at
+file ranking. The systematic negative results suggest the remaining gap in
+region quality is not a missing ranking signal but a budget-allocation
+problem: gold code is large and central, and mechanisms that treat size or
+centrality as noise are working against the target.
+
+\appendix
+\section{Claim-to-artifact mapping}
+
+Every number in this paper is produced by a committed artifact in the
+repository. \texttt{lab/results\_regions/} holds per-instance evaluation
+records (JSONL) and scored metric files (JSON); \texttt{lab/research/} holds
+the per-round reports with their gate tables;
+\texttt{lab/stats/} holds paired bootstrap and McNemar outputs. The
+evaluation harnesses are \texttt{parity/region\_eval2.py} (Lite),
+\texttt{region\_eval\_verified.py} (Verified), and
+\texttt{region\_eval\_full.py} (complete split); scoring is
+\texttt{lab/agentless\_metric\_v4.py} and its per-corpus variants.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}
