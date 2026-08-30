@@ -217,3 +217,68 @@ walked outward from it.
   larger budget restores.
 * Nothing here is adoptable as-is: the best configuration differs per
   language, and the ceiling config is far past any sensible operating point.
+
+---
+
+# E34 — the seed count, and a correction to E33
+
+E33 called Java, C++ and Rust "saturated". **That was wrong in the same way
+E30's conclusion was wrong**: it was a ceiling of the *graph-expansion*
+machinery measured at a fixed number of BM25 seeds (`k_lex = 10`), not a
+ceiling of the engine. Everything is expanded outward from those seeds, so
+the seed count is a strictly upstream knob that E33 held constant.
+
+Exposed as `--k-lex` (default 10 unchanged), at cap 128 + 2hop + ie2:
+
+| slice | k10 (shipped) | k10 + generation | k30 | k50 |
+|---|---|---|---|---|
+| Rust | 27.62 | 33.33 | 37.14 | **38.10** |
+| C++ | 25.45 | 29.09 | **32.73** | 32.73 |
+| Java | 20.00 | 22.50 | 20.00 | 22.50 |
+
+Two of the three "saturated" slices move past E33's ceiling. Returns
+diminish by k=50 (Rust +0.96, C++ flat), so the seed dimension plateaus too.
+Java is non-monotone across k (22.50 / 20.00 / 22.50) and is n=40 — that
+column is noise, not signal.
+
+## Four dimensions, each swept to a plateau
+
+| dimension | knob | swept | outcome |
+|---|---|---|---|
+| admission | `--max-additions` | 16 -> 500 | plateaus (~57 on Go) |
+| generation breadth | `--import-hops` | 1 -> 2 | +10.14 jsts, +5.71 rust, 0.00 without a graph |
+| generation coverage | `--import-edges-v2` | off -> on | unfreezes Java/C/C++ |
+| pool floor | `--eligible-floor` | 0.15 -> 0.02 | +6.52 C, else ~0 |
+| seeds | `--k-lex` | 10 -> 50 | +4.77 rust, +3.64 cpp, plateaus |
+
+**Best measured, per slice, anywhere in this space (>= 3 gold files):**
+
+| slice | shipped | best measured |
+|---|---|---|
+| Python Verified | 63.64 | **100.00** |
+| Go | 27.27 | **>= 57.34** |
+| Rust | 27.62 | **38.10** |
+| C++ | 25.45 | **32.73** |
+| C | 4.35 | **28.26** |
+| JS/TS | 10.14 | **>= 22.71** |
+| Java | 20.00 | **22.50** |
+
+## Conclusion, stated with the scope it has earned
+
+Across every knob this campaign has exposed -- admission, generation breadth,
+generation coverage, the pool floor, and the seed count -- each swept until
+returns plateau, the non-Python slices plateau far below Python, and Python
+itself rises to 100.00 under the same treatment. Per-language parity is not
+reachable by configuring this engine.
+
+That is a claim about **this five-dimensional configuration space**, swept.
+It is not a proof that no retrieval design could close the gap.
+
+## A process failure worth recording twice
+
+I declared a terminal ceiling twice from a subset of knobs, and was wrong
+both times: E30 ("admission cannot help" -- refuted by sweeping the cap) and
+E33 ("Java/C++/Rust are saturated" -- refuted by raising the seed count). The
+discipline that would have prevented both: **before calling anything a
+ceiling, enumerate the knobs upstream of the one being swept, and either
+sweep them or scope the claim to the ones held fixed.**
