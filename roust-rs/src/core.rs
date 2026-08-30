@@ -3232,6 +3232,12 @@ pub struct SelectParams<'a> {
     pub cochange_strong: i64,
     /// E28: cap on pool additions beyond the lexical picks (16 = shipped).
     pub max_additions: i64,
+    /// E30: how many of each source's owned candidates Guarantee 2 seats
+    /// (1 = shipped behaviour). Unlike `max_additions`, which widens the
+    /// untargeted global tail, this widens breadth *per source*, so it
+    /// spends its admissions on ownership diversity rather than on the
+    /// next-ranked candidate overall.
+    pub seats_per_source: i64,
     pub anchors: Option<&'a [(String, f64)]>,
     pub use_testbridge: bool,
     pub use_docsbridge: bool,
@@ -3272,6 +3278,7 @@ impl<'a> Default for SelectParams<'a> {
             cochange: None,
             cochange_strong: 5,
             max_additions: 16,
+            seats_per_source: 1,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3682,11 +3689,12 @@ pub fn select_files(
         for c in &eligible {
             groups.entry(owner.get(c).cloned().unwrap_or_default()).or_default().push(c.clone());
         }
+        let seats = params.seats_per_source.max(1) as usize;
         for s in &sources {
             if let Some(grp) = groups.get(s) {
-                if let Some(first) = grp.first() {
-                    if !additions.contains(first) {
-                        additions.push(first.clone());
+                for c in grp.iter().take(seats) {
+                    if !additions.contains(c) {
+                        additions.push(c.clone());
                     }
                 }
             }

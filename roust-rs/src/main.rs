@@ -119,6 +119,15 @@ struct Args {
     #[arg(long, default_value_t = 16)]
     max_additions: i64,
 
+    /// E30 (per-language parity campaign): how many of each source file's
+    /// owned pool candidates the per-source seating guarantee admits
+    /// (1 = shipped behaviour). E29 showed file selection is blind to the
+    /// token budget, so breadth is only reachable through admission; unlike
+    /// --max-additions this spends admissions on ownership diversity rather
+    /// than on the next-ranked candidate overall.
+    #[arg(long, default_value_t = 1)]
+    seats_per_source: i64,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -584,6 +593,7 @@ fn main() {
     let params = SelectParams {
         cochange,
         max_additions: args.max_additions,
+        seats_per_source: args.seats_per_source,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,
