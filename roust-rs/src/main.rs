@@ -302,6 +302,13 @@ struct Args {
     #[arg(long, default_value_t = 2)]
     cochange_seat_min: i64,
 
+    /// E27b: require this many files to carry >= 50% of the top lexical
+    /// score before extra seats may fire (0 = ungated). A concentrated
+    /// query is a single-site fix, where a seated "sibling" cannot be gold;
+    /// E27 measured that firing there is pure harm.
+    #[arg(long, default_value_t = 0)]
+    cochange_seat_breadth: i64,
+
     /// WS2 (campaign #56): ALSO index the C-family extensions
     /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh) in the corpus walk. ON by default
     /// since WS2c: the vendored-C VENDOR_RE guard (cextern/, extern/,
@@ -604,6 +611,7 @@ fn main() {
         cochange_strong: args.cochange_strong,
         cochange_seats: args.cochange_seats,
         cochange_seat_min: args.cochange_seat_min,
+        cochange_seat_breadth: args.cochange_seat_breadth,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,

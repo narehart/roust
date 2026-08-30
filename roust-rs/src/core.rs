@@ -3235,6 +3235,9 @@ pub struct SelectParams<'a> {
     pub cochange_seats: i64,
     /// E27: minimum co-change count for an extra seat.
     pub cochange_seat_min: i64,
+    /// E27b: extra seats fire only when at least this many files carry
+    /// >= 50% of the top lexical score (0 = ungated, E27 behaviour).
+    pub cochange_seat_breadth: i64,
     pub anchors: Option<&'a [(String, f64)]>,
     pub use_testbridge: bool,
     pub use_docsbridge: bool,
@@ -3276,6 +3279,7 @@ impl<'a> Default for SelectParams<'a> {
             cochange_strong: 5,
             cochange_seats: 1,
             cochange_seat_min: 2,
+            cochange_seat_breadth: 0,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3718,7 +3722,24 @@ pub fn select_files(
                         additions.push(first.clone());
                     }
                 }
-                if params.cochange_seats > 1 {
+                // E27b: seats are gated on BREADTH -- how many files carry
+                // strong lexical evidence. Measured cause: E27 seats helped
+                // where multi-file evidence was real (go FUNCTION +3.04) but
+                // fired on single-site fixes where a sibling cannot exist,
+                // and on SWE-bench Lite -- which is 300/300 single-gold-file
+                // -- every instance they touched got worse (0 better / 3
+                // worse). A concentrated query is a single-site fix; only a
+                // spread one can have siblings to seat.
+                let broad = params.cochange_seat_breadth <= 0 || {
+                    let mx = bm_n.values().cloned().fold(0.0_f64, f64::max);
+                    if mx <= 0.0 {
+                        false
+                    } else {
+                        bm_n.values().filter(|v| **v >= 0.5 * mx).count() as i64
+                            >= params.cochange_seat_breadth
+                    }
+                };
+                if params.cochange_seats > 1 && broad {
                     // Extra seats: co-change partners of this source only,
                     // strongest evidence first, deterministic on ties.
                     let co_partners: Option<&IndexMap<String, i64>> =

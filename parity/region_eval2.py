@@ -472,6 +472,9 @@ def main() -> None:
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
     ap.add_argument("--ext-v2", action="store_true",
                      help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
+    ap.add_argument("--cochange-seat-breadth", type=int, default=0,
+                     help="E27b: append --cochange-seat-breadth N (extra seats fire only "
+                          "when N files carry >=50%% of top lexical score). 0 = do not forward")
     ap.add_argument("--cochange-seats", type=int, default=0,
                      help="E27 (per-language parity campaign): append --cochange-seats N "
                           "to every roust invocation (widen Guarantee 2 so one source may "
@@ -527,6 +530,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.extend(["--cochange-seat-min", str(args.cochange_seat_min)])
     if args.cochange_strong:
         EXTRA_ENGINE_FLAGS.extend(["--cochange-strong", str(args.cochange_strong)])
+    if args.cochange_seat_breadth:
+        EXTRA_ENGINE_FLAGS.extend(["--cochange-seat-breadth", str(args.cochange_seat_breadth)])
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
