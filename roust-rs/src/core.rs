@@ -3230,6 +3230,11 @@ pub struct SelectParams<'a> {
     pub floor_ratio: f64,
     pub cochange: Option<&'a IndexMap<String, IndexMap<String, i64>>>,
     pub cochange_strong: i64,
+    /// E27: max neighbours a single source may seat via Guarantee 2 (1 =
+    /// pre-E27 behaviour). Extra seats require co-change evidence.
+    pub cochange_seats: i64,
+    /// E27: minimum co-change count for an extra seat.
+    pub cochange_seat_min: i64,
     pub anchors: Option<&'a [(String, f64)]>,
     pub use_testbridge: bool,
     pub use_docsbridge: bool,
@@ -3269,6 +3274,8 @@ impl<'a> Default for SelectParams<'a> {
             floor_ratio: 0.05,
             cochange: None,
             cochange_strong: 5,
+            cochange_seats: 1,
+            cochange_seat_min: 2,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3675,6 +3682,24 @@ pub fn select_files(
         }
 
         // Guarantee 2: each source's best neighbor overall.
+        //
+        // E27 (per-language parity campaign): `cochange_seats` widens this
+        // from exactly one neighbour per source to up to N, but ONLY for
+        // candidates carrying co-change evidence with that source.
+        //
+        // Mined motivation: on multi-gold-file instances the engine returns
+        // ~30 files yet finds barely half the gold, and 62% of the MISSED
+        // gold is already in this candidate pool -- it loses the ranking, not
+        // the retrieval. Those siblings score low lexically (that is why they
+        // were missed), so `add_score` cannot rescue them; but 72-89% of them
+        // co-changed historically with a gold file the engine DID select.
+        // One guaranteed seat per source can seat one of them; a patch that
+        // edits five files needs more. Seats are evidence-gated (co-change
+        // count >= `cochange_seat_min`) rather than score-gated, which is the
+        // shape that has survived this campaign's gates -- additive score
+        // bonuses are 0-for-7 here.
+        //
+        // `cochange_seats == 1` reproduces the pre-E27 engine exactly.
         let mut groups: IndexMap<String, Vec<String>> = IndexMap::new();
         for c in &eligible {
             groups.entry(owner.get(c).cloned().unwrap_or_default()).or_default().push(c.clone());
@@ -3684,6 +3709,28 @@ pub fn select_files(
                 if let Some(first) = grp.first() {
                     if !additions.contains(first) {
                         additions.push(first.clone());
+                    }
+                }
+                if params.cochange_seats > 1 {
+                    // Extra seats: co-change partners of this source only,
+                    // strongest evidence first, deterministic on ties.
+                    let co_partners: Option<&IndexMap<String, i64>> =
+                        params.cochange.and_then(|c| c.get(s));
+                    if let Some(cop) = co_partners {
+                        let mut evidenced: Vec<(i64, String)> = grp
+                            .iter()
+                            .filter(|c| !additions.contains(*c))
+                            .filter_map(|c| {
+                                let n = cop.get(c).copied().unwrap_or(0);
+                                (n >= params.cochange_seat_min).then(|| (n, c.clone()))
+                            })
+                            .collect();
+                        evidenced.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| a.1.cmp(&b.1)));
+                        for (_, c) in evidenced.into_iter().take((params.cochange_seats - 1) as usize) {
+                            if !additions.contains(&c) {
+                                additions.push(c);
+                            }
+                        }
                     }
                 }
             }

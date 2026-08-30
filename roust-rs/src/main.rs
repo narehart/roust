@@ -275,6 +275,33 @@ struct Args {
     #[arg(long, conflicts_with = "ext_v2")]
     no_ext_v2: bool,
 
+    /// E27 (per-language parity campaign): how many times a file must have
+    /// co-changed with a selected file in git history before it is admitted
+    /// as an expansion candidate. Default 5 (the shipped value).
+    ///
+    /// Mined motivation: on multi-gold-file instances the engine returns ~30
+    /// files but finds only half the gold, and 72-89% of the MISSED gold
+    /// co-changed historically with gold it did find -- of which 84%
+    /// co-changed fewer than 5 times, i.e. exactly the population this
+    /// threshold excludes. Lowering it trades that recall against the
+    /// boilerplate this campaign has repeatedly measured as costly, so it is
+    /// a gated sweep, not a default change.
+    #[arg(long, default_value_t = 5)]
+    cochange_strong: i64,
+
+    /// E27: how many neighbours one selected file may seat via the
+    /// per-source guarantee (1 = shipped behaviour, byte-identical). Extra
+    /// seats go only to candidates that co-changed with that file at least
+    /// --cochange-seat-min times, strongest evidence first. Targets
+    /// multi-file patches, where 62% of missed gold is already a candidate
+    /// but loses the ranking to lexically-stronger files.
+    #[arg(long, default_value_t = 1)]
+    cochange_seats: i64,
+
+    /// E27: minimum historical co-change count for an extra seat.
+    #[arg(long, default_value_t = 2)]
+    cochange_seat_min: i64,
+
     /// WS2 (campaign #56): ALSO index the C-family extensions
     /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh) in the corpus walk. ON by default
     /// since WS2c: the vendored-C VENDOR_RE guard (cextern/, extern/,
@@ -574,6 +601,9 @@ fn main() {
 
     let params = SelectParams {
         cochange,
+        cochange_strong: args.cochange_strong,
+        cochange_seats: args.cochange_seats,
+        cochange_seat_min: args.cochange_seat_min,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,
