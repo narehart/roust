@@ -448,6 +448,8 @@ def main() -> None:
                           "seating); omitted by default (binary default: off)")
     ap.add_argument("--shape-blocks", action="store_true",
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
+    ap.add_argument("--ext-v2", action="store_true",
+                     help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
     ap.add_argument("--displacement-guard", action="store_true",
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion); omitted by default "
@@ -477,6 +479,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--displacement-guard")
     if args.shape_blocks:
         EXTRA_ENGINE_FLAGS.append("--shape-blocks")
+    if args.ext_v2:
+        EXTRA_ENGINE_FLAGS.append("--ext-v2")
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
