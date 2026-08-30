@@ -196,8 +196,14 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // byte-identical to main's format.
     let cf = if core::cfamily_ext_enabled() { ":cf1" } else { "" };
     // E26: --ext-v2 widens the indexed suffix set, so a flagged corpus is a
-    // different corpus; same re-keying discipline as :cf1.
-    let e2 = if core::ext_v2_enabled() { ":e2" } else { "" };
+    // different corpus; same re-keying discipline as :cf1. The marker is
+    // ":e2g" (not ":e2") because the admission rule is the GUARDED one --
+    // EXT_V2 files under test/fixture/example paths are excluded. An
+    // earlier build wrote ":e2" caches over the unguarded file set; those
+    // keys can never be served to this build, which is the point: the two
+    // index different corpora, and a same-key mismatch would silently load
+    // the wrong one on any checkout that is not rebuilt between runs.
+    let e2 = if core::ext_v2_enabled() { ":e2g" } else { "" };
     // WS3a: impl_prior participates at index time (def_index construction
     // is impl_prior-gated), so --impl-prior-v2 re-keys the cache the same
     // way. Flag-off keys are byte-identical to main's format.
