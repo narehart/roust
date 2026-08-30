@@ -166,3 +166,54 @@ Java/C imports with a full corpus scan per import statement, which was
 O(imports x files) per file and made a Java slice effectively unrunnable
 (3 records in 5 minutes). A basename index built once per corpus restored it
 to ~45x that throughput.
+
+---
+
+# E33 — the maximum-generation ceiling
+
+Everything the campaign has found that can add candidates, on at once:
+cap 500, `--import-hops 2`, `--import-edges-v2`, and the pool eligibility
+floor dropped 0.15 -> 0.02 via the new `--eligible-floor` (that cut runs
+BEFORE any admission rule, so it bounds every cap and no admission lever can
+reach past it). A **ceiling probe**, not a proposal.
+
+| slice | n | shipped default | best staged config | **ceiling** |
+|---|---|---|---|---|
+| **Python Verified** | 22 | 63.64 | 86.36 | **100.00** |
+| Rust | 105 | 27.62 | 33.33 | **33.33** (saturated) |
+| C++ | 55 | 25.45 | 29.09 | **29.09** (saturated) |
+| C | 46 | 4.35 | 21.74 | **28.26** |
+| Java | 40 | 20.00 | 22.50 | **22.50** (saturated) |
+
+Go and JS/TS could not be measured at this setting: on the two largest
+corpora the probe's pool explosion made the arms effectively non-terminating
+(Go stalled at 75/143, JS/TS at 62/207 after ~40 minutes) and they were
+killed. Their best *staged* numbers stand as lower bounds on their ceilings:
+Go >= 57.34 (cap 500 + 2hop), JS/TS >= 22.71 (cap 128 + 2hop).
+
+## What this settles
+
+**Python retrieves every gold file on every instance of its multi-gold
+stratum.** Three of the five measured non-Python slices are *saturated*:
+Java, C++ and Rust gain **exactly nothing** from maximum generation over
+their best staged configuration. Their gold is not merely unadmitted and not
+merely ungenerated — it is unreachable by every candidate-generation and
+admission mechanism this engine has.
+
+So the goal as literally posed — every language at Python's measurements — is
+**not attainable by tuning this engine**, and this time that claim rests on a
+measured ceiling with every knob at maximum rather than on an inference from
+one negative arm. The residual gap is in the *lexical/BM25 substrate* that
+produces `sources` and scores candidates in the first place, not in the graph
+walked outward from it.
+
+## Caveats that materially limit these numbers
+
+* **Python Verified is n = 22.** A 100.00 on 22 instances is a small-sample
+  result and should not be read as a general Python property.
+* The ceiling costs 15k-26k tokens per bundle against a shipped ~8.5k, and
+  the line fraction *collapses* (Python .0723 against its .2473 default).
+  Breadth at this setting is bought with depth that E29 says only a much
+  larger budget restores.
+* Nothing here is adoptable as-is: the best configuration differs per
+  language, and the ceiling config is far past any sensible operating point.
