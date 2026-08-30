@@ -138,6 +138,11 @@ fn scan_manifest(repo_path: &Path, with_docs: bool) -> Manifest {
         if !exts.contains(core::suffix_of(&rel)) {
             continue;
         }
+        // E26: the fixture guard is path-aware, so the manifest walk must
+        // apply it too or the cache and the corpus disagree about membership.
+        if !core::path_indexable(&rel) {
+            continue;
+        }
         let full = repo_path.join(&rel);
         let meta = match std::fs::metadata(&full) {
             Ok(m) => m,
@@ -294,7 +299,7 @@ fn collect_current_code_files(repo_path: &Path) -> HashSet<String> {
 /// entirely (never save or return them) whenever this returns `false`,
 /// falling back to a full rebuild instead.
 fn try_incremental_update(corpus: &mut Corpus, edges: &mut EdgeMap, modified: &[String]) -> bool {
-    let code_rels: Vec<String> = modified.iter().filter(|r| core::code_suffix_allowed(core::suffix_of(r))).cloned().collect();
+    let code_rels: Vec<String> = modified.iter().filter(|r| core::path_indexable(r)).cloned().collect();
     let docs_rels: Vec<String> = modified.iter().filter(|r| core::DOCS_EXTENSIONS.contains(&core::suffix_of(r))).cloned().collect();
 
     // Defensive: `scan_manifest` doesn't apply Corpus::build's own

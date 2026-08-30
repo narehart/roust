@@ -74,6 +74,33 @@ pub fn code_suffix_allowed(suffix: &str) -> bool {
         || (ext_v2_enabled() && EXT_V2_EXTENSIONS.contains(&suffix))
 }
 
+/// E26 fixture guard, applied to EXT_V2 admissions ONLY (never to the
+/// pre-existing allowlist, so it cannot regress anything indexed today).
+///
+/// Measured cause: svelte ships 2,491 of its 2,927 `.svelte` files under
+/// test/fixture directories and most of the rest under
+/// `documentation/examples/`, so admitting the extension wholesale floods
+/// the index with ~2,900 non-fix-site files to reach 5 gold ones -- the
+/// first E26 arm lost 88 non-ext gold files on jsts, 65 of 66 affected
+/// instances in sveltejs/svelte. The same census shows the guard is cheap
+/// where the extension pays: 12% of `.pony` gold and 0% of `.rb` gold sit
+/// under such paths.
+pub static EXT_V2_FIXTURE_RE: std::sync::LazyLock<Regex> = std::sync::LazyLock::new(|| {
+    Regex::new(r"(?i)(^|/)(tests?|__tests__|fixtures?|samples?|examples?|spec|specs)/").unwrap()
+});
+
+/// Whether `rel` may be indexed, given the path (not just the suffix).
+/// Only EXT_V2-admitted files consult the fixture guard.
+pub fn path_indexable(rel: &str) -> bool {
+    let suffix = suffix_of(rel);
+    if code_suffix_allowed_with(suffix, cfamily_ext_enabled()) {
+        return true;
+    }
+    ext_v2_enabled()
+        && EXT_V2_EXTENSIONS.contains(&suffix)
+        && !EXT_V2_FIXTURE_RE.is_match(rel)
+}
+
 /// Pure-function form of `code_suffix_allowed` -- unit tests exercise this
 /// directly instead of toggling the process-global (tests run in parallel
 /// threads; a mid-test flag flip would race every corpus-building test).
@@ -103,7 +130,7 @@ fn has_code_suffix(rel: &str) -> bool {
     // version also searched the last '.' across the WHOLE rel path and
     // accepted extension-only hidden names like `a/.py`, which Python's
     // `Path.suffix` -- and `suffix_of` -- correctly reject.)
-    code_suffix_allowed(suffix_of(rel))
+    path_indexable(rel)
 }
 
 pub(crate) fn suffix_of(rel: &str) -> &str {
