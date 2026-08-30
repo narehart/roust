@@ -151,6 +151,25 @@ def main() -> None:
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
     ap.add_argument("--ext-v2", action="store_true",
                      help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
+    ap.add_argument("--max-additions", type=int, default=0,
+                     help="E28 (per-language parity campaign): append --max-additions N to "
+                          "every roust invocation -- the pool breadth cap (engine default "
+                          "16 = shipped). 0 (the default here) is a SENTINEL meaning forward "
+                          "NO flag at all, so a default arm's argv is byte-identical to "
+                          "every pre-E28 default arm's.")
+    ap.add_argument("--budget", type=int, default=0,
+                     help="E29 (cost-of-parity curve): override the packer token budget by "
+                          "setting region_eval_verified.BUDGET (the harness already passes "
+                          "--budget positionally, so this must NOT ride EXTRA_ENGINE_FLAGS "
+                          "or the flag would be forwarded twice). 0 (the default here) is a "
+                          "SENTINEL meaning leave the module constant at its shipped 8192, "
+                          "so a default arm's argv is byte-identical to every pre-E29 "
+                          "default arm's.")
+    ap.add_argument("--instances", type=Path, default=None,
+                     help="E27b: restrict the run to the instance_ids listed in this "
+                          "file (one per line, blank/# lines ignored). Applied BEFORE "
+                          "--limit, same semantics as region_eval2.py's. Used for "
+                          "targeted stratum probes where a full arm would be waste.")
     ap.add_argument("--displacement-guard", action="store_true",
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion; rides "
@@ -194,6 +213,10 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--shape-blocks"]
     if args.ext_v2:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ext-v2"]
+    if args.max_additions:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--max-additions", str(args.max_additions)]
+    if args.budget:
+        rev.BUDGET = args.budget
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
@@ -205,9 +228,16 @@ def main() -> None:
           f"impl_prior_v2={args.impl_prior_v2} "
           f"trace_formats_v2={args.trace_formats_v2} "
           f"symbols_v2={args.symbols_v2} "
-          f"displacement_guard={args.displacement_guard}", file=sys.stderr)
+          f"displacement_guard={args.displacement_guard} "
+          f"max_additions={args.max_additions} "
+          f"budget={rev.BUDGET} "
+          f"instances={args.instances}", file=sys.stderr)
 
-    rows = rev.load_verified_rows(args.gold_parquet, limit=0)
+    only = None
+    if args.instances:
+        only = {ln.strip() for ln in args.instances.read_text().splitlines()
+                if ln.strip() and not ln.strip().startswith("#")}
+    rows = rev.load_verified_rows(args.gold_parquet, limit=0, only=only)
     start, end = parse_shard(args.shard, len(rows))
     rows = rows[start:end]
     print(f"shard {args.shard}: rows [{start}:{end}] of the sorted split "
@@ -232,6 +262,8 @@ def main() -> None:
             rec["symbols_v2"] = args.symbols_v2
             rec["ext_v2"] = args.ext_v2
             rec["displacement_guard"] = args.displacement_guard
+            rec["max_additions"] = args.max_additions
+            rec["budget"] = rev.BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:
