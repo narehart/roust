@@ -124,6 +124,13 @@ fn scan_manifest(repo_path: &Path, with_docs: bool) -> Manifest {
         // walk's suffix set exactly (see core::code_suffix_allowed).
         exts.extend(core::CFAMILY_EXTENSIONS.iter().copied());
     }
+    if core::ext_v2_enabled() {
+        // E26 (--ext-v2): same discipline as :cf1 above. Without this the
+        // manifest never lists the newly-indexed suffixes at all, so an edit
+        // to one of them cannot invalidate a warm cache -- the corpus ranks
+        // over files the staleness check is blind to.
+        exts.extend(core::EXT_V2_EXTENSIONS.iter().copied());
+    }
     if with_docs {
         exts.extend(core::DOCS_EXTENSIONS.iter().copied());
     }
@@ -140,7 +147,13 @@ fn scan_manifest(repo_path: &Path, with_docs: bool) -> Manifest {
         }
         // E26: the fixture guard is path-aware, so the manifest walk must
         // apply it too or the cache and the corpus disagree about membership.
-        if !core::path_indexable(&rel) {
+        // Docs entries bypass it: `path_indexable` answers "is this a CODE
+        // file", and docs pages are tracked here for staleness even though
+        // they are never code. (Without this clause the guard silently
+        // evicted every docs entry from the manifest, so a docs edit could
+        // not invalidate a warm cache.)
+        let is_docs = with_docs && core::DOCS_EXTENSIONS.contains(&core::suffix_of(&rel));
+        if !is_docs && !core::path_indexable(&rel) {
             continue;
         }
         let full = repo_path.join(&rel);
