@@ -3704,6 +3704,13 @@ pub fn select_files(
         for c in &eligible {
             groups.entry(owner.get(c).cloned().unwrap_or_default()).or_default().push(c.clone());
         }
+        // E27 measurement only: when ROUST_E27_SEAT_TRACE names a path, every
+        // extra seat this run admits is appended there as one JSON line. The
+        // variable is read once per call and NOTHING downstream branches on
+        // it, so an unset environment leaves the engine bit-for-bit the
+        // pre-instrumentation engine -- the payload-identity gate proves it.
+        let e27_trace_path = std::env::var("ROUST_E27_SEAT_TRACE").ok();
+        let mut e27_seated: Vec<(String, String, i64)> = Vec::new();
         for s in &sources {
             if let Some(grp) = groups.get(s) {
                 if let Some(first) = grp.first() {
@@ -3726,13 +3733,33 @@ pub fn select_files(
                             })
                             .collect();
                         evidenced.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| a.1.cmp(&b.1)));
-                        for (_, c) in evidenced.into_iter().take((params.cochange_seats - 1) as usize) {
+                        for (n, c) in evidenced.into_iter().take((params.cochange_seats - 1) as usize) {
                             if !additions.contains(&c) {
+                                if e27_trace_path.is_some() {
+                                    e27_seated.push((s.clone(), c.clone(), n));
+                                }
                                 additions.push(c);
                             }
                         }
                     }
                 }
+            }
+        }
+        if let Some(tp) = e27_trace_path.as_deref() {
+            use std::io::Write as _;
+            let tag = std::env::var("ROUST_E27_TAG").unwrap_or_default();
+            let esc = |v: &str| v.replace('\\', "\\\\").replace('"', "\\\"");
+            let items: Vec<String> = e27_seated
+                .iter()
+                .map(|(src, cand, n)| format!("[\"{}\",\"{}\",{}]", esc(src), esc(cand), n))
+                .collect();
+            let line = format!(
+                "{{\"tag\":\"{}\",\"seats\":{},\"seat_min\":{},\"n_sources\":{},\"n_extra\":{},\"extra\":[{}]}}\n",
+                esc(&tag), params.cochange_seats, params.cochange_seat_min,
+                sources.len(), e27_seated.len(), items.join(",")
+            );
+            if let Ok(mut fh) = std::fs::OpenOptions::new().create(true).append(true).open(tp) {
+                let _ = fh.write_all(line.as_bytes());
             }
         }
         for c in &eligible {
