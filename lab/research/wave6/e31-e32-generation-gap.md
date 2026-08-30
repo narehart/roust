@@ -94,6 +94,36 @@ Resolving `import a.b.C;` to a path ending `a/b/C.java`, and `#include
 
 Java's first non-zero movement of the entire campaign.
 
+### The two generation levers combined
+
+Once Java/C/C++ finally *have* edges, the second hop has something to walk:
+
+| slice | default (cap 16) | cap128 | + ie2 | + ie2 + 2hop |
+|---|---|---|---|---|
+| **C** | 4.35 | 10.87 | 13.04 | **21.74** |
+| **C++** | 25.45 | 27.27 | 27.27 | **29.09** |
+| Java | 20.00 | 20.00 | **22.50** | 20.00 |
+
+C ends at **5x its shipped default**. Java is the exception: the second hop
+*costs* it the 2.50 that the edges won, so its best configuration is edges
+without hops — a per-language interaction, not a uniform win, and one reason
+none of this is adoptable as a single global default without a further round.
+
+### Best measured configuration per slice (>= 3 gold files)
+
+| slice | shipped default | best measured | config |
+|---|---|---|---|
+| Python Verified | 63.64 | **86.36** | cap 128 |
+| Go | 27.27 | **57.34** | cap 128 + 2hop |
+| Rust | 27.62 | **33.33** | cap 128 + 2hop |
+| C++ | 25.45 | **29.09** | cap 128 + ie2 + 2hop |
+| JS/TS | 10.14 | **22.71** | cap 128 + 2hop |
+| Java | 20.00 | **22.50** | cap 128 + ie2 |
+| C | 4.35 | **21.74** | cap 128 + ie2 + 2hop |
+
+Every slice improves, several by a lot. The *goal* is still unmet, because
+Python improves too (63.64 -> 86.36) and remains clearly ahead.
+
 ## Status and honest limits
 
 * **No default is flipped.** All three flags (`--max-additions` is already
@@ -106,9 +136,12 @@ Java's first non-zero movement of the entire campaign.
   they were.
 * FUNCTION/LINE were not re-scored for the E31/E32 arms; FILE and the
   in-record line fraction are what these rounds measured.
-* The parity goal is **still not met**: at cap 128 + 2 hops the ordering is
-  Python 86.36, Go 57.34, Rust 33.33, C++ 27.27, JS/TS 22.71, Java 22.50,
-  C 13.04.
+* The parity goal is **still not met**: at each slice's best measured
+  configuration the ordering is Python 86.36, Go 57.34, Rust 33.33,
+  C++ 29.09, JS/TS 22.71, Java 22.50, C 21.74.
+* The best configuration is **not the same for every language** (Java is hurt
+  by the second hop that helps everyone else), so there is no single global
+  default here yet — picking one is a further round's work.
 
 ## Process note
 

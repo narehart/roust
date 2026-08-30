@@ -1,0 +1,10 @@
+engine version: roust 0.3.2 (f851bdf, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_c.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_repos/c_base
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=128 budget=8192 instances=/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e29/instances/c.txt
+shard 1/1: rows [0:46] of the sorted split (46 instances)
+[25/46] ponylang__ponyc-1726                          elapsed=222s (ok) ok=25 err=0
+[46/46] ponylang__ponyc-671                           elapsed=379s (ok) ok=46 err=0
+
+engine version: roust 0.3.2 (f851bdf, clean)
+wrote 46 records (46 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e30/arms/c_h2c128.jsonl

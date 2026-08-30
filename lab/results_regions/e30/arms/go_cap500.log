@@ -1,0 +1,14 @@
+engine version: roust 0.3.2 (7c8f6bb, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_go.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_repos/go_base
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=500 budget=8192 instances=/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e29/instances/go.txt
+shard 1/1: rows [0:143] of the sorted split (143 instances)
+[25/143] cli__cli-3286                                 elapsed=153s (ok) ok=25 err=0
+[50/143] cli__cli-4794                                 elapsed=351s (ok) ok=50 err=0
+[75/143] cli__cli-6085                                 elapsed=577s (ok) ok=75 err=0
+[100/143] cli__cli-7646                                 elapsed=892s (ok) ok=100 err=0
+[125/143] cli__cli-9465                                 elapsed=1314s (ok) ok=125 err=0
+[143/143] zeromicro__go-zero-990                        elapsed=1444s (ok) ok=143 err=0
+
+engine version: roust 0.3.2 (7c8f6bb, clean)
+wrote 143 records (143 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e30/arms/go_cap500.jsonl

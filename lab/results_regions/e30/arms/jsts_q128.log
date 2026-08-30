@@ -1,0 +1,17 @@
+engine version: roust 0.3.2 (7c8f6bb, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_jsts.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_repos_e23
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=128 budget=8192 instances=/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e29/instances/jsts.txt
+shard 1/1: rows [0:207] of the sorted split (207 instances)
+[25/207] iamkun__dayjs-882                             elapsed=63s (ok) ok=25 err=0
+[50/207] mui__material-ui-28645                        elapsed=391s (ok) ok=50 err=0
+[75/207] mui__material-ui-33812                        elapsed=717s (ok) ok=75 err=0
+[100/207] mui__material-ui-37118                        elapsed=995s (ok) ok=100 err=0
+[125/207] sveltejs__svelte-10642                        elapsed=1184s (ok) ok=125 err=0
+[150/207] sveltejs__svelte-12252                        elapsed=1286s (ok) ok=150 err=0
+[175/207] sveltejs__svelte-13437                        elapsed=1374s (ok) ok=175 err=0
+[200/207] sveltejs__svelte-9988                         elapsed=1468s (ok) ok=200 err=0
+[207/207] vuejs__core-9213                              elapsed=1497s (ok) ok=207 err=0
+
+engine version: roust 0.3.2 (7c8f6bb, clean)
+wrote 207 records (207 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e30/arms/jsts_q128.jsonl
