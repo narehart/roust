@@ -1,0 +1,552 @@
+{
+ "label": "ver_m24",
+ "default": {
+  "n": 407,
+  "n_errors": 0,
+  "file_pct": 92.38,
+  "file_n": 376,
+  "function_pct": 47.17,
+  "function_n": 192,
+  "line_pct": 35.14,
+  "line_n": 143,
+  "mean_fraction": 0.47634740438766354,
+  "mean_files": 34.951,
+  "mean_tokens": 8557.6
+ },
+ "arm": {
+  "n": 407,
+  "n_errors": 0,
+  "file_pct": 93.61,
+  "file_n": 381,
+  "function_pct": 44.96,
+  "function_n": 183,
+  "line_pct": 33.91,
+  "line_n": 138,
+  "mean_fraction": 0.4646996306151726,
+  "mean_files": 42.634,
+  "mean_tokens": 8627.7
+ },
+ "delta": {
+  "file": 1.23,
+  "function": -2.21,
+  "line": -1.23,
+  "mean_fraction": -0.011648,
+  "mean_files": 7.683,
+  "mean_tokens": 70.1
+ },
+ "strata": {
+  "1": {
+   "n": 336,
+   "default": {
+    "n": 336,
+    "n_errors": 0,
+    "file_pct": 95.83,
+    "file_n": 322,
+    "function_pct": 53.57,
+    "function_n": 180,
+    "line_pct": 41.07,
+    "line_n": 138,
+    "mean_fraction": 0.5116504655527143,
+    "mean_files": 34.884,
+    "mean_tokens": 8558.0
+   },
+   "arm": {
+    "n": 336,
+    "n_errors": 0,
+    "file_pct": 96.73,
+    "file_n": 325,
+    "function_pct": 51.49,
+    "function_n": 173,
+    "line_pct": 39.58,
+    "line_n": 133,
+    "mean_fraction": 0.5007737465096354,
+    "mean_files": 42.56,
+    "mean_tokens": 8628.2
+   },
+   "delta_file": 0.9,
+   "delta_function": -2.08,
+   "delta_line": -1.49,
+   "delta_fraction": -0.010877,
+   "delta_files": 7.676,
+   "delta_tokens": 70.2,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 3,
+    "p": 0.25
+   },
+   "fraction_wilcoxon_p": 0.034562676076200824,
+   "frac_up": 4,
+   "frac_down": 14
+  },
+  "2": {
+   "n": 49,
+   "default": {
+    "n": 49,
+    "n_errors": 0,
+    "file_pct": 81.63,
+    "file_n": 40,
+    "function_pct": 22.45,
+    "function_n": 11,
+    "line_pct": 8.16,
+    "line_n": 4,
+    "mean_fraction": 0.33709218174482797,
+    "mean_files": 35.224,
+    "mean_tokens": 8552.0
+   },
+   "arm": {
+    "n": 49,
+    "n_errors": 0,
+    "file_pct": 83.67,
+    "file_n": 41,
+    "function_pct": 18.37,
+    "function_n": 9,
+    "line_pct": 8.16,
+    "line_n": 4,
+    "mean_fraction": 0.32577254899662383,
+    "mean_files": 42.898,
+    "mean_tokens": 8621.1
+   },
+   "delta_file": 2.04,
+   "delta_function": -4.08,
+   "delta_line": 0.0,
+   "delta_fraction": -0.01132,
+   "delta_files": 7.674,
+   "delta_tokens": 69.1,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 1,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 0.25,
+   "frac_up": 0,
+   "frac_down": 3
+  },
+  "3+": {
+   "n": 22,
+   "default": {
+    "n": 22,
+    "n_errors": 0,
+    "file_pct": 63.64,
+    "file_n": 14,
+    "function_pct": 4.55,
+    "function_n": 1,
+    "line_pct": 4.55,
+    "line_n": 1,
+    "mean_fraction": 0.24733273884411358,
+    "mean_files": 35.364,
+    "mean_tokens": 8563.7
+   },
+   "arm": {
+    "n": 22,
+    "n_errors": 0,
+    "file_pct": 68.18,
+    "file_n": 15,
+    "function_pct": 4.55,
+    "function_n": 1,
+    "line_pct": 4.55,
+    "line_n": 1,
+    "mean_fraction": 0.2231779969228749,
+    "mean_files": 43.182,
+    "mean_tokens": 8634.1
+   },
+   "delta_file": 4.54,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": -0.024155,
+   "delta_files": 7.818,
+   "delta_tokens": 70.4,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 1,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 0.0625,
+   "frac_up": 0,
+   "frac_down": 5
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_arm_only": 5,
+   "p": 0.0625
+  },
+  "FUNCTION": {
+   "b_def_only": 10,
+   "c_arm_only": 1,
+   "p": 0.01171875
+  },
+  "LINE": {
+   "b_def_only": 5,
+   "c_arm_only": 0,
+   "p": 0.0625
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 26,
+   "statistic": 61.0,
+   "p": 0.003629874400541872,
+   "n_up": 4,
+   "n_down": 22
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 32,
+ "changed": [
+  {
+   "instance_id": "astropy__astropy-13977",
+   "repo": "astropy/astropy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "pydata__xarray-6461",
+   "repo": "pydata/xarray",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "sympy__sympy-16886",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "scikit-learn__scikit-learn-26323",
+   "repo": "scikit-learn/scikit-learn",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.9167->0.0000",
+   "fraction_delta": -0.916667
+  },
+  {
+   "instance_id": "matplotlib__matplotlib-25775",
+   "repo": "matplotlib/matplotlib",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6364->0.2468",
+   "fraction_delta": -0.38961
+  },
+  {
+   "instance_id": "sphinx-doc__sphinx-8120",
+   "repo": "sphinx-doc/sphinx",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.6667->0.3333",
+   "fraction_delta": -0.333333
+  },
+  {
+   "instance_id": "django__django-15128",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.7000",
+   "fraction_delta": -0.3
+  },
+  {
+   "instance_id": "django__django-14539",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.2500->0.0000",
+   "fraction_delta": -0.25
+  },
+  {
+   "instance_id": "django__django-16502",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.9091->0.7273",
+   "fraction_delta": -0.181818
+  },
+  {
+   "instance_id": "django__django-15503",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3696->0.2174",
+   "fraction_delta": -0.152174
+  },
+  {
+   "instance_id": "django__django-12155",
+   "repo": "django/django",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8409->0.7273",
+   "fraction_delta": -0.113636
+  },
+  {
+   "instance_id": "pytest-dev__pytest-5840",
+   "repo": "pytest-dev/pytest",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3231->0.2154",
+   "fraction_delta": -0.107692
+  },
+  {
+   "instance_id": "django__django-15278",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.9000",
+   "fraction_delta": -0.1
+  },
+  {
+   "instance_id": "pytest-dev__pytest-10051",
+   "repo": "pytest-dev/pytest",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.6000->0.5000",
+   "fraction_delta": -0.1
+  },
+  {
+   "instance_id": "django__django-11400",
+   "repo": "django/django",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7188->0.6250",
+   "fraction_delta": -0.09375
+  },
+  {
+   "instance_id": "sympy__sympy-13878",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4296->0.3451",
+   "fraction_delta": -0.084507
+  },
+  {
+   "instance_id": "django__django-15161",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2500->0.1667",
+   "fraction_delta": -0.083333
+  },
+  {
+   "instance_id": "sympy__sympy-14531",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0562->0.0112",
+   "fraction_delta": -0.044944
+  },
+  {
+   "instance_id": "sympy__sympy-12489",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3288->0.2928",
+   "fraction_delta": -0.036036
+  },
+  {
+   "instance_id": "django__django-13344",
+   "repo": "django/django",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0533->0.0267",
+   "fraction_delta": -0.026667
+  },
+  {
+   "instance_id": "sympy__sympy-13091",
+   "repo": "sympy/sympy",
+   "stratum": "3+",
+   "n_gold_files": 21,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1229->0.1117",
+   "fraction_delta": -0.011173
+  },
+  {
+   "instance_id": "django__django-11138",
+   "repo": "django/django",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1122->0.1020",
+   "fraction_delta": -0.010204
+  },
+  {
+   "instance_id": "django__django-14011",
+   "repo": "django/django",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "django__django-15375",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "django__django-16631",
+   "repo": "django/django",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "django__django-16642",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sympy__sympy-18211",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sympy__sympy-24562",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sphinx-doc__sphinx-8035",
+   "repo": "sphinx-doc/sphinx",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.4182->0.4364",
+   "fraction_delta": 0.018182
+  },
+  {
+   "instance_id": "django__django-11087",
+   "repo": "django/django",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1481",
+   "fraction_delta": 0.148148
+  },
+  {
+   "instance_id": "matplotlib__matplotlib-22719",
+   "repo": "matplotlib/matplotlib",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.5000",
+   "fraction_delta": 0.5
+  },
+  {
+   "instance_id": "sympy__sympy-20801",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.9286",
+   "fraction_delta": 0.928571
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}

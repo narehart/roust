@@ -1,0 +1,476 @@
+{
+ "label": "java_m32",
+ "default": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 49.22,
+  "file_n": 63,
+  "function_pct": 36.72,
+  "function_n": 47,
+  "line_pct": 14.06,
+  "line_n": 18,
+  "mean_fraction": 0.41521707815669384,
+  "mean_files": 31.281,
+  "mean_tokens": 8762.2
+ },
+ "arm": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 51.56,
+  "file_n": 66,
+  "function_pct": 31.25,
+  "function_n": 40,
+  "line_pct": 11.72,
+  "line_n": 15,
+  "mean_fraction": 0.37421629066085277,
+  "mean_files": 46.508,
+  "mean_tokens": 9023.2
+ },
+ "delta": {
+  "file": 2.34,
+  "function": -5.47,
+  "line": -2.34,
+  "mean_fraction": -0.041001,
+  "mean_files": 15.227,
+  "mean_tokens": 261.0
+ },
+ "strata": {
+  "1": {
+   "n": 51,
+   "default": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 94.12,
+    "file_n": 48,
+    "function_pct": 52.94,
+    "function_n": 27,
+    "line_pct": 35.29,
+    "line_n": 18,
+    "mean_fraction": 0.6298551451736344,
+    "mean_files": 31.353,
+    "mean_tokens": 8762.8
+   },
+   "arm": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 96.08,
+    "file_n": 49,
+    "function_pct": 41.18,
+    "function_n": 21,
+    "line_pct": 29.41,
+    "line_n": 15,
+    "mean_fraction": 0.5453785737269389,
+    "mean_files": 46.49,
+    "mean_tokens": 9016.0
+   },
+   "delta_file": 1.96,
+   "delta_function": -11.76,
+   "delta_line": -5.88,
+   "delta_fraction": -0.084477,
+   "delta_files": 15.137,
+   "delta_tokens": 253.2,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 1,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 0.00048828125,
+   "frac_up": 0,
+   "frac_down": 12
+  },
+  "2": {
+   "n": 37,
+   "default": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 18.92,
+    "file_n": 7,
+    "function_pct": 43.24,
+    "function_n": 16,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.3277437124075038,
+    "mean_files": 31.081,
+    "mean_tokens": 8784.7
+   },
+   "arm": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 24.32,
+    "file_n": 9,
+    "function_pct": 40.54,
+    "function_n": 15,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.3087051698608238,
+    "mean_files": 46.459,
+    "mean_tokens": 9064.4
+   },
+   "delta_file": 5.4,
+   "delta_function": -2.7,
+   "delta_line": 0.0,
+   "delta_fraction": -0.019039,
+   "delta_files": 15.378,
+   "delta_tokens": 279.7,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 2,
+    "p": 0.5
+   },
+   "fraction_wilcoxon_p": 0.25,
+   "frac_up": 1,
+   "frac_down": 3
+  },
+  "3+": {
+   "n": 40,
+   "default": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 10.0,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.22246640602809528,
+    "mean_files": 31.375,
+    "mean_tokens": 8740.7
+   },
+   "arm": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 10.0,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.21658216649161965,
+    "mean_files": 46.575,
+    "mean_tokens": 8994.3
+   },
+   "delta_file": 0.0,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": -0.005884,
+   "delta_files": 15.2,
+   "delta_tokens": 253.6,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 0.15625,
+   "frac_up": 2,
+   "frac_down": 4
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_arm_only": 3,
+   "p": 0.25
+  },
+  "FUNCTION": {
+   "b_def_only": 7,
+   "c_arm_only": 0,
+   "p": 0.015625
+  },
+  "LINE": {
+   "b_def_only": 3,
+   "c_arm_only": 0,
+   "p": 0.25
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 22,
+   "statistic": 9.0,
+   "p": 0.00013482105885831915,
+   "n_up": 3,
+   "n_down": 19
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 25,
+ "changed": [
+  {
+   "instance_id": "fasterxml__jackson-databind-4072",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "elastic__logstash-15233",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.5455",
+   "fraction_delta": -0.454545
+  },
+  {
+   "instance_id": "elastic__logstash-15241",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.5455",
+   "fraction_delta": -0.454545
+  },
+  {
+   "instance_id": "elastic__logstash-16482",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.8983->0.5424",
+   "fraction_delta": -0.355932
+  },
+  {
+   "instance_id": "elastic__logstash-16569",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.8983->0.5424",
+   "fraction_delta": -0.355932
+  },
+  {
+   "instance_id": "elastic__logstash-16579",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.8983->0.5424",
+   "fraction_delta": -0.355932
+  },
+  {
+   "instance_id": "fasterxml__jackson-core-891",
+   "repo": "fasterxml/jackson-core",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3333->0.0000",
+   "fraction_delta": -0.333333
+  },
+  {
+   "instance_id": "elastic__logstash-15000",
+   "repo": "elastic/logstash",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5782->0.2789",
+   "fraction_delta": -0.29932
+  },
+  {
+   "instance_id": "elastic__logstash-15008",
+   "repo": "elastic/logstash",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5782->0.2789",
+   "fraction_delta": -0.29932
+  },
+  {
+   "instance_id": "elastic__logstash-14878",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6897->0.4310",
+   "fraction_delta": -0.258621
+  },
+  {
+   "instance_id": "elastic__logstash-14897",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6897->0.4310",
+   "fraction_delta": -0.258621
+  },
+  {
+   "instance_id": "elastic__logstash-14898",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6897->0.4310",
+   "fraction_delta": -0.258621
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-3621",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5696->0.3924",
+   "fraction_delta": -0.177215
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4365",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5476->0.3869",
+   "fraction_delta": -0.160714
+  },
+  {
+   "instance_id": "elastic__logstash-15680",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7778->0.6667",
+   "fraction_delta": -0.111111
+  },
+  {
+   "instance_id": "elastic__logstash-15697",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7778->0.6667",
+   "fraction_delta": -0.111111
+  },
+  {
+   "instance_id": "fasterxml__jackson-core-980",
+   "repo": "fasterxml/jackson-core",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5455->0.5000",
+   "fraction_delta": -0.045455
+  },
+  {
+   "instance_id": "elastic__logstash-14027",
+   "repo": "elastic/logstash",
+   "stratum": "3+",
+   "n_gold_files": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4756->0.4390",
+   "fraction_delta": -0.036585
+  },
+  {
+   "instance_id": "google__gson-1787",
+   "repo": "google/gson",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6338->0.6056",
+   "fraction_delta": -0.028169
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-2036",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-3371",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4325",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "elastic__logstash-13997",
+   "repo": "elastic/logstash",
+   "stratum": "3+",
+   "n_gold_files": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0609->0.0761",
+   "fraction_delta": 0.015228
+  },
+  {
+   "instance_id": "fasterxml__jackson-dataformat-xml-531",
+   "repo": "fasterxml/jackson-dataformat-xml",
+   "stratum": "3+",
+   "n_gold_files": 6,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1341->0.1545",
+   "fraction_delta": 0.020325
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4304",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1429->0.2143",
+   "fraction_delta": 0.071429
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}

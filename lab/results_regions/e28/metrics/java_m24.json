@@ -1,0 +1,1254 @@
+{
+  "convention": "errors-count-as-wrong-at-all-levels/v1: FILE, FUNCTION, and LINE share the same denominator (n = all loaded records); engine errors and git_show failures count as WRONG and are reported separately (*_counted_wrong / n_engine_errors keys).",
+  "source": {
+    "predictions": [
+      "lab/results_regions/e28/arms/java_m24.jsonl"
+    ],
+    "gold": "lab/ws3b_java.parquet",
+    "n_instances": 128,
+    "n_region_eval_errors": 0,
+    "engine_shas_seen": [
+      "8a12c5e"
+    ],
+    "engine_dirty_seen": [
+      false
+    ],
+    "bm25_only": false,
+    "pipeline": "shipped roust-rs engine, --budget 8192, confidence-scheduled packing (parity/region_eval_full.py Part A, no-LLM), FULL SWE-bench test split (paper eval wave)"
+  },
+  "all_instances": {
+    "n": 128,
+    "file": {
+      "pct_correct": 50.78,
+      "n": 128,
+      "n_correct": 65,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 34.38,
+      "n": 128,
+      "n_judged": 128,
+      "n_correct": 44,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "alibaba__fastjson2-1245",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 95,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-2097",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-2285",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-2559",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 109,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-2775",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-82",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 81,
+          "correct": true
+        },
+        {
+          "instance_id": "apache__dubbo-10638",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 99,
+          "correct": false
+        },
+        {
+          "instance_id": "apache__dubbo-11781",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 141,
+          "correct": false
+        },
+        {
+          "instance_id": "apache__dubbo-7041",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 109,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-13825",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-13880",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 21,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-13902",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-13914",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 20,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-13930",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-13931",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-13997",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14000",
+          "n_gold_functions": 17,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14027",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14045",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 31,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14058",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14571",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14878",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14897",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14898",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14970",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 78,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-14981",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 78,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-15000",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15008",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15233",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15241",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15680",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15697",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15925",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-15928",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 26,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-15964",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 75,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-15969",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-16079",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16094",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 27,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-16195",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-16482",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16569",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16579",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16681",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 84,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16968",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 122,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-17019",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 123,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-17020",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 123,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-17021",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 120,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1016",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1053",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1142",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 81,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1172",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 60,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1182",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1204",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 73,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1208",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 83,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1263",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 94,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1309",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-174",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-183",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 102,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-370",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 71,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-566",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 72,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-729",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 106,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-891",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 107,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-922",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-964",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 76,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-980",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-1923",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 73,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-2036",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 67,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3371",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 94,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3509",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 83,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3560",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 80,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3621",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 88,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3625",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3626",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 74,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3666",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 87,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3701",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 84,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3716",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 99,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3851",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 98,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3860",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 89,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4013",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 75,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4015",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 96,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4048",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4050",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 86,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4072",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 100,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4087",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4131",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 112,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4132",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 76,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4159",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 81,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4186",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 115,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4189",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 96,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4219",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 86,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4228",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 75,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4230",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 89,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4257",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 92,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4304",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 91,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4311",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 90,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4320",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 85,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4325",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 105,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4338",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4360",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 76,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4365",
+          "n_gold_functions": 20,
+          "n_predicted_functions": 106,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4426",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 104,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4468",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 89,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4469",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4486",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 120,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4487",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 93,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4615",
+          "n_gold_functions": 22,
+          "n_predicted_functions": 78,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4641",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-dataformat-xml-531",
+          "n_gold_functions": 30,
+          "n_predicted_functions": 88,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-dataformat-xml-544",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 82,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-dataformat-xml-590",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 128,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-dataformat-xml-638",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 69,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-dataformat-xml-644",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 93,
+          "correct": false
+        },
+        {
+          "instance_id": "google__gson-1093",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 94,
+          "correct": true
+        },
+        {
+          "instance_id": "google__gson-1391",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "google__gson-1555",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "google__gson-1703",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 102,
+          "correct": true
+        },
+        {
+          "instance_id": "google__gson-1787",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "googlecontainertools__jib-2536",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 77,
+          "correct": false
+        },
+        {
+          "instance_id": "googlecontainertools__jib-2542",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 80,
+          "correct": true
+        },
+        {
+          "instance_id": "googlecontainertools__jib-2688",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": true
+        },
+        {
+          "instance_id": "googlecontainertools__jib-4035",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 70,
+          "correct": true
+        },
+        {
+          "instance_id": "googlecontainertools__jib-4144",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 81,
+          "correct": false
+        },
+        {
+          "instance_id": "mockito__mockito-3129",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 73,
+          "correct": true
+        },
+        {
+          "instance_id": "mockito__mockito-3133",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "mockito__mockito-3167",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": true
+        },
+        {
+          "instance_id": "mockito__mockito-3173",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "mockito__mockito-3220",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "mockito__mockito-3424",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 42,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 12.5,
+      "n": 128,
+      "n_correct_all_or_nothing": 16,
+      "mean_fraction_covered": 0.404608380632146,
+      "median_fraction_covered": 0.3125,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.0165711754501007,
+      "median_precision": 0.007460745767947469,
+      "n": 128,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1045.7578125,
+      "median_total_region_lines_per_instance": 1044.0
+    }
+  },
+  "file_correct_subset": {
+    "n": 65,
+    "file": {
+      "pct_correct": 100.0,
+      "n": 65,
+      "n_correct": 65,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 41.54,
+      "n": 65,
+      "n_judged": 65,
+      "n_correct": 27,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "alibaba__fastjson2-1245",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 95,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-2097",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-2285",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-2559",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 109,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-2775",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "alibaba__fastjson2-82",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 81,
+          "correct": true
+        },
+        {
+          "instance_id": "apache__dubbo-10638",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 99,
+          "correct": false
+        },
+        {
+          "instance_id": "apache__dubbo-7041",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 109,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14058",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14878",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14897",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14898",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-14970",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 78,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-14981",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 78,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-15233",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15241",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15680",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15697",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-15964",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 75,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16079",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16195",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "elastic__logstash-16482",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16569",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16579",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16681",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 84,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-16968",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 122,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-17019",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 123,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-17020",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 123,
+          "correct": true
+        },
+        {
+          "instance_id": "elastic__logstash-17021",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 120,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1016",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-1053",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-174",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-183",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 102,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-370",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 71,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-566",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 72,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-729",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 106,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-891",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 107,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-core-922",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-2036",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 67,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3509",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 83,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3626",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 74,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3666",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 87,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3701",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 84,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3851",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 98,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-3860",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 89,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4050",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 86,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4072",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 100,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4159",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 81,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4189",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 96,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4257",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 92,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4304",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 91,
+          "correct": true
+        },
+        {
+          "instance_id": "fasterxml__jackson-databind-4641",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-dataformat-xml-531",
+          "n_gold_functions": 30,
+          "n_predicted_functions": 88,
+          "correct": false
+        },
+        {
+          "instance_id": "fasterxml__jackson-dataformat-xml-544",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 82,
+          "correct": false
+        },
+        {
+          "instance_id": "google__gson-1093",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 94,
+          "correct": true
+        },
+        {
+          "instance_id": "google__gson-1391",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "google__gson-1555",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "google__gson-1703",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 102,
+          "correct": true
+        },
+        {
+          "instance_id": "google__gson-1787",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "googlecontainertools__jib-2542",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 80,
+          "correct": true
+        },
+        {
+          "instance_id": "googlecontainertools__jib-4035",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 70,
+          "correct": true
+        },
+        {
+          "instance_id": "mockito__mockito-3129",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 73,
+          "correct": true
+        },
+        {
+          "instance_id": "mockito__mockito-3167",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": true
+        },
+        {
+          "instance_id": "mockito__mockito-3173",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "mockito__mockito-3424",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 42,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 24.62,
+      "n": 65,
+      "n_correct_all_or_nothing": 16,
+      "mean_fraction_covered": 0.5524096498737617,
+      "median_fraction_covered": 0.6056338028169014,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.01876850978422846,
+      "median_precision": 0.010471204188481676,
+      "n": 65,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1051.5692307692307,
+      "median_total_region_lines_per_instance": 1050.0
+    },
+    "note": "restricted to instances where FILE-level was already correct -- isolates region/line/function quality from file recall"
+  },
+  "agentless_gpt4o_published": {
+    "file": 69.7,
+    "function": 52.0,
+    "line": 35.3
+  },
+  "agentless_note": "AGENTLESS_GPT4O numbers are Agentless's published SWE-bench LITE localization rates (arXiv:2407.01489 Table 1) -- context only; no published Agentless full-split localization numbers exist to compare against directly."
+}

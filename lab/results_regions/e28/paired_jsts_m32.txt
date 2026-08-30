@@ -1,0 +1,109 @@
+
+=== jsts_m32 ===
+arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+default     580    1    46.38 ( 269)    31.21 ( 181)    14.14 (  82)   0.26156    30.82    8531.7
+arm         580    1    47.59 ( 276)    29.31 ( 170)    12.59 (  73)   0.24237    41.45    8673.5
+delta                   +1.21           -1.90           -1.55         -0.01918   +10.63    +141.8
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+1         default     280    1    72.50 ( 203)    41.79 ( 117)    26.43 (  74)   0.32002    31.27    8547.7
+          arm         280    1    73.57 ( 206)    38.57 ( 108)    23.57 (  66)   0.29092    42.76    8705.1
+          delta                   +1.07           -3.22           -2.86         -0.02910   +11.49    +157.4   FILE McNemar 0/3 p=0.2500
+2         default      93    0    48.39 (  45)    26.88 (  25)     5.38 (   5)   0.23629    30.03    8475.4
+          arm          93    0    50.54 (  47)    25.81 (  24)     4.30 (   4)   0.22135    39.73    8601.5
+          delta                   +2.15           -1.07           -1.08         -0.01494    +9.70    +126.1   FILE McNemar 0/2 p=0.5000
+3+        default     207    0    10.14 (  21)    18.84 (  39)     1.45 (   3)   0.19411    30.57    8535.6
+          arm         207    0    11.11 (  23)    18.36 (  38)     1.45 (   3)   0.18639    40.46    8663.4
+          delta                   +0.97           -0.48           +0.00         -0.00772    +9.89    +127.8   FILE McNemar 0/2 p=0.5000
+McNemar FILE      default-only=  0 arm-only=  7 p=0.0156
+McNemar FUNCTION  default-only= 11 arm-only=  0 p=0.0010
+McNemar LINE      default-only=  9 arm-only=  0 p=0.0039
+Wilcoxon frac    n_nonzero=77 up=15 down=62 p=0.0000
+
+changed instances: 84 of 580
+  mui__material-ui-34337                     [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sveltejs__svelte-12475                     [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sveltejs__svelte-15083                     [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sveltejs__svelte-9824                      [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  vuejs__core-9532                           [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  mui__material-ui-24205                     [2 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.2857       (-0.7143)
+  mui__material-ui-23786                     [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.3333       (-0.6667)
+  mui__material-ui-33873                     [2 ] FILE =      FUNC =      LINE =      frac 0.8140->0.2500       (-0.5640)
+  sveltejs__svelte-14935                     [1 ] FILE =      FUNC =      LINE =      frac 0.5385->0.0000       (-0.5385)
+  vuejs__core-11338                          [1 ] FILE =      FUNC =      LINE =      frac 0.5385->0.0000       (-0.5385)
+  sveltejs__svelte-11371                     [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.5500       (-0.4500)
+  mui__material-ui-26170                     [3+] FILE =      FUNC =      LINE =      frac 0.8214->0.4643       (-0.3571)
+  vuejs__core-10869                          [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.6667       (-0.3333)
+  mui__material-ui-36024                     [3+] FILE =      FUNC =      LINE =      frac 0.5410->0.2623       (-0.2787)
+  sveltejs__svelte-12460                     [1 ] FILE =      FUNC =      LINE =      frac 0.4400->0.2200       (-0.2200)
+  sveltejs__svelte-12681                     [3+] FILE =      FUNC =      LINE =      frac 0.3065->0.0968       (-0.2097)
+  mui__material-ui-29824                     [1 ] FILE =      FUNC =      LINE =      frac 0.2583->0.0795       (-0.1788)
+  sveltejs__svelte-13568                     [3+] FILE =      FUNC =      LINE =      frac 0.2364->0.0909       (-0.1455)
+  mui__material-ui-33582                     [3+] FILE =      FUNC =      LINE =      frac 0.2241->0.1034       (-0.1207)
+  sveltejs__svelte-13333                     [3+] FILE =      FUNC =      LINE =      frac 0.1600->0.0400       (-0.1200)
+  sveltejs__svelte-14210                     [3+] FILE =      FUNC =      LINE =      frac 0.1148->0.0000       (-0.1148)
+  sveltejs__svelte-11766                     [1 ] FILE =      FUNC =      LINE =      frac 0.1000->0.0000       (-0.1000)
+  mui__material-ui-29488                     [3+] FILE =      FUNC =      LINE =      frac 0.1910->0.1005       (-0.0905)
+  mui__material-ui-24945                     [3+] FILE =      FUNC =      LINE =      frac 0.1852->0.0963       (-0.0889)
+  axios__axios-5338                          [3+] FILE =      FUNC =      LINE =      frac 0.4165->0.3341       (-0.0824)
+  mui__material-ui-23073                     [2 ] FILE =      FUNC =      LINE =      frac 0.3955->0.3209       (-0.0746)
+  sveltejs__svelte-13586                     [3+] FILE =      FUNC =      LINE =      frac 0.2429->0.1714       (-0.0714)
+  iamkun__dayjs-668                          [3+] FILE =      FUNC =      LINE =      frac 0.8644->0.7966       (-0.0678)
+  vuejs__core-11761                          [2 ] FILE =      FUNC =      LINE =      frac 0.1346->0.0673       (-0.0673)
+  mui__material-ui-26460                     [3+] FILE =      FUNC =      LINE =      frac 0.4675->0.4083       (-0.0592)
+  mui__material-ui-30118                     [3+] FILE =      FUNC =      LINE =      frac 0.3529->0.2941       (-0.0588)
+  mui__material-ui-24857                     [3+] FILE =      FUNC =      LINE =      frac 0.1270->0.0711       (-0.0559)
+  darkreader__darkreader-6747                [2 ] FILE =      FUNC 1->0   LINE =      frac 0.5946->0.5405       (-0.0541)
+  sveltejs__svelte-12252                     [3+] FILE =      FUNC =      LINE =      frac 0.1772->0.1266       (-0.0506)
+  mui__material-ui-25245                     [3+] FILE =      FUNC 1->0   LINE =      frac 0.1708->0.1273       (-0.0435)
+  sveltejs__svelte-13008                     [1 ] FILE =      FUNC 1->0   LINE =      frac 0.7083->0.6667       (-0.0417)
+  axios__axios-5919                          [2 ] FILE =      FUNC =      LINE =      frac 0.3800->0.3400       (-0.0400)
+  mui__material-ui-37716                     [3+] FILE =      FUNC =      LINE =      frac 0.1023->0.0644       (-0.0379)
+  mui__material-ui-39196                     [2 ] FILE =      FUNC =      LINE =      frac 0.1071->0.0714       (-0.0357)
+  mui__material-ui-31172                     [3+] FILE =      FUNC =      LINE =      frac 0.3269->0.3003       (-0.0266)
+  mui__material-ui-25276                     [1 ] FILE =      FUNC =      LINE =      frac 0.0263->0.0000       (-0.0263)
+  vuejs__core-8402                           [3+] FILE =      FUNC =      LINE =      frac 0.0570->0.0307       (-0.0263)
+  vuejs__core-9572                           [1 ] FILE =      FUNC =      LINE =      frac 0.2564->0.2308       (-0.0256)
+  sveltejs__svelte-12869                     [3+] FILE =      FUNC =      LINE =      frac 0.0606->0.0370       (-0.0236)
+  mui__material-ui-35946                     [3+] FILE =      FUNC =      LINE =      frac 0.2379->0.2172       (-0.0207)
+  anuraghazra__github-readme-stats-2491      [3+] FILE =      FUNC =      LINE =      frac 0.5273->0.5091       (-0.0182)
+  sveltejs__svelte-13589                     [3+] FILE =      FUNC =      LINE =      frac 0.3455->0.3273       (-0.0182)
+  sveltejs__svelte-10617                     [3+] FILE =      FUNC =      LINE =      frac 0.1143->0.1000       (-0.0143)
+  mui__material-ui-36400                     [3+] FILE =      FUNC =      LINE =      frac 0.1363->0.1238       (-0.0126)
+  mui__material-ui-36401                     [2 ] FILE =      FUNC =      LINE =      frac 0.6543->0.6420       (-0.0123)
+  mui__material-ui-29579                     [3+] FILE =      FUNC =      LINE =      frac 0.0107->0.0000       (-0.0107)
+  anuraghazra__github-readme-stats-3442      [3+] FILE =      FUNC =      LINE =      frac 0.3383->0.3288       (-0.0095)
+  mui__material-ui-26186                     [3+] FILE =      FUNC =      LINE =      frac 0.4427->0.4334       (-0.0093)
+  mui__material-ui-26026                     [3+] FILE =      FUNC =      LINE =      frac 0.1207->0.1121       (-0.0086)
+  sveltejs__svelte-10656                     [3+] FILE =      FUNC =      LINE =      frac 0.1338->0.1274       (-0.0064)
+  mui__material-ui-35963                     [3+] FILE =      FUNC =      LINE =      frac 0.1150->0.1091       (-0.0059)
+  mui__material-ui-25784                     [3+] FILE =      FUNC =      LINE =      frac 0.1322->0.1267       (-0.0055)
+  sveltejs__svelte-14629                     [3+] FILE =      FUNC =      LINE =      frac 0.0920->0.0867       (-0.0054)
+  sveltejs__svelte-11184                     [3+] FILE =      FUNC =      LINE =      frac 0.2476->0.2427       (-0.0049)
+  sveltejs__svelte-10673                     [3+] FILE =      FUNC =      LINE =      frac 0.3972->0.3925       (-0.0047)
+  sveltejs__svelte-9988                      [3+] FILE =      FUNC =      LINE =      frac 0.0376->0.0332       (-0.0044)
+  sveltejs__svelte-13018                     [2 ] FILE =      FUNC =      LINE =      frac 0.0595->0.0558       (-0.0037)
+  mui__material-ui-24010                     [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  sveltejs__svelte-11470                     [2 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  sveltejs__svelte-14276                     [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  sveltejs__svelte-14607                     [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  vuejs__core-10939                          [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  vuejs__core-11625                          [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  vuejs__core-8785                           [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  mui__material-ui-37667                     [3+] FILE =      FUNC =      LINE =      frac 0.0207->0.0224       (+0.0017)
+  mui__material-ui-38916                     [3+] FILE =      FUNC =      LINE =      frac 0.0391->0.0422       (+0.0031)
+  mui__material-ui-29297                     [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0048       (+0.0048)
+  sveltejs__svelte-12413                     [3+] FILE =      FUNC =      LINE =      frac 0.0251->0.0377       (+0.0126)
+  sveltejs__svelte-12215                     [3+] FILE =      FUNC =      LINE =      frac 0.1553->0.1689       (+0.0136)
+  mui__material-ui-34401                     [3+] FILE =      FUNC =      LINE =      frac 0.0426->0.0734       (+0.0309)
+  sveltejs__svelte-14456                     [3+] FILE =      FUNC =      LINE =      frac 0.0342->0.0748       (+0.0406)
+  mui__material-ui-35088                     [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0441       (+0.0441)
+  sveltejs__svelte-14273                     [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0588       (+0.0588)
+  sveltejs__svelte-14289                     [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0600       (+0.0600)
+  mui__material-ui-33312                     [3+] FILE =      FUNC =      LINE =      frac 0.1176->0.1882       (+0.0706)
+  sveltejs__svelte-13763                     [3+] FILE 0->1   FUNC =      LINE =      frac 0.0000->0.0984       (+0.0984)
+  vuejs__core-11491                          [3+] FILE 0->1   FUNC =      LINE =      frac 0.0000->0.1081       (+0.1081)
+  mui__material-ui-39679                     [3+] FILE =      FUNC =      LINE =      frac 0.1667->0.3095       (+0.1429)
+  sveltejs__svelte-10054                     [2 ] FILE 0->1   FUNC =      LINE =      frac 0.0000->0.1765       (+0.1765)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e28/jsts_m32_paired.json

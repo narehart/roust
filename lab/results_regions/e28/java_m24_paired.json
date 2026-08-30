@@ -1,0 +1,378 @@
+{
+ "label": "java_m24",
+ "default": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 49.22,
+  "file_n": 63,
+  "function_pct": 36.72,
+  "function_n": 47,
+  "line_pct": 14.06,
+  "line_n": 18,
+  "mean_fraction": 0.41521707815669384,
+  "mean_files": 31.281,
+  "mean_tokens": 8762.2
+ },
+ "arm": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 50.78,
+  "file_n": 65,
+  "function_pct": 34.38,
+  "function_n": 44,
+  "line_pct": 12.5,
+  "line_n": 16,
+  "mean_fraction": 0.404608380632146,
+  "mean_files": 39.008,
+  "mean_tokens": 8897.2
+ },
+ "delta": {
+  "file": 1.56,
+  "function": -2.34,
+  "line": -1.56,
+  "mean_fraction": -0.010609,
+  "mean_files": 7.727,
+  "mean_tokens": 135.0
+ },
+ "strata": {
+  "1": {
+   "n": 51,
+   "default": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 94.12,
+    "file_n": 48,
+    "function_pct": 52.94,
+    "function_n": 27,
+    "line_pct": 35.29,
+    "line_n": 18,
+    "mean_fraction": 0.6298551451736344,
+    "mean_files": 31.353,
+    "mean_tokens": 8762.8
+   },
+   "arm": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 94.12,
+    "file_n": 48,
+    "function_pct": 49.02,
+    "function_n": 25,
+    "line_pct": 31.37,
+    "line_n": 16,
+    "mean_fraction": 0.6096633694037654,
+    "mean_files": 39.039,
+    "mean_tokens": 8894.1
+   },
+   "delta_file": 0.0,
+   "delta_function": -3.92,
+   "delta_line": -3.92,
+   "delta_fraction": -0.020192,
+   "delta_files": 7.686,
+   "delta_tokens": 131.3,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 0.0625,
+   "frac_up": 0,
+   "frac_down": 5
+  },
+  "2": {
+   "n": 37,
+   "default": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 18.92,
+    "file_n": 7,
+    "function_pct": 43.24,
+    "function_n": 16,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.3277437124075038,
+    "mean_files": 31.081,
+    "mean_tokens": 8784.7
+   },
+   "arm": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 24.32,
+    "file_n": 9,
+    "function_pct": 40.54,
+    "function_n": 15,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.3217636946734173,
+    "mean_files": 38.919,
+    "mean_tokens": 8930.1
+   },
+   "delta_file": 5.4,
+   "delta_function": -2.7,
+   "delta_line": 0.0,
+   "delta_fraction": -0.00598,
+   "delta_files": 7.838,
+   "delta_tokens": 145.4,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 2,
+    "p": 0.5
+   },
+   "fraction_wilcoxon_p": 0.25,
+   "frac_up": 1,
+   "frac_down": 3
+  },
+  "3+": {
+   "n": 40,
+   "default": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 10.0,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.22246640602809528,
+    "mean_files": 31.375,
+    "mean_tokens": 8740.7
+   },
+   "arm": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 10.0,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.21979460446015517,
+    "mean_files": 39.05,
+    "mean_tokens": 8870.7
+   },
+   "delta_file": 0.0,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": -0.002672,
+   "delta_files": 7.675,
+   "delta_tokens": 130.0,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 0.3125,
+   "frac_up": 2,
+   "frac_down": 3
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_arm_only": 2,
+   "p": 0.5
+  },
+  "FUNCTION": {
+   "b_def_only": 3,
+   "c_arm_only": 0,
+   "p": 0.25
+  },
+  "LINE": {
+   "b_def_only": 2,
+   "c_arm_only": 0,
+   "p": 0.5
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 14,
+   "statistic": 9.0,
+   "p": 0.0062414098676655295,
+   "n_up": 3,
+   "n_down": 11
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 16,
+ "changed": [
+  {
+   "instance_id": "elastic__logstash-14878",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6897->0.4828",
+   "fraction_delta": -0.206897
+  },
+  {
+   "instance_id": "elastic__logstash-14897",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6897->0.4828",
+   "fraction_delta": -0.206897
+  },
+  {
+   "instance_id": "elastic__logstash-14898",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6897->0.4828",
+   "fraction_delta": -0.206897
+  },
+  {
+   "instance_id": "elastic__logstash-15233",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.7955",
+   "fraction_delta": -0.204545
+  },
+  {
+   "instance_id": "elastic__logstash-15241",
+   "repo": "elastic/logstash",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.7955",
+   "fraction_delta": -0.204545
+  },
+  {
+   "instance_id": "elastic__logstash-15000",
+   "repo": "elastic/logstash",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5782->0.4762",
+   "fraction_delta": -0.102041
+  },
+  {
+   "instance_id": "elastic__logstash-15008",
+   "repo": "elastic/logstash",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5782->0.4762",
+   "fraction_delta": -0.102041
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-3621",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5696->0.4810",
+   "fraction_delta": -0.088608
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4365",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5476->0.4821",
+   "fraction_delta": -0.065476
+  },
+  {
+   "instance_id": "elastic__logstash-14027",
+   "repo": "elastic/logstash",
+   "stratum": "3+",
+   "n_gold_files": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4756->0.4268",
+   "fraction_delta": -0.04878
+  },
+  {
+   "instance_id": "google__gson-1787",
+   "repo": "google/gson",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6338->0.6056",
+   "fraction_delta": -0.028169
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-2036",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4325",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "elastic__logstash-13997",
+   "repo": "elastic/logstash",
+   "stratum": "3+",
+   "n_gold_files": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0609->0.0761",
+   "fraction_delta": 0.015228
+  },
+  {
+   "instance_id": "fasterxml__jackson-dataformat-xml-531",
+   "repo": "fasterxml/jackson-dataformat-xml",
+   "stratum": "3+",
+   "n_gold_files": 6,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1341->0.1545",
+   "fraction_delta": 0.020325
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4304",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1429->0.2143",
+   "fraction_delta": 0.071429
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}

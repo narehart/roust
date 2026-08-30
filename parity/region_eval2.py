@@ -466,6 +466,8 @@ def main() -> None:
                           "seating); omitted by default (binary default: off)")
     ap.add_argument("--shape-blocks", action="store_true",
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
+    ap.add_argument("--max-additions", type=int, default=0,
+                     help="E28 (per-language parity campaign): append --max-additions N to every roust invocation -- the pool breadth cap (engine default 16 = shipped). 0 (the default here) is a SENTINEL meaning forward NO flag at all, so a default arm's argv is byte-identical to every pre-E28 default arm's.")
     ap.add_argument("--ext-v2", action="store_true",
                      help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
     ap.add_argument("--displacement-guard", action="store_true",
@@ -505,6 +507,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--shape-blocks")
     if args.ext_v2:
         EXTRA_ENGINE_FLAGS.append("--ext-v2")
+    if args.max_additions:
+        EXTRA_ENGINE_FLAGS.extend(["--max-additions", str(args.max_additions)])
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
@@ -530,6 +534,7 @@ def main() -> None:
                                      args.repos_dir, args.route, args.route_test_penalty,
                                      args.lexboost, args.lexboost_graph, args.trace_boost,
                                      args.no_trace_boost, args.file_score, args.test_bridge)
+            rec["max_additions"] = args.max_additions
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:
