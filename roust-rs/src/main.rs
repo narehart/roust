@@ -149,6 +149,14 @@ struct Args {
     #[arg(long, default_value_t = 0.15)]
     eligible_floor: f64,
 
+    /// E34 (per-language parity campaign): how many BM25-ranked files seed
+    /// the retrieval as `sources` (10 = shipped). E33 showed Java, C++ and
+    /// Rust saturate under maximum candidate GENERATION, so the residue is
+    /// upstream of the graph: everything is expanded outward from these
+    /// seeds, and gold more than two hops from all of them is unreachable.
+    #[arg(long, default_value_t = 10)]
+    k_lex: usize,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -618,6 +626,7 @@ fn main() {
         seats_per_source: args.seats_per_source,
         import_hops: args.import_hops,
         eligible_floor: args.eligible_floor,
+        k_lex: args.k_lex,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,

@@ -340,6 +340,8 @@ def main() -> None:
                      help="E32 (per-language parity campaign): append --import-edges-v2 -- resolve Java and C-family import edges, which the import graph never covered at all.")
     ap.add_argument("--eligible-floor", type=float, default=0.0,
                      help="E33 (per-language parity campaign): append --eligible-floor F -- the pool eligibility cut as a fraction of the best candidate score (engine default 0.15). 0.0 here is a SENTINEL meaning forward NO flag at all.")
+    ap.add_argument("--k-lex", type=int, default=0,
+                     help="E34 (per-language parity campaign): append --k-lex N -- how many BM25-ranked files seed retrieval as `sources` (engine default 10). 0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--budget", type=int, default=0,
                      help="E29 (cost-of-parity curve): override the packer token budget by "
                           "rebinding the module-global BUDGET (run_roust already passes "
@@ -423,6 +425,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--import-edges-v2")
     if args.eligible_floor:
         EXTRA_ENGINE_FLAGS.extend(["--eligible-floor", str(args.eligible_floor)])
+    if args.k_lex:
+        EXTRA_ENGINE_FLAGS.extend(["--k-lex", str(args.k_lex)])
     if args.budget:
         BUDGET = args.budget
     if args.repos_dir is not None:
@@ -464,6 +468,7 @@ def main() -> None:
             rec["import_hops"] = args.import_hops
             rec["import_edges_v2"] = args.import_edges_v2
             rec["eligible_floor"] = args.eligible_floor
+            rec["k_lex"] = args.k_lex
             rec["budget"] = BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
