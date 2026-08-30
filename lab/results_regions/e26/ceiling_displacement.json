@@ -1,0 +1,1323 @@
+{
+ "jsts": {
+  "ext_gold": 7,
+  "def_retrieved": 0,
+  "ext_retrieved": 1,
+  "recovery_pct": 14.3,
+  "nonext_lost": 88,
+  "nonext_gained": 27,
+  "instances_losing_nonext_gold": [
+   "axios__axios-5338",
+   "sveltejs__svelte-10054",
+   "sveltejs__svelte-10181",
+   "sveltejs__svelte-10209",
+   "sveltejs__svelte-10368",
+   "sveltejs__svelte-10378",
+   "sveltejs__svelte-10391",
+   "sveltejs__svelte-10395",
+   "sveltejs__svelte-10430",
+   "sveltejs__svelte-10590",
+   "sveltejs__svelte-10642",
+   "sveltejs__svelte-10656",
+   "sveltejs__svelte-10669",
+   "sveltejs__svelte-10721",
+   "sveltejs__svelte-10797",
+   "sveltejs__svelte-11059",
+   "sveltejs__svelte-11183",
+   "sveltejs__svelte-11203",
+   "sveltejs__svelte-11219",
+   "sveltejs__svelte-11276",
+   "sveltejs__svelte-11287",
+   "sveltejs__svelte-11357",
+   "sveltejs__svelte-11421",
+   "sveltejs__svelte-11495",
+   "sveltejs__svelte-11676",
+   "sveltejs__svelte-11736",
+   "sveltejs__svelte-11768",
+   "sveltejs__svelte-11946",
+   "sveltejs__svelte-11947",
+   "sveltejs__svelte-12019",
+   "sveltejs__svelte-12047",
+   "sveltejs__svelte-12056",
+   "sveltejs__svelte-12176",
+   "sveltejs__svelte-12215",
+   "sveltejs__svelte-12290",
+   "sveltejs__svelte-12329",
+   "sveltejs__svelte-12345",
+   "sveltejs__svelte-12524",
+   "sveltejs__svelte-12618",
+   "sveltejs__svelte-12799",
+   "sveltejs__svelte-12845",
+   "sveltejs__svelte-12869",
+   "sveltejs__svelte-12949",
+   "sveltejs__svelte-13035",
+   "sveltejs__svelte-13057",
+   "sveltejs__svelte-13362",
+   "sveltejs__svelte-13411",
+   "sveltejs__svelte-13437",
+   "sveltejs__svelte-13445",
+   "sveltejs__svelte-13526",
+   "sveltejs__svelte-13617",
+   "sveltejs__svelte-13630",
+   "sveltejs__svelte-13668",
+   "sveltejs__svelte-13679",
+   "sveltejs__svelte-13698",
+   "sveltejs__svelte-14456",
+   "sveltejs__svelte-14629",
+   "sveltejs__svelte-9462",
+   "sveltejs__svelte-9497",
+   "sveltejs__svelte-9665",
+   "sveltejs__svelte-9717",
+   "sveltejs__svelte-9754",
+   "sveltejs__svelte-9784",
+   "sveltejs__svelte-9789",
+   "sveltejs__svelte-9838",
+   "sveltejs__svelte-9904"
+  ],
+  "ceiling_detail": [
+   {
+    "instance_id": "axios__axios-5338",
+    "ext_gold": [
+     "index.d.cts"
+    ],
+    "def": [],
+    "ext": [
+     "index.d.cts"
+    ]
+   },
+   {
+    "instance_id": "mui__material-ui-34216",
+    "ext_gold": [
+     "scripts/generateCodeowners.mjs"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11334",
+    "ext_gold": [
+     "sites/svelte-5-preview/src/lib/Input/ComponentSelector.svelte",
+     "sites/svelte-5-preview/src/lib/Input/Migrate.svelte",
+     "sites/svelte-5-preview/src/lib/Repl.svelte"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12948",
+    "ext_gold": [
+     "sites/svelte-5-preview/src/lib/CodeMirror.svelte"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-14353",
+    "ext_gold": [
+     "sites/svelte-5-preview/src/lib/Output/Viewer.svelte"
+    ],
+    "def": [],
+    "ext": []
+   }
+  ],
+  "displacement_detail": [
+   {
+    "instance_id": "axios__axios-5338",
+    "lost": [
+     "lib/core/Axios.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10054",
+    "lost": [
+     "packages/svelte/src/compiler/phases/1-parse/read/style.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10181",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10209",
+    "lost": [
+     "packages/svelte/src/internal/client/runtime.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10368",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/index.js",
+     "packages/svelte/src/compiler/phases/scope.js",
+     "packages/svelte/src/compiler/types/template.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10378",
+    "lost": [
+     "packages/svelte/src/internal/client/runtime.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10391",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10395",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js",
+     "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+     "packages/svelte/src/compiler/phases/scope.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10430",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js",
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10590",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js",
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10642",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10656",
+    "lost": [
+     "packages/svelte/src/compiler/phases/1-parse/state/tag.js",
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js",
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js",
+     "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+     "packages/svelte/src/compiler/types/template.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10669",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10721",
+    "lost": [
+     "packages/svelte/src/compiler/phases/1-parse/state/element.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10797",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10996",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/internal/client/dom/blocks/each.js",
+     "packages/svelte/src/internal/client/dom/blocks/svelte-head.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-11059",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11183",
+    "lost": [
+     "packages/svelte/src/internal/client/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11203",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11219",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11276",
+    "lost": [
+     "packages/svelte/src/compiler/types/css.d.ts"
+    ],
+    "gained": [
+     "packages/svelte/src/compiler/phases/2-analyze/css/css-warn.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-11287",
+    "lost": [
+     "packages/svelte/types/index.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11357",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11421",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11495",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js",
+     "packages/svelte/src/compiler/warnings.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11676",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11736",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11768",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11946",
+    "lost": [
+     "packages/svelte/src/reactivity/set.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11947",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12019",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12047",
+    "lost": [
+     "packages/svelte/src/internal/client/reactivity/deriveds.js",
+     "packages/svelte/src/internal/client/reactivity/props.js",
+     "packages/svelte/src/internal/client/reactivity/sources.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12056",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12176",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12215",
+    "lost": [
+     "packages/svelte/src/compiler/types/template.d.ts",
+     "packages/svelte/src/internal/client/types.d.ts"
+    ],
+    "gained": [
+     "packages/svelte/src/internal/client/dom/blocks/snippet.js",
+     "packages/svelte/src/internal/client/dom/blocks/svelte-component.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-12290",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12329",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12345",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12413",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/internal/client/index.js",
+     "packages/svelte/src/internal/client/utils.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-12524",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12545",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/VariableDeclaration.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-12618",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12660",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/1-parse/read/options.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-12799",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12845",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12869",
+    "lost": [
+     "packages/svelte/src/compiler/types/index.d.ts",
+     "packages/svelte/src/compiler/types/template.d.ts",
+     "packages/svelte/src/compiler/validate-options.js",
+     "packages/svelte/types/index.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12949",
+    "lost": [
+     "packages/svelte/src/internal/client/runtime.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13035",
+    "lost": [
+     "packages/svelte/src/compiler/types/index.d.ts",
+     "packages/svelte/types/index.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13057",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13362",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13411",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/visitors/shared/a11y.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13437",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js",
+     "packages/svelte/src/compiler/phases/scope.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13445",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/css/css-analyze.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13526",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13617",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13630",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13668",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13679",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13698",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13763",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/SvelteElement.js",
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/shared/element.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14210",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/internal/client/validate.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14276",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/2-analyze/css/utils.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14289",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/internal/client/dom/elements/bindings/shared.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14353",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/3-transform/server/visitors/AwaitBlock.js",
+     "packages/svelte/src/compiler/phases/3-transform/server/visitors/EachBlock.js",
+     "packages/svelte/src/compiler/phases/3-transform/server/visitors/IfBlock.js",
+     "packages/svelte/src/internal/server/index.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14456",
+    "lost": [
+     "packages/svelte/src/compiler/phases/types.d.ts"
+    ],
+    "gained": [
+     "packages/svelte/src/compiler/phases/2-analyze/visitors/SnippetBlock.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14629",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": [
+     "packages/svelte/src/internal/client/errors.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14691",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/1-parse/index.js",
+     "packages/svelte/src/compiler/phases/1-parse/state/tag.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14811",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/internal/client/dev/tracing.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14993",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/SvelteBoundary.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-9462",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9497",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js",
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9665",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9717",
+    "lost": [
+     "packages/svelte/src/internal/client/runtime.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9723",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/constants.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-9754",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js",
+     "packages/svelte/src/compiler/types/css.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9784",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/utils.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9789",
+    "lost": [
+     "packages/svelte/src/internal/client/proxy/readonly.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9838",
+    "lost": [
+     "packages/svelte/src/compiler/phases/scope.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9904",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js",
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9988",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/internal/index.js"
+    ]
+   },
+   {
+    "instance_id": "vuejs__core-11515",
+    "lost": [],
+    "gained": [
+     "packages/compiler-ssr/src/transforms/ssrTransformTransitionGroup.ts"
+    ]
+   }
+  ]
+ },
+ "java": {
+  "ext_gold": 32,
+  "def_retrieved": 0,
+  "ext_retrieved": 13,
+  "recovery_pct": 40.6,
+  "nonext_lost": 3,
+  "nonext_gained": 0,
+  "instances_losing_nonext_gold": [
+   "elastic__logstash-13825",
+   "elastic__logstash-14000",
+   "elastic__logstash-14571"
+  ],
+  "ceiling_detail": [
+   {
+    "instance_id": "elastic__logstash-13902",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/environment.rb"
+    ]
+   },
+   {
+    "instance_id": "elastic__logstash-13930",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/environment.rb"
+    ]
+   },
+   {
+    "instance_id": "elastic__logstash-13931",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/environment.rb"
+    ]
+   },
+   {
+    "instance_id": "elastic__logstash-13997",
+    "ext_gold": [
+     "qa/integration/specs/env_variables_condition_spec.rb"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "elastic__logstash-14000",
+    "ext_gold": [
+     "logstash-core/lib/logstash/agent.rb",
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/pipeline_action.rb",
+     "logstash-core/lib/logstash/pipeline_action/stop_and_delete.rb",
+     "logstash-core/lib/logstash/plugins/registry.rb",
+     "logstash-core/lib/logstash/settings.rb",
+     "logstash-core/lib/logstash/state_resolver.rb",
+     "logstash-core/lib/logstash/util/password.rb",
+     "logstash-core/lib/logstash/webserver.rb",
+     "logstash-core/spec/logstash/agent/converge_spec.rb",
+     "logstash-core/spec/logstash/settings_spec.rb",
+     "logstash-core/spec/logstash/state_resolver_spec.rb",
+     "logstash-core/spec/support/matchers.rb",
+     "qa/integration/specs/env_variables_condition_spec.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/agent.rb",
+     "logstash-core/lib/logstash/settings.rb"
+    ]
+   },
+   {
+    "instance_id": "elastic__logstash-14027",
+    "ext_gold": [
+     "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+     "logstash-core/spec/logstash/plugins/builtin/pipeline_input_output_spec.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+    ]
+   },
+   {
+    "instance_id": "elastic__logstash-14045",
+    "ext_gold": [
+     "logstash-core/lib/logstash/agent.rb",
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/settings.rb",
+     "logstash-core/lib/logstash/util/password.rb",
+     "logstash-core/lib/logstash/webserver.rb",
+     "logstash-core/spec/logstash/settings_spec.rb",
+     "logstash-core/spec/logstash/webserver_spec.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/agent.rb",
+     "logstash-core/lib/logstash/settings.rb"
+    ]
+   },
+   {
+    "instance_id": "elastic__logstash-14571",
+    "ext_gold": [
+     "logstash-core/lib/logstash/agent.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/agent.rb"
+    ]
+   },
+   {
+    "instance_id": "elastic__logstash-15969",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/runner.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/runner.rb"
+    ]
+   },
+   {
+    "instance_id": "elastic__logstash-16094",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/runner.rb"
+    ],
+    "def": [],
+    "ext": [
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/runner.rb"
+    ]
+   }
+  ],
+  "displacement_detail": [
+   {
+    "instance_id": "elastic__logstash-13825",
+    "lost": [
+     "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "elastic__logstash-14000",
+    "lost": [
+     "logstash-core/src/main/java/org/logstash/Rubyfier.java"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "elastic__logstash-14571",
+    "lost": [
+     "logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java"
+    ],
+    "gained": []
+   }
+  ]
+ },
+ "rust": {
+  "ext_gold": 0,
+  "def_retrieved": 0,
+  "ext_retrieved": 0,
+  "recovery_pct": null,
+  "nonext_lost": 0,
+  "nonext_gained": 0,
+  "instances_losing_nonext_gold": [],
+  "ceiling_detail": [],
+  "displacement_detail": []
+ },
+ "c": {
+  "ext_gold": 109,
+  "def_retrieved": 0,
+  "ext_retrieved": 21,
+  "recovery_pct": 19.3,
+  "nonext_lost": 10,
+  "nonext_gained": 9,
+  "instances_losing_nonext_gold": [
+   "ponylang__ponyc-1858",
+   "ponylang__ponyc-1981",
+   "ponylang__ponyc-2660",
+   "ponylang__ponyc-3739",
+   "ponylang__ponyc-4024",
+   "ponylang__ponyc-4061",
+   "ponylang__ponyc-4299",
+   "ponylang__ponyc-4588"
+  ],
+  "ceiling_detail": [
+   {
+    "instance_id": "ponylang__ponyc-1858",
+    "ext_gold": [
+     "examples/ffi-callbacks/callbacks.pony"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-2168",
+    "ext_gold": [
+     "packages/builtin/array.pony",
+     "packages/cli/command_parser.pony",
+     "packages/collections/map.pony",
+     "packages/collections/persistent/benchmarks/main.pony",
+     "packages/collections/persistent/list.pony",
+     "packages/collections/persistent/map.pony",
+     "packages/glob/glob.pony",
+     "packages/itertools/iter.pony",
+     "packages/itertools/itertools.pony",
+     "packages/logger/logger.pony",
+     "packages/ponybench/_bench_async.pony",
+     "packages/ponybench/pony_bench.pony",
+     "packages/promises/promise.pony"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-2272",
+    "ext_gold": [
+     "packages/serialise/serialise.pony"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-2660",
+    "ext_gold": [
+     "packages/collections/map.pony",
+     "packages/itertools/iter.pony"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-2865",
+    "ext_gold": [
+     "packages/builtin/_partial_arithmetic.pony",
+     "packages/builtin/real.pony",
+     "packages/builtin/signed.pony",
+     "packages/builtin/unsigned.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/builtin/real.pony",
+     "packages/builtin/signed.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-2950",
+    "ext_gold": [
+     "packages/collections/heap.pony"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-3293",
+    "ext_gold": [
+     "packages/builtin/nullable_pointer.pony"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-3442",
+    "ext_gold": [
+     "packages/cli/command_parser.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/cli/command_parser.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3603",
+    "ext_gold": [
+     "packages/itertools/iter.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/itertools/iter.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3675",
+    "ext_gold": [
+     "packages/builtin/array.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/builtin/array.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3739",
+    "ext_gold": [
+     "examples/fan-in/main.pony",
+     "examples/message-ubench/main.pony",
+     "packages/assert/assert.pony",
+     "packages/builtin/builtin.pony",
+     "packages/builtin/env.pony",
+     "packages/builtin/float.pony",
+     "packages/builtin/signed.pony",
+     "packages/builtin/std_stream.pony",
+     "packages/builtin/stdin.pony",
+     "packages/builtin/string.pony",
+     "packages/builtin/unsigned.pony",
+     "packages/capsicum/cap.pony",
+     "packages/capsicum/cap_rights.pony",
+     "packages/collections/hashable.pony",
+     "packages/debug/debug.pony",
+     "packages/files/_file_des.pony",
+     "packages/files/directory.pony",
+     "packages/files/file_info.pony",
+     "packages/files/file_path.pony",
+     "packages/files/path.pony",
+     "packages/net/dns.pony",
+     "packages/net/net.pony",
+     "packages/net/net_address.pony",
+     "packages/net/ossocket.pony",
+     "packages/net/tcp_connection.pony",
+     "packages/net/tcp_listener.pony",
+     "packages/net/udp_socket.pony",
+     "packages/ponybench/_runner.pony",
+     "packages/process/_pipe.pony",
+     "packages/process/_process.pony",
+     "packages/serialise/serialise.pony",
+     "packages/signals/signal_notify.pony",
+     "packages/time/posix_date.pony",
+     "packages/time/time.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/net/tcp_connection.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3777",
+    "ext_gold": [
+     "packages/collections/flag.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/collections/flag.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3819",
+    "ext_gold": [
+     "examples/files/files.pony",
+     "examples/mandelbrot/mandelbrot.pony",
+     "packages/files/auth.pony",
+     "packages/files/directory.pony",
+     "packages/files/file_path.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/files/directory.pony",
+     "packages/files/file_path.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3962",
+    "ext_gold": [
+     "examples/echo/echo.pony",
+     "examples/files/files.pony",
+     "examples/mandelbrot/mandelbrot.pony",
+     "examples/net/listener.pony",
+     "examples/net/net.pony",
+     "examples/net/pong.pony",
+     "examples/under_pressure/main.pony",
+     "minimal-cases/issue-629/629.pony",
+     "packages/backpressure/backpressure.pony",
+     "packages/builtin/env.pony",
+     "packages/files/files.pony",
+     "packages/ini/ini.pony",
+     "packages/net/proxy.pony",
+     "packages/net/tcp_connection.pony",
+     "packages/net/tcp_listener.pony",
+     "packages/net/udp_socket.pony",
+     "packages/process/process.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/builtin/env.pony",
+     "packages/net/proxy.pony",
+     "packages/net/tcp_connection.pony",
+     "packages/net/tcp_listener.pony",
+     "packages/net/udp_socket.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3973",
+    "ext_gold": [
+     "packages/builtin/asio_event.pony",
+     "packages/builtin/stdin.pony",
+     "packages/net/tcp_connection.pony",
+     "packages/net/tcp_listener.pony",
+     "packages/net/udp_socket.pony",
+     "packages/process/process_monitor.pony",
+     "packages/signals/signal_handler.pony",
+     "packages/time/timers.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/builtin/stdin.pony",
+     "packages/net/tcp_connection.pony",
+     "packages/net/tcp_listener.pony",
+     "packages/net/udp_socket.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3991",
+    "ext_gold": [
+     "packages/promises/promise.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/promises/promise.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-4034",
+    "ext_gold": [
+     "examples/pony_check/async_tcp_property.pony",
+     "examples/pony_check/collection_generators.pony",
+     "examples/pony_check/custom_class.pony",
+     "examples/pony_check/list_reverse.pony",
+     "examples/pony_check/main.pony",
+     "packages/pony_check/ascii_range.pony",
+     "packages/pony_check/for_all.pony",
+     "packages/pony_check/generator.pony",
+     "packages/pony_check/int_properties.pony",
+     "packages/pony_check/pony_check.pony",
+     "packages/pony_check/poperator.pony",
+     "packages/pony_check/property.pony",
+     "packages/pony_check/property_helper.pony",
+     "packages/pony_check/property_runner.pony",
+     "packages/pony_check/randomness.pony"
+    ],
+    "def": [],
+    "ext": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-4132",
+    "ext_gold": [
+     "packages/builtin/string.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/builtin/string.pony"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-4593",
+    "ext_gold": [
+     "packages/cli/command_parser.pony"
+    ],
+    "def": [],
+    "ext": [
+     "packages/cli/command_parser.pony"
+    ]
+   }
+  ],
+  "displacement_detail": [
+   {
+    "instance_id": "ponylang__ponyc-1124",
+    "lost": [],
+    "gained": [
+     "src/libponyc/type/cap.h"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-1411",
+    "lost": [],
+    "gained": [
+     "src/libponyc/expr/call.c"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-1858",
+    "lost": [
+     "src/libponyc/expr/lambda.c",
+     "src/libponyc/pass/syntax.c"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-1981",
+    "lost": [
+     "src/libponyc/pass/expr.c",
+     "src/libponyc/pass/sugar.c"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-2205",
+    "lost": [],
+    "gained": [
+     "src/libponyc/codegen/codegen.h"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-2272",
+    "lost": [],
+    "gained": [
+     "src/libponyc/pass/pass.c"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-2660",
+    "lost": [
+     "src/libponyc/expr/lambda.c"
+    ],
+    "gained": [
+     "src/libponyc/type/matchtype.c"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3293",
+    "lost": [],
+    "gained": [
+     "src/libponyc/codegen/genheader.c"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-3739",
+    "lost": [
+     "src/libponyc/codegen/gencall.c"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-3953",
+    "lost": [],
+    "gained": [
+     "src/libponyc/pass/flatten.c"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-4024",
+    "lost": [
+     "src/libponyc/ast/parser.c"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-4061",
+    "lost": [
+     "src/libponyc/pass/sugar.c"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-4288",
+    "lost": [],
+    "gained": [
+     "src/libponyc/type/safeto.c"
+    ]
+   },
+   {
+    "instance_id": "ponylang__ponyc-4299",
+    "lost": [
+     "src/libponyc/expr/operator.c"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "ponylang__ponyc-4588",
+    "lost": [
+     "src/libponyc/expr/match.c"
+    ],
+    "gained": [
+     "src/libponyc/codegen/genmatch.c"
+    ]
+   }
+  ]
+ },
+ "cpp": {
+  "ext_gold": 0,
+  "def_retrieved": 0,
+  "ext_retrieved": 0,
+  "recovery_pct": null,
+  "nonext_lost": 0,
+  "nonext_gained": 0,
+  "instances_losing_nonext_gold": [],
+  "ceiling_detail": [],
+  "displacement_detail": []
+ }
+}

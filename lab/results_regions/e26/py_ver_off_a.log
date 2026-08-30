@@ -1,0 +1,9 @@
+engine version: roust 0.3.2 (fcb2562, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep-worktrees/e26-ext-coverage/lab/swebench_verified_heldout.parquet
+pad_lines=5 len_exp=0.85
+[25/64] sympy__sympy-14248                            elapsed=150s (ok) ok=25 err=0
+[50/64] sympy__sympy-20801                            elapsed=318s (ok) ok=50 err=0
+[64/64] sympy__sympy-24661                            elapsed=401s (ok) ok=64 err=0
+
+engine version: roust 0.3.2 (fcb2562, clean)
+wrote 64 records (64 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e26/py_ver_off_a.jsonl

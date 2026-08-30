@@ -1,0 +1,172 @@
+{
+ "label": "rust",
+ "n": 239,
+ "default": {
+  "n": 239,
+  "n_errors": 0,
+  "file_pct": 60.25,
+  "file_n": 144,
+  "function_pct": 19.67,
+  "function_n": 47,
+  "line_pct": 7.53,
+  "line_n": 18,
+  "mean_fraction": 0.2431473886942461
+ },
+ "ext_v2": {
+  "n": 239,
+  "n_errors": 0,
+  "file_pct": 60.25,
+  "file_n": 144,
+  "function_pct": 19.67,
+  "function_n": 47,
+  "line_pct": 7.53,
+  "line_n": 18,
+  "mean_fraction": 0.24286614795857953
+ },
+ "delta": {
+  "file": 0.0,
+  "function": 0.0,
+  "line": 0.0,
+  "mean_fraction": -0.000281
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_ext_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 0,
+   "c_ext_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "LINE": {
+   "b_def_only": 0,
+   "c_ext_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 2,
+   "statistic": 1.0,
+   "p": 1.0,
+   "n_up": 1,
+   "n_down": 1
+  }
+ },
+ "strata": {
+  "1": {
+   "default": {
+    "n": 82,
+    "n_errors": 0,
+    "file_pct": 97.56,
+    "file_n": 80,
+    "function_pct": 39.02,
+    "function_n": 32,
+    "line_pct": 21.95,
+    "line_n": 18,
+    "mean_fraction": 0.36417044882546734
+   },
+   "ext_v2": {
+    "n": 82,
+    "n_errors": 0,
+    "file_pct": 97.56,
+    "file_n": 80,
+    "function_pct": 39.02,
+    "function_n": 32,
+    "line_pct": 21.95,
+    "line_n": 18,
+    "mean_fraction": 0.36417044882546734
+   }
+  },
+  "2": {
+   "default": {
+    "n": 52,
+    "n_errors": 0,
+    "file_pct": 67.31,
+    "file_n": 35,
+    "function_pct": 11.54,
+    "function_n": 6,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.20951211463597225
+   },
+   "ext_v2": {
+    "n": 52,
+    "n_errors": 0,
+    "file_pct": 67.31,
+    "file_n": 35,
+    "function_pct": 11.54,
+    "function_n": 6,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.20951211463597225
+   }
+  },
+  "3+": {
+   "default": {
+    "n": 105,
+    "n_errors": 0,
+    "file_pct": 27.62,
+    "file_n": 29,
+    "function_pct": 8.57,
+    "function_n": 9,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.16529161079205654
+   },
+   "ext_v2": {
+    "n": 105,
+    "n_errors": 0,
+    "file_pct": 27.62,
+    "file_n": 29,
+    "function_pct": 8.57,
+    "function_n": 9,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.16465145330801553
+   }
+  }
+ },
+ "ceiling": {
+  "ext_gold_files": 0,
+  "ext_gold_retrieved_default": 0,
+  "ext_gold_retrieved_ext": 0,
+  "instances_with_ext_gold": 0,
+  "detail": []
+ },
+ "displacement": {
+  "nonext_gold_lost": 0,
+  "nonext_gold_gained": 0,
+  "detail": []
+ },
+ "n_changed": 2,
+ "changed": [
+  {
+   "instance_id": "sharkdp__bat-1518",
+   "repo": "sharkdp/bat",
+   "n_gold": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2276->0.1517",
+   "fraction_delta": -0.075862
+  },
+  {
+   "instance_id": "sharkdp__bat-2896",
+   "repo": "sharkdp/bat",
+   "n_gold": 19,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2680->0.2767",
+   "fraction_delta": 0.008646
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "ext_only": []
+ }
+}

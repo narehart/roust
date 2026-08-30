@@ -1,0 +1,913 @@
+{
+ "label": "jsts_guarded",
+ "n": 580,
+ "default": {
+  "n": 580,
+  "n_errors": 1,
+  "file_pct": 46.38,
+  "file_n": 269,
+  "function_pct": 31.21,
+  "function_n": 181,
+  "line_pct": 14.14,
+  "line_n": 82,
+  "mean_fraction": 0.2615590303466884
+ },
+ "ext_v2": {
+  "n": 580,
+  "n_errors": 1,
+  "file_pct": 43.62,
+  "file_n": 253,
+  "function_pct": 31.03,
+  "function_n": 180,
+  "line_pct": 13.97,
+  "line_n": 81,
+  "mean_fraction": 0.2587398946722962
+ },
+ "delta": {
+  "file": -2.76,
+  "function": -0.18,
+  "line": -0.17,
+  "mean_fraction": -0.002819
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 17,
+   "c_ext_only": 1,
+   "p": 0.00014495849609375
+  },
+  "FUNCTION": {
+   "b_def_only": 3,
+   "c_ext_only": 2,
+   "p": 1.0
+  },
+  "LINE": {
+   "b_def_only": 2,
+   "c_ext_only": 1,
+   "p": 1.0
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 31,
+   "statistic": 113.0,
+   "p": 0.007087168283760548,
+   "n_up": 9,
+   "n_down": 22
+  }
+ },
+ "strata": {
+  "1": {
+   "default": {
+    "n": 280,
+    "n_errors": 1,
+    "file_pct": 72.5,
+    "file_n": 203,
+    "function_pct": 41.79,
+    "function_n": 117,
+    "line_pct": 26.43,
+    "line_n": 74,
+    "mean_fraction": 0.32002322068577005
+   },
+   "ext_v2": {
+    "n": 280,
+    "n_errors": 1,
+    "file_pct": 68.93,
+    "file_n": 193,
+    "function_pct": 41.43,
+    "function_n": 116,
+    "line_pct": 26.07,
+    "line_n": 73,
+    "mean_fraction": 0.31774108890543035
+   }
+  },
+  "2": {
+   "default": {
+    "n": 93,
+    "n_errors": 0,
+    "file_pct": 48.39,
+    "file_n": 45,
+    "function_pct": 26.88,
+    "function_n": 25,
+    "line_pct": 5.38,
+    "line_n": 5,
+    "mean_fraction": 0.23628768877675208
+   },
+   "ext_v2": {
+    "n": 93,
+    "n_errors": 0,
+    "file_pct": 43.01,
+    "file_n": 40,
+    "function_pct": 26.88,
+    "function_n": 25,
+    "line_pct": 5.38,
+    "line_n": 5,
+    "mean_fraction": 0.2307099763689148
+   }
+  },
+  "3+": {
+   "default": {
+    "n": 207,
+    "n_errors": 0,
+    "file_pct": 10.14,
+    "file_n": 21,
+    "function_pct": 18.84,
+    "function_n": 39,
+    "line_pct": 1.45,
+    "line_n": 3,
+    "mean_fraction": 0.1941132605949991
+   },
+   "ext_v2": {
+    "n": 207,
+    "n_errors": 0,
+    "file_pct": 9.66,
+    "file_n": 20,
+    "function_pct": 18.84,
+    "function_n": 39,
+    "line_pct": 1.45,
+    "line_n": 3,
+    "mean_fraction": 0.1918096976248084
+   }
+  }
+ },
+ "ceiling": {
+  "ext_gold_files": 7,
+  "ext_gold_retrieved_default": 0,
+  "ext_gold_retrieved_ext": 1,
+  "instances_with_ext_gold": 5,
+  "detail": [
+   {
+    "instance_id": "axios__axios-5338",
+    "ext_gold": [
+     "index.d.cts"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "index.d.cts"
+    ],
+    "n_gold": 11
+   },
+   {
+    "instance_id": "mui__material-ui-34216",
+    "ext_gold": [
+     "scripts/generateCodeowners.mjs"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [],
+    "n_gold": 44
+   },
+   {
+    "instance_id": "sveltejs__svelte-11334",
+    "ext_gold": [
+     "sites/svelte-5-preview/src/lib/Input/ComponentSelector.svelte",
+     "sites/svelte-5-preview/src/lib/Input/Migrate.svelte",
+     "sites/svelte-5-preview/src/lib/Repl.svelte"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [],
+    "n_gold": 15
+   },
+   {
+    "instance_id": "sveltejs__svelte-12948",
+    "ext_gold": [
+     "sites/svelte-5-preview/src/lib/CodeMirror.svelte"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [],
+    "n_gold": 16
+   },
+   {
+    "instance_id": "sveltejs__svelte-14353",
+    "ext_gold": [
+     "sites/svelte-5-preview/src/lib/Output/Viewer.svelte"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [],
+    "n_gold": 13
+   }
+  ]
+ },
+ "displacement": {
+  "nonext_gold_lost": 46,
+  "nonext_gold_gained": 3,
+  "detail": [
+   {
+    "instance_id": "axios__axios-5338",
+    "lost": [
+     "lib/core/Axios.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10181",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10209",
+    "lost": [
+     "packages/svelte/src/internal/client/runtime.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10368",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/index.js",
+     "packages/svelte/src/compiler/phases/scope.js",
+     "packages/svelte/src/compiler/types/template.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10430",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js",
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10642",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10656",
+    "lost": [
+     "packages/svelte/src/compiler/phases/1-parse/state/tag.js",
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js",
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js",
+     "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10700",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-10797",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11183",
+    "lost": [
+     "packages/svelte/src/internal/client/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11276",
+    "lost": [
+     "packages/svelte/src/compiler/types/css.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11357",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11421",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11676",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11768",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-11946",
+    "lost": [
+     "packages/svelte/src/reactivity/set.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12047",
+    "lost": [
+     "packages/svelte/src/internal/client/reactivity/deriveds.js",
+     "packages/svelte/src/internal/client/reactivity/props.js",
+     "packages/svelte/src/internal/client/reactivity/sources.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12176",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12329",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12413",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/internal/client/validate.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-12799",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-12869",
+    "lost": [
+     "packages/svelte/src/compiler/types/template.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13057",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13316",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13411",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/visitors/shared/a11y.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13437",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13445",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/css/css-analyze.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13456",
+    "lost": [
+     "packages/svelte/src/compiler/migrate/index.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13526",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-13763",
+    "lost": [],
+    "gained": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/shared/element.js"
+    ]
+   },
+   {
+    "instance_id": "sveltejs__svelte-14626",
+    "lost": [
+     "packages/svelte/src/compiler/phases/2-analyze/visitors/BindDirective.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9462",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9497",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js",
+     "packages/svelte/src/compiler/phases/2-analyze/validation.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9665",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9717",
+    "lost": [
+     "packages/svelte/src/internal/client/runtime.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9754",
+    "lost": [
+     "packages/svelte/src/compiler/errors.js",
+     "packages/svelte/src/compiler/types/css.d.ts"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9784",
+    "lost": [
+     "packages/svelte/src/compiler/phases/3-transform/client/utils.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "sveltejs__svelte-9789",
+    "lost": [
+     "packages/svelte/src/internal/client/proxy/readonly.js"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "vuejs__core-11515",
+    "lost": [],
+    "gained": [
+     "packages/compiler-ssr/src/transforms/ssrTransformTransitionGroup.ts"
+    ]
+   }
+  ]
+ },
+ "n_changed": 43,
+ "changed": [
+  {
+   "instance_id": "sveltejs__svelte-13316",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.0000",
+   "fraction_delta": -0.5
+  },
+  {
+   "instance_id": "sveltejs__svelte-9497",
+   "repo": "sveltejs/svelte",
+   "n_gold": 2,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3333->0.0000",
+   "fraction_delta": -0.333333
+  },
+  {
+   "instance_id": "sveltejs__svelte-11371",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.7000",
+   "fraction_delta": -0.3
+  },
+  {
+   "instance_id": "sveltejs__svelte-14626",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.2500->0.0000",
+   "fraction_delta": -0.25
+  },
+  {
+   "instance_id": "sveltejs__svelte-9789",
+   "repo": "sveltejs/svelte",
+   "n_gold": 2,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2188->0.0000",
+   "fraction_delta": -0.21875
+  },
+  {
+   "instance_id": "sveltejs__svelte-9754",
+   "repo": "sveltejs/svelte",
+   "n_gold": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2148->0.0000",
+   "fraction_delta": -0.214765
+  },
+  {
+   "instance_id": "sveltejs__svelte-13057",
+   "repo": "sveltejs/svelte",
+   "n_gold": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2059->0.0000",
+   "fraction_delta": -0.205882
+  },
+  {
+   "instance_id": "sveltejs__svelte-9811",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.8214",
+   "fraction_delta": -0.178571
+  },
+  {
+   "instance_id": "sveltejs__svelte-12734",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.3571",
+   "fraction_delta": -0.142857
+  },
+  {
+   "instance_id": "sveltejs__svelte-10430",
+   "repo": "sveltejs/svelte",
+   "n_gold": 2,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1250->0.0000",
+   "fraction_delta": -0.125
+  },
+  {
+   "instance_id": "sveltejs__svelte-11096",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1212->0.0000",
+   "fraction_delta": -0.121212
+  },
+  {
+   "instance_id": "axios__axios-5338",
+   "repo": "axios/axios",
+   "n_gold": 10,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4165->0.3341",
+   "fraction_delta": -0.082353
+  },
+  {
+   "instance_id": "sveltejs__svelte-9462",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0741->0.0000",
+   "fraction_delta": -0.074074
+  },
+  {
+   "instance_id": "sveltejs__svelte-12460",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4400->0.3700",
+   "fraction_delta": -0.07
+  },
+  {
+   "instance_id": "sveltejs__svelte-12373",
+   "repo": "sveltejs/svelte",
+   "n_gold": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4375->0.3750",
+   "fraction_delta": -0.0625
+  },
+  {
+   "instance_id": "sveltejs__svelte-12715",
+   "repo": "sveltejs/svelte",
+   "n_gold": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2283->0.1739",
+   "fraction_delta": -0.054348
+  },
+  {
+   "instance_id": "sveltejs__svelte-10368",
+   "repo": "sveltejs/svelte",
+   "n_gold": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0882->0.0441",
+   "fraction_delta": -0.044118
+  },
+  {
+   "instance_id": "sveltejs__svelte-12560",
+   "repo": "sveltejs/svelte",
+   "n_gold": 9,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0829->0.0428",
+   "fraction_delta": -0.040107
+  },
+  {
+   "instance_id": "axios__axios-5919",
+   "repo": "axios/axios",
+   "n_gold": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3800->0.3400",
+   "fraction_delta": -0.04
+  },
+  {
+   "instance_id": "sveltejs__svelte-12869",
+   "repo": "sveltejs/svelte",
+   "n_gold": 15,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0606->0.0303",
+   "fraction_delta": -0.030303
+  },
+  {
+   "instance_id": "sveltejs__svelte-12948",
+   "repo": "sveltejs/svelte",
+   "n_gold": 15,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0814->0.0566",
+   "fraction_delta": -0.024887
+  },
+  {
+   "instance_id": "sveltejs__svelte-10114",
+   "repo": "sveltejs/svelte",
+   "n_gold": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1875->0.1806",
+   "fraction_delta": -0.006944
+  },
+  {
+   "instance_id": "sveltejs__svelte-10077",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "sveltejs__svelte-10209",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-11421",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-11676",
+   "repo": "sveltejs/svelte",
+   "n_gold": 2,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "sveltejs__svelte-11768",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-11946",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-12047",
+   "repo": "sveltejs/svelte",
+   "n_gold": 4,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "sveltejs__svelte-12329",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-13411",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-13445",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-9717",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "vuejs__core-11515",
+   "repo": "vuejs/core",
+   "n_gold": 1,
+   "file": "0->1",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "sveltejs__svelte-14456",
+   "repo": "sveltejs/svelte",
+   "n_gold": 9,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0342->0.0406",
+   "fraction_delta": 0.00641
+  },
+  {
+   "instance_id": "sveltejs__svelte-11183",
+   "repo": "sveltejs/svelte",
+   "n_gold": 9,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0154",
+   "fraction_delta": 0.015432
+  },
+  {
+   "instance_id": "sveltejs__svelte-12215",
+   "repo": "sveltejs/svelte",
+   "n_gold": 25,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1553->0.1735",
+   "fraction_delta": 0.018141
+  },
+  {
+   "instance_id": "sveltejs__svelte-11184",
+   "repo": "sveltejs/svelte",
+   "n_gold": 6,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2476->0.2816",
+   "fraction_delta": 0.033981
+  },
+  {
+   "instance_id": "sveltejs__svelte-13568",
+   "repo": "sveltejs/svelte",
+   "n_gold": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2364->0.2909",
+   "fraction_delta": 0.054545
+  },
+  {
+   "instance_id": "vuejs__core-11761",
+   "repo": "vuejs/core",
+   "n_gold": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1346->0.2019",
+   "fraction_delta": 0.067308
+  },
+  {
+   "instance_id": "sveltejs__svelte-13763",
+   "repo": "sveltejs/svelte",
+   "n_gold": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0984",
+   "fraction_delta": 0.098361
+  },
+  {
+   "instance_id": "sveltejs__svelte-9665",
+   "repo": "sveltejs/svelte",
+   "n_gold": 2,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1935",
+   "fraction_delta": 0.193548
+  },
+  {
+   "instance_id": "sveltejs__svelte-12321",
+   "repo": "sveltejs/svelte",
+   "n_gold": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "0->1",
+   "fraction": "0.0000->1.0000",
+   "fraction_delta": 1.0
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "ext_only": []
+ }
+}

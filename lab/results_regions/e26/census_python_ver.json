@@ -1,0 +1,59 @@
+{
+  "slice": "python_ver",
+  "instances": 407,
+  "gold_files_total": 530,
+  "gold_files_ext_v2": 0,
+  "gold_ext_v2_by_suffix": {},
+  "instances_with_ext_v2_gold": 0,
+  "per_repo_tree_scan": {
+    "astropy__astropy": {
+      "base_commits": 18,
+      "with_ext_v2_files": 0
+    },
+    "django__django": {
+      "base_commits": 187,
+      "with_ext_v2_files": 0
+    },
+    "matplotlib__matplotlib": {
+      "base_commits": 27,
+      "with_ext_v2_files": 0
+    },
+    "mwaskom__seaborn": {
+      "base_commits": 2,
+      "with_ext_v2_files": 0
+    },
+    "pallets__flask": {
+      "base_commits": 1,
+      "with_ext_v2_files": 0
+    },
+    "psf__requests": {
+      "base_commits": 7,
+      "with_ext_v2_files": 0
+    },
+    "pydata__xarray": {
+      "base_commits": 21,
+      "with_ext_v2_files": 0
+    },
+    "pylint-dev__pylint": {
+      "base_commits": 9,
+      "with_ext_v2_files": 0
+    },
+    "pytest-dev__pytest": {
+      "base_commits": 17,
+      "with_ext_v2_files": 0
+    },
+    "scikit-learn__scikit-learn": {
+      "base_commits": 23,
+      "with_ext_v2_files": 0
+    },
+    "sphinx-doc__sphinx": {
+      "base_commits": 41,
+      "with_ext_v2_files": 0
+    },
+    "sympy__sympy": {
+      "base_commits": 53,
+      "with_ext_v2_files": 6
+    }
+  },
+  "detail": []
+}

@@ -1,0 +1,25 @@
+
+=== cpp (n=129) ===
+arm        err             FILE         FUNCTION             LINE       frac
+default      0     65.89 ( 85)     17.83 ( 23)      6.98 (  9)    0.29866
+ext-v2       0     65.89 ( 85)     17.83 ( 23)      6.98 (  9)    0.29880
+delta              +0.00           +0.00           +0.00         +0.00014
+McNemar FILE      default-only=  0 ext-only=  0 p=1.0000
+McNemar FUNCTION  default-only=  0 ext-only=  0 p=1.0000
+McNemar LINE      default-only=  0 ext-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=1 up=1 down=0 p=1.0000
+
+stratum      n arm           FILE  FUNCTION     LINE      frac
+1           47 default     100.00     34.04    19.15   0.52564
+1           47 ext-v2      100.00     34.04    19.15   0.52564
+2           27 default      88.89      7.41     0.00   0.28496
+2           27 ext-v2       88.89      7.41     0.00   0.28496
+3+          55 default      25.45      9.09     0.00   0.11142
+3+          55 ext-v2       25.45      9.09     0.00   0.11175
+
+ceiling: 0 EXT_V2 gold files in 0 instances -- default retrieved 0, ext-v2 retrieved 0
+displacement: non-EXT_V2 gold files lost=0 gained=0
+
+changed instances: 1 of 129
+  simdjson__simdjson-543                     gold= 30 FILE =      FUNC =      LINE =      frac 0.1737->0.1918       (+0.0181)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e26/cpp_ext_paired.json

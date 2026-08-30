@@ -1,0 +1,142 @@
+{
+  "slice": "java",
+  "instances": 128,
+  "gold_files_total": 379,
+  "gold_files_ext_v2": 32,
+  "gold_ext_v2_by_suffix": {
+    ".rb": 32
+  },
+  "instances_with_ext_v2_gold": 10,
+  "per_repo_tree_scan": {
+    "alibaba__fastjson2": {
+      "base_commits": 6,
+      "with_ext_v2_files": 0
+    },
+    "apache__dubbo": {
+      "base_commits": 3,
+      "with_ext_v2_files": 0
+    },
+    "elastic__logstash": {
+      "base_commits": 38,
+      "with_ext_v2_files": 38
+    },
+    "fasterxml__jackson-core": {
+      "base_commits": 18,
+      "with_ext_v2_files": 0
+    },
+    "fasterxml__jackson-databind": {
+      "base_commits": 42,
+      "with_ext_v2_files": 0
+    },
+    "fasterxml__jackson-dataformat-xml": {
+      "base_commits": 5,
+      "with_ext_v2_files": 0
+    },
+    "google__gson": {
+      "base_commits": 5,
+      "with_ext_v2_files": 0
+    },
+    "googlecontainertools__jib": {
+      "base_commits": 5,
+      "with_ext_v2_files": 0
+    },
+    "mockito__mockito": {
+      "base_commits": 5,
+      "with_ext_v2_files": 0
+    }
+  },
+  "detail": [
+    {
+      "instance_id": "elastic__logstash-16094",
+      "n_gold": 9,
+      "ext_gold": [
+        "logstash-core/lib/logstash/environment.rb",
+        "logstash-core/lib/logstash/runner.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-15969",
+      "n_gold": 9,
+      "ext_gold": [
+        "logstash-core/lib/logstash/environment.rb",
+        "logstash-core/lib/logstash/runner.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-14571",
+      "n_gold": 11,
+      "ext_gold": [
+        "logstash-core/lib/logstash/agent.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-14045",
+      "n_gold": 21,
+      "ext_gold": [
+        "logstash-core/lib/logstash/agent.rb",
+        "logstash-core/lib/logstash/environment.rb",
+        "logstash-core/lib/logstash/settings.rb",
+        "logstash-core/lib/logstash/util/password.rb",
+        "logstash-core/lib/logstash/webserver.rb",
+        "logstash-core/spec/logstash/settings_spec.rb",
+        "logstash-core/spec/logstash/webserver_spec.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-14027",
+      "n_gold": 6,
+      "ext_gold": [
+        "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+        "logstash-core/spec/logstash/plugins/builtin/pipeline_input_output_spec.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-14000",
+      "n_gold": 49,
+      "ext_gold": [
+        "logstash-core/lib/logstash/agent.rb",
+        "logstash-core/lib/logstash/environment.rb",
+        "logstash-core/lib/logstash/pipeline_action.rb",
+        "logstash-core/lib/logstash/pipeline_action/stop_and_delete.rb",
+        "logstash-core/lib/logstash/plugins/registry.rb",
+        "logstash-core/lib/logstash/settings.rb",
+        "logstash-core/lib/logstash/state_resolver.rb",
+        "logstash-core/lib/logstash/util/password.rb",
+        "logstash-core/lib/logstash/webserver.rb",
+        "logstash-core/spec/logstash/agent/converge_spec.rb",
+        "logstash-core/spec/logstash/settings_spec.rb",
+        "logstash-core/spec/logstash/state_resolver_spec.rb",
+        "logstash-core/spec/support/matchers.rb",
+        "qa/integration/specs/env_variables_condition_spec.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-13997",
+      "n_gold": 8,
+      "ext_gold": [
+        "qa/integration/specs/env_variables_condition_spec.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-13931",
+      "n_gold": 5,
+      "ext_gold": [
+        "logstash-core/lib/logstash/environment.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-13930",
+      "n_gold": 5,
+      "ext_gold": [
+        "logstash-core/lib/logstash/environment.rb"
+      ]
+    },
+    {
+      "instance_id": "elastic__logstash-13902",
+      "n_gold": 5,
+      "ext_gold": [
+        "logstash-core/lib/logstash/environment.rb"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,497 @@
+{
+ "label": "java",
+ "n": 128,
+ "default": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 49.22,
+  "file_n": 63,
+  "function_pct": 35.16,
+  "function_n": 45,
+  "line_pct": 14.84,
+  "line_n": 19,
+  "mean_fraction": 0.39691079709064214
+ },
+ "ext_v2": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 49.22,
+  "file_n": 63,
+  "function_pct": 36.72,
+  "function_n": 47,
+  "line_pct": 14.06,
+  "line_n": 18,
+  "mean_fraction": 0.41842552834146707
+ },
+ "delta": {
+  "file": 0.0,
+  "function": 1.56,
+  "line": -0.78,
+  "mean_fraction": 0.021515
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_ext_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 1,
+   "c_ext_only": 3,
+   "p": 0.625
+  },
+  "LINE": {
+   "b_def_only": 1,
+   "c_ext_only": 0,
+   "p": 1.0
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 19,
+   "statistic": 47.0,
+   "p": 0.05333340378002249,
+   "n_up": 12,
+   "n_down": 7
+  }
+ },
+ "strata": {
+  "1": {
+   "default": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 94.12,
+    "file_n": 48,
+    "function_pct": 47.06,
+    "function_n": 24,
+    "line_pct": 37.25,
+    "line_n": 19,
+    "mean_fraction": 0.5787837425233479
+   },
+   "ext_v2": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 94.12,
+    "file_n": 48,
+    "function_pct": 52.94,
+    "function_n": 27,
+    "line_pct": 35.29,
+    "line_n": 18,
+    "mean_fraction": 0.6369545366543647
+   }
+  },
+  "2": {
+   "default": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 18.92,
+    "file_n": 7,
+    "function_pct": 43.24,
+    "function_n": 16,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.33199781420958
+   },
+   "ext_v2": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 18.92,
+    "file_n": 7,
+    "function_pct": 43.24,
+    "function_n": 16,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.33016404318604353
+   }
+  },
+  "3+": {
+   "default": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 12.5,
+    "function_n": 5,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.22506730082892493
+   },
+   "ext_v2": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 10.0,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.22144291651128936
+   }
+  }
+ },
+ "ceiling": {
+  "ext_gold_files": 32,
+  "ext_gold_retrieved_default": 0,
+  "ext_gold_retrieved_ext": 13,
+  "instances_with_ext_gold": 10,
+  "detail": [
+   {
+    "instance_id": "elastic__logstash-13902",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "n_gold": 5
+   },
+   {
+    "instance_id": "elastic__logstash-13930",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "n_gold": 5
+   },
+   {
+    "instance_id": "elastic__logstash-13931",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/environment.rb"
+    ],
+    "n_gold": 5
+   },
+   {
+    "instance_id": "elastic__logstash-13997",
+    "ext_gold": [
+     "qa/integration/specs/env_variables_condition_spec.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [],
+    "n_gold": 8
+   },
+   {
+    "instance_id": "elastic__logstash-14000",
+    "ext_gold": [
+     "logstash-core/lib/logstash/agent.rb",
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/pipeline_action.rb",
+     "logstash-core/lib/logstash/pipeline_action/stop_and_delete.rb",
+     "logstash-core/lib/logstash/plugins/registry.rb",
+     "logstash-core/lib/logstash/settings.rb",
+     "logstash-core/lib/logstash/state_resolver.rb",
+     "logstash-core/lib/logstash/util/password.rb",
+     "logstash-core/lib/logstash/webserver.rb",
+     "logstash-core/spec/logstash/agent/converge_spec.rb",
+     "logstash-core/spec/logstash/settings_spec.rb",
+     "logstash-core/spec/logstash/state_resolver_spec.rb",
+     "logstash-core/spec/support/matchers.rb",
+     "qa/integration/specs/env_variables_condition_spec.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/agent.rb",
+     "logstash-core/lib/logstash/settings.rb"
+    ],
+    "n_gold": 49
+   },
+   {
+    "instance_id": "elastic__logstash-14027",
+    "ext_gold": [
+     "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+     "logstash-core/spec/logstash/plugins/builtin/pipeline_input_output_spec.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+    ],
+    "n_gold": 6
+   },
+   {
+    "instance_id": "elastic__logstash-14045",
+    "ext_gold": [
+     "logstash-core/lib/logstash/agent.rb",
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/settings.rb",
+     "logstash-core/lib/logstash/util/password.rb",
+     "logstash-core/lib/logstash/webserver.rb",
+     "logstash-core/spec/logstash/settings_spec.rb",
+     "logstash-core/spec/logstash/webserver_spec.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/agent.rb",
+     "logstash-core/lib/logstash/settings.rb"
+    ],
+    "n_gold": 21
+   },
+   {
+    "instance_id": "elastic__logstash-14571",
+    "ext_gold": [
+     "logstash-core/lib/logstash/agent.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/agent.rb"
+    ],
+    "n_gold": 11
+   },
+   {
+    "instance_id": "elastic__logstash-15969",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/runner.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/runner.rb"
+    ],
+    "n_gold": 9
+   },
+   {
+    "instance_id": "elastic__logstash-16094",
+    "ext_gold": [
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/runner.rb"
+    ],
+    "retrieved_default": [],
+    "retrieved_ext": [
+     "logstash-core/lib/logstash/environment.rb",
+     "logstash-core/lib/logstash/runner.rb"
+    ],
+    "n_gold": 9
+   }
+  ]
+ },
+ "displacement": {
+  "nonext_gold_lost": 3,
+  "nonext_gold_gained": 0,
+  "detail": [
+   {
+    "instance_id": "elastic__logstash-13825",
+    "lost": [
+     "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "elastic__logstash-14000",
+    "lost": [
+     "logstash-core/src/main/java/org/logstash/Rubyfier.java"
+    ],
+    "gained": []
+   },
+   {
+    "instance_id": "elastic__logstash-14571",
+    "lost": [
+     "logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java"
+    ],
+    "gained": []
+   }
+  ]
+ },
+ "n_changed": 19,
+ "changed": [
+  {
+   "instance_id": "elastic__logstash-15000",
+   "repo": "elastic/logstash",
+   "n_gold": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7075->0.5782",
+   "fraction_delta": -0.129252
+  },
+  {
+   "instance_id": "elastic__logstash-15008",
+   "repo": "elastic/logstash",
+   "n_gold": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6599->0.5782",
+   "fraction_delta": -0.081633
+  },
+  {
+   "instance_id": "elastic__logstash-13997",
+   "repo": "elastic/logstash",
+   "n_gold": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1371->0.0609",
+   "fraction_delta": -0.076142
+  },
+  {
+   "instance_id": "elastic__logstash-13825",
+   "repo": "elastic/logstash",
+   "n_gold": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0423->0.0000",
+   "fraction_delta": -0.042328
+  },
+  {
+   "instance_id": "elastic__logstash-15964",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.9583",
+   "fraction_delta": -0.041667
+  },
+  {
+   "instance_id": "elastic__logstash-14571",
+   "repo": "elastic/logstash",
+   "n_gold": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7941->0.7588",
+   "fraction_delta": -0.035294
+  },
+  {
+   "instance_id": "elastic__logstash-14045",
+   "repo": "elastic/logstash",
+   "n_gold": 10,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.0435->0.0145",
+   "fraction_delta": -0.028986
+  },
+  {
+   "instance_id": "elastic__logstash-14000",
+   "repo": "elastic/logstash",
+   "n_gold": 31,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0012",
+   "fraction_delta": 0.001189
+  },
+  {
+   "instance_id": "elastic__logstash-14027",
+   "repo": "elastic/logstash",
+   "n_gold": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3902->0.4268",
+   "fraction_delta": 0.036585
+  },
+  {
+   "instance_id": "elastic__logstash-16195",
+   "repo": "elastic/logstash",
+   "n_gold": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1194->0.1791",
+   "fraction_delta": 0.059701
+  },
+  {
+   "instance_id": "elastic__logstash-14058",
+   "repo": "elastic/logstash",
+   "n_gold": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5167->0.6000",
+   "fraction_delta": 0.083333
+  },
+  {
+   "instance_id": "elastic__logstash-14898",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7241->0.8103",
+   "fraction_delta": 0.086207
+  },
+  {
+   "instance_id": "elastic__logstash-14878",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6897->0.8103",
+   "fraction_delta": 0.12069
+  },
+  {
+   "instance_id": "elastic__logstash-14897",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6897->0.8103",
+   "fraction_delta": 0.12069
+  },
+  {
+   "instance_id": "elastic__logstash-16482",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.5424->0.8983",
+   "fraction_delta": 0.355932
+  },
+  {
+   "instance_id": "elastic__logstash-15680",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3611->0.7778",
+   "fraction_delta": 0.416667
+  },
+  {
+   "instance_id": "elastic__logstash-15697",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3611->0.7778",
+   "fraction_delta": 0.416667
+  },
+  {
+   "instance_id": "elastic__logstash-16569",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.1525->0.8983",
+   "fraction_delta": 0.745763
+  },
+  {
+   "instance_id": "elastic__logstash-16579",
+   "repo": "elastic/logstash",
+   "n_gold": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.1525->0.8983",
+   "fraction_delta": 0.745763
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "ext_only": []
+ }
+}

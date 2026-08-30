@@ -1,0 +1,89 @@
+{
+  "slice": "jsts",
+  "instances": 580,
+  "gold_files_total": 3511,
+  "gold_files_ext_v2": 7,
+  "gold_ext_v2_by_suffix": {
+    ".mjs": 1,
+    ".cts": 1,
+    ".svelte": 5
+  },
+  "instances_with_ext_v2_gold": 5,
+  "per_repo_tree_scan": {
+    "Kong__insomnia": {
+      "base_commits": 1,
+      "with_ext_v2_files": 0
+    },
+    "anuraghazra__github-readme-stats": {
+      "base_commits": 19,
+      "with_ext_v2_files": 0
+    },
+    "axios__axios": {
+      "base_commits": 4,
+      "with_ext_v2_files": 4
+    },
+    "darkreader__darkreader": {
+      "base_commits": 2,
+      "with_ext_v2_files": 0
+    },
+    "expressjs__express": {
+      "base_commits": 4,
+      "with_ext_v2_files": 0
+    },
+    "iamkun__dayjs": {
+      "base_commits": 49,
+      "with_ext_v2_files": 0
+    },
+    "mui__material-ui": {
+      "base_commits": 166,
+      "with_ext_v2_files": 82
+    },
+    "sveltejs__svelte": {
+      "base_commits": 242,
+      "with_ext_v2_files": 242
+    },
+    "vuejs__core": {
+      "base_commits": 44,
+      "with_ext_v2_files": 44
+    }
+  },
+  "detail": [
+    {
+      "instance_id": "mui__material-ui-34216",
+      "n_gold": 44,
+      "ext_gold": [
+        "scripts/generateCodeowners.mjs"
+      ]
+    },
+    {
+      "instance_id": "axios__axios-5338",
+      "n_gold": 11,
+      "ext_gold": [
+        "index.d.cts"
+      ]
+    },
+    {
+      "instance_id": "sveltejs__svelte-14353",
+      "n_gold": 13,
+      "ext_gold": [
+        "sites/svelte-5-preview/src/lib/Output/Viewer.svelte"
+      ]
+    },
+    {
+      "instance_id": "sveltejs__svelte-12948",
+      "n_gold": 16,
+      "ext_gold": [
+        "sites/svelte-5-preview/src/lib/CodeMirror.svelte"
+      ]
+    },
+    {
+      "instance_id": "sveltejs__svelte-11334",
+      "n_gold": 15,
+      "ext_gold": [
+        "sites/svelte-5-preview/src/lib/Input/ComponentSelector.svelte",
+        "sites/svelte-5-preview/src/lib/Input/Migrate.svelte",
+        "sites/svelte-5-preview/src/lib/Repl.svelte"
+      ]
+    }
+  ]
+}
