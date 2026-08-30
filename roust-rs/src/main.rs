@@ -263,15 +263,17 @@ struct Args {
     #[arg(long, conflicts_with = "no_structural_blocks")]
     shape_blocks: bool,
 
-    /// E26 (per-language parity campaign): index source extensions the
-    /// original allowlist never covered (.rb, .pony, .svelte, .mjs, .cjs,
-    /// .cts, .mts, .vue, .scala, .php). Chosen from measured gold mass on
-    /// the Multi-SWE slices -- gold roust cannot retrieve at any rank today
-    /// because the file is never indexed. Docs/config extensions are
-    /// deliberately excluded (WS1 measured them as net-harmful).
-    /// Experimental, default OFF.
+    /// E26 (per-language parity campaign, ADOPTED default ON): index `.rb`
+    /// and `.pony` sources, which the original allowlist never covered.
+    /// Accepted-but-redundant; `--no-ext-v2` reverts to the pre-adoption
+    /// walk (those files become invisible again, as they were before).
     #[arg(long)]
     ext_v2: bool,
+
+    /// Escape hatch for the E26 adoption: do NOT index `.rb`/`.pony`,
+    /// reproducing the pre-adoption engine byte-identically.
+    #[arg(long, conflicts_with = "ext_v2")]
+    no_ext_v2: bool,
 
     /// WS2 (campaign #56): ALSO index the C-family extensions
     /// (.c/.h/.cc/.cpp/.cxx/.hpp/.hh) in the corpus walk. ON by default
@@ -402,7 +404,7 @@ fn main() {
     // cache manifest scan read this process-global exactly once per file.
     // WS2c: default ON; --no-cfamily-ext wins over the (redundant) on-flag.
     roust::core::set_cfamily_ext(args.cfamily_ext && !args.no_cfamily_ext);
-    roust::core::set_ext_v2(args.ext_v2);
+    roust::core::set_ext_v2(!args.no_ext_v2);
 
     // WS3a: same contract as the cfamily global -- set BEFORE any
     // corpus/cache work (impl_prior gates def_index at build time and the

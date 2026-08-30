@@ -68,14 +68,22 @@ slice (n)                  FILE   FUNCTION   LINE   fraction
 python — Lite (300)       92.33      54.67   44.00     .527
 python — Verified (407)   92.38      47.17   35.14     .476
 javascript/typescript     46.38      31.21   14.14     .262
-java (128)                49.22      35.16   14.84     .397
+java (128)                49.22      36.72   14.06     .415
 go (428)                  64.95      28.97   16.59     .410
 rust (239)                60.25      19.67    7.53     .243
-c (128)                   46.88      28.12   10.94     .202
+c (128)                   51.56      28.12   13.28     .225
 c++ (129)                 65.89      17.83    6.98     .299
 ```
 
-Two corrections are baked into this table. The function-level scorer
+One capability note before the corrections: `.rb` and `.pony` sources are indexed
+by default as of August 2026. The gate that adopted them measured something worth
+stating plainly — the previous engine retrieved **zero** of the 148 gold files in
+those extensions, not because it ranked them badly but because it never indexed the
+file type at all. That is why C's FILE and LINE move here, and why Java's FUNCTION
+does. `.svelte` was measured in the same round and rejected: 2,927 files admitted to
+reach 5 gold ones, at a significant cost to JS/TS.
+
+Two further corrections are baked into this table. The function-level scorer
 originally extracted gold spans with a Python-only AST parser, so every
 non-Python FUNCTION number it produced was vacuous; those are retired. And C
 and C++ source extensions were missing from the indexer entirely — on the C

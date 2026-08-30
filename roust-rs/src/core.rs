@@ -17,19 +17,25 @@ pub const CODE_EXTENSIONS: &[&str] = &[
     ".py", ".ts", ".js", ".go", ".rs", ".java", ".kt", ".cs", ".swift", ".tsx", ".jsx",
 ];
 
-// E26 (per-language parity campaign): source extensions the allowlist above
-// never covered, all flag-gated behind --ext-v2 until the gate clears.
-// Chosen from measured gold mass, not from a list of languages that exist:
-// on the Multi-SWE slices these carry gold that roust currently cannot
-// retrieve at any rank because the file is never indexed --
-//   .pony  90 gold files (C slice, ponylang/ponyc)
-//   .rb    31 gold files (Java slice, elastic/logstash's Ruby core)
-//   .svelte/.mjs/.cts  6 gold files (JS/TS slice, WS1d's actionable finding)
-// Docs/config extensions carrying larger gold mass (.md, .json, .toml) are
-// deliberately EXCLUDED: WS1 measured that indexing them costs more in
-// boilerplate displacement than it recovers (FILE 46.4 -> 31.2).
-pub const EXT_V2_EXTENSIONS: &[&str] =
-    &[".rb", ".pony", ".svelte", ".mjs", ".cjs", ".cts", ".mts", ".vue", ".scala", ".php"];
+// E26 (per-language parity campaign, ADOPTED default ON): source
+// extensions the original allowlist never covered. Narrowed to exactly the
+// two the gate measured as wins -- every entry here carries gold that roust
+// previously could not retrieve at ANY rank, because the file was never
+// indexed at all (the default arm retrieved 0 of 148 such gold files):
+//   .pony  109 gold files (C slice, ponylang/ponyc)  -> FILE 46.88 -> 51.56
+//   .rb     32 gold files (Java slice, elastic/logstash) -> FUNCTION +1.56
+//
+// Deliberately NOT here, each for a measured reason:
+//   .svelte  rejected -- 2,927 files for 5 gold; cost jsts FILE -5.17
+//            unguarded and -2.76 even with the fixture guard (McNemar
+//            p=0.0001). The extension is a net harm on this corpus.
+//   .mjs .cjs .cts .mts .vue .scala .php  dropped as unmeasured: they
+//            carry zero gold on every slice we gate, so shipping them would
+//            be widening the corpus on faith.
+//   .md .json .toml  docs/config, measured net-harmful by WS1 (FILE 46.4
+//            -> 31.2) -- indexing them costs more in boilerplate
+//            displacement than it recovers.
+pub const EXT_V2_EXTENSIONS: &[&str] = &[".rb", ".pony"];
 
 // WS2 (campaign #56 workstream 2, grammar batch): the C-family extensions,
 // indexed ONLY under --cfamily-ext (default OFF). They cannot join
@@ -57,7 +63,7 @@ pub fn cfamily_ext_enabled() -> bool {
 // E26: same one-shot-at-parse discipline as CFAMILY_EXT, and the cache key
 // gains an ":e2" marker when ON so a flagged and an unflagged run can never
 // serve each other a corpus.
-static EXT_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static EXT_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(true);
 
 pub fn set_ext_v2(on: bool) {
     EXT_V2.store(on, std::sync::atomic::Ordering::Relaxed);
