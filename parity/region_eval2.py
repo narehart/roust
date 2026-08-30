@@ -255,7 +255,7 @@ def checkout(repo_path: Path, sha: str) -> None:
                     text=True, timeout=300)
 
 
-def load_lite_rows(limit: int) -> list[dict]:
+def load_lite_rows(limit: int, only: set[str] | None = None) -> list[dict]:
     import pandas as pd
     df = pd.read_parquet(LITE_PARQUET)
     rows = []
@@ -267,6 +267,11 @@ def load_lite_rows(limit: int) -> list[dict]:
             "patch": row["patch"],
             "problem_statement": row["problem_statement"],
         })
+    if only is not None:
+        missing = only - {r["instance_id"] for r in rows}
+        if missing:
+            raise SystemExit(f"--instances: not in the Lite split: {sorted(missing)}")
+        rows = [r for r in rows if r["instance_id"] in only]
     if limit:
         rows = rows[:limit]
     return rows
@@ -370,6 +375,19 @@ def eval_lite_instance(row: dict, timeout: float, pad_lines: int = 0, len_exp: f
     return rec
 
 
+
+def _load_instance_filter(path):
+    """E26: read an instance_id allowlist (one per line; blank and #-comment
+    lines ignored). Returns None when no path was given, so the default code
+    path is untouched."""
+    if path is None:
+        return None
+    ids = {l.strip() for l in Path(path).read_text().splitlines()}
+    ids = {i for i in ids if i and not i.startswith("#")}
+    if not ids:
+        raise SystemExit(f"--instances: {path} lists no instance ids")
+    return ids
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                   formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -448,10 +466,18 @@ def main() -> None:
                           "seating); omitted by default (binary default: off)")
     ap.add_argument("--shape-blocks", action="store_true",
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
+    ap.add_argument("--ext-v2", action="store_true",
+                     help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
     ap.add_argument("--displacement-guard", action="store_true",
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion); omitted by default "
                           "(binary default: off)")
+    ap.add_argument("--instances", type=Path, default=None,
+                     help="E26: restrict the run to the instance_ids listed in this "
+                          "file (one per line, blank/# lines ignored). Applied BEFORE "
+                          "--limit. Used for targeted identity checks where a full "
+                          "arm would be waste -- e.g. only the repos that contain a "
+                          "file the flag under test could possibly touch.")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -477,6 +503,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--displacement-guard")
     if args.shape_blocks:
         EXTRA_ENGINE_FLAGS.append("--shape-blocks")
+    if args.ext_v2:
+        EXTRA_ENGINE_FLAGS.append("--ext-v2")
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
@@ -487,8 +515,9 @@ def main() -> None:
 
     version = check_engine_provenance(args.allow_stale_engine)
     print(f"engine version: {version}", file=sys.stderr)
+    print(f"EXTRA_ENGINE_FLAGS={EXTRA_ENGINE_FLAGS}", file=sys.stderr, flush=True)
 
-    rows = load_lite_rows(args.limit)
+    rows = load_lite_rows(args.limit, only=_load_instance_filter(args.instances))
     args.report.parent.mkdir(parents=True, exist_ok=True)
 
     n_ok = 0

@@ -1,0 +1,23 @@
+{
+  "slice": "go",
+  "instances": 428,
+  "gold_files_total": 1646,
+  "gold_files_ext_v2": 0,
+  "gold_ext_v2_by_suffix": {},
+  "instances_with_ext_v2_gold": 0,
+  "per_repo_tree_scan": {
+    "cli__cli": {
+      "base_commits": 337,
+      "with_ext_v2_files": 0
+    },
+    "grpc__grpc-go": {
+      "base_commits": 15,
+      "with_ext_v2_files": 0
+    },
+    "zeromicro__go-zero": {
+      "base_commits": 15,
+      "with_ext_v2_files": 0
+    }
+  },
+  "detail": []
+}

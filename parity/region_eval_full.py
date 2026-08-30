@@ -149,6 +149,8 @@ def main() -> None:
                           "EXTRA_ENGINE_FLAGS)")
     ap.add_argument("--shape-blocks", action="store_true",
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
+    ap.add_argument("--ext-v2", action="store_true",
+                     help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
     ap.add_argument("--displacement-guard", action="store_true",
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion; rides "
@@ -190,6 +192,8 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--displacement-guard"]
     if args.shape_blocks:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--shape-blocks"]
+    if args.ext_v2:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ext-v2"]
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
@@ -226,6 +230,7 @@ def main() -> None:
             rec["impl_prior_v2"] = args.impl_prior_v2
             rec["trace_formats_v2"] = args.trace_formats_v2
             rec["symbols_v2"] = args.symbols_v2
+            rec["ext_v2"] = args.ext_v2
             rec["displacement_guard"] = args.displacement_guard
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()

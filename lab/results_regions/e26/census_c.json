@@ -1,0 +1,249 @@
+{
+  "slice": "c",
+  "instances": 128,
+  "gold_files_total": 584,
+  "gold_files_ext_v2": 109,
+  "gold_ext_v2_by_suffix": {
+    ".pony": 109
+  },
+  "instances_with_ext_v2_gold": 19,
+  "per_repo_tree_scan": {
+    "facebook__zstd": {
+      "base_commits": 29,
+      "with_ext_v2_files": 0
+    },
+    "jqlang__jq": {
+      "base_commits": 16,
+      "with_ext_v2_files": 0
+    },
+    "ponylang__ponyc": {
+      "base_commits": 81,
+      "with_ext_v2_files": 81
+    }
+  },
+  "detail": [
+    {
+      "instance_id": "ponylang__ponyc-4593",
+      "n_gold": 2,
+      "ext_gold": [
+        "packages/cli/command_parser.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-4132",
+      "n_gold": 2,
+      "ext_gold": [
+        "packages/builtin/string.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-4034",
+      "n_gold": 19,
+      "ext_gold": [
+        "examples/pony_check/async_tcp_property.pony",
+        "examples/pony_check/collection_generators.pony",
+        "examples/pony_check/custom_class.pony",
+        "examples/pony_check/list_reverse.pony",
+        "examples/pony_check/main.pony",
+        "packages/pony_check/ascii_range.pony",
+        "packages/pony_check/for_all.pony",
+        "packages/pony_check/generator.pony",
+        "packages/pony_check/int_properties.pony",
+        "packages/pony_check/pony_check.pony",
+        "packages/pony_check/poperator.pony",
+        "packages/pony_check/property.pony",
+        "packages/pony_check/property_helper.pony",
+        "packages/pony_check/property_runner.pony",
+        "packages/pony_check/randomness.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3991",
+      "n_gold": 2,
+      "ext_gold": [
+        "packages/promises/promise.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3973",
+      "n_gold": 13,
+      "ext_gold": [
+        "packages/builtin/asio_event.pony",
+        "packages/builtin/stdin.pony",
+        "packages/net/tcp_connection.pony",
+        "packages/net/tcp_listener.pony",
+        "packages/net/udp_socket.pony",
+        "packages/process/process_monitor.pony",
+        "packages/signals/signal_handler.pony",
+        "packages/time/timers.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3962",
+      "n_gold": 18,
+      "ext_gold": [
+        "examples/echo/echo.pony",
+        "examples/files/files.pony",
+        "examples/mandelbrot/mandelbrot.pony",
+        "examples/net/listener.pony",
+        "examples/net/net.pony",
+        "examples/net/pong.pony",
+        "examples/under_pressure/main.pony",
+        "minimal-cases/issue-629/629.pony",
+        "packages/backpressure/backpressure.pony",
+        "packages/builtin/env.pony",
+        "packages/files/files.pony",
+        "packages/ini/ini.pony",
+        "packages/net/proxy.pony",
+        "packages/net/tcp_connection.pony",
+        "packages/net/tcp_listener.pony",
+        "packages/net/udp_socket.pony",
+        "packages/process/process.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3819",
+      "n_gold": 6,
+      "ext_gold": [
+        "examples/files/files.pony",
+        "examples/mandelbrot/mandelbrot.pony",
+        "packages/files/auth.pony",
+        "packages/files/directory.pony",
+        "packages/files/file_path.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3777",
+      "n_gold": 2,
+      "ext_gold": [
+        "packages/collections/flag.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3739",
+      "n_gold": 44,
+      "ext_gold": [
+        "examples/fan-in/main.pony",
+        "examples/message-ubench/main.pony",
+        "packages/assert/assert.pony",
+        "packages/builtin/builtin.pony",
+        "packages/builtin/env.pony",
+        "packages/builtin/float.pony",
+        "packages/builtin/signed.pony",
+        "packages/builtin/std_stream.pony",
+        "packages/builtin/stdin.pony",
+        "packages/builtin/string.pony",
+        "packages/builtin/unsigned.pony",
+        "packages/capsicum/cap.pony",
+        "packages/capsicum/cap_rights.pony",
+        "packages/collections/hashable.pony",
+        "packages/debug/debug.pony",
+        "packages/files/_file_des.pony",
+        "packages/files/directory.pony",
+        "packages/files/file_info.pony",
+        "packages/files/file_path.pony",
+        "packages/files/path.pony",
+        "packages/net/dns.pony",
+        "packages/net/net.pony",
+        "packages/net/net_address.pony",
+        "packages/net/ossocket.pony",
+        "packages/net/tcp_connection.pony",
+        "packages/net/tcp_listener.pony",
+        "packages/net/udp_socket.pony",
+        "packages/ponybench/_runner.pony",
+        "packages/process/_pipe.pony",
+        "packages/process/_process.pony",
+        "packages/serialise/serialise.pony",
+        "packages/signals/signal_notify.pony",
+        "packages/time/posix_date.pony",
+        "packages/time/time.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3675",
+      "n_gold": 2,
+      "ext_gold": [
+        "packages/builtin/array.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3603",
+      "n_gold": 1,
+      "ext_gold": [
+        "packages/itertools/iter.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3442",
+      "n_gold": 1,
+      "ext_gold": [
+        "packages/cli/command_parser.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-3293",
+      "n_gold": 18,
+      "ext_gold": [
+        "packages/builtin/nullable_pointer.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-2950",
+      "n_gold": 1,
+      "ext_gold": [
+        "packages/collections/heap.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-2865",
+      "n_gold": 7,
+      "ext_gold": [
+        "packages/builtin/_partial_arithmetic.pony",
+        "packages/builtin/real.pony",
+        "packages/builtin/signed.pony",
+        "packages/builtin/unsigned.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-2660",
+      "n_gold": 7,
+      "ext_gold": [
+        "packages/collections/map.pony",
+        "packages/itertools/iter.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-2272",
+      "n_gold": 23,
+      "ext_gold": [
+        "packages/serialise/serialise.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-2168",
+      "n_gold": 42,
+      "ext_gold": [
+        "packages/builtin/array.pony",
+        "packages/cli/command_parser.pony",
+        "packages/collections/map.pony",
+        "packages/collections/persistent/benchmarks/main.pony",
+        "packages/collections/persistent/list.pony",
+        "packages/collections/persistent/map.pony",
+        "packages/glob/glob.pony",
+        "packages/itertools/iter.pony",
+        "packages/itertools/itertools.pony",
+        "packages/logger/logger.pony",
+        "packages/ponybench/_bench_async.pony",
+        "packages/ponybench/pony_bench.pony",
+        "packages/promises/promise.pony"
+      ]
+    },
+    {
+      "instance_id": "ponylang__ponyc-1858",
+      "n_gold": 43,
+      "ext_gold": [
+        "examples/ffi-callbacks/callbacks.pony"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+ "python_lite": {
+  "all": {
+   "n": 300,
+   "n_errors": 0,
+   "file_pct": 92.33,
+   "file_n": 277,
+   "function_pct": 54.67,
+   "function_n": 164,
+   "line_pct": 44.0,
+   "line_n": 132,
+   "mean_fraction": 0.52728
+  },
+  "strata": {
+   "1": {
+    "n": 300,
+    "n_errors": 0,
+    "file_pct": 92.33,
+    "file_n": 277,
+    "function_pct": 54.67,
+    "function_n": 164,
+    "line_pct": 44.0,
+    "line_n": 132,
+    "mean_fraction": 0.52728
+   },
+   "2": {
+    "n": 0,
+    "file_pct": null,
+    "function_pct": null,
+    "line_pct": null,
+    "mean_fraction": null
+   },
+   "3+": {
+    "n": 0,
+    "file_pct": null,
+    "function_pct": null,
+    "line_pct": null,
+    "mean_fraction": null
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/lite300_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_lite300_def.json"
+  }
+ },
+ "python_verified": {
+  "all": {
+   "n": 407,
+   "n_errors": 0,
+   "file_pct": 92.38,
+   "file_n": 376,
+   "function_pct": 47.17,
+   "function_n": 192,
+   "line_pct": 35.14,
+   "line_n": 143,
+   "mean_fraction": 0.47635
+  },
+  "strata": {
+   "1": {
+    "n": 336,
+    "n_errors": 0,
+    "file_pct": 95.83,
+    "file_n": 322,
+    "function_pct": 53.57,
+    "function_n": 180,
+    "line_pct": 41.07,
+    "line_n": 138,
+    "mean_fraction": 0.51165
+   },
+   "2": {
+    "n": 49,
+    "n_errors": 0,
+    "file_pct": 81.63,
+    "file_n": 40,
+    "function_pct": 22.45,
+    "function_n": 11,
+    "line_pct": 8.16,
+    "line_n": 4,
+    "mean_fraction": 0.33709
+   },
+   "3+": {
+    "n": 22,
+    "n_errors": 0,
+    "file_pct": 63.64,
+    "file_n": 14,
+    "function_pct": 4.55,
+    "function_n": 1,
+    "line_pct": 4.55,
+    "line_n": 1,
+    "mean_fraction": 0.24733
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/ver407_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_ver407_def.json"
+  }
+ },
+ "go": {
+  "all": {
+   "n": 428,
+   "n_errors": 1,
+   "file_pct": 64.95,
+   "file_n": 278,
+   "function_pct": 28.97,
+   "function_n": 124,
+   "line_pct": 16.59,
+   "line_n": 71,
+   "mean_fraction": 0.41021
+  },
+  "strata": {
+   "1": {
+    "n": 188,
+    "n_errors": 1,
+    "file_pct": 88.3,
+    "file_n": 166,
+    "function_pct": 53.19,
+    "function_n": 100,
+    "line_pct": 31.38,
+    "line_n": 59,
+    "mean_fraction": 0.50559
+   },
+   "2": {
+    "n": 97,
+    "n_errors": 0,
+    "file_pct": 75.26,
+    "file_n": 73,
+    "function_pct": 19.59,
+    "function_n": 19,
+    "line_pct": 11.34,
+    "line_n": 11,
+    "mean_fraction": 0.46279
+   },
+   "3+": {
+    "n": 143,
+    "n_errors": 0,
+    "file_pct": 27.27,
+    "file_n": 39,
+    "function_pct": 3.5,
+    "function_n": 5,
+    "line_pct": 0.7,
+    "line_n": 1,
+    "mean_fraction": 0.2498
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/go_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_go_def.json"
+  }
+ }
+}

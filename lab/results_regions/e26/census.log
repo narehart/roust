@@ -1,0 +1,8 @@
+census_jsts exit=0
+census_java exit=0
+census_rust exit=0
+census_c exit=0
+census_cpp exit=0
+census_python_lite exit=0
+census_python_ver exit=0
+E26_CENSUS_DONE
