@@ -190,6 +190,9 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // vice versa) -- the two index different file sets. Flag-off keys are
     // byte-identical to main's format.
     let cf = if core::cfamily_ext_enabled() { ":cf1" } else { "" };
+    // E26: --ext-v2 widens the indexed suffix set, so a flagged corpus is a
+    // different corpus; same re-keying discipline as :cf1.
+    let e2 = if core::ext_v2_enabled() { ":e2" } else { "" };
     // WS3a: impl_prior participates at index time (def_index construction
     // is impl_prior-gated), so --impl-prior-v2 re-keys the cache the same
     // way. Flag-off keys are byte-identical to main's format.
@@ -201,7 +204,7 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // cache is never served to the new defaults; --no-symbols-v2 keys are
     // byte-identical to the pre-adoption format.
     let sv = if core::symbols_v2_enabled() { ":sv2" } else { "" };
-    format!("{sha}:h{}:d{}{cf}{ip}{sv}", with_history as i32, with_docs as i32)
+    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {

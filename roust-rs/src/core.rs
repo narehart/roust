@@ -17,6 +17,20 @@ pub const CODE_EXTENSIONS: &[&str] = &[
     ".py", ".ts", ".js", ".go", ".rs", ".java", ".kt", ".cs", ".swift", ".tsx", ".jsx",
 ];
 
+// E26 (per-language parity campaign): source extensions the allowlist above
+// never covered, all flag-gated behind --ext-v2 until the gate clears.
+// Chosen from measured gold mass, not from a list of languages that exist:
+// on the Multi-SWE slices these carry gold that roust currently cannot
+// retrieve at any rank because the file is never indexed --
+//   .pony  90 gold files (C slice, ponylang/ponyc)
+//   .rb    31 gold files (Java slice, elastic/logstash's Ruby core)
+//   .svelte/.mjs/.cts  6 gold files (JS/TS slice, WS1d's actionable finding)
+// Docs/config extensions carrying larger gold mass (.md, .json, .toml) are
+// deliberately EXCLUDED: WS1 measured that indexing them costs more in
+// boilerplate displacement than it recovers (FILE 46.4 -> 31.2).
+pub const EXT_V2_EXTENSIONS: &[&str] =
+    &[".rb", ".pony", ".svelte", ".mjs", ".cjs", ".cts", ".mts", ".vue", ".scala", ".php"];
+
 // WS2 (campaign #56 workstream 2, grammar batch): the C-family extensions,
 // indexed ONLY under --cfamily-ext (default OFF). They cannot join
 // CODE_EXTENSIONS unconditionally: Python repos vendor C sources
@@ -40,10 +54,24 @@ pub fn cfamily_ext_enabled() -> bool {
     CFAMILY_EXT.load(std::sync::atomic::Ordering::Relaxed)
 }
 
+// E26: same one-shot-at-parse discipline as CFAMILY_EXT, and the cache key
+// gains an ":e2" marker when ON so a flagged and an unflagged run can never
+// serve each other a corpus.
+static EXT_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_ext_v2(on: bool) {
+    EXT_V2.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn ext_v2_enabled() -> bool {
+    EXT_V2.load(std::sync::atomic::Ordering::Relaxed)
+}
+
 /// The one place the "which suffixes are code" decision lives (see the
 /// CFAMILY_EXTENSIONS comment for why it is flag-dependent).
 pub fn code_suffix_allowed(suffix: &str) -> bool {
     code_suffix_allowed_with(suffix, cfamily_ext_enabled())
+        || (ext_v2_enabled() && EXT_V2_EXTENSIONS.contains(&suffix))
 }
 
 /// Pure-function form of `code_suffix_allowed` -- unit tests exercise this
