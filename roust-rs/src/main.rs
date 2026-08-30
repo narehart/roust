@@ -128,6 +128,14 @@ struct Args {
     #[arg(long, default_value_t = 1)]
     seats_per_source: i64,
 
+    /// E32 (per-language parity campaign): how many hops of the import graph
+    /// the candidate GENERATOR walks out from each source file (1 = shipped).
+    /// E31 showed Java and Rust are exactly inert to the admission cap (0.00
+    /// at 32 and at 128), i.e. their gold is never proposed as a candidate at
+    /// any cap -- a generation limit, not an admission one.
+    #[arg(long, default_value_t = 1)]
+    import_hops: i64,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -594,6 +602,7 @@ fn main() {
         cochange,
         max_additions: args.max_additions,
         seats_per_source: args.seats_per_source,
+        import_hops: args.import_hops,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,

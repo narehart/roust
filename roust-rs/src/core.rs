@@ -3232,6 +3232,12 @@ pub struct SelectParams<'a> {
     pub cochange_strong: i64,
     /// E28: cap on pool additions beyond the lexical picks (16 = shipped).
     pub max_additions: i64,
+    /// E32: how many hops of the import graph the candidate GENERATOR walks
+    /// from each source (1 = shipped). E31 split the slices into
+    /// admission-bound (Go, Python: cap 16 -> 128 moved FILE +25.17/+22.73)
+    /// and generation-bound (Java, Rust: exactly 0.00 at cap 32 AND 128), so
+    /// for the inert slices the pool never proposes the gold at any cap.
+    pub import_hops: i64,
     /// E30: how many of each source's owned candidates Guarantee 2 seats
     /// (1 = shipped behaviour). Unlike `max_additions`, which widens the
     /// untargeted global tail, this widens breadth *per source*, so it
@@ -3279,6 +3285,7 @@ impl<'a> Default for SelectParams<'a> {
             cochange_strong: 5,
             max_additions: 16,
             seats_per_source: 1,
+            import_hops: 1,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3579,6 +3586,17 @@ pub fn select_files(
         // that way.
         if let Some(adj) = edges.get(s) {
             neighbors.extend(adj.iter().cloned());
+            // E32: second hop. `edges` is symmetric (both directions are
+            // inserted), so this reaches both what a 1-hop neighbour imports
+            // and what else imports it. Deduped below so the walk stays
+            // deterministic and a file seen at hop 1 keeps its hop-1 position.
+            if params.import_hops >= 2 {
+                for h in adj.iter() {
+                    if let Some(adj2) = edges.get(h) {
+                        neighbors.extend(adj2.iter().cloned());
+                    }
+                }
+            }
         }
         if let Some(sd) = same_dir.get(py_parent(s)) {
             neighbors.extend(sd.iter().cloned());
@@ -3589,6 +3607,10 @@ pub fn select_files(
                     neighbors.push(c.clone());
                 }
             }
+        }
+        if params.import_hops >= 2 {
+            let mut seen: HashSet<String> = HashSet::new();
+            neighbors.retain(|c| seen.insert(c.clone()));
         }
 
         for c in &neighbors {

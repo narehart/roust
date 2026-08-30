@@ -330,6 +330,12 @@ def main() -> None:
                           "file seats in the per-source guarantee (engine default 1 = shipped). "
                           "0 (the default here) is a SENTINEL meaning forward NO flag at all, "
                           "so a default arm's argv is byte-identical to every pre-E30 default arm's.")
+    ap.add_argument("--import-hops", type=int, default=0,
+                     help="E32 (per-language parity campaign): append --import-hops N to "
+                          "every roust invocation -- how many hops of the import graph the "
+                          "candidate GENERATOR walks from each source (engine default 1 = "
+                          "shipped). 0 (the default here) is a SENTINEL meaning forward NO "
+                          "flag at all.")
     ap.add_argument("--budget", type=int, default=0,
                      help="E29 (cost-of-parity curve): override the packer token budget by "
                           "rebinding the module-global BUDGET (run_roust already passes "
@@ -407,6 +413,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.extend(["--max-additions", str(args.max_additions)])
     if args.seats_per_source:
         EXTRA_ENGINE_FLAGS.extend(["--seats-per-source", str(args.seats_per_source)])
+    if args.import_hops:
+        EXTRA_ENGINE_FLAGS.extend(["--import-hops", str(args.import_hops)])
     if args.budget:
         BUDGET = args.budget
     if args.repos_dir is not None:
@@ -445,6 +453,7 @@ def main() -> None:
             rec = eval_verified_instance(row, args.timeout, args.pad_lines, args.len_exp)
             rec["max_additions"] = args.max_additions
             rec["seats_per_source"] = args.seats_per_source
+            rec["import_hops"] = args.import_hops
             rec["budget"] = BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
