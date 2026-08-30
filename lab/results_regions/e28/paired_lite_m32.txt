@@ -1,0 +1,51 @@
+
+=== lite_m32 ===
+arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+default     300    0    92.33 ( 277)    54.67 ( 164)    44.00 ( 132)   0.52728    34.88    8558.5
+arm         300    0    94.67 ( 284)    51.00 ( 153)    40.67 ( 122)   0.50097    49.99    8696.3
+delta                   +2.34           -3.67           -3.33         -0.02631   +15.11    +137.8
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+1         default     300    0    92.33 ( 277)    54.67 ( 164)    44.00 ( 132)   0.52728    34.88    8558.5
+          arm         300    0    94.67 ( 284)    51.00 ( 153)    40.67 ( 122)   0.50097    49.99    8696.3
+          delta                   +2.34           -3.67           -3.33         -0.02631   +15.11    +137.8   FILE McNemar 0/7 p=0.0156
+McNemar FILE      default-only=  0 arm-only=  7 p=0.0156
+McNemar FUNCTION  default-only= 13 arm-only=  2 p=0.0074
+McNemar LINE      default-only= 11 arm-only=  1 p=0.0063
+Wilcoxon frac    n_nonzero=21 up=4 down=17 p=0.0029
+
+changed instances: 32 of 300
+  django__django-12470                       [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  pydata__xarray-4094                        [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  scikit-learn__scikit-learn-14087           [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sympy__sympy-21847                         [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sympy__sympy-23262                         [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sphinx-doc__sphinx-8721                    [1 ] FILE =      FUNC =      LINE =      frac 0.6667->0.0000       (-0.6667)
+  sympy__sympy-15609                         [1 ] FILE =      FUNC =      LINE =      frac 0.5714->0.0000       (-0.5714)
+  astropy__astropy-14365                     [1 ] FILE =      FUNC =      LINE =      frac 0.5000->0.0000       (-0.5000)
+  scikit-learn__scikit-learn-13439           [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.5000       (-0.5000)
+  scikit-learn__scikit-learn-10297           [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.5714       (-0.4286)
+  django__django-11620                       [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.5882       (-0.4118)
+  matplotlib__matplotlib-22835               [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.6250       (-0.3750)
+  matplotlib__matplotlib-24334               [1 ] FILE =      FUNC =      LINE =      frac 0.8333->0.5000       (-0.3333)
+  sympy__sympy-13773                         [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.7500       (-0.2500)
+  django__django-13401                       [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.8824       (-0.1176)
+  sympy__sympy-19007                         [1 ] FILE =      FUNC =      LINE =      frac 0.2174->0.1304       (-0.0870)
+  sympy__sympy-12419                         [1 ] FILE =      FUNC =      LINE =      frac 0.0714->0.0000       (-0.0714)
+  astropy__astropy-12907                     [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  django__django-11910                       [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  django__django-12113                       [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-14997                       [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-16229                       [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-16910                       [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  scikit-learn__scikit-learn-25638           [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  sphinx-doc__sphinx-8801                    [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  sympy__sympy-13146                         [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  sympy__sympy-13471                         [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  sympy__sympy-13915                         [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-13590                       [1 ] FILE =      FUNC 0->1   LINE 0->1   frac 0.9000->1.0000       (+0.1000)
+  sympy__sympy-21055                         [1 ] FILE 0->1   FUNC =      LINE =      frac 0.0000->0.1667       (+0.1667)
+  scikit-learn__scikit-learn-25500           [1 ] FILE =      FUNC =      LINE =      frac 0.0000->0.2222       (+0.2222)
+  astropy__astropy-14182                     [1 ] FILE 0->1   FUNC 0->1   LINE =      frac 0.0000->0.9310       (+0.9310)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e28/lite_m32_paired.json

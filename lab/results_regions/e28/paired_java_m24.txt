@@ -1,0 +1,41 @@
+
+=== java_m24 ===
+arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+default     128    0    49.22 (  63)    36.72 (  47)    14.06 (  18)   0.41522    31.28    8762.2
+arm         128    0    50.78 (  65)    34.38 (  44)    12.50 (  16)   0.40461    39.01    8897.2
+delta                   +1.56           -2.34           -1.56         -0.01061    +7.73    +135.0
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+1         default      51    0    94.12 (  48)    52.94 (  27)    35.29 (  18)   0.62986    31.35    8762.8
+          arm          51    0    94.12 (  48)    49.02 (  25)    31.37 (  16)   0.60966    39.04    8894.1
+          delta                   +0.00           -3.92           -3.92         -0.02019    +7.69    +131.3   FILE McNemar 0/0 p=1.0000
+2         default      37    0    18.92 (   7)    43.24 (  16)     0.00 (   0)   0.32774    31.08    8784.7
+          arm          37    0    24.32 (   9)    40.54 (  15)     0.00 (   0)   0.32176    38.92    8930.1
+          delta                   +5.40           -2.70           +0.00         -0.00598    +7.84    +145.4   FILE McNemar 0/2 p=0.5000
+3+        default      40    0    20.00 (   8)    10.00 (   4)     0.00 (   0)   0.22247    31.38    8740.7
+          arm          40    0    20.00 (   8)    10.00 (   4)     0.00 (   0)   0.21979    39.05    8870.7
+          delta                   +0.00           +0.00           +0.00         -0.00267    +7.67    +130.0   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  2 p=0.5000
+McNemar FUNCTION  default-only=  3 arm-only=  0 p=0.2500
+McNemar LINE      default-only=  2 arm-only=  0 p=0.5000
+Wilcoxon frac    n_nonzero=14 up=3 down=11 p=0.0062
+
+changed instances: 16 of 128
+  elastic__logstash-14878                    [1 ] FILE =      FUNC =      LINE =      frac 0.6897->0.4828       (-0.2069)
+  elastic__logstash-14897                    [1 ] FILE =      FUNC =      LINE =      frac 0.6897->0.4828       (-0.2069)
+  elastic__logstash-14898                    [1 ] FILE =      FUNC =      LINE =      frac 0.6897->0.4828       (-0.2069)
+  elastic__logstash-15233                    [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.7955       (-0.2045)
+  elastic__logstash-15241                    [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.7955       (-0.2045)
+  elastic__logstash-15000                    [2 ] FILE =      FUNC =      LINE =      frac 0.5782->0.4762       (-0.1020)
+  elastic__logstash-15008                    [2 ] FILE =      FUNC =      LINE =      frac 0.5782->0.4762       (-0.1020)
+  fasterxml__jackson-databind-3621           [2 ] FILE =      FUNC =      LINE =      frac 0.5696->0.4810       (-0.0886)
+  fasterxml__jackson-databind-4365           [3+] FILE =      FUNC =      LINE =      frac 0.5476->0.4821       (-0.0655)
+  elastic__logstash-14027                    [3+] FILE =      FUNC =      LINE =      frac 0.4756->0.4268       (-0.0488)
+  google__gson-1787                          [3+] FILE =      FUNC =      LINE =      frac 0.6338->0.6056       (-0.0282)
+  fasterxml__jackson-databind-2036           [2 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  fasterxml__jackson-databind-4325           [2 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  elastic__logstash-13997                    [3+] FILE =      FUNC =      LINE =      frac 0.0609->0.0761       (+0.0152)
+  fasterxml__jackson-dataformat-xml-531      [3+] FILE =      FUNC =      LINE =      frac 0.1341->0.1545       (+0.0203)
+  fasterxml__jackson-databind-4304           [2 ] FILE 0->1   FUNC =      LINE =      frac 0.1429->0.2143       (+0.0714)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e28/java_m24_paired.json

@@ -1,0 +1,39 @@
+
+=== cpp_m24 ===
+arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+default     129    0    65.89 (  85)    17.83 (  23)     6.98 (   9)   0.29880    24.40    8510.4
+arm         129    0    66.67 (  86)    17.83 (  23)     6.98 (   9)   0.29687    26.84    8537.5
+delta                   +0.78           +0.00           +0.00         -0.00193    +2.44     +27.1
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+1         default      47    0   100.00 (  47)    34.04 (  16)    19.15 (   9)   0.52564    20.75    8439.6
+          arm          47    0   100.00 (  47)    34.04 (  16)    19.15 (   9)   0.52409    21.60    8449.0
+          delta                   +0.00           +0.00           +0.00         -0.00155    +0.85      +9.4   FILE McNemar 0/0 p=1.0000
+2         default      27    0    88.89 (  24)     7.41 (   2)     0.00 (   0)   0.28496    24.00    8506.3
+          arm          27    0    88.89 (  24)     7.41 (   2)     0.00 (   0)   0.28150    25.44    8521.4
+          delta                   +0.00           +0.00           +0.00         -0.00346    +1.44     +15.1   FILE McNemar 0/0 p=1.0000
+3+        default      55    0    25.45 (  14)     9.09 (   5)     0.00 (   0)   0.11175    27.73    8572.8
+          arm          55    0    27.27 (  15)     9.09 (   5)     0.00 (   0)   0.11024    32.02    8621.0
+          delta                   +1.82           +0.00           +0.00         -0.00151    +4.29     +48.2   FILE McNemar 0/1 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  1 p=1.0000
+McNemar FUNCTION  default-only=  0 arm-only=  0 p=1.0000
+McNemar LINE      default-only=  0 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=13 up=6 down=7 p=0.2439
+
+changed instances: 14 of 129
+  nlohmann__json-3664                        [3+] FILE =      FUNC =      LINE =      frac 0.2609->0.1594       (-0.1014)
+  catchorg__Catch2-2723                      [1 ] FILE =      FUNC =      LINE =      frac 0.6000->0.5273       (-0.0727)
+  catchorg__Catch2-2849                      [2 ] FILE =      FUNC =      LINE =      frac 0.2118->0.1626       (-0.0493)
+  simdjson__simdjson-958                     [2 ] FILE =      FUNC =      LINE =      frac 0.2059->0.1618       (-0.0441)
+  nlohmann__json-3663                        [3+] FILE =      FUNC =      LINE =      frac 0.2278->0.2046       (-0.0232)
+  simdjson__simdjson-543                     [3+] FILE =      FUNC =      LINE =      frac 0.1918->0.1888       (-0.0030)
+  simdjson__simdjson-954                     [3+] FILE =      FUNC =      LINE =      frac 0.1353->0.1330       (-0.0023)
+  simdjson__simdjson-1624                    [3+] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  nlohmann__json-3415                        [3+] FILE =      FUNC =      LINE =      frac 0.0260->0.0271       (+0.0011)
+  simdjson__simdjson-485                     [3+] FILE =      FUNC =      LINE =      frac 0.0488->0.0506       (+0.0018)
+  nlohmann__json-3446                        [3+] FILE =      FUNC =      LINE =      frac 0.0742->0.0766       (+0.0024)
+  simdjson__simdjson-559                     [3+] FILE =      FUNC =      LINE =      frac 0.1129->0.1217       (+0.0088)
+  catchorg__Catch2-1616                      [3+] FILE =      FUNC =      LINE =      frac 0.0294->0.0397       (+0.0104)
+  nlohmann__json-4536                        [3+] FILE =      FUNC =      LINE =      frac 0.0090->0.0314       (+0.0224)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e28/cpp_m24_paired.json

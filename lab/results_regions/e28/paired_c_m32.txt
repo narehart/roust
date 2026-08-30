@@ -1,0 +1,48 @@
+
+=== c_m32 ===
+arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+default     128    1    51.56 (  66)    28.12 (  36)    13.28 (  17)   0.22513    30.19    8513.7
+arm         128    1    55.47 (  71)    26.56 (  34)    12.50 (  16)   0.20981    44.83    8653.7
+delta                   +3.91           -1.56           -0.78         -0.01532   +14.64    +140.0
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+1         default      66    1    78.79 (  52)    43.94 (  29)    25.76 (  17)   0.31955    30.21    8513.7
+          arm          66    1    81.82 (  54)    40.91 (  27)    24.24 (  16)   0.30093    44.49    8651.9
+          delta                   +3.03           -3.03           -1.52         -0.01862   +14.28    +138.2   FILE McNemar 0/2 p=0.5000
+2         default      16    0    75.00 (  12)    18.75 (   3)     0.00 (   0)   0.21182    30.44    8519.4
+          arm          16    0    81.25 (  13)    18.75 (   3)     0.00 (   0)   0.21036    45.50    8645.7
+          delta                   +6.25           +0.00           +0.00         -0.00146   +15.06    +126.3   FILE McNemar 0/1 p=1.0000
+3+        default      46    0     4.35 (   2)     8.70 (   4)     0.00 (   0)   0.09635    30.07    8511.8
+          arm          46    0     8.70 (   4)     8.70 (   4)     0.00 (   0)   0.08088    45.06    8659.1
+          delta                   +4.35           +0.00           +0.00         -0.01547   +15.00    +147.3   FILE McNemar 0/2 p=0.5000
+McNemar FILE      default-only=  0 arm-only=  5 p=0.0625
+McNemar FUNCTION  default-only=  2 arm-only=  0 p=0.5000
+McNemar LINE      default-only=  1 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=18 up=3 down=15 p=0.0040
+
+changed instances: 23 of 128
+  ponylang__ponyc-4087                       [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  facebook__zstd-2130                        [3+] FILE =      FUNC =      LINE =      frac 0.2473->0.0000       (-0.2473)
+  ponylang__ponyc-4017                       [1 ] FILE =      FUNC 1->0   LINE =      frac 0.5185->0.3704       (-0.1481)
+  ponylang__ponyc-2660                       [3+] FILE =      FUNC =      LINE =      frac 0.1451->0.0000       (-0.1451)
+  ponylang__ponyc-671                        [3+] FILE =      FUNC =      LINE =      frac 0.1321->0.0000       (-0.1321)
+  facebook__zstd-1416                        [3+] FILE =      FUNC =      LINE =      frac 0.1454->0.0674       (-0.0780)
+  ponylang__ponyc-3746                       [3+] FILE =      FUNC =      LINE =      frac 0.2065->0.1323       (-0.0742)
+  facebook__zstd-836                         [3+] FILE =      FUNC =      LINE =      frac 0.1181->0.0694       (-0.0486)
+  ponylang__ponyc-4505                       [1 ] FILE =      FUNC =      LINE =      frac 0.3268->0.2810       (-0.0458)
+  ponylang__ponyc-1486                       [3+] FILE =      FUNC =      LINE =      frac 0.2348->0.2000       (-0.0348)
+  jqlang__jq-2824                            [3+] FILE =      FUNC =      LINE =      frac 0.1724->0.1379       (-0.0345)
+  ponylang__ponyc-3293                       [3+] FILE =      FUNC =      LINE =      frac 0.4789->0.4542       (-0.0246)
+  facebook__zstd-1530                        [2 ] FILE =      FUNC =      LINE =      frac 0.6082->0.5848       (-0.0234)
+  jqlang__jq-2821                            [1 ] FILE =      FUNC =      LINE =      frac 0.0661->0.0496       (-0.0165)
+  ponylang__ponyc-3973                       [3+] FILE =      FUNC =      LINE =      frac 0.1609->0.1494       (-0.0115)
+  facebook__zstd-3223                        [3+] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  facebook__zstd-3438                        [3+] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  ponylang__ponyc-2201                       [2 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  ponylang__ponyc-4061                       [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  ponylang__ponyc-4595                       [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  ponylang__ponyc-2272                       [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0193       (+0.0193)
+  ponylang__ponyc-4024                       [3+] FILE =      FUNC =      LINE =      frac 0.0148->0.0517       (+0.0369)
+  ponylang__ponyc-4506                       [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0629       (+0.0629)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e28/c_m32_paired.json

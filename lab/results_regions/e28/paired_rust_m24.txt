@@ -1,0 +1,63 @@
+
+=== rust_m24 ===
+arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+default     239    0    60.25 ( 144)    19.67 (  47)     7.53 (  18)   0.24315    29.95    8464.0
+arm         239    0    60.67 ( 145)    19.25 (  46)     7.53 (  18)   0.23449    35.26    8510.5
+delta                   +0.42           -0.42           +0.00         -0.00866    +5.31     +46.5
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+1         default      82    0    97.56 (  80)    39.02 (  32)    21.95 (  18)   0.36417    30.48    8472.7
+          arm          82    0    97.56 (  80)    37.80 (  31)    21.95 (  18)   0.35387    35.79    8519.0
+          delta                   +0.00           -1.22           +0.00         -0.01030    +5.32     +46.3   FILE McNemar 0/0 p=1.0000
+2         default      52    0    67.31 (  35)    11.54 (   6)     0.00 (   0)   0.20951    29.81    8466.7
+          arm          52    0    69.23 (  36)    11.54 (   6)     0.00 (   0)   0.20137    35.13    8514.1
+          delta                   +1.92           +0.00           +0.00         -0.00814    +5.33     +47.4   FILE McNemar 0/1 p=1.0000
+3+        default     105    0    27.62 (  29)     8.57 (   9)     0.00 (   0)   0.16529    29.61    8455.9
+          arm         105    0    27.62 (  29)     8.57 (   9)     0.00 (   0)   0.15765    34.91    8502.2
+          delta                   +0.00           +0.00           +0.00         -0.00764    +5.29     +46.3   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  1 p=1.0000
+McNemar FUNCTION  default-only=  1 arm-only=  0 p=1.0000
+McNemar LINE      default-only=  1 arm-only=  1 p=1.0000
+Wilcoxon frac    n_nonzero=37 up=10 down=27 p=0.0133
+
+changed instances: 38 of 239
+  tokio-rs__tracing-1236                     [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  nushell__nushell-10613                     [3+] FILE =      FUNC =      LINE =      frac 0.4167->0.0000       (-0.4167)
+  clap-rs__clap-2161                         [2 ] FILE =      FUNC =      LINE =      frac 0.5600->0.2800       (-0.2800)
+  clap-rs__clap-4248                         [3+] FILE =      FUNC =      LINE =      frac 0.4333->0.2333       (-0.2000)
+  tokio-rs__tokio-6290                       [3+] FILE =      FUNC =      LINE =      frac 0.4667->0.3333       (-0.1333)
+  tokio-rs__tracing-1228                     [2 ] FILE =      FUNC =      LINE =      frac 0.5653->0.4498       (-0.1155)
+  tokio-rs__tokio-5179                       [3+] FILE =      FUNC =      LINE =      frac 0.2883->0.1994       (-0.0890)
+  clap-rs__clap-3990                         [3+] FILE =      FUNC =      LINE =      frac 0.2075->0.1462       (-0.0613)
+  clap-rs__clap-2543                         [3+] FILE =      FUNC =      LINE =      frac 0.0556->0.0278       (-0.0278)
+  clap-rs__clap-1958                         [2 ] FILE =      FUNC =      LINE =      frac 0.3827->0.3580       (-0.0247)
+  sharkdp__bat-1518                          [3+] FILE =      FUNC =      LINE =      frac 0.2276->0.2069       (-0.0207)
+  tokio-rs__tracing-1045                     [3+] FILE =      FUNC =      LINE =      frac 0.4074->0.3889       (-0.0185)
+  clap-rs__clap-4056                         [3+] FILE =      FUNC =      LINE =      frac 0.0579->0.0403       (-0.0176)
+  clap-rs__clap-3775                         [3+] FILE =      FUNC =      LINE =      frac 0.3684->0.3509       (-0.0175)
+  tokio-rs__tracing-2335                     [3+] FILE =      FUNC =      LINE =      frac 0.1073->0.0904       (-0.0169)
+  tokio-rs__tracing-1853                     [3+] FILE =      FUNC =      LINE =      frac 0.4200->0.4037       (-0.0162)
+  clap-rs__clap-4081                         [3+] FILE =      FUNC =      LINE =      frac 0.0311->0.0175       (-0.0136)
+  clap-rs__clap-4080                         [3+] FILE =      FUNC =      LINE =      frac 0.1340->0.1237       (-0.0103)
+  clap-rs__clap-4103                         [3+] FILE =      FUNC =      LINE =      frac 0.0458->0.0386       (-0.0072)
+  clap-rs__clap-4072                         [3+] FILE =      FUNC =      LINE =      frac 0.0354->0.0303       (-0.0051)
+  clap-rs__clap-2677                         [3+] FILE =      FUNC =      LINE =      frac 0.1007->0.0960       (-0.0047)
+  tokio-rs__tokio-5200                       [3+] FILE =      FUNC =      LINE =      frac 0.0533->0.0489       (-0.0044)
+  clap-rs__clap-3402                         [3+] FILE =      FUNC =      LINE =      frac 0.0898->0.0856       (-0.0042)
+  tokio-rs__tracing-1523                     [3+] FILE =      FUNC =      LINE =      frac 0.0711->0.0674       (-0.0037)
+  tokio-rs__tracing-1015                     [3+] FILE =      FUNC =      LINE =      frac 0.0560->0.0530       (-0.0030)
+  tokio-rs__tracing-1291                     [2 ] FILE =      FUNC =      LINE =      frac 0.4350->0.4320       (-0.0030)
+  rayon-rs__rayon-863                        [1 ] FILE =      FUNC =      LINE =      frac 0.8645->0.8621       (-0.0023)
+  clap-rs__clap-3874                         [2 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  BurntSushi__ripgrep-2626                   [3+] FILE =      FUNC =      LINE =      frac 0.0714->0.0720       (+0.0006)
+  clap-rs__clap-3732                         [3+] FILE =      FUNC =      LINE =      frac 0.0469->0.0514       (+0.0045)
+  clap-rs__clap-3684                         [3+] FILE =      FUNC =      LINE =      frac 0.1062->0.1125       (+0.0063)
+  BurntSushi__ripgrep-2610                   [3+] FILE =      FUNC =      LINE =      frac 0.0206->0.0284       (+0.0078)
+  clap-rs__clap-4032                         [3+] FILE =      FUNC =      LINE =      frac 0.0484->0.0584       (+0.0100)
+  clap-rs__clap-2758                         [3+] FILE =      FUNC =      LINE =      frac 0.2018->0.2287       (+0.0269)
+  clap-rs__clap-1869                         [3+] FILE =      FUNC =      LINE =      frac 0.0610->0.0939       (+0.0329)
+  sharkdp__bat-2665                          [3+] FILE =      FUNC =      LINE =      frac 0.3766->0.4156       (+0.0390)
+  clap-rs__clap-2253                         [1 ] FILE =      FUNC =      LINE 0->1   frac 0.8421->1.0000       (+0.1579)
+  tokio-rs__tokio-7111                       [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.1622       (+0.1622)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e28/rust_m24_paired.json

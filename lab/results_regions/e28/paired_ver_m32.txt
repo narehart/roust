@@ -1,0 +1,77 @@
+
+=== ver_m32 ===
+arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+default     407    0    92.38 ( 376)    47.17 ( 192)    35.14 ( 143)   0.47635    34.95    8557.6
+arm         407    0    94.10 ( 383)    43.24 ( 176)    32.43 ( 132)   0.43766    50.19    8693.9
+delta                   +1.72           -3.93           -2.71         -0.03869   +15.24    +136.3
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac    files    tokens
+1         default     336    0    95.83 ( 322)    53.57 ( 180)    41.07 ( 138)   0.51165    34.88    8558.0
+          arm         336    0    97.02 ( 326)    49.40 ( 166)    37.80 ( 127)   0.46987    50.12    8695.1
+          delta                   +1.19           -4.17           -3.27         -0.04178   +15.24    +137.1   FILE McNemar 0/4 p=0.1250
+2         default      49    0    81.63 (  40)    22.45 (  11)     8.16 (   4)   0.33709    35.22    8552.0
+          arm          49    0    83.67 (  41)    18.37 (   9)     8.16 (   4)   0.31697    50.33    8681.9
+          delta                   +2.04           -4.08           +0.00         -0.02013   +15.10    +129.9   FILE McNemar 0/1 p=1.0000
+3+        default      22    0    63.64 (  14)     4.55 (   1)     4.55 (   1)   0.24733    35.36    8563.7
+          arm          22    0    72.73 (  16)     4.55 (   1)     4.55 (   1)   0.21452    50.91    8701.8
+          delta                   +9.09           +0.00           +0.00         -0.03281   +15.54    +138.1   FILE McNemar 0/2 p=0.5000
+McNemar FILE      default-only=  0 arm-only=  7 p=0.0156
+McNemar FUNCTION  default-only= 17 arm-only=  1 p=0.0001
+McNemar LINE      default-only= 11 arm-only=  0 p=0.0010
+Wilcoxon frac    n_nonzero=43 up=2 down=41 p=0.0000
+
+changed instances: 52 of 407
+  astropy__astropy-13977                     [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  django__django-16429                       [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  psf__requests-1766                         [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  pydata__xarray-6461                        [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  scikit-learn__scikit-learn-11578           [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  scikit-learn__scikit-learn-26194           [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sphinx-doc__sphinx-10614                   [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sympy__sympy-16886                         [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  scikit-learn__scikit-learn-26323           [1 ] FILE =      FUNC =      LINE =      frac 0.9167->0.0000       (-0.9167)
+  pydata__xarray-6744                        [1 ] FILE =      FUNC =      LINE =      frac 0.8125->0.0000       (-0.8125)
+  django__django-10880                       [1 ] FILE =      FUNC =      LINE =      frac 0.7143->0.0000       (-0.7143)
+  django__django-13569                       [1 ] FILE =      FUNC 1->0   LINE =      frac 0.6667->0.0000       (-0.6667)
+  django__django-16502                       [1 ] FILE =      FUNC 1->0   LINE =      frac 0.9091->0.3182       (-0.5909)
+  matplotlib__matplotlib-25775               [3+] FILE 0->1   FUNC =      LINE =      frac 0.6364->0.1558       (-0.4805)
+  django__django-13279                       [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.5833       (-0.4167)
+  django__django-14170                       [2 ] FILE =      FUNC =      LINE =      frac 0.3659->0.0244       (-0.3415)
+  sphinx-doc__sphinx-8120                    [2 ] FILE =      FUNC 1->0   LINE =      frac 0.6667->0.3333       (-0.3333)
+  django__django-15128                       [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.7000       (-0.3000)
+  django__django-14539                       [1 ] FILE =      FUNC 1->0   LINE =      frac 0.2500->0.0000       (-0.2500)
+  scikit-learn__scikit-learn-14496           [1 ] FILE =      FUNC =      LINE =      frac 0.2500->0.0000       (-0.2500)
+  sympy__sympy-15599                         [1 ] FILE =      FUNC =      LINE =      frac 0.9615->0.7692       (-0.1923)
+  django__django-15161                       [1 ] FILE =      FUNC =      LINE =      frac 0.2500->0.0833       (-0.1667)
+  django__django-11276                       [1 ] FILE =      FUNC =      LINE =      frac 0.3158->0.1579       (-0.1579)
+  django__django-15503                       [1 ] FILE =      FUNC =      LINE =      frac 0.3696->0.2174       (-0.1522)
+  sympy__sympy-13878                         [1 ] FILE =      FUNC =      LINE =      frac 0.4296->0.2923       (-0.1373)
+  django__django-12155                       [2 ] FILE =      FUNC =      LINE =      frac 0.8409->0.7273       (-0.1136)
+  pytest-dev__pytest-5840                    [2 ] FILE =      FUNC =      LINE =      frac 0.3231->0.2154       (-0.1077)
+  django__django-15278                       [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.9000       (-0.1000)
+  pytest-dev__pytest-10051                   [1 ] FILE =      FUNC 1->0   LINE =      frac 0.6000->0.5000       (-0.1000)
+  django__django-11400                       [3+] FILE =      FUNC =      LINE =      frac 0.7188->0.6250       (-0.0938)
+  pytest-dev__pytest-7205                    [1 ] FILE =      FUNC =      LINE =      frac 0.7273->0.6364       (-0.0909)
+  sympy__sympy-12489                         [1 ] FILE =      FUNC =      LINE =      frac 0.3288->0.2613       (-0.0676)
+  sphinx-doc__sphinx-7748                    [1 ] FILE =      FUNC =      LINE =      frac 0.2787->0.2131       (-0.0656)
+  sympy__sympy-14531                         [1 ] FILE =      FUNC =      LINE =      frac 0.0562->0.0000       (-0.0562)
+  django__django-11885                       [2 ] FILE =      FUNC =      LINE =      frac 0.8819->0.8268       (-0.0551)
+  sympy__sympy-14248                         [3+] FILE =      FUNC =      LINE =      frac 0.1000->0.0500       (-0.0500)
+  django__django-14631                       [2 ] FILE =      FUNC =      LINE =      frac 0.7442->0.7093       (-0.0349)
+  django__django-11138                       [3+] FILE =      FUNC =      LINE =      frac 0.1122->0.0816       (-0.0306)
+  django__django-13121                       [3+] FILE =      FUNC =      LINE =      frac 0.4369->0.4078       (-0.0291)
+  django__django-13344                       [3+] FILE =      FUNC =      LINE =      frac 0.0533->0.0267       (-0.0267)
+  sympy__sympy-13091                         [3+] FILE =      FUNC =      LINE =      frac 0.1229->0.1117       (-0.0112)
+  django__django-14011                       [2 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-15375                       [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-15629                       [3+] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-16631                       [2 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  django__django-16642                       [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  matplotlib__matplotlib-20826               [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  sympy__sympy-18211                         [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  sympy__sympy-20801                         [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  sympy__sympy-24562                         [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  sphinx-doc__sphinx-8035                    [1 ] FILE =      FUNC 0->1   LINE =      frac 0.4182->0.4364       (+0.0182)
+  django__django-11087                       [1 ] FILE =      FUNC =      LINE =      frac 0.0000->0.1481       (+0.1481)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e28/ver_m32_paired.json
