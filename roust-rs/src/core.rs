@@ -3230,6 +3230,8 @@ pub struct SelectParams<'a> {
     pub floor_ratio: f64,
     pub cochange: Option<&'a IndexMap<String, IndexMap<String, i64>>>,
     pub cochange_strong: i64,
+    /// E28: cap on pool additions beyond the lexical picks (16 = shipped).
+    pub max_additions: i64,
     pub anchors: Option<&'a [(String, f64)]>,
     pub use_testbridge: bool,
     pub use_docsbridge: bool,
@@ -3269,6 +3271,7 @@ impl<'a> Default for SelectParams<'a> {
             floor_ratio: 0.05,
             cochange: None,
             cochange_strong: 5,
+            max_additions: 16,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3689,7 +3692,15 @@ pub fn select_files(
             }
         }
         for c in &eligible {
-            if additions.len() >= 16 {
+            // E28: the breadth cap. All-or-nothing FILE at 3+ gold files
+            // demands every gold file in the return set, and the mining says
+            // 62% of missed multi-file gold is already an eligible candidate
+            // that simply ranks below this cut -- so the binding constraint
+            // there is how many candidates we admit, not which ones we can
+            // tell apart (three separate sibling signals -- co-change,
+            // directory, shared identifiers -- all failed to discriminate
+            // gold from non-gold among these candidates).
+            if additions.len() >= params.max_additions as usize {
                 break;
             }
             if !additions.contains(c) {

@@ -110,6 +110,15 @@ struct Args {
     #[arg(long)]
     explain: bool,
 
+    /// E28 (per-language parity campaign): how many pool candidates may be
+    /// added beyond the lexical picks (16 = shipped behaviour). All-or-
+    /// nothing FILE on multi-gold-file instances rewards breadth, and the
+    /// mining shows 62% of missed multi-file gold is already an eligible
+    /// candidate ranked below this cut. Raising it trades precision for
+    /// recall; the cost is expected to land on the region metrics.
+    #[arg(long, default_value_t = 16)]
+    max_additions: i64,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -574,6 +583,7 @@ fn main() {
 
     let params = SelectParams {
         cochange,
+        max_additions: args.max_additions,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,
