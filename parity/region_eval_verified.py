@@ -318,6 +318,18 @@ def main() -> None:
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
     ap.add_argument("--ext-v2", action="store_true",
                      help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
+    ap.add_argument("--max-additions", type=int, default=0,
+                     help="E28 (per-language parity campaign): append --max-additions N to "
+                          "every roust invocation -- the pool breadth cap (engine default "
+                          "16 = shipped). 0 (the default here) is a SENTINEL meaning forward "
+                          "NO flag at all, so a default arm's argv is byte-identical to "
+                          "every pre-E28 default arm's.")
+    ap.add_argument("--budget", type=int, default=0,
+                     help="E29 (cost-of-parity curve): override the packer token budget by "
+                          "rebinding the module-global BUDGET (run_roust already passes "
+                          "--budget positionally, so this must NOT ride EXTRA_ENGINE_FLAGS "
+                          "or the flag would be forwarded twice). 0 = leave it at the "
+                          "shipped 8192.")
     ap.add_argument("--displacement-guard", action="store_true",
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion); omitted by default "
@@ -342,7 +354,7 @@ def main() -> None:
 
     # E18/E19 passthrough rides the same EXTRA_ENGINE_FLAGS mechanism
     # region_eval_full.py uses for its BM25 arm.
-    global SWEBENCH_REPOS
+    global SWEBENCH_REPOS, BUDGET
     if args.family_enum:
         EXTRA_ENGINE_FLAGS.append("--family-enum")
     if args.sibling_sim != 0.0:
@@ -385,6 +397,10 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--shape-blocks")
     if args.ext_v2:
         EXTRA_ENGINE_FLAGS.append("--ext-v2")
+    if args.max_additions:
+        EXTRA_ENGINE_FLAGS.extend(["--max-additions", str(args.max_additions)])
+    if args.budget:
+        BUDGET = args.budget
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 
@@ -405,7 +421,9 @@ def main() -> None:
     print(f"engine version: {version}", file=sys.stderr)
     print(f"EXTRA_ENGINE_FLAGS={EXTRA_ENGINE_FLAGS}", file=sys.stderr, flush=True)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
-    print(f"pad_lines={args.pad_lines} len_exp={args.len_exp}", file=sys.stderr)
+    print(f"pad_lines={args.pad_lines} len_exp={args.len_exp} "
+          f"max_additions={args.max_additions} budget={BUDGET} "
+          f"instances={args.instances}", file=sys.stderr)
 
     rows = load_verified_rows(args.gold_parquet, args.limit,
                               only=_load_instance_filter(args.instances))
@@ -417,6 +435,8 @@ def main() -> None:
     with args.report.open("w") as fh:
         for i, row in enumerate(rows, 1):
             rec = eval_verified_instance(row, args.timeout, args.pad_lines, args.len_exp)
+            rec["max_additions"] = args.max_additions
+            rec["budget"] = BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:
