@@ -136,6 +136,13 @@ struct Args {
     #[arg(long, default_value_t = 1)]
     import_hops: i64,
 
+    /// E32 (per-language parity campaign): resolve import edges for Java
+    /// (`import a.b.C;`) and the C family (`#include "foo.h"`), which the
+    /// import graph never covered -- those files had NO edges at all, hence
+    /// no candidate generation and no Guarantee-1 seat. Default off.
+    #[arg(long)]
+    import_edges_v2: bool,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -444,6 +451,7 @@ fn main() {
     // on-flag is accepted-but-redundant (mutual exclusion checked below,
     // mirroring the trace-formats-v2 pattern).
     roust::core::set_symbols_v2(!args.no_symbols_v2);
+    roust::core::set_import_edges_v2(args.import_edges_v2);
     // WS3d displacement guard: default ON (adopted); --no-displacement-guard
     // is the escape hatch and the explicit on-flag is accepted-but-redundant
     // (mutual exclusion checked below, mirroring the symbols-v2 pattern).

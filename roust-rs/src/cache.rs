@@ -228,7 +228,14 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // cache is never served to the new defaults; --no-symbols-v2 keys are
     // byte-identical to the pre-adoption format.
     let sv = if core::symbols_v2_enabled() { ":sv2" } else { "" };
-    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}", with_history as i32, with_docs as i32)
+    // E32: import_edges_v2 changes the persisted import GRAPH (Java
+    // `import a.b.C;` and C-family `#include "foo.h"` edges, which the
+    // graph never had), and `edges` is part of the cache payload -- so a
+    // cache written without the flag must never be served to a run with
+    // it, or the new edges silently never appear. Flag-off keys are
+    // byte-identical to main's format.
+    let ie = if core::import_edges_v2_enabled() { ":ie2" } else { "" };
+    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}{ie}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {

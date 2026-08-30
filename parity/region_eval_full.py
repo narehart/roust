@@ -169,6 +169,8 @@ def main() -> None:
                           "candidate GENERATOR walks from each source (engine default 1 = "
                           "shipped). 0 (the default here) is a SENTINEL meaning forward NO "
                           "flag at all.")
+    ap.add_argument("--import-edges-v2", action="store_true",
+                     help="E32 (per-language parity campaign): append --import-edges-v2 -- resolve Java and C-family import edges, which the import graph never covered at all.")
     ap.add_argument("--budget", type=int, default=0,
                      help="E29 (cost-of-parity curve): override the packer token budget by "
                           "setting region_eval_verified.BUDGET (the harness already passes "
@@ -231,6 +233,8 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--seats-per-source", str(args.seats_per_source)]
     if args.import_hops:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--import-hops", str(args.import_hops)]
+    if args.import_edges_v2:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--import-edges-v2"]
     if args.budget:
         rev.BUDGET = args.budget
 
@@ -281,6 +285,7 @@ def main() -> None:
             rec["max_additions"] = args.max_additions
             rec["seats_per_source"] = args.seats_per_source
             rec["import_hops"] = args.import_hops
+            rec["import_edges_v2"] = args.import_edges_v2
             rec["budget"] = rev.BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()

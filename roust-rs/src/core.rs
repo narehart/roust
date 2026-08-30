@@ -52,6 +52,18 @@ pub const CFAMILY_EXTENSIONS: &[&str] = &[".c", ".h", ".cc", ".cpp", ".cxx", ".h
 
 static CFAMILY_EXT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
+// E32: Java + C-family import-edge resolution. Default OFF, so every default
+// arm's import graph -- and therefore every published number -- is unchanged.
+static IMPORT_EDGES_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_import_edges_v2(on: bool) {
+    IMPORT_EDGES_V2.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn import_edges_v2_enabled() -> bool {
+    IMPORT_EDGES_V2.load(std::sync::atomic::Ordering::Relaxed)
+}
+
 pub fn set_cfamily_ext(on: bool) {
     CFAMILY_EXT.store(on, std::sync::atomic::Ordering::Relaxed);
 }
@@ -2516,6 +2528,15 @@ static RS_MOD_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?m)^\s*(?:pub
 static RS_USE_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"(?m)^\s*(?:pub\s+)?use\s+(?:crate|super|self)::([\w:]+)").unwrap());
 static GO_IMPORT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#""([\w./\-]+)""#).unwrap());
+// E32: Java and C-family import edges. `file_import_targets` covered only
+// .py/.js-ts/.rs/.go, so .java/.c/.cpp/.h files had an EMPTY import graph --
+// no candidate generation, no Guarantee-1 seat. That is why Java is inert to
+// every admission cap (20.00 at 16, 32 and 128) and why a second hop over its
+// graph was a byte-identical no-op: there were no edges to walk.
+static JAVA_IMPORT_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?m)^\s*import\s+(?:static\s+)?([\w.]+)\s*;").unwrap());
+static C_INCLUDE_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r#"(?m)^\s*#\s*include\s+"([^"]+)""#).unwrap());
 
 fn py_module_index(files: &[String]) -> HashMap<String, String> {
     let mut idx = HashMap::new();
@@ -2655,6 +2676,61 @@ fn file_import_targets(
             ] {
                 if fileset.contains(&cand) && cand != rel {
                     targets.insert(cand);
+                }
+            }
+        }
+    } else if import_edges_v2_enabled() && rel.ends_with(".java") {
+        // `import a.b.C;` -> the file whose path ENDS WITH a/b/C.java, so the
+        // usual src/main/java/... prefixes resolve without hard-coding them.
+        // A trailing `.*` (wildcard import) names a package, not a type, so it
+        // resolves to the files directly under that package directory.
+        for cap in JAVA_IMPORT_RE.captures_iter(text) {
+            let fqcn = cap.get(1).unwrap().as_str();
+            if fqcn.starts_with("java.") || fqcn.starts_with("javax.") {
+                continue;
+            }
+            if let Some(pkg) = fqcn.strip_suffix(".*") {
+                let dir = format!("/{}/", pkg.replace('.', "/"));
+                for other in fileset {
+                    if other.as_str() != rel && other.ends_with(".java") && other.contains(&dir) {
+                        targets.insert((*other).clone());
+                    }
+                }
+            } else {
+                let suffix = format!("/{}.java", fqcn.replace('.', "/"));
+                let bare = format!("{}.java", fqcn.replace('.', "/"));
+                for other in fileset {
+                    if other.as_str() != rel && (other.ends_with(&suffix) || other.as_str() == bare) {
+                        targets.insert((*other).clone());
+                    }
+                }
+            }
+        }
+    } else if import_edges_v2_enabled()
+        && (rel.ends_with(".c")
+        || rel.ends_with(".h")
+        || rel.ends_with(".cc")
+        || rel.ends_with(".cpp")
+        || rel.ends_with(".cxx")
+        || rel.ends_with(".hpp")
+        || rel.ends_with(".hh"))
+    {
+        // `#include "foo/bar.h"` resolves first relative to the including
+        // file's directory (the C rule), then by path suffix anywhere in the
+        // corpus, which covers -I include roots without knowing build flags.
+        // Angle-bracket includes are system headers and are skipped.
+        let base = py_parent(rel);
+        for cap in C_INCLUDE_RE.captures_iter(text) {
+            let spec = cap.get(1).unwrap().as_str();
+            let joined = normpath_join(base, spec);
+            if fileset.contains(&joined) && joined != rel {
+                targets.insert(joined);
+                continue;
+            }
+            let suffix = format!("/{spec}");
+            for other in fileset {
+                if other.as_str() != rel && (other.ends_with(&suffix) || other.as_str() == spec) {
+                    targets.insert((*other).clone());
                 }
             }
         }
