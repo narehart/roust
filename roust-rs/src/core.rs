@@ -3328,6 +3328,12 @@ pub struct SelectParams<'a> {
     pub cochange_strong: i64,
     /// E28: cap on pool additions beyond the lexical picks (16 = shipped).
     pub max_additions: i64,
+    /// E33: the pool eligibility floor -- a candidate survives only if its
+    /// add_score is at least this fraction of the best candidate's (0.15 =
+    /// shipped). This cut runs BEFORE any admission rule, so it bounds every
+    /// cap: with 2-hop generation proposing far more candidates, it is a
+    /// plausible binding constraint that no admission lever can reach.
+    pub eligible_floor: f64,
     /// E32: how many hops of the import graph the candidate GENERATOR walks
     /// from each source (1 = shipped). E31 split the slices into
     /// admission-bound (Go, Python: cap 16 -> 128 moved FILE +25.17/+22.73)
@@ -3382,6 +3388,7 @@ impl<'a> Default for SelectParams<'a> {
             max_additions: 16,
             seats_per_source: 1,
             import_hops: 1,
+            eligible_floor: 0.15,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3746,7 +3753,8 @@ pub fn select_files(
     let mut additions: Vec<String> = Vec::new();
     if !ranked_pool.is_empty() {
         let pmax = add_score(&ranked_pool[0], &pool);
-        let eligible: Vec<String> = ranked_pool.iter().filter(|c| add_score(c, &pool) >= 0.15 * pmax).cloned().collect();
+        let eligible: Vec<String> =
+            ranked_pool.iter().filter(|c| add_score(c, &pool) >= params.eligible_floor * pmax).cloned().collect();
         let eligible_set: HashSet<&String> = eligible.iter().collect();
 
         let n = corpus.files.len().max(1) as f64;

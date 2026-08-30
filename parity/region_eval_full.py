@@ -171,6 +171,8 @@ def main() -> None:
                           "flag at all.")
     ap.add_argument("--import-edges-v2", action="store_true",
                      help="E32 (per-language parity campaign): append --import-edges-v2 -- resolve Java and C-family import edges, which the import graph never covered at all.")
+    ap.add_argument("--eligible-floor", type=float, default=0.0,
+                     help="E33 (per-language parity campaign): append --eligible-floor F -- the pool eligibility cut as a fraction of the best candidate score (engine default 0.15). 0.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--budget", type=int, default=0,
                      help="E29 (cost-of-parity curve): override the packer token budget by "
                           "setting region_eval_verified.BUDGET (the harness already passes "
@@ -235,6 +237,8 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--import-hops", str(args.import_hops)]
     if args.import_edges_v2:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--import-edges-v2"]
+    if args.eligible_floor:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--eligible-floor", str(args.eligible_floor)]
     if args.budget:
         rev.BUDGET = args.budget
 
@@ -286,6 +290,7 @@ def main() -> None:
             rec["seats_per_source"] = args.seats_per_source
             rec["import_hops"] = args.import_hops
             rec["import_edges_v2"] = args.import_edges_v2
+            rec["eligible_floor"] = args.eligible_floor
             rec["budget"] = rev.BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()

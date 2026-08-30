@@ -143,6 +143,12 @@ struct Args {
     #[arg(long)]
     import_edges_v2: bool,
 
+    /// E33 (per-language parity campaign): pool eligibility floor as a
+    /// fraction of the best candidate's score (0.15 = shipped). Applied
+    /// BEFORE any admission rule, so it bounds every cap.
+    #[arg(long, default_value_t = 0.15)]
+    eligible_floor: f64,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -611,6 +617,7 @@ fn main() {
         max_additions: args.max_additions,
         seats_per_source: args.seats_per_source,
         import_hops: args.import_hops,
+        eligible_floor: args.eligible_floor,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,
