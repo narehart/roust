@@ -1,0 +1,32 @@
+{
+ "per_arm_slice": {
+  "a1_c16b8192/jsts": "IDENTICAL",
+  "a1_c16b8192/java": "IDENTICAL",
+  "a1_c16b8192/go": "IDENTICAL",
+  "a1_c16b8192/rust": "IDENTICAL",
+  "a1_c16b8192/c": "IDENTICAL",
+  "a1_c16b8192/cpp": "IDENTICAL",
+  "a1_c16b8192/ver": "IDENTICAL",
+  "a2_c32b8192/jsts": "IDENTICAL",
+  "a2_c32b8192/java": "IDENTICAL",
+  "a2_c32b8192/go": "IDENTICAL",
+  "a2_c32b8192/rust": "IDENTICAL",
+  "a2_c32b8192/c": "IDENTICAL",
+  "a2_c32b8192/cpp": "IDENTICAL",
+  "a2_c32b8192/ver": "IDENTICAL"
+ },
+ "records_compared": 1236,
+ "payload_differences": 0,
+ "pass": true,
+ "payload_keys": [
+  "regions",
+  "tokens",
+  "hunk_file_covered",
+  "hunk_line_recall",
+  "hunk_touched",
+  "all_gold_files_retrieved",
+  "n_gold_files",
+  "n_gold_hunks",
+  "error"
+ ]
+}
