@@ -117,7 +117,8 @@ def checkout(repo_path: Path, sha: str) -> None:
                     text=True, timeout=300)
 
 
-def load_verified_rows(gold_parquet: Path, limit: int) -> list[dict]:
+def load_verified_rows(gold_parquet: Path, limit: int,
+                        only: set[str] | None = None) -> list[dict]:
     import pandas as pd
     df = pd.read_parquet(gold_parquet)
     rows = []
@@ -133,6 +134,11 @@ def load_verified_rows(gold_parquet: Path, limit: int) -> list[dict]:
     # iteration order, which is the parquet's own row order); sort by
     # (repo, instance_id) so shared clones are checked out sequentially.
     rows.sort(key=lambda r: (r["repo"], r["instance_id"]))
+    if only is not None:
+        missing = only - {r["instance_id"] for r in rows}
+        if missing:
+            raise SystemExit(f"--instances: not in this parquet: {sorted(missing)}")
+        rows = [r for r in rows if r["instance_id"] in only]
     if limit:
         rows = rows[:limit]
     return rows
@@ -223,6 +229,19 @@ def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: f
     return rec
 
 
+
+def _load_instance_filter(path):
+    """E26: read an instance_id allowlist (one per line; blank and #-comment
+    lines ignored). Returns None when no path was given, so the default code
+    path is untouched."""
+    if path is None:
+        return None
+    ids = {l.strip() for l in Path(path).read_text().splitlines()}
+    ids = {i for i in ids if i and not i.startswith("#")}
+    if not ids:
+        raise SystemExit(f"--instances: {path} lists no instance ids")
+    return ids
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                   formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -303,6 +322,12 @@ def main() -> None:
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion); omitted by default "
                           "(binary default: off)")
+    ap.add_argument("--instances", type=Path, default=None,
+                     help="E26: restrict the run to the instance_ids listed in this "
+                          "file (one per line, blank/# lines ignored). Applied BEFORE "
+                          "--limit. Used for targeted identity checks where a full "
+                          "arm would be waste -- e.g. only the repos that contain a "
+                          "file the flag under test could possibly touch.")
     ap.add_argument("--repos-dir", type=Path, default=None,
                      help="override the SWE-bench clones directory (default lab/swebench_repos). "
                           "This script MUTATES the clones (checkout -f + clean -fdq per "
@@ -378,10 +403,12 @@ def main() -> None:
     # comparison is against the correct private checkout.
     version = check_engine_provenance(args.allow_stale_engine)
     print(f"engine version: {version}", file=sys.stderr)
+    print(f"EXTRA_ENGINE_FLAGS={EXTRA_ENGINE_FLAGS}", file=sys.stderr, flush=True)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
     print(f"pad_lines={args.pad_lines} len_exp={args.len_exp}", file=sys.stderr)
 
-    rows = load_verified_rows(args.gold_parquet, args.limit)
+    rows = load_verified_rows(args.gold_parquet, args.limit,
+                              only=_load_instance_filter(args.instances))
     args.report.parent.mkdir(parents=True, exist_ok=True)
 
     n_ok = 0
