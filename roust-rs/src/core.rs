@@ -2538,6 +2538,19 @@ static JAVA_IMPORT_RE: LazyLock<Regex> =
 static C_INCLUDE_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r#"(?m)^\s*#\s*include\s+"([^"]+)""#).unwrap());
 
+/// E32: basename -> files index, built ONCE per corpus so Java/C-family
+/// import resolution is a hash lookup plus a short suffix check instead of a
+/// full corpus scan per import statement (that was O(imports x files) per
+/// file and made a Java slice unrunnable).
+fn basename_index(files: &[String]) -> HashMap<String, Vec<String>> {
+    let mut idx: HashMap<String, Vec<String>> = HashMap::new();
+    for rel in files {
+        let base = rel.rsplit('/').next().unwrap_or(rel).to_string();
+        idx.entry(base).or_default().push(rel.clone());
+    }
+    idx
+}
+
 fn py_module_index(files: &[String]) -> HashMap<String, String> {
     let mut idx = HashMap::new();
     for rel in files {
@@ -2572,6 +2585,7 @@ fn file_import_targets(
     text: &str,
     pyidx: &HashMap<String, String>,
     fileset: &HashSet<&String>,
+    baseidx: &HashMap<String, Vec<String>>,
 ) -> HashSet<String> {
     let mut targets: HashSet<String> = HashSet::new();
 
@@ -2689,19 +2703,19 @@ fn file_import_targets(
             if fqcn.starts_with("java.") || fqcn.starts_with("javax.") {
                 continue;
             }
-            if let Some(pkg) = fqcn.strip_suffix(".*") {
-                let dir = format!("/{}/", pkg.replace('.', "/"));
-                for other in fileset {
-                    if other.as_str() != rel && other.ends_with(".java") && other.contains(&dir) {
-                        targets.insert((*other).clone());
-                    }
-                }
-            } else {
-                let suffix = format!("/{}.java", fqcn.replace('.', "/"));
-                let bare = format!("{}.java", fqcn.replace('.', "/"));
-                for other in fileset {
+            if fqcn.ends_with(".*") {
+                // A wildcard import names a package, not a type. Resolving it
+                // would mean a corpus scan per statement; the same-directory
+                // channel already covers package-mates, so it is skipped.
+                continue;
+            }
+            let simple = fqcn.rsplit('.').next().unwrap_or(fqcn);
+            let suffix = format!("/{}.java", fqcn.replace('.', "/"));
+            let bare = format!("{}.java", fqcn.replace('.', "/"));
+            if let Some(cands) = baseidx.get(&format!("{simple}.java")) {
+                for other in cands {
                     if other.as_str() != rel && (other.ends_with(&suffix) || other.as_str() == bare) {
-                        targets.insert((*other).clone());
+                        targets.insert(other.clone());
                     }
                 }
             }
@@ -2728,9 +2742,12 @@ fn file_import_targets(
                 continue;
             }
             let suffix = format!("/{spec}");
-            for other in fileset {
-                if other.as_str() != rel && (other.ends_with(&suffix) || other.as_str() == spec) {
-                    targets.insert((*other).clone());
+            let simple = spec.rsplit('/').next().unwrap_or(spec);
+            if let Some(cands) = baseidx.get(simple) {
+                for other in cands {
+                    if other.as_str() != rel && (other.ends_with(&suffix) || other.as_str() == spec) {
+                        targets.insert(other.clone());
+                    }
                 }
             }
         }
@@ -2751,11 +2768,12 @@ fn file_import_targets(
 pub fn build_import_graph(corpus: &Corpus) -> EdgeMap {
     let mut edges: EdgeMap = HashMap::new();
     let pyidx = py_module_index(&corpus.files);
+    let baseidx = basename_index(&corpus.files);
     let fileset: HashSet<&String> = corpus.files.iter().collect();
 
     for rel in &corpus.files {
         let text = &corpus.text[rel];
-        let targets = file_import_targets(rel, text, &pyidx, &fileset);
+        let targets = file_import_targets(rel, text, &pyidx, &fileset, &baseidx);
         for t in targets {
             edges.entry(rel.clone()).or_default().insert(t.clone());
             edges.entry(t).or_default().insert(rel.clone());
@@ -2781,8 +2799,9 @@ pub fn build_import_graph(corpus: &Corpus) -> EdgeMap {
 pub fn update_import_graph_for_files(corpus: &Corpus, edges: &mut EdgeMap, old_text: &HashMap<String, String>) {
     let fileset: HashSet<&String> = corpus.files.iter().collect();
     let pyidx = py_module_index(&corpus.files);
+    let baseidx = basename_index(&corpus.files);
 
-    let authored = |rel: &str, text: &str| -> HashSet<String> { file_import_targets(rel, text, &pyidx, &fileset) };
+    let authored = |rel: &str, text: &str| -> HashSet<String> { file_import_targets(rel, text, &pyidx, &fileset, &baseidx) };
 
     let mut new_authored: HashMap<String, HashSet<String>> = HashMap::new();
     let mut old_authored: HashMap<String, HashSet<String>> = HashMap::new();
@@ -3149,6 +3168,7 @@ fn compute_test_bridge(corpus: &Corpus, bm: &IndexMap<String, f64>) -> Vec<(Stri
     let s_top = top_tests[0].1;
 
     let pyidx = py_module_index(&corpus.files);
+    let baseidx = basename_index(&corpus.files);
     let fileset: HashSet<&String> = corpus.files.iter().collect();
     // file -> (raw_strength_sum, via_test, via_contrib, call_hits_via)
     let mut cand: IndexMap<String, (f64, String, f64, i64)> = IndexMap::new();
@@ -3157,7 +3177,7 @@ fn compute_test_bridge(corpus: &Corpus, bm: &IndexMap<String, f64>) -> Vec<(Stri
             Some(x) => x,
             None => continue,
         };
-        let mut targets: Vec<String> = file_import_targets(t, text, &pyidx, &fileset)
+        let mut targets: Vec<String> = file_import_targets(t, text, &pyidx, &fileset, &baseidx)
             .into_iter()
             .filter(|f| impl_prior(f) == 1.0)
             .collect();
@@ -3506,12 +3526,13 @@ pub fn select_files(
     if let Some(tfs) = params.trace_files {
         if !tfs.is_empty() {
             let pyidx = py_module_index(&corpus.files);
+            let baseidx = basename_index(&corpus.files);
             let fileset: HashSet<&String> = corpus.files.iter().collect();
             let direct: HashSet<&str> = tfs.iter().map(|s| s.as_str()).collect();
             let mut spill: BTreeSet<String> = BTreeSet::new();
             for f in tfs.iter() {
                 if let Some(text) = corpus.text.get(f) {
-                    for t in file_import_targets(f, text, &pyidx, &fileset) {
+                    for t in file_import_targets(f, text, &pyidx, &fileset, &baseidx) {
                         if !direct.contains(t.as_str()) {
                             spill.insert(t);
                         }
