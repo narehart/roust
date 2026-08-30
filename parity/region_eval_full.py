@@ -151,6 +151,19 @@ def main() -> None:
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
     ap.add_argument("--ext-v2", action="store_true",
                      help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
+    ap.add_argument("--cochange-seats", type=int, default=0,
+                     help="E27 (per-language parity campaign): append --cochange-seats N "
+                          "to every roust invocation (widen Guarantee 2 so one source may "
+                          "seat up to N evidence-gated co-change neighbours). 0 = do not "
+                          "forward the flag at all, so a default arm's argv is byte-identical "
+                          "to every pre-E27 arm's; rides EXTRA_ENGINE_FLAGS)")
+    ap.add_argument("--cochange-seat-min", type=int, default=0,
+                     help="E27: append --cochange-seat-min K (minimum historical co-change "
+                          "count for an extra seat). 0 = do not forward; rides EXTRA_ENGINE_FLAGS")
+    ap.add_argument("--cochange-strong", type=int, default=0,
+                     help="E27: append --cochange-strong N (co-change admission threshold for "
+                          "the secondary candidate list). 0 = do not forward; rides "
+                          "EXTRA_ENGINE_FLAGS")
     ap.add_argument("--displacement-guard", action="store_true",
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion; rides "
@@ -194,6 +207,12 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--shape-blocks"]
     if args.ext_v2:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ext-v2"]
+    if args.cochange_seats:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--cochange-seats", str(args.cochange_seats)]
+    if args.cochange_seat_min:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--cochange-seat-min", str(args.cochange_seat_min)]
+    if args.cochange_strong:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--cochange-strong", str(args.cochange_strong)]
 
     print(f"engine version: {version}", file=sys.stderr)
     print(f"gold parquet: {args.gold_parquet}", file=sys.stderr)
@@ -205,7 +224,11 @@ def main() -> None:
           f"impl_prior_v2={args.impl_prior_v2} "
           f"trace_formats_v2={args.trace_formats_v2} "
           f"symbols_v2={args.symbols_v2} "
-          f"displacement_guard={args.displacement_guard}", file=sys.stderr)
+          f"displacement_guard={args.displacement_guard} "
+          f"cochange_seats={args.cochange_seats} "
+          f"cochange_seat_min={args.cochange_seat_min} "
+          f"cochange_strong={args.cochange_strong}", file=sys.stderr)
+    print(f"EXTRA_ENGINE_FLAGS={rev.EXTRA_ENGINE_FLAGS}", file=sys.stderr, flush=True)
 
     rows = rev.load_verified_rows(args.gold_parquet, limit=0)
     start, end = parse_shard(args.shard, len(rows))
@@ -232,6 +255,9 @@ def main() -> None:
             rec["symbols_v2"] = args.symbols_v2
             rec["ext_v2"] = args.ext_v2
             rec["displacement_guard"] = args.displacement_guard
+            rec["cochange_seats"] = args.cochange_seats
+            rec["cochange_seat_min"] = args.cochange_seat_min
+            rec["cochange_strong"] = args.cochange_strong
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

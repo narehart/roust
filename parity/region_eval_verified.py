@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -146,6 +147,9 @@ def load_verified_rows(gold_parquet: Path, limit: int,
 
 def eval_verified_instance(row: dict, timeout: float, pad_lines: int, len_exp: float) -> dict:
     instance_id = row["instance_id"]
+    # E27 measurement only: stamps the engine's optional seat trace with the
+    # instance it came from. Inert unless ROUST_E27_SEAT_TRACE is also set.
+    os.environ["ROUST_E27_TAG"] = str(instance_id)
     gold_hunks = parse_gold_hunks(row["patch"])
     gold_files = sorted(gold_hunks.keys())
     rec: dict = {
@@ -318,6 +322,18 @@ def main() -> None:
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
     ap.add_argument("--ext-v2", action="store_true",
                      help="E26 (per-language parity campaign): append --ext-v2 to every roust invocation -- index source extensions the original allowlist never covered (.rb .pony .svelte .mjs .cjs .cts .mts .vue .scala .php)")
+    ap.add_argument("--cochange-seats", type=int, default=0,
+                     help="E27 (per-language parity campaign): append --cochange-seats N "
+                          "to every roust invocation (widen Guarantee 2 so one source may "
+                          "seat up to N evidence-gated co-change neighbours). 0 = do not "
+                          "forward the flag at all, so a default arm's argv is byte-identical "
+                          "to every pre-E27 arm's")
+    ap.add_argument("--cochange-seat-min", type=int, default=0,
+                     help="E27: append --cochange-seat-min K (minimum historical co-change "
+                          "count for an extra seat). 0 = do not forward")
+    ap.add_argument("--cochange-strong", type=int, default=0,
+                     help="E27: append --cochange-strong N (co-change admission threshold for "
+                          "the secondary candidate list). 0 = do not forward")
     ap.add_argument("--displacement-guard", action="store_true",
                      help="WS3d (campaign #56): append --displacement-guard to every roust "
                           "invocation (fixture-dir anchor exclusion); omitted by default "
@@ -385,6 +401,12 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--shape-blocks")
     if args.ext_v2:
         EXTRA_ENGINE_FLAGS.append("--ext-v2")
+    if args.cochange_seats:
+        EXTRA_ENGINE_FLAGS.extend(["--cochange-seats", str(args.cochange_seats)])
+    if args.cochange_seat_min:
+        EXTRA_ENGINE_FLAGS.extend(["--cochange-seat-min", str(args.cochange_seat_min)])
+    if args.cochange_strong:
+        EXTRA_ENGINE_FLAGS.extend(["--cochange-strong", str(args.cochange_strong)])
     if args.repos_dir is not None:
         SWEBENCH_REPOS = args.repos_dir
 
