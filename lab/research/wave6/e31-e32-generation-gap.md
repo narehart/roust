@@ -349,3 +349,61 @@ defensible successor questions:
    language-agnostic hole (Java/C/C++ had NO import graph); C goes 4.35 ->
    28.26 on the 3+ stratum, 0.00 -> 28.57 at exactly 3. That deserves a
    dual-gate round at a sane operating point on its own merits.
+
+## E35b — direct standardization: the goal, measured like-for-like
+
+Standardizing every slice to Python Verified's gold-count mix (the weights
+are 3:0.591, 4:0.273, 5:0.045, 6+:0.091), so each language is scored as if
+its instances had Python's difficulty:
+
+**Shipped defaults**
+
+| slice | crude | standardized |
+|---|---|---|
+| Python Verified | 63.64 | 63.64 |
+| Rust | 27.62 | **46.45** |
+| C++ | 25.45 | **45.00** |
+| Go | 27.27 | **35.52** |
+| Java | 20.00 | 21.00 |
+| JS/TS | 10.14 | 16.88 |
+| C | 4.35 | 3.64 |
+
+**Best configuration per slice**
+
+| slice | crude | standardized |
+|---|---|---|
+| Python Verified | 86.36 | 86.36 |
+| **Go** | 57.34 | **64.21** |
+| Rust | 38.10 | **57.61** |
+| C++ | 32.73 | **53.65** |
+| JS/TS | 22.71 | 35.53 |
+| Java | 22.50 | 24.03 |
+| C | 21.74 | 20.31 |
+
+**Go at its best configuration reaches 64.21 standardized, above the 63.64
+Python-Verified baseline the goal was originally framed on.** Rust (57.61)
+and C++ (53.65) come close. That result was invisible while the difficulty
+confound sat in the comparison: crude Go is 57.34 against a Python that has
+itself moved to 86.36.
+
+### What this does and does not establish
+
+It does **not** establish parity. Against Python measured *at the same
+config*, every language is still behind (86.36 vs Go's 64.21), and Java, C
+and JS/TS remain far behind on any reading.
+
+It does establish that a substantial part of the headline gap was an artifact
+of comparing strata of unequal difficulty, and that on a like-for-like
+measurement one language now clears the original bar.
+
+### Load-bearing caveats
+
+* The standardization weights come from **22 Python instances**, and two of
+  the four weight cells are n=1 and n=2 (Python scores 0% in both at default,
+  50% in the 6+ cell at best config). Those cells are noise; the weights
+  carry that noise into every standardized figure.
+* "Best configuration" differs per slice and costs 9-15k tokens against the
+  shipped ~8.5k, with line fraction well below default. These are not
+  operating points, and not comparable to the published 8192 scoreboard.
+* FUNCTION and LINE were never re-scored across E31-E35. Everything here is
+  the FILE column.
