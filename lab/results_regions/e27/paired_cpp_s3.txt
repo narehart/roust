@@ -1,0 +1,29 @@
+
+=== cpp_s3 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     129    0    65.89 (  85)    17.83 (  23)     6.98 (   9)   0.29880
+arm         129    0    66.67 (  86)    17.83 (  23)     6.98 (   9)   0.29883
+delta                   +0.78           +0.00           +0.00         +0.00003
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default      47    0   100.00 (  47)    34.04 (  16)    19.15 (   9)   0.52564
+          arm          47    0   100.00 (  47)    34.04 (  16)    19.15 (   9)   0.52564
+          delta                   +0.00           +0.00           +0.00         +0.00000   FILE McNemar 0/0 p=1.0000
+2         default      27    0    88.89 (  24)     7.41 (   2)     0.00 (   0)   0.28496
+          arm          27    0    88.89 (  24)     7.41 (   2)     0.00 (   0)   0.28496
+          delta                   +0.00           +0.00           +0.00         +0.00000   FILE McNemar 0/0 p=1.0000
+3+        default      55    0    25.45 (  14)     9.09 (   5)     0.00 (   0)   0.11175
+          arm          55    0    27.27 (  15)     9.09 (   5)     0.00 (   0)   0.11183
+          delta                   +1.82           +0.00           +0.00         +0.00008   FILE McNemar 0/1 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  1 p=1.0000
+McNemar FUNCTION  default-only=  0 arm-only=  0 p=1.0000
+McNemar LINE      default-only=  0 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=3 up=2 down=1 p=0.7500
+
+changed instances: 4 of 129
+  simdjson__simdjson-954                     [3+] FILE =      FUNC =      LINE =      frac 0.1353->0.1330       (-0.0023)
+  simdjson__simdjson-1624                    [3+] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  simdjson__simdjson-485                     [3+] FILE =      FUNC =      LINE =      frac 0.0488->0.0511       (+0.0023)
+  nlohmann__json-4536                        [3+] FILE =      FUNC =      LINE =      frac 0.0090->0.0135       (+0.0045)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/cpp_s3_paired.json

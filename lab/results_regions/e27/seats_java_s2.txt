@@ -1,0 +1,6 @@
+=== java_s2 seat-fire anatomy ===
+  fired on 105/128 instances (82.03%), 329 extra seats total, mean 3.133 where fired, max 6
+  seated file was gold: 5/329 (1.52%); of those 3 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 51 (15.5%)
+  bundles changed: 92/128 (71.88%); files +245 (gold 3) / -226 (gold 1), net gold +2
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_java_s2.json

@@ -1,0 +1,33 @@
+
+=== jsts_s2 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     580    1    46.38 ( 269)    31.21 ( 181)    14.14 (  82)   0.26156
+arm         580    1    46.55 ( 270)    31.03 ( 180)    14.14 (  82)   0.26172
+delta                   +0.17           -0.18           +0.00         +0.00016
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default     280    1    72.50 ( 203)    41.79 ( 117)    26.43 (  74)   0.32002
+          arm         280    1    72.86 ( 204)    41.79 ( 117)    26.43 (  74)   0.31999
+          delta                   +0.36           +0.00           +0.00         -0.00004   FILE McNemar 0/1 p=1.0000
+2         default      93    0    48.39 (  45)    26.88 (  25)     5.38 (   5)   0.23629
+          arm          93    0    48.39 (  45)    25.81 (  24)     5.38 (   5)   0.23567
+          delta                   +0.00           -1.07           +0.00         -0.00062   FILE McNemar 0/0 p=1.0000
+3+        default     207    0    10.14 (  21)    18.84 (  39)     1.45 (   3)   0.19411
+          arm         207    0    10.14 (  21)    18.84 (  39)     1.45 (   3)   0.19490
+          delta                   +0.00           +0.00           +0.00         +0.00079   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  1 p=1.0000
+McNemar FUNCTION  default-only=  1 arm-only=  0 p=1.0000
+McNemar LINE      default-only=  0 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=7 up=3 down=4 p=1.0000
+
+changed instances: 8 of 580
+  darkreader__darkreader-6747                [2 ] FILE =      FUNC 1->0   LINE =      frac 0.5946->0.5405       (-0.0541)
+  mui__material-ui-24794                     [3+] FILE =      FUNC =      LINE =      frac 0.1329->0.0983       (-0.0347)
+  sveltejs__svelte-12460                     [1 ] FILE =      FUNC =      LINE =      frac 0.4400->0.4300       (-0.0100)
+  sveltejs__svelte-13018                     [2 ] FILE =      FUNC =      LINE =      frac 0.0595->0.0558       (-0.0037)
+  vuejs__core-8785                           [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  mui__material-ui-34401                     [3+] FILE =      FUNC =      LINE =      frac 0.0426->0.0532       (+0.0106)
+  mui__material-ui-24968                     [3+] FILE =      FUNC =      LINE =      frac 0.0992->0.1240       (+0.0248)
+  mui__material-ui-34131                     [3+] FILE =      FUNC =      LINE =      frac 0.4865->0.6486       (+0.1622)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/jsts_s2_paired.json

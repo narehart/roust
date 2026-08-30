@@ -1,0 +1,224 @@
+{
+ "label": "cpp_s3",
+ "default": {
+  "n": 129,
+  "n_errors": 0,
+  "file_pct": 65.89,
+  "file_n": 85,
+  "function_pct": 17.83,
+  "function_n": 23,
+  "line_pct": 6.98,
+  "line_n": 9,
+  "mean_fraction": 0.29879798681900954
+ },
+ "arm": {
+  "n": 129,
+  "n_errors": 0,
+  "file_pct": 66.67,
+  "file_n": 86,
+  "function_pct": 17.83,
+  "function_n": 23,
+  "line_pct": 6.98,
+  "line_n": 9,
+  "mean_fraction": 0.2988324200113125
+ },
+ "delta": {
+  "file": 0.78,
+  "function": 0.0,
+  "line": 0.0,
+  "mean_fraction": 3.4e-05
+ },
+ "strata": {
+  "1": {
+   "n": 47,
+   "default": {
+    "n": 47,
+    "n_errors": 0,
+    "file_pct": 100.0,
+    "file_n": 47,
+    "function_pct": 34.04,
+    "function_n": 16,
+    "line_pct": 19.15,
+    "line_n": 9,
+    "mean_fraction": 0.5256367952531011
+   },
+   "arm": {
+    "n": 47,
+    "n_errors": 0,
+    "file_pct": 100.0,
+    "file_n": 47,
+    "function_pct": 34.04,
+    "function_n": 16,
+    "line_pct": 19.15,
+    "line_n": 9,
+    "mean_fraction": 0.5256367952531011
+   },
+   "delta_file": 0.0,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": 0.0,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 1.0,
+   "frac_up": 0,
+   "frac_down": 0
+  },
+  "2": {
+   "n": 27,
+   "default": {
+    "n": 27,
+    "n_errors": 0,
+    "file_pct": 88.89,
+    "file_n": 24,
+    "function_pct": 7.41,
+    "function_n": 2,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.2849561939963675
+   },
+   "arm": {
+    "n": 27,
+    "n_errors": 0,
+    "file_pct": 88.89,
+    "file_n": 24,
+    "function_pct": 7.41,
+    "function_n": 2,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.2849561939963675
+   },
+   "delta_file": 0.0,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": 0.0,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 1.0,
+   "frac_up": 0,
+   "frac_down": 0
+  },
+  "3+": {
+   "n": 55,
+   "default": {
+    "n": 55,
+    "n_errors": 0,
+    "file_pct": 25.45,
+    "file_n": 14,
+    "function_pct": 9.09,
+    "function_n": 5,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.11174897608826463
+   },
+   "arm": {
+    "n": 55,
+    "n_errors": 0,
+    "file_pct": 27.27,
+    "file_n": 15,
+    "function_pct": 9.09,
+    "function_n": 5,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.11182973757566614
+   },
+   "delta_file": 1.82,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": 8.1e-05,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 1,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 0.75,
+   "frac_up": 2,
+   "frac_down": 1
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_arm_only": 1,
+   "p": 1.0
+  },
+  "FUNCTION": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "LINE": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 3,
+   "statistic": 2.0,
+   "p": 0.75,
+   "n_up": 2,
+   "n_down": 1
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 4,
+ "changed": [
+  {
+   "instance_id": "simdjson__simdjson-954",
+   "repo": "simdjson/simdjson",
+   "stratum": "3+",
+   "n_gold_files": 11,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1353->0.1330",
+   "fraction_delta": -0.002303
+  },
+  {
+   "instance_id": "simdjson__simdjson-1624",
+   "repo": "simdjson/simdjson",
+   "stratum": "3+",
+   "n_gold_files": 5,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "simdjson__simdjson-485",
+   "repo": "simdjson/simdjson",
+   "stratum": "3+",
+   "n_gold_files": 30,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0488->0.0511",
+   "fraction_delta": 0.00226
+  },
+  {
+   "instance_id": "nlohmann__json-4536",
+   "repo": "nlohmann/json",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0090->0.0135",
+   "fraction_delta": 0.004484
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}

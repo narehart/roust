@@ -1,0 +1,288 @@
+{
+ "label": "java_s4",
+ "default": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 49.22,
+  "file_n": 63,
+  "function_pct": 36.72,
+  "function_n": 47,
+  "line_pct": 14.06,
+  "line_n": 18,
+  "mean_fraction": 0.41521707815669384
+ },
+ "arm": {
+  "n": 128,
+  "n_errors": 0,
+  "file_pct": 50.78,
+  "file_n": 65,
+  "function_pct": 37.5,
+  "function_n": 48,
+  "line_pct": 14.06,
+  "line_n": 18,
+  "mean_fraction": 0.41791643220018754
+ },
+ "delta": {
+  "file": 1.56,
+  "function": 0.78,
+  "line": 0.0,
+  "mean_fraction": 0.002699
+ },
+ "strata": {
+  "1": {
+   "n": 51,
+   "default": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 94.12,
+    "file_n": 48,
+    "function_pct": 52.94,
+    "function_n": 27,
+    "line_pct": 35.29,
+    "line_n": 18,
+    "mean_fraction": 0.6298551451736344
+   },
+   "arm": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 96.08,
+    "file_n": 49,
+    "function_pct": 52.94,
+    "function_n": 27,
+    "line_pct": 35.29,
+    "line_n": 18,
+    "mean_fraction": 0.6331231190298436
+   },
+   "delta_file": 1.96,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": 0.003268,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 1,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 1.0,
+   "frac_up": 1,
+   "frac_down": 0
+  },
+  "2": {
+   "n": 37,
+   "default": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 18.92,
+    "file_n": 7,
+    "function_pct": 43.24,
+    "function_n": 16,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.3277437124075038
+   },
+   "arm": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 21.62,
+    "file_n": 8,
+    "function_pct": 45.95,
+    "function_n": 17,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.33117394672759265
+   },
+   "delta_file": 2.7,
+   "delta_function": 2.71,
+   "delta_line": 0.0,
+   "delta_fraction": 0.00343,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 1,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 0.625,
+   "frac_up": 3,
+   "frac_down": 1
+  },
+  "3+": {
+   "n": 40,
+   "default": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 10.0,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.22246640602809528
+   },
+   "arm": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 10.0,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.2237647055545263
+   },
+   "delta_file": 0.0,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": 0.001298,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 0.25,
+   "frac_up": 3,
+   "frac_down": 1
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_arm_only": 2,
+   "p": 0.5
+  },
+  "FUNCTION": {
+   "b_def_only": 0,
+   "c_arm_only": 1,
+   "p": 1.0
+  },
+  "LINE": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 9,
+   "statistic": 8.0,
+   "p": 0.09765625,
+   "n_up": 7,
+   "n_down": 2
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 10,
+ "changed": [
+  {
+   "instance_id": "fasterxml__jackson-databind-3621",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5696->0.4810",
+   "fraction_delta": -0.088608
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4365",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5476->0.5417",
+   "fraction_delta": -0.005952
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-3371",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "google__gson-1787",
+   "repo": "google/gson",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6338->0.6479",
+   "fraction_delta": 0.014085
+  },
+  {
+   "instance_id": "elastic__logstash-13997",
+   "repo": "elastic/logstash",
+   "stratum": "3+",
+   "n_gold_files": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0609->0.0761",
+   "fraction_delta": 0.015228
+  },
+  {
+   "instance_id": "fasterxml__jackson-core-729",
+   "repo": "fasterxml/jackson-core",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1714->0.2000",
+   "fraction_delta": 0.028571
+  },
+  {
+   "instance_id": "fasterxml__jackson-core-1263",
+   "repo": "fasterxml/jackson-core",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.7455->0.8000",
+   "fraction_delta": 0.054545
+  },
+  {
+   "instance_id": "fasterxml__jackson-databind-4304",
+   "repo": "fasterxml/jackson-databind",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1429->0.2143",
+   "fraction_delta": 0.071429
+  },
+  {
+   "instance_id": "elastic__logstash-16195",
+   "repo": "elastic/logstash",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0896->0.1791",
+   "fraction_delta": 0.089552
+  },
+  {
+   "instance_id": "googlecontainertools__jib-2542",
+   "repo": "googlecontainertools/jib",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7333->0.9000",
+   "fraction_delta": 0.166667
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}

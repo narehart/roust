@@ -1,0 +1,6 @@
+=== lite_s4 seat-fire anatomy ===
+  fired on 270/300 instances (90.0%), 1193 extra seats total, mean 4.419 where fired, max 12
+  seated file was gold: 1/1193 (0.08%); of those 0 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 181 (15.17%)
+  bundles changed: 249/300 (83.0%); files +863 (gold 0) / -623 (gold 0), net gold +0
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_lite_s4.json

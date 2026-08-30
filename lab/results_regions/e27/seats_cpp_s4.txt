@@ -1,0 +1,6 @@
+=== cpp_s4 seat-fire anatomy ===
+  fired on 93/122 instances (76.23%), 284 extra seats total, mean 3.054 where fired, max 11
+  seated file was gold: 10/284 (3.52%); of those 2 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 109 (38.38%)
+  bundles changed: 26/129 (20.16%); files +105 (gold 2) / -77 (gold 2), net gold +0
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_cpp_s4.json

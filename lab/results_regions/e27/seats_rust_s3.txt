@@ -1,0 +1,6 @@
+=== rust_s3 seat-fire anatomy ===
+  fired on 229/239 instances (95.82%), 785 extra seats total, mean 3.428 where fired, max 8
+  seated file was gold: 27/785 (3.44%); of those 6 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 198 (25.22%)
+  bundles changed: 120/239 (50.21%); files +303 (gold 6) / -237 (gold 7), net gold -1
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_rust_s3.json

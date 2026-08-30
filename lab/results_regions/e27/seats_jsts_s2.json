@@ -1,0 +1,5611 @@
+{
+ "label": "jsts_s2",
+ "fire_side": {
+  "instances_traced": 579,
+  "duplicate_tags": 0,
+  "instances_with_any_extra_seat": 283,
+  "pct_instances_fired": 48.88,
+  "total_extra_seats": 461,
+  "mean_seats_per_instance": 0.796,
+  "mean_seats_where_fired": 1.629,
+  "max_seats_one_instance": 6,
+  "seated_files_that_are_gold": 9,
+  "seat_gold_precision_pct": 1.95,
+  "gold_seats_the_default_lacked": 2,
+  "seats_whose_source_was_gold": 64,
+  "pct_seats_from_gold_source": 13.88
+ },
+ "consequence_side": {
+  "instances_compared": 580,
+  "bundles_changed": 141,
+  "pct_bundles_changed": 24.31,
+  "files_added": 245,
+  "files_added_gold": 2,
+  "files_dropped": 233,
+  "files_dropped_gold": 1,
+  "net_gold": 1,
+  "added_gold_precision_pct": 0.82
+ },
+ "seats": [
+  {
+   "instance_id": "anuraghazra__github-readme-stats-2099",
+   "source": "src/common/utils.js",
+   "seated": "api/pin.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-2844",
+   "source": "src/cards/stats-card.js",
+   "seated": "src/common/Card.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-2844",
+   "source": "api/index.js",
+   "seated": "api/wakatime.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-3442",
+   "source": "src/fetchers/stats-fetcher.js",
+   "seated": "src/translations.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "anuraghazra__github-readme-stats-3442",
+   "source": "src/common/utils.js",
+   "seated": "api/pin.js",
+   "cochange": 3,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "axios__axios-5085",
+   "source": "lib/adapters/http.js",
+   "seated": "lib/core/settle.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "axios__axios-5661",
+   "source": "lib/adapters/http.js",
+   "seated": "lib/core/settle.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "axios__axios-5919",
+   "source": "lib/adapters/xhr.js",
+   "seated": "lib/core/dispatchRequest.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "darkreader__darkreader-6747",
+   "source": "src/generators/css-filter.ts",
+   "seated": "src/background/config-manager.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "darkreader__darkreader-6747",
+   "source": "src/ui/devtools/components/body.tsx",
+   "seated": "src/ui/connect/mock.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "darkreader__darkreader-6747",
+   "source": "src/inject/dynamic-theme/style-manager.ts",
+   "seated": "src/inject/utils/dom.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "darkreader__darkreader-6747",
+   "source": "src/utils/url.ts",
+   "seated": "src/ui/popup/components/site-toggle/index.tsx",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "darkreader__darkreader-7241",
+   "source": "src/background/extension.ts",
+   "seated": "src/background/utils/extension-api.ts",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "darkreader__darkreader-7241",
+   "source": "src/inject/dynamic-theme/style-manager.ts",
+   "seated": "src/inject/dynamic-theme/watch.ts",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "darkreader__darkreader-7241",
+   "source": "src/utils/url.ts",
+   "seated": "src/ui/popup/components/site-toggle/index.tsx",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "expressjs__express-3695",
+   "source": "lib/application.js",
+   "seated": "lib/middleware/init.js",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-1019",
+   "source": "src/index.js",
+   "seated": "src/constant.js",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-1047",
+   "source": "src/index.js",
+   "seated": "src/constant.js",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-1202",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-1307",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-1321",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-1502",
+   "source": "test/plugin/relativeTime.test.js",
+   "seated": "src/plugin/relativeTime/index.js",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-1725",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-1954",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-602",
+   "source": "src/index.js",
+   "seated": "src/constant.js",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "iamkun__dayjs-734",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-745",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "iamkun__dayjs-882",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "iamkun__dayjs-889",
+   "source": "src/index.js",
+   "seated": "src/utils.js",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-23073",
+   "source": "packages/material-ui/src/Menu/Menu.js",
+   "seated": "packages/material-ui/src/Popover/Popover.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-23487",
+   "source": "packages/material-ui-lab/src/TreeView/TreeView.js",
+   "seated": "packages/material-ui-lab/src/TreeView/TreeView.d.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-23487",
+   "source": "packages/material-ui/src/Select/SelectInput.js",
+   "seated": "packages/material-ui/src/FilledInput/FilledInput.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-23786",
+   "source": "packages/material-ui/src/ClickAwayListener/ClickAwayListener.js",
+   "seated": "packages/material-ui/src/Tooltip/Tooltip.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-23786",
+   "source": "packages/material-ui/src/internal/SwitchBase.js",
+   "seated": "packages/material-ui/src/RadioGroup/RadioGroup.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-23884",
+   "source": "packages/material-ui/src/Popper/Popper.js",
+   "seated": "packages/material-ui/src/Popover/Popover.js",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24010",
+   "source": "packages/material-ui/src/Checkbox/Checkbox.d.ts",
+   "seated": "packages/material-ui/src/Checkbox/Checkbox.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24202",
+   "source": "packages/material-ui/src/Select/Select.d.ts",
+   "seated": "packages/material-ui/src/Select/Select.js",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24782",
+   "source": "packages/material-ui-lab/src/MobileTimePicker/MobileTimePicker.tsx",
+   "seated": "packages/material-ui-lab/src/DatePicker/DatePicker.tsx",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24782",
+   "source": "packages/material-ui-unstyled/src/SliderUnstyled/SliderUnstyled.js",
+   "seated": "packages/material-ui-unstyled/src/BadgeUnstyled/BadgeUnstyled.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-24794",
+   "source": "packages/material-ui-system/src/index.d.ts",
+   "seated": "packages/material-ui/src/Box/Box.d.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24794",
+   "source": "packages/material-ui/src/TextField/TextField.d.ts",
+   "seated": "packages/material-ui/src/TextField/TextField.js",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24857",
+   "source": "packages/material-ui/src/Modal/Modal.d.ts",
+   "seated": "packages/material-ui/src/Popover/Popover.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-24857",
+   "source": "packages/material-ui/src/Modal/Modal.js",
+   "seated": "packages/material-ui/src/Popper/Popper.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-24945",
+   "source": "packages/material-ui-unstyled/src/SliderUnstyled/SliderUnstyled.js",
+   "seated": "packages/material-ui-unstyled/src/index.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-24945",
+   "source": "packages/material-ui/src/Slider/Slider.js",
+   "seated": "packages/material-ui/src/Badge/Badge.js",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-24945",
+   "source": "packages/material-ui/src/Popover/Popover.js",
+   "seated": "packages/material-ui/src/Dialog/Dialog.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24945",
+   "source": "packages/material-ui/src/Slide/Slide.js",
+   "seated": "packages/material-ui/src/Fade/Fade.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24968",
+   "source": "packages/material-ui-unstyled/src/SliderUnstyled/SliderUnstyled.js",
+   "seated": "packages/material-ui-unstyled/src/SliderUnstyled/index.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-24968",
+   "source": "packages/material-ui/src/Slide/Slide.js",
+   "seated": "packages/material-ui/src/Fade/Fade.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-24968",
+   "source": "packages/material-ui/src/Slider/Slider.js",
+   "seated": "packages/material-ui/src/Badge/Badge.js",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-24968",
+   "source": "packages/material-ui/src/Popover/Popover.js",
+   "seated": "packages/material-ui/src/Dialog/Dialog.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-25105",
+   "source": "packages/material-ui-types/index.d.ts",
+   "seated": "packages/material-ui-styles/src/withStyles/withStyles.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-25149",
+   "source": "packages/material-ui-system/src/index.d.ts",
+   "seated": "packages/material-ui/src/Box/Box.d.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-25259",
+   "source": "packages/material-ui-lab/src/SpeedDial/SpeedDial.js",
+   "seated": "packages/material-ui-lab/src/TreeItem/TreeItem.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-25276",
+   "source": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+   "seated": "packages/material-ui/src/useAutocomplete/useAutocomplete.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-25784",
+   "source": "packages/material-ui/src/Modal/Modal.js",
+   "seated": "packages/material-ui/src/Popover/Popover.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-25815",
+   "source": "packages/material-ui/src/InputBase/InputBase.js",
+   "seated": "packages/material-ui-lab/src/Autocomplete/Autocomplete.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-26026",
+   "source": "packages/material-ui/src/TextField/TextField.d.ts",
+   "seated": "packages/material-ui/src/FormControl/FormControl.d.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-26026",
+   "source": "packages/material-ui/src/Select/SelectInput.js",
+   "seated": "packages/material-ui-lab/src/Autocomplete/Autocomplete.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-26098",
+   "source": "packages/material-ui/src/TablePagination/TablePagination.js",
+   "seated": "packages/material-ui/src/locale/index.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-26173",
+   "source": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+   "seated": "packages/material-ui/src/PaginationItem/PaginationItem.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-26186",
+   "source": "packages/material-ui/src/TablePagination/TablePagination.js",
+   "seated": "packages/material-ui/src/locale/index.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-26323",
+   "source": "packages/material-ui/src/Select/SelectInput.js",
+   "seated": "packages/material-ui-lab/src/Autocomplete/Autocomplete.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-26323",
+   "source": "packages/material-ui/src/Dialog/Dialog.js",
+   "seated": "packages/material-ui/src/Dialog/Dialog.d.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-26413",
+   "source": "packages/material-ui-lab/src/TreeView/TreeView.js",
+   "seated": "packages/material-ui-lab/src/Autocomplete/Autocomplete.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-26413",
+   "source": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+   "seated": "packages/material-ui-lab/src/SpeedDial/SpeedDial.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-33880",
+   "source": "packages/mui-joy/src/ListItem/ListItem.tsx",
+   "seated": "packages/mui-joy/src/List/ListProps.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-34131",
+   "source": "packages/mui-system/src/cssVars/createCssVarsProvider.d.ts",
+   "seated": "packages/mui-joy/src/styles/ThemeProvider.tsx",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-34131",
+   "source": "packages/mui-system/src/cssVars/createCssVarsProvider.js",
+   "seated": "packages/mui-joy/src/colors/colors.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-34159",
+   "source": "packages/mui-joy/src/ListItemButton/ListItemButton.tsx",
+   "seated": "packages/mui-joy/src/List/List.tsx",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-34229",
+   "source": "packages/mui-lab/src/DatePicker/DatePicker.tsx",
+   "seated": "packages/mui-lab/src/DesktopDateTimePicker/DesktopDateTimePicker.tsx",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-34401",
+   "source": "packages/mui-base/src/TabsUnstyled/TabsUnstyled.tsx",
+   "seated": "packages/mui-base/src/TabPanelUnstyled/TabPanelUnstyled.tsx",
+   "cochange": 3,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-34401",
+   "source": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.d.ts",
+   "seated": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+   "cochange": 3,
+   "seated_is_gold": true,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-34445",
+   "source": "packages/mui-material/src/Badge/Badge.js",
+   "seated": "packages/mui-base/src/BadgeUnstyled/badgeUnstyledClasses.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-35178",
+   "source": "packages/mui-system/src/cssVars/createCssVarsProvider.d.ts",
+   "seated": "packages/mui-joy/src/styles/CssVarsProvider.tsx",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-35804",
+   "source": "packages/mui-material/src/styles/experimental_extendTheme.js",
+   "seated": "packages/mui-material/src/styles/createPalette.d.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-35838",
+   "source": "packages/mui-base/src/OptionUnstyled/OptionUnstyled.tsx",
+   "seated": "packages/mui-base/src/OptionGroupUnstyled/OptionGroupUnstyled.tsx",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-35946",
+   "source": "packages/mui-base/src/SelectUnstyled/SelectUnstyled.tsx",
+   "seated": "packages/mui-base/src/MultiSelectUnstyled/MultiSelectUnstyled.types.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-36400",
+   "source": "packages/mui-base/src/MenuUnstyled/MenuUnstyled.tsx",
+   "seated": "packages/mui-base/src/MenuItemUnstyled/MenuItemUnstyled.tsx",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-36400",
+   "source": "packages/mui-base/src/SelectUnstyled/SelectUnstyled.tsx",
+   "seated": "packages/mui-base/src/MultiSelectUnstyled/MultiSelectUnstyled.tsx",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-36426",
+   "source": "packages/mui-joy/src/TextField/TextField.tsx",
+   "seated": "packages/mui-joy/src/index.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-36853",
+   "source": "packages/mui-system/src/cssVars/createCssVarsProvider.d.ts",
+   "seated": "packages/mui-joy/src/styles/defaultTheme.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-36853",
+   "source": "packages/mui-system/src/cssVars/createCssVarsProvider.js",
+   "seated": "packages/mui-joy/src/colors/colors.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-37070",
+   "source": "packages/mui-joy/src/TextField/TextField.tsx",
+   "seated": "packages/mui-joy/src/index.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-38100",
+   "source": "packages/mui-joy/src/Autocomplete/Autocomplete.tsx",
+   "seated": "packages/mui-base/src/useAutocomplete/useAutocomplete.js",
+   "cochange": 2,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-38188",
+   "source": "packages/mui-joy/src/TextField/TextField.tsx",
+   "seated": "packages/mui-joy/src/index.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-38247",
+   "source": "packages/api-docs-builder/ApiBuilders/ComponentApiBuilder.ts",
+   "seated": "packages/api-docs-builder/ApiBuilders/HookApiBuilder.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-38801",
+   "source": "packages/markdown/parseMarkdown.js",
+   "seated": "packages/markdown/loader.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-38916",
+   "source": "packages/mui-joy/src/Card/Card.tsx",
+   "seated": "packages/mui-joy/src/Badge/Badge.tsx",
+   "cochange": 3,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-38916",
+   "source": "packages/mui-joy/src/Menu/Menu.tsx",
+   "seated": "packages/mui-joy/src/MenuList/MenuList.tsx",
+   "cochange": 3,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "mui__material-ui-39071",
+   "source": "packages/mui-system/src/cssVars/createCssVarsProvider.d.ts",
+   "seated": "packages/mui-joy/src/styles/CssVarsProvider.tsx",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "mui__material-ui-39962",
+   "source": "packages/markdown/parseMarkdown.js",
+   "seated": "packages/markdown/loader.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-10655",
+   "source": "packages/svelte/src/internal/client/render.js",
+   "seated": "packages/svelte/src/legacy/legacy-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-10727",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/internal/client/render.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-10728",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/internal/client/render.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-10996",
+   "source": "packages/svelte/src/internal/client/render.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/client/visitors/template.js",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-11096",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/internal/client/render.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11184",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/internal/client/render.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11203",
+   "source": "packages/svelte/src/compiler/errors.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-11209",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/internal/client/render.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11219",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-11251",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11254",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11276",
+   "source": "packages/svelte/src/compiler/errors.js",
+   "seated": "packages/svelte/src/compiler/phases/2-analyze/validation.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-11276",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/internal/client/render.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-11287",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-11290",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11295",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11319",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11326",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11344",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11357",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/internal/client/render.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11367",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11371",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11378",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11463",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11487",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11490",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11496",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11496",
+   "source": "packages/svelte/src/internal/client/runtime.js",
+   "seated": "packages/svelte/src/internal/client/proxy.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-11652",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11669",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/types/template.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11676",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11720",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11736",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11766",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11768",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11784",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11835",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11913",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11937",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11946",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-11947",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12007",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12019",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12047",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12047",
+   "source": "packages/svelte/src/internal/client/runtime.js",
+   "seated": "packages/svelte/src/internal/client/types.d.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12098",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12119",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12123",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12123",
+   "source": "packages/svelte/src/compiler/phases/2-analyze/index.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js",
+   "cochange": 3,
+   "seated_is_gold": true,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12176",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12215",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12252",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/types/template.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12290",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12304",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12316",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12321",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12329",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12329",
+   "source": "packages/svelte/src/compiler/phases/2-analyze/index.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12342",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/index.d.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12345",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12370",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/types/template.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12373",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12375",
+   "source": "packages/svelte/src/internal/client/render.js",
+   "seated": "packages/svelte/src/internal/client/runtime.js",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12375",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12376",
+   "source": "packages/svelte/src/internal/client/render.js",
+   "seated": "packages/svelte/src/internal/client/runtime.js",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12413",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12445",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12460",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12469",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12474",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12475",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12493",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12509",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/legacy/legacy-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12524",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12524",
+   "source": "packages/svelte/src/compiler/phases/2-analyze/index.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12545",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12560",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/types/template.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12562",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12618",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12638",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12649",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12660",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/legacy/legacy-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12679",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12681",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12692",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/legacy.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12715",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12734",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12799",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12845",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12899",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12938",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-12948",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/types/template.d.ts",
+   "cochange": 3,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-12949",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13008",
+   "source": "packages/svelte/src/internal/client/proxy.js",
+   "seated": "packages/svelte/src/internal/client/runtime.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-13008",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13018",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13026",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13057",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13097",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13104",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13145",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13151",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13171",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13175",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13198",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13209",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13247",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13262",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13265",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13291",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13316",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13333",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/types/template.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13362",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-13411",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13416",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13427",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13437",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13445",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13456",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13473",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13526",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13540",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/legacy/legacy-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13553",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13559",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13568",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13586",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13589",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13617",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13630",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13632",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13646",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/legacy.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13656",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13668",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13679",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13690",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13698",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13734",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13746",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13760",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/types/template.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13763",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13774",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13824",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-13866",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14101",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14134",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14153",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14195",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14210",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14216",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/legacy/legacy-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14222",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/internal/client/runtime.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14224",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14236",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14260",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14273",
+   "source": "packages/svelte/src/internal/client/runtime.js",
+   "seated": "packages/svelte/src/internal/client/reactivity/deriveds.js",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14276",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14289",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14349",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14353",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-14445",
+   "source": "packages/svelte/src/compiler/errors.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-14456",
+   "source": "packages/svelte/src/compiler/phases/2-analyze/index.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-14468",
+   "source": "packages/svelte/src/compiler/errors.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14546",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14575",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14577",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14577",
+   "source": "packages/svelte/src/internal/client/dom/elements/transitions.js",
+   "seated": "packages/svelte/src/internal/client/reactivity/effects.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14597",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14607",
+   "source": "packages/svelte/src/compiler/errors.js",
+   "seated": "packages/svelte/src/compiler/phases/2-analyze/index.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14626",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14629",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": true,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14677",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14691",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/legacy/legacy-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-14811",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "sveltejs__svelte-14907",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14935",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/errors.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14937",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14942",
+   "source": "packages/svelte/src/internal/client/dom/elements/transitions.js",
+   "seated": "packages/svelte/src/internal/client/reactivity/effects.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14942",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/compiler/index.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-14993",
+   "source": "packages/svelte/src/compiler/errors.js",
+   "seated": "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "sveltejs__svelte-15057",
+   "source": "packages/svelte/types/index.d.ts",
+   "seated": "packages/svelte/src/legacy/legacy-client.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10004",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/runtime-core/src/vnode.ts",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-10004",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10004",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10004",
+   "source": "packages/template-explorer/src/index.ts",
+   "seated": "rollup.config.js",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10027",
+   "source": "packages/runtime-core/src/components/Suspense.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10027",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10027",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10101",
+   "source": "packages/reactivity/src/ref.ts",
+   "seated": "packages/runtime-core/src/vnode.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10101",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-sfc/src/compileScript.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10141",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/runtime-core/src/vnode.ts",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-10141",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10141",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-dom/src/directives/vOn.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10141",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10141",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/baseHandlers.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10161",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/componentOptions.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10161",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10161",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-dom/src/components/Transition.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10161",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10218",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/runtime-core/types/scriptSetupHelpers.d.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10218",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10218",
+   "source": "packages/compiler-core/src/errors.ts",
+   "seated": "packages/compiler-core/src/transforms/transformElement.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10218",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10218",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10250",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10250",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/runtime-core/src/vnode.ts",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-10250",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-dom/src/directives/vOn.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10250",
+   "source": "packages/compiler-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-dom/src/transforms/vOn.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10250",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10250",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/baseHandlers.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10289",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-sfc/src/compileScript.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10289",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10289",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10325",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/runtime-core/src/vnode.ts",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-10325",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10325",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10325",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-dom/src/directives/vOn.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10416",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-sfc/src/compileScript.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10416",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-dom/src/directives/vOn.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10416",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10416",
+   "source": "packages/compiler-core/src/errors.ts",
+   "seated": "packages/compiler-core/src/transforms/vIf.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10522",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10522",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10522",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10869",
+   "source": "packages/runtime-core/src/errorHandling.ts",
+   "seated": "packages/runtime-core/src/componentProps.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10869",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-core/src/compat/compatConfig.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10869",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10874",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10874",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10874",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10874",
+   "source": "packages/compiler-core/src/parser.ts",
+   "seated": "packages/compiler-core/src/ast.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10891",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10891",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10891",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10939",
+   "source": "packages/shared/src/patchFlags.ts",
+   "seated": "packages/compiler-core/src/transforms/hoistStatic.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10939",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-sfc/src/compileScript.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10939",
+   "source": "packages/compiler-core/src/errors.ts",
+   "seated": "packages/compiler-core/src/transforms/vIf.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10939",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/baseHandlers.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10939",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10989",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10989",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-sfc/src/compileScript.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10989",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-10989",
+   "source": "packages/reactivity/src/ref.ts",
+   "seated": "packages/reactivity/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11026",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11026",
+   "source": "packages/compiler-core/src/errors.ts",
+   "seated": "packages/compiler-core/src/transforms/vIf.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11026",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/baseHandlers.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11026",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11165",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11165",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11165",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11165",
+   "source": "packages/runtime-core/src/vnode.ts",
+   "seated": "packages/runtime-core/src/components/KeepAlive.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11201",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/baseHandlers.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11201",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11201",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11201",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11338",
+   "source": "packages/runtime-core/src/renderer.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 23,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11338",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11338",
+   "source": "packages/shared/src/patchFlags.ts",
+   "seated": "packages/compiler-core/src/transforms/hoistStatic.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11338",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11491",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11491",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11491",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11502",
+   "source": "packages/runtime-core/src/apiCreateApp.ts",
+   "seated": "packages/runtime-core/src/renderer.ts",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11502",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11502",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11515",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11515",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-dom/src/components/Transition.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11515",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11517",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11517",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11517",
+   "source": "packages/runtime-core/src/apiCreateApp.ts",
+   "seated": "packages/runtime-core/src/componentEmits.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11517",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11517",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-dom/src/components/Transition.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11625",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11625",
+   "source": "packages/runtime-core/src/component.ts",
+   "seated": "packages/runtime-core/src/componentEmits.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11625",
+   "source": "packages/runtime-core/src/components/Suspense.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11680",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/runtime-core/types/scriptSetupHelpers.d.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11680",
+   "source": "rollup.config.js",
+   "seated": "packages/global.d.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11680",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11680",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11680",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11694",
+   "source": "packages/reactivity/src/ref.ts",
+   "seated": "packages/runtime-core/src/apiWatch.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11694",
+   "source": "packages/reactivity/src/effect.ts",
+   "seated": "packages/runtime-core/src/renderer.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11761",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11761",
+   "source": "packages/reactivity/src/ref.ts",
+   "seated": "packages/reactivity/src/index.ts",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11761",
+   "source": "packages/runtime-core/src/component.ts",
+   "seated": "packages/runtime-core/src/apiCreateApp.ts",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11761",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-core/src/transforms/transformExpression.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11813",
+   "source": "packages/reactivity/src/computed.ts",
+   "seated": "packages/runtime-core/src/component.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11813",
+   "source": "packages/reactivity/src/ref.ts",
+   "seated": "packages/runtime-core/src/apiWatch.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11813",
+   "source": "packages/reactivity/src/effect.ts",
+   "seated": "packages/runtime-core/src/components/Suspense.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-11813",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11854",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11854",
+   "source": "packages/shared/src/domAttrConfig.ts",
+   "seated": "packages/runtime-dom/src/modules/attrs.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11854",
+   "source": "packages/compiler-sfc/src/parse.ts",
+   "seated": "packages/global.d.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11854",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11899",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11899",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11899",
+   "source": "packages/compiler-sfc/src/parse.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11899",
+   "source": "packages/runtime-core/src/component.ts",
+   "seated": "packages/runtime-core/src/componentPublicInstance.ts",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-11899",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/baseHandlers.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8365",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8365",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/parse.ts",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8365",
+   "source": "packages/runtime-core/src/index.ts",
+   "seated": "packages/reactivity/src/index.ts",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8365",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-core/src/compat/compatConfig.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8381",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8381",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8381",
+   "source": "packages/compiler-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-core/src/transforms/transformElement.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8381",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-ssr/src/index.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8381",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/baseHandlers.ts",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8402",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-8402",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8402",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/index.ts",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8402",
+   "source": "packages/compiler-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-core/src/parse.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8470",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-core/src/transforms/transformExpression.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8470",
+   "source": "packages/runtime-core/src/componentEmits.ts",
+   "seated": "packages/shared/src/index.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8470",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-core/src/compat/compatConfig.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8511",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8511",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8511",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8511",
+   "source": "rollup.config.js",
+   "seated": "packages/global.d.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8535",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-core/src/transforms/transformExpression.ts",
+   "cochange": 22,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-8535",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8535",
+   "source": "packages/reactivity/src/ref.ts",
+   "seated": "packages/reactivity/src/computed.ts",
+   "cochange": 23,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8535",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-test/src/index.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8535",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8538",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8538",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-core/src/transform.ts",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8538",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8538",
+   "source": "packages/compiler-core/src/transforms/transformExpression.ts",
+   "seated": "packages/compiler-core/src/transforms/vOn.ts",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8785",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-sfc/src/compileScript.ts",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8785",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8785",
+   "source": "packages/reactivity/src/ref.ts",
+   "seated": "packages/reactivity/src/index.ts",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8785",
+   "source": "packages/compiler-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-core/src/transforms/transformElement.ts",
+   "cochange": 5,
+   "seated_is_gold": true,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8824",
+   "source": "packages/shared/src/patchFlags.ts",
+   "seated": "packages/runtime-core/src/renderer.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8824",
+   "source": "packages/compiler-core/src/options.ts",
+   "seated": "packages/compiler-ssr/src/index.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8824",
+   "source": "packages/compiler-core/src/errors.ts",
+   "seated": "packages/compiler-core/src/transforms/vFor.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8824",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8911",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8911",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8911",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-test/src/index.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8911",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-8911",
+   "source": "packages/compiler-sfc/src/compileTemplate.ts",
+   "seated": "rollup.config.js",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9213",
+   "source": "packages/runtime-core/src/vnode.ts",
+   "seated": "packages/runtime-core/src/index.ts",
+   "cochange": 24,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-9213",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9213",
+   "source": "packages/shared/src/patchFlags.ts",
+   "seated": "packages/compiler-core/src/transforms/hoistStatic.ts",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9213",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/server-renderer/src/renderToString.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9213",
+   "source": "packages/runtime-core/src/components/BaseTransition.ts",
+   "seated": "packages/runtime-dom/src/components/Transition.ts",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9442",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/compiler-sfc/src/compileScript.ts",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9442",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9442",
+   "source": "packages/compiler-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-core/src/transforms/transformElement.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9442",
+   "source": "packages/reactivity/src/ref.ts",
+   "seated": "packages/reactivity/src/index.ts",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9442",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-test/src/index.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9492",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/runtime-core/src/component.ts",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9492",
+   "source": "packages/compiler-core/src/compat/compatConfig.ts",
+   "seated": "packages/compiler-core/src/transforms/transformElement.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9492",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9492",
+   "source": "packages/compiler-core/src/errors.ts",
+   "seated": "packages/compiler-core/src/transforms/vIf.ts",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9492",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/index.ts",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9507",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/runtime-core/types/scriptSetupHelpers.d.ts",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9507",
+   "source": "packages/compiler-sfc/src/compileScript.ts",
+   "seated": "packages/compiler-sfc/src/parse.ts",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9507",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-test/src/index.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9507",
+   "source": "packages/runtime-core/src/index.ts",
+   "seated": "packages/reactivity/src/index.ts",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9532",
+   "source": "packages/runtime-core/src/hydration.ts",
+   "seated": "packages/runtime-core/src/vnode.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-9532",
+   "source": "packages/runtime-dom/src/index.ts",
+   "seated": "packages/runtime-test/src/index.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9532",
+   "source": "packages/compiler-core/src/parse.ts",
+   "seated": "packages/compiler-core/src/ast.ts",
+   "cochange": 24,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9532",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9572",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/baseHandlers.ts",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9572",
+   "source": "packages/runtime-core/src/compat/compatConfig.ts",
+   "seated": "packages/runtime-core/src/compat/instance.ts",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9572",
+   "source": "packages/runtime-core/src/apiWatch.ts",
+   "seated": "packages/runtime-core/src/components/KeepAlive.ts",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "vuejs__core-9751",
+   "source": "packages/reactivity/src/reactive.ts",
+   "seated": "packages/reactivity/src/index.ts",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9751",
+   "source": "packages/runtime-core/src/component.ts",
+   "seated": "packages/runtime-core/src/componentOptions.ts",
+   "cochange": 37,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "vuejs__core-9751",
+   "source": "packages/runtime-core/src/apiSetupHelpers.ts",
+   "seated": "packages/dts-test/setupHelpers.test-d.ts",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  }
+ ],
+ "changed_bundles": [
+  {
+   "instance_id": "axios__axios-5661",
+   "n_gold_files": 1,
+   "added": [
+    "webpack.config.js"
+   ],
+   "dropped": [
+    "lib/helpers/toURLEncodedForm.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "darkreader__darkreader-6747",
+   "n_gold_files": 2,
+   "added": [
+    "src/background/messenger.ts",
+    "src/inject/utils/dom.ts",
+    "src/ui/popup/components/site-toggle/index.tsx"
+   ],
+   "dropped": [
+    "src/inject/dynamic-theme/css-collection.ts",
+    "src/inject/dynamic-theme/modify-css.ts",
+    "src/inject/dynamic-theme/stylesheet-modifier.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "darkreader__darkreader-7241",
+   "n_gold_files": 1,
+   "added": [
+    "src/inject/dynamic-theme/image.ts",
+    "src/ui/popup/components/site-toggle/index.tsx"
+   ],
+   "dropped": [
+    ".eslintrc.js",
+    "src/background/newsmaker.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "iamkun__dayjs-1019",
+   "n_gold_files": 1,
+   "added": [
+    "src/constant.js"
+   ],
+   "dropped": [
+    "types/plugin/weekYear.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "iamkun__dayjs-1502",
+   "n_gold_files": 1,
+   "added": [
+    "src/plugin/relativeTime/index.js"
+   ],
+   "dropped": [
+    "src/locale/mk.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "iamkun__dayjs-602",
+   "n_gold_files": 2,
+   "added": [
+    "src/plugin/quarterOfYear/index.js"
+   ],
+   "dropped": [
+    "src/locale/ca.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "iamkun__dayjs-734",
+   "n_gold_files": 1,
+   "added": [
+    "src/utils.js"
+   ],
+   "dropped": [
+    "types/plugin/weekYear.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "iamkun__dayjs-882",
+   "n_gold_files": 3,
+   "added": [
+    "src/utils.js"
+   ],
+   "dropped": [
+    "types/plugin/isoWeek.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-23884",
+   "n_gold_files": 2,
+   "added": [
+    "packages/material-ui/src/Popover/Popover.js"
+   ],
+   "dropped": [
+    "packages/material-ui-lab/src/internal/pickers/utils.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-24010",
+   "n_gold_files": 1,
+   "added": [
+    "packages/material-ui/src/Checkbox/Checkbox.js"
+   ],
+   "dropped": [
+    "packages/material-ui-system/src/breakpoints.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-24782",
+   "n_gold_files": 16,
+   "added": [
+    "packages/material-ui-lab/src/DatePicker/DatePicker.tsx",
+    "packages/material-ui-unstyled/src/BadgeUnstyled/BadgeUnstyled.js"
+   ],
+   "dropped": [
+    "packages/material-ui-lab/src/DateRangePicker/DateRangePicker.tsx",
+    "packages/material-ui-lab/src/DesktopDateRangePicker/DesktopDateRangePicker.tsx"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-24794",
+   "n_gold_files": 16,
+   "added": [
+    "packages/material-ui/src/Box/Box.d.ts"
+   ],
+   "dropped": [
+    "packages/material-ui-system/src/borders.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": [
+    "packages/material-ui-system/src/borders.js"
+   ]
+  },
+  {
+   "instance_id": "mui__material-ui-24945",
+   "n_gold_files": 5,
+   "added": [
+    "packages/material-ui-unstyled/src/index.d.ts",
+    "packages/material-ui/src/Dialog/Dialog.js",
+    "packages/material-ui/src/Fade/Fade.js"
+   ],
+   "dropped": [
+    "packages/material-ui/src/Avatar/Avatar.js",
+    "packages/material-ui/src/Button/Button.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-24968",
+   "n_gold_files": 8,
+   "added": [
+    "packages/material-ui-unstyled/src/SliderUnstyled/index.d.ts",
+    "packages/material-ui/src/Badge/Badge.js",
+    "packages/material-ui/src/Dialog/Dialog.js"
+   ],
+   "dropped": [
+    "packages/material-ui/src/Menu/Menu.js",
+    "packages/material-ui/src/Modal/Modal.js",
+    "packages/material-ui/src/Zoom/Zoom.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-25149",
+   "n_gold_files": 8,
+   "added": [
+    "packages/material-ui/src/Box/Box.d.ts"
+   ],
+   "dropped": [
+    "packages/material-ui/src/styles/adaptV4Theme.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-25276",
+   "n_gold_files": 1,
+   "added": [
+    "packages/material-ui/src/useAutocomplete/useAutocomplete.d.ts"
+   ],
+   "dropped": [
+    "packages/material-ui/src/colors/orange.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-25815",
+   "n_gold_files": 2,
+   "added": [
+    "packages/material-ui-lab/src/Autocomplete/Autocomplete.js"
+   ],
+   "dropped": [
+    "packages/material-ui/src/InputBase/inputBaseClasses.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-26026",
+   "n_gold_files": 13,
+   "added": [
+    "packages/material-ui-lab/src/Autocomplete/Autocomplete.js"
+   ],
+   "dropped": [
+    "packages/material-ui/src/TextField/index.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-26186",
+   "n_gold_files": 14,
+   "added": [
+    "packages/material-ui/src/locale/index.ts"
+   ],
+   "dropped": [
+    "packages/material-ui/src/TablePagination/index.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-26323",
+   "n_gold_files": 12,
+   "added": [
+    "packages/material-ui-lab/src/Autocomplete/Autocomplete.js"
+   ],
+   "dropped": [
+    "packages/material-ui/src/Select/SelectInput.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-34131",
+   "n_gold_files": 4,
+   "added": [
+    "packages/mui-joy/src/colors/colors.ts"
+   ],
+   "dropped": [
+    "packages/mui-material/src/styles/cssUtils.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-34159",
+   "n_gold_files": 1,
+   "added": [
+    "packages/mui-joy/src/List/List.tsx"
+   ],
+   "dropped": [
+    "packages/mui-codemod/src/v5.0.0/jss-to-tss-react.test/actual-from-mui-styles.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-34401",
+   "n_gold_files": 116,
+   "added": [
+    "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js"
+   ],
+   "dropped": [
+    "packages/mui-base/src/ModalUnstyled/index.js"
+   ],
+   "added_gold": [
+    "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js"
+   ],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-34445",
+   "n_gold_files": 1,
+   "added": [
+    "packages/mui-base/src/BadgeUnstyled/badgeUnstyledClasses.ts"
+   ],
+   "dropped": [
+    "packages/mui-material/src/StepButton/index.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-36400",
+   "n_gold_files": 126,
+   "added": [
+    "packages/mui-base/src/TabUnstyled/index.ts"
+   ],
+   "dropped": [
+    "packages/mui-base/src/MenuUnstyled/menuUnstyledClasses.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-36426",
+   "n_gold_files": 9,
+   "added": [
+    "packages/mui-joy/src/index.ts"
+   ],
+   "dropped": [
+    "packages/mui-material/src/FilledInput/index.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-36853",
+   "n_gold_files": 1,
+   "added": [
+    "packages/mui-joy/src/colors/colors.ts",
+    "packages/mui-joy/src/styles/defaultTheme.ts"
+   ],
+   "dropped": [
+    "packages/mui-lab/src/TreeView/TreeView.d.ts",
+    "packages/mui-material-next/src/styles/createDarkColorScheme.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "mui__material-ui-39071",
+   "n_gold_files": 1,
+   "added": [
+    "packages/mui-joy/src/styles/CssVarsProvider.tsx"
+   ],
+   "dropped": [
+    "packages/mui-material/src/styles/index.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11209",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/internal/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11276",
+   "n_gold_files": 8,
+   "added": [
+    "packages/svelte/src/internal/client/render.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/3-transform/client/utils.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11287",
+   "n_gold_files": 2,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/reactivity/date.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11319",
+   "n_gold_files": 4,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/legacy/misc.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11344",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/server/index.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11496",
+   "n_gold_files": 1,
+   "added": [],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/legacy/lifecycle.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11676",
+   "n_gold_files": 2,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/scope.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11766",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/types/template.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11768",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/bindings/input.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-11947",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/types/template.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12047",
+   "n_gold_files": 4,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/warnings.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12098",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/blocks/await.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12123",
+   "n_gold_files": 5,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/migrate/index.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12215",
+   "n_gold_files": 25,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/reactivity/sources.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12252",
+   "n_gold_files": 3,
+   "added": [
+    "packages/svelte/src/compiler/types/template.d.ts"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/runtime.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12290",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/blocks/await.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12304",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/operations.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12329",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/bindings/input.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12375",
+   "n_gold_files": 2,
+   "added": [
+    "packages/svelte/src/compiler/index.js",
+    "packages/svelte/src/internal/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/bindings/select.js",
+    "packages/svelte/src/internal/client/dom/elements/bindings/shared.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12376",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/legacy/legacy-server.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/misc.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12445",
+   "n_gold_files": 3,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/legacy/legacy-server.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12460",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/runtime.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12475",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/events.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12524",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/3-transform/client/visitors/global.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12545",
+   "n_gold_files": 20,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dev/ownership.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12562",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/errors.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12618",
+   "n_gold_files": 9,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/reactivity/effects.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-12638",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/types.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13008",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13018",
+   "n_gold_files": 2,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/warnings.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13026",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/errors.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/events.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13104",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/constants.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13175",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dev/equality.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13265",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13416",
+   "n_gold_files": 2,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/reactivity/sources.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13540",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/internal/client/dom/elements/events.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/migrate/index.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13589",
+   "n_gold_files": 4,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/legacy.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13630",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/bindings/input.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13632",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/utils.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13646",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/legacy.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/shared/utils.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13679",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/utils.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13690",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13734",
+   "n_gold_files": 2,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/constants.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13746",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/utils.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-13763",
+   "n_gold_files": 3,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/legacy/legacy-client.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14134",
+   "n_gold_files": 3,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/utils.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14195",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14210",
+   "n_gold_files": 4,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/constants.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14216",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/runtime.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14224",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/runtime.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14236",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/html-tree-validation.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14260",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/events.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14273",
+   "n_gold_files": 5,
+   "added": [
+    "packages/svelte/src/internal/client/reactivity/deriveds.js"
+   ],
+   "dropped": [],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14289",
+   "n_gold_files": 10,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/custom-element.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14349",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/errors.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/constants.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14445",
+   "n_gold_files": 11,
+   "added": [
+    "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/2-analyze/visitors/shared/utils.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14575",
+   "n_gold_files": 2,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/runtime.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14577",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js",
+    "packages/svelte/src/internal/client/reactivity/effects.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/types/template.d.ts",
+    "packages/svelte/src/internal/client/dom/elements/attributes.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14607",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/legacy/legacy-client.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/3-transform/client/visitors/CallExpression.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14626",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14677",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/types/css.d.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14811",
+   "n_gold_files": 6,
+   "added": [
+    "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/blocks/snippet.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14907",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/dom/elements/class.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14937",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/migrate/index.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14942",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/index.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/index-client.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-14993",
+   "n_gold_files": 3,
+   "added": [
+    "packages/svelte/src/compiler/phases/3-transform/server/transform-server.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/compiler/phases/2-analyze/visitors/RegularElement.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "sveltejs__svelte-15057",
+   "n_gold_files": 1,
+   "added": [
+    "packages/svelte/src/compiler/phases/3-transform/client/transform-client.js"
+   ],
+   "dropped": [
+    "packages/svelte/src/internal/client/reactivity/effects.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10004",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/errors.ts",
+    "packages/runtime-core/src/componentProps.ts",
+    "packages/runtime-core/src/components/Teleport.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10027",
+   "n_gold_files": 1,
+   "added": [
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/server-renderer/src/renderToString.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/apiCreateApp.ts",
+    "packages/runtime-core/src/apiLifecycle.ts",
+    "packages/runtime-dom/src/modules/events.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10141",
+   "n_gold_files": 1,
+   "added": [
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/reactivity/src/baseHandlers.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-dom/src/directives/vOn.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/compat/compatConfig.ts",
+    "packages/runtime-core/src/components/Teleport.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10161",
+   "n_gold_files": 2,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/componentOptions.ts",
+    "packages/runtime-dom/src/components/Transition.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/parser.ts",
+    "packages/compiler-core/src/transforms/transformElement.ts",
+    "packages/runtime-core/src/componentRenderUtils.ts",
+    "packages/runtime-core/src/index.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10218",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/transformElement.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/types/scriptSetupHelpers.d.ts",
+    "packages/server-renderer/src/renderToString.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/apiCreateApp.ts",
+    "packages/runtime-core/src/compat/globalConfig.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10250",
+   "n_gold_files": 3,
+   "added": [
+    "packages/compiler-dom/src/transforms/vOn.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/reactivity/src/baseHandlers.ts",
+    "packages/runtime-dom/src/directives/vOn.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/apiCreateApp.ts",
+    "packages/runtime-core/src/compat/globalConfig.ts",
+    "packages/runtime-core/src/componentOptions.ts",
+    "packages/runtime-core/src/componentRenderUtils.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10289",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/componentPublicInstance.ts",
+    "packages/runtime-core/src/componentSlots.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10325",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-dom/src/directives/vOn.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/compat/globalConfig.ts",
+    "packages/runtime-core/src/directives.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10416",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/vIf.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-dom/src/directives/vOn.ts"
+   ],
+   "dropped": [],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10522",
+   "n_gold_files": 1,
+   "added": [
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/src/index.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/transforms/vModel.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10869",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/compat/compatConfig.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/componentProps.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/componentOptions.ts",
+    "packages/runtime-core/src/components/Suspense.ts",
+    "packages/runtime-core/src/hydration.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10874",
+   "n_gold_files": 1,
+   "added": [
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/src/index.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/component.ts",
+    "packages/runtime-core/src/componentOptions.ts",
+    "packages/runtime-core/src/devtools.ts",
+    "rollup.dts.config.js"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10891",
+   "n_gold_files": 2,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/server-renderer/src/renderToString.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/ast.ts",
+    "packages/compiler-core/src/parser.ts",
+    "packages/runtime-core/src/apiSetupHelpers.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10939",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/hoistStatic.ts",
+    "packages/compiler-core/src/transforms/vIf.ts",
+    "packages/reactivity/src/baseHandlers.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/tokenizer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-10989",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-sfc/src/compileScript.ts",
+    "packages/reactivity/src/index.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/reactivity/src/reactiveEffect.ts",
+    "packages/runtime-core/src/compat/global.ts",
+    "packages/runtime-core/src/compat/globalConfig.ts",
+    "packages/runtime-core/src/component.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11026",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/vIf.ts",
+    "packages/reactivity/src/baseHandlers.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/componentOptions.ts",
+    "packages/runtime-core/src/devtools.ts",
+    "packages/runtime-core/src/h.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11165",
+   "n_gold_files": 1,
+   "added": [
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-dom/src/modules/events.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/componentPublicInstance.ts",
+    "packages/runtime-core/src/components/Teleport.ts",
+    "packages/runtime-core/src/scheduler.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11201",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/reactivity/src/collectionHandlers.ts",
+    "packages/reactivity/src/index.ts",
+    "packages/runtime-core/src/componentProps.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11338",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/hoistStatic.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/compat/compatConfig.ts",
+    "packages/runtime-core/src/featureFlags.ts",
+    "packages/runtime-dom/src/index.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11491",
+   "n_gold_files": 3,
+   "added": [
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/server-renderer/src/renderToString.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/errorHandling.ts",
+    "packages/runtime-core/src/featureFlags.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11502",
+   "n_gold_files": 1,
+   "added": [
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/compat/globalConfig.ts",
+    "packages/runtime-core/src/hydration.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11515",
+   "n_gold_files": 1,
+   "added": [
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-dom/src/components/Transition.ts",
+    "packages/server-renderer/src/renderToString.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/compat/compatConfig.ts",
+    "packages/runtime-core/src/componentProps.ts",
+    "packages/runtime-core/src/scheduler.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11517",
+   "n_gold_files": 5,
+   "added": [
+    "packages/compiler-sfc/src/index.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/src/componentEmits.ts",
+    "packages/runtime-dom/src/components/Transition.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/errors.ts",
+    "packages/compiler-core/src/parser.ts",
+    "packages/runtime-core/src/compat/globalConfig.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11625",
+   "n_gold_files": 1,
+   "added": [
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/src/warning.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/compat/globalConfig.ts",
+    "packages/runtime-core/src/components/Teleport.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11680",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/global.d.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/types/scriptSetupHelpers.d.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/babelUtils.ts",
+    "packages/compiler-sfc/src/compileStyle.ts",
+    "packages/reactivity/src/arrayInstrumentations.ts",
+    "packages/runtime-core/src/hydration.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11761",
+   "n_gold_files": 2,
+   "added": [
+    "packages/compiler-core/src/transforms/transformExpression.ts",
+    "packages/runtime-core/src/apiCreateApp.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/apiComputed.ts",
+    "packages/runtime-core/src/compat/globalConfig.ts",
+    "packages/runtime-core/src/componentRenderUtils.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11813",
+   "n_gold_files": 1,
+   "added": [
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/compat/compatConfig.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11854",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/global.d.ts",
+    "packages/runtime-core/src/index.ts",
+    "packages/runtime-dom/src/modules/attrs.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/codegen.ts",
+    "packages/compiler-core/src/compat/compatConfig.ts",
+    "packages/runtime-core/src/warning.ts",
+    "packages/runtime-dom/src/apiCustomElement.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-11899",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/reactivity/src/baseHandlers.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/src/componentPublicInstance.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/parser.ts",
+    "packages/runtime-core/src/apiSetupHelpers.ts",
+    "packages/runtime-core/src/componentProps.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8365",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/compat/compatConfig.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/reactivity/src/index.ts"
+   ],
+   "dropped": [
+    "packages/compiler-sfc/src/compileTemplate.ts",
+    "packages/runtime-core/src/compat/renderFn.ts",
+    "packages/runtime-core/src/errorHandling.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8381",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/transformElement.ts",
+    "packages/compiler-ssr/src/index.ts",
+    "packages/reactivity/src/baseHandlers.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/transforms/transformExpression.ts",
+    "packages/runtime-core/src/componentEmits.ts",
+    "packages/runtime-core/src/componentPublicInstance.ts",
+    "packages/runtime-core/src/errorHandling.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8402",
+   "n_gold_files": 23,
+   "added": [
+    "packages/compiler-core/src/parse.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/transforms/transformExpression.ts",
+    "packages/runtime-core/src/apiWatch.ts",
+    "packages/runtime-core/src/renderer.ts",
+    "packages/runtime-core/src/vnode.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8470",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/compat/compatConfig.ts",
+    "packages/compiler-core/src/transforms/transformExpression.ts",
+    "packages/shared/src/index.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/errorHandling.ts",
+    "packages/runtime-core/src/featureFlags.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8511",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/global.d.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/errors.ts",
+    "packages/runtime-core/src/componentPublicInstance.ts",
+    "packages/runtime-core/src/vnode.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8535",
+   "n_gold_files": 5,
+   "added": [
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/reactivity/src/computed.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-test/src/index.ts"
+   ],
+   "dropped": [
+    "packages/compiler-sfc/src/compileTemplate.ts",
+    "packages/runtime-core/src/devtools.ts",
+    "packages/runtime-core/src/renderer.ts",
+    "packages/runtime-core/src/vnode.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8538",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/vFor.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/index.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/transforms/vModel.ts",
+    "packages/compiler-core/src/utils.ts",
+    "packages/compiler-sfc/src/style/cssVars.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8785",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/transformElement.ts",
+    "packages/reactivity/src/index.ts",
+    "packages/runtime-core/src/compat/instance.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/featureFlags.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [
+    "packages/compiler-core/src/transforms/transformElement.ts"
+   ],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8824",
+   "n_gold_files": 2,
+   "added": [
+    "packages/compiler-core/src/transforms/vFor.ts",
+    "packages/compiler-ssr/src/index.ts",
+    "packages/runtime-core/src/components/KeepAlive.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/transform.ts",
+    "packages/compiler-core/src/utils.ts",
+    "packages/compiler-sfc/src/parse.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-8911",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/transformElement.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-test/src/index.ts",
+    "rollup.config.js"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/apiCreateApp.ts",
+    "packages/runtime-core/src/componentPublicInstance.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-9213",
+   "n_gold_files": 3,
+   "added": [
+    "packages/compiler-core/src/transforms/hoistStatic.ts",
+    "packages/dts-test/setupHelpers.test-d.ts",
+    "packages/runtime-core/src/index.ts",
+    "packages/runtime-dom/src/components/Transition.ts",
+    "packages/server-renderer/src/renderToString.ts"
+   ],
+   "dropped": [
+    "packages/dts-test/defineComponent.test-d.tsx",
+    "packages/runtime-core/src/componentRenderUtils.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-9442",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/transforms/transformElement.ts",
+    "packages/reactivity/src/index.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-test/src/index.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/compat/global.ts",
+    "packages/runtime-core/src/hydration.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-9492",
+   "n_gold_files": 1,
+   "added": [
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/src/componentEmits.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/apiCreateApp.ts",
+    "packages/runtime-core/src/componentOptions.ts",
+    "packages/runtime-core/src/componentProps.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-9507",
+   "n_gold_files": 2,
+   "added": [
+    "packages/reactivity/src/index.ts",
+    "packages/runtime-core/types/scriptSetupHelpers.d.ts",
+    "packages/runtime-test/src/index.ts"
+   ],
+   "dropped": [
+    "packages/compiler-sfc/src/compileTemplate.ts",
+    "packages/runtime-core/src/hydration.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-9532",
+   "n_gold_files": 1,
+   "added": [
+    "packages/compiler-core/src/ast.ts",
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-test/src/index.ts"
+   ],
+   "dropped": [
+    "packages/compiler-core/src/options.ts",
+    "packages/runtime-core/src/componentProps.ts",
+    "packages/runtime-core/src/componentRenderUtils.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-9572",
+   "n_gold_files": 1,
+   "added": [
+    "packages/runtime-core/src/compat/instance.ts",
+    "packages/runtime-core/src/componentEmits.ts"
+   ],
+   "dropped": [
+    "packages/reactivity/src/collectionHandlers.ts",
+    "packages/runtime-core/src/apiCreateApp.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "vuejs__core-9751",
+   "n_gold_files": 1,
+   "added": [
+    "packages/dts-test/setupHelpers.test-d.ts"
+   ],
+   "dropped": [
+    "packages/runtime-core/src/componentRenderUtils.ts",
+    "packages/runtime-core/src/renderer.ts"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  }
+ ]
+}

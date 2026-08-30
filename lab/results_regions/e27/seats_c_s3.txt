@@ -1,0 +1,6 @@
+=== c_s3 seat-fire anatomy ===
+  fired on 106/127 instances (83.46%), 501 extra seats total, mean 4.726 where fired, max 11
+  seated file was gold: 14/501 (2.79%); of those 5 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 95 (18.96%)
+  bundles changed: 99/128 (77.34%); files +300 (gold 6) / -227 (gold 5), net gold +1
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_c_s3.json

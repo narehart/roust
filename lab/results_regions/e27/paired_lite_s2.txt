@@ -1,0 +1,23 @@
+
+=== lite_s2 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     300    0    92.33 ( 277)    54.67 ( 164)    44.00 ( 132)   0.52728
+arm         300    0    92.33 ( 277)    54.00 ( 162)    43.67 ( 131)   0.52180
+delta                   +0.00           -0.67           -0.33         -0.00548
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default     300    0    92.33 ( 277)    54.67 ( 164)    44.00 ( 132)   0.52728
+          arm         300    0    92.33 ( 277)    54.00 ( 162)    43.67 ( 131)   0.52180
+          delta                   +0.00           -0.67           -0.33         -0.00548   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  0 p=1.0000
+McNemar FUNCTION  default-only=  2 arm-only=  0 p=0.5000
+McNemar LINE      default-only=  1 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=3 up=0 down=3 p=0.2500
+
+changed instances: 4 of 300
+  pydata__xarray-4094                        [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  sympy__sympy-15609                         [1 ] FILE =      FUNC =      LINE =      frac 0.5714->0.0000       (-0.5714)
+  sympy__sympy-12419                         [1 ] FILE =      FUNC =      LINE =      frac 0.0714->0.0000       (-0.0714)
+  scikit-learn__scikit-learn-25638           [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/lite_s2_paired.json

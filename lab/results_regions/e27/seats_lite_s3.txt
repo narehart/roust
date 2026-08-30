@@ -1,0 +1,6 @@
+=== lite_s3 seat-fire anatomy ===
+  fired on 270/300 instances (90.0%), 984 extra seats total, mean 3.644 where fired, max 9
+  seated file was gold: 1/984 (0.1%); of those 0 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 145 (14.74%)
+  bundles changed: 245/300 (81.67%); files +709 (gold 0) / -573 (gold 0), net gold +0
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_lite_s3.json

@@ -1,0 +1,214 @@
+{
+ "label": "c_s2",
+ "default": {
+  "n": 128,
+  "n_errors": 1,
+  "file_pct": 51.56,
+  "file_n": 66,
+  "function_pct": 28.12,
+  "function_n": 36,
+  "line_pct": 13.28,
+  "line_n": 17,
+  "mean_fraction": 0.2251333203510872
+ },
+ "arm": {
+  "n": 128,
+  "n_errors": 1,
+  "file_pct": 51.56,
+  "file_n": 66,
+  "function_pct": 27.34,
+  "function_n": 35,
+  "line_pct": 13.28,
+  "line_n": 17,
+  "mean_fraction": 0.2227616108822532
+ },
+ "delta": {
+  "file": 0.0,
+  "function": -0.78,
+  "line": 0.0,
+  "mean_fraction": -0.002372
+ },
+ "strata": {
+  "1": {
+   "n": 66,
+   "default": {
+    "n": 66,
+    "n_errors": 1,
+    "file_pct": 78.79,
+    "file_n": 52,
+    "function_pct": 43.94,
+    "function_n": 29,
+    "line_pct": 25.76,
+    "line_n": 17,
+    "mean_fraction": 0.31955194565898576
+   },
+   "arm": {
+    "n": 66,
+    "n_errors": 1,
+    "file_pct": 78.79,
+    "file_n": 52,
+    "function_pct": 42.42,
+    "function_n": 28,
+    "line_pct": 25.76,
+    "line_n": 17,
+    "mean_fraction": 0.3172727433797835
+   },
+   "delta_file": 0.0,
+   "delta_function": -1.52,
+   "delta_line": 0.0,
+   "delta_fraction": -0.002279,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 1.0,
+   "frac_up": 0,
+   "frac_down": 1
+  },
+  "2": {
+   "n": 16,
+   "default": {
+    "n": 16,
+    "n_errors": 0,
+    "file_pct": 75.0,
+    "file_n": 12,
+    "function_pct": 18.75,
+    "function_n": 3,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.2118189591495699
+   },
+   "arm": {
+    "n": 16,
+    "n_errors": 0,
+    "file_pct": 75.0,
+    "file_n": 12,
+    "function_pct": 18.75,
+    "function_n": 3,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.2118189591495699
+   },
+   "delta_file": 0.0,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": 0.0,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 1.0,
+   "frac_up": 0,
+   "frac_down": 0
+  },
+  "3+": {
+   "n": 46,
+   "default": {
+    "n": 46,
+    "n_errors": 0,
+    "file_pct": 4.35,
+    "file_n": 2,
+    "function_pct": 8.7,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.09634677979045397
+   },
+   "arm": {
+    "n": 46,
+    "n_errors": 0,
+    "file_pct": 4.35,
+    "file_n": 2,
+    "function_pct": 8.7,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.09301941121667634
+   },
+   "delta_file": 0.0,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": -0.003327,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 1.0,
+   "frac_up": 1,
+   "frac_down": 1
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 1,
+   "c_arm_only": 0,
+   "p": 1.0
+  },
+  "LINE": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 3,
+   "statistic": 1.0,
+   "p": 0.5,
+   "n_up": 1,
+   "n_down": 2
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 3,
+ "changed": [
+  {
+   "instance_id": "jqlang__jq-2824",
+   "repo": "jqlang/jq",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1724->0.0000",
+   "fraction_delta": -0.172414
+  },
+  {
+   "instance_id": "ponylang__ponyc-4017",
+   "repo": "ponylang/ponyc",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.5185->0.3704",
+   "fraction_delta": -0.148148
+  },
+  {
+   "instance_id": "ponylang__ponyc-3746",
+   "repo": "ponylang/ponyc",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2065->0.2258",
+   "fraction_delta": 0.019355
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}

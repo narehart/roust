@@ -1,0 +1,32 @@
+
+=== java_s2 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     128    0    49.22 (  63)    36.72 (  47)    14.06 (  18)   0.41522
+arm         128    0    49.22 (  63)    37.50 (  48)    14.06 (  18)   0.41678
+delta                   +0.00           +0.78           +0.00         +0.00156
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default      51    0    94.12 (  48)    52.94 (  27)    35.29 (  18)   0.62986
+          arm          51    0    94.12 (  48)    52.94 (  27)    35.29 (  18)   0.62986
+          delta                   +0.00           +0.00           +0.00         +0.00000   FILE McNemar 1/1 p=1.0000
+2         default      37    0    18.92 (   7)    43.24 (  16)     0.00 (   0)   0.32774
+          arm          37    0    18.92 (   7)    45.95 (  17)     0.00 (   0)   0.33164
+          delta                   +0.00           +2.71           +0.00         +0.00390   FILE McNemar 0/0 p=1.0000
+3+        default      40    0    20.00 (   8)    10.00 (   4)     0.00 (   0)   0.22247
+          arm          40    0    20.00 (   8)    10.00 (   4)     0.00 (   0)   0.22386
+          delta                   +0.00           +0.00           +0.00         +0.00139   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  1 arm-only=  1 p=1.0000
+McNemar FUNCTION  default-only=  0 arm-only=  1 p=1.0000
+McNemar LINE      default-only=  0 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=5 up=4 down=1 p=0.1875
+
+changed instances: 7 of 128
+  elastic__logstash-14027                    [3+] FILE =      FUNC =      LINE =      frac 0.4756->0.4268       (-0.0488)
+  fasterxml__jackson-databind-3371           [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  fasterxml__jackson-databind-4641           [1 ] FILE 1->0   FUNC =      LINE =      frac =                    (+0.0000)
+  elastic__logstash-13997                    [3+] FILE =      FUNC =      LINE =      frac 0.0609->0.0761       (+0.0152)
+  fasterxml__jackson-core-1263               [2 ] FILE =      FUNC 0->1   LINE =      frac 0.7455->0.8000       (+0.0545)
+  fasterxml__jackson-databind-4365           [3+] FILE =      FUNC =      LINE =      frac 0.5476->0.6369       (+0.0893)
+  elastic__logstash-16195                    [2 ] FILE =      FUNC =      LINE =      frac 0.0896->0.1791       (+0.0896)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/java_s2_paired.json

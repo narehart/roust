@@ -1,0 +1,6 @@
+=== rust_s4 seat-fire anatomy ===
+  fired on 229/239 instances (95.82%), 977 extra seats total, mean 4.266 where fired, max 12
+  seated file was gold: 30/977 (3.07%); of those 7 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 243 (24.87%)
+  bundles changed: 128/239 (53.56%); files +402 (gold 7) / -261 (gold 9), net gold -2
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_rust_s4.json
