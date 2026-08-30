@@ -1,0 +1,28 @@
+
+=== c_s2 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     128    1    51.56 (  66)    28.12 (  36)    13.28 (  17)   0.22513
+arm         128    1    51.56 (  66)    27.34 (  35)    13.28 (  17)   0.22276
+delta                   +0.00           -0.78           +0.00         -0.00237
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default      66    1    78.79 (  52)    43.94 (  29)    25.76 (  17)   0.31955
+          arm          66    1    78.79 (  52)    42.42 (  28)    25.76 (  17)   0.31727
+          delta                   +0.00           -1.52           +0.00         -0.00228   FILE McNemar 0/0 p=1.0000
+2         default      16    0    75.00 (  12)    18.75 (   3)     0.00 (   0)   0.21182
+          arm          16    0    75.00 (  12)    18.75 (   3)     0.00 (   0)   0.21182
+          delta                   +0.00           +0.00           +0.00         +0.00000   FILE McNemar 0/0 p=1.0000
+3+        default      46    0     4.35 (   2)     8.70 (   4)     0.00 (   0)   0.09635
+          arm          46    0     4.35 (   2)     8.70 (   4)     0.00 (   0)   0.09302
+          delta                   +0.00           +0.00           +0.00         -0.00333   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  0 p=1.0000
+McNemar FUNCTION  default-only=  1 arm-only=  0 p=1.0000
+McNemar LINE      default-only=  0 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=3 up=1 down=2 p=0.5000
+
+changed instances: 3 of 128
+  jqlang__jq-2824                            [3+] FILE =      FUNC =      LINE =      frac 0.1724->0.0000       (-0.1724)
+  ponylang__ponyc-4017                       [1 ] FILE =      FUNC 1->0   LINE =      frac 0.5185->0.3704       (-0.1481)
+  ponylang__ponyc-3746                       [3+] FILE =      FUNC =      LINE =      frac 0.2065->0.2258       (+0.0194)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/c_s2_paired.json

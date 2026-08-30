@@ -1,0 +1,3560 @@
+{
+ "label": "c_s2",
+ "fire_side": {
+  "instances_traced": 127,
+  "duplicate_tags": 0,
+  "instances_with_any_extra_seat": 106,
+  "pct_instances_fired": 83.46,
+  "total_extra_seats": 290,
+  "mean_seats_per_instance": 2.283,
+  "mean_seats_where_fired": 2.736,
+  "max_seats_one_instance": 6,
+  "seated_files_that_are_gold": 10,
+  "seat_gold_precision_pct": 3.45,
+  "gold_seats_the_default_lacked": 4,
+  "seats_whose_source_was_gold": 56,
+  "pct_seats_from_gold_source": 19.31
+ },
+ "consequence_side": {
+  "instances_compared": 128,
+  "bundles_changed": 88,
+  "pct_bundles_changed": 68.75,
+  "files_added": 161,
+  "files_added_gold": 4,
+  "files_dropped": 159,
+  "files_dropped_gold": 2,
+  "net_gold": 2,
+  "added_gold_precision_pct": 2.48
+ },
+ "seats": [
+  {
+   "instance_id": "facebook__zstd-1008",
+   "source": "lib/zstd.h",
+   "seated": "programs/fileio.c",
+   "cochange": 26,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1008",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.h",
+   "cochange": 28,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1008",
+   "source": "lib/dictBuilder/cover.c",
+   "seated": "programs/dibio.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1008",
+   "source": "contrib/linux-kernel/lib/zstd/compress.c",
+   "seated": "contrib/linux-kernel/lib/zstd/fse_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1080",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.c",
+   "cochange": 43,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1080",
+   "source": "lib/decompress/zstd_decompress.c",
+   "seated": "lib/decompress/huf_decompress.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1080",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/compress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1080",
+   "source": "lib/legacy/zstd_v03.c",
+   "seated": "lib/common/mem.h",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1080",
+   "source": "lib/common/fse.h",
+   "seated": "lib/compress/fse_compress.c",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1105",
+   "source": "lib/zstd.h",
+   "seated": "programs/fileio.c",
+   "cochange": 30,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1105",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/compress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1105",
+   "source": "lib/common/fse.h",
+   "seated": "lib/compress/huf_compress.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1105",
+   "source": "contrib/linux-kernel/lib/zstd/fse.h",
+   "seated": "contrib/linux-kernel/lib/zstd/fse_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1105",
+   "source": "lib/legacy/zstd_v04.c",
+   "seated": "lib/legacy/zstd_v02.c",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1105",
+   "source": "lib/compress/zstd_compress_internal.h",
+   "seated": "lib/compress/zstd_opt.c",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1106",
+   "source": "lib/zstd.h",
+   "seated": "programs/fileio.c",
+   "cochange": 30,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1106",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1106",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.h",
+   "cochange": 28,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1106",
+   "source": "lib/legacy/zstd_v04.c",
+   "seated": "lib/legacy/zstd_v03.c",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1107",
+   "source": "lib/zstd.h",
+   "seated": "programs/bench.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1107",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.h",
+   "cochange": 28,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1243",
+   "source": "lib/zstd.h",
+   "seated": "programs/fileio.c",
+   "cochange": 30,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1243",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1243",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.h",
+   "cochange": 29,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1243",
+   "source": "lib/legacy/zstd_v05.c",
+   "seated": "lib/legacy/zstd_v01.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1390",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.c",
+   "cochange": 47,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1390",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/compress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1390",
+   "source": "programs/fileio.c",
+   "seated": "programs/fileio.h",
+   "cochange": 34,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1390",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.h",
+   "cochange": 31,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1390",
+   "source": "lib/legacy/zstd_v07.c",
+   "seated": "lib/legacy/zstd_v02.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1390",
+   "source": "lib/common/fse.h",
+   "seated": "lib/common/entropy_common.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1416",
+   "source": "lib/zstd.h",
+   "seated": "lib/common/zstd_internal.h",
+   "cochange": 27,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1416",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1416",
+   "source": "programs/fileio.c",
+   "seated": "programs/fileio.h",
+   "cochange": 34,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1458",
+   "source": "lib/zstd.h",
+   "seated": "programs/fileio.c",
+   "cochange": 44,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1458",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.h",
+   "cochange": 32,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1458",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1458",
+   "source": "lib/legacy/zstd_v04.c",
+   "seated": "lib/dictBuilder/zdict.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1459",
+   "source": "lib/zstd.h",
+   "seated": "lib/decompress/zstd_decompress.c",
+   "cochange": 66,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1459",
+   "source": "programs/zstdcli.c",
+   "seated": "programs/util.h",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1459",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1459",
+   "source": "lib/compress/zstd_compress_internal.h",
+   "seated": "lib/compress/zstd_opt.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1459",
+   "source": "lib/common/fse.h",
+   "seated": "lib/common/entropy_common.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1530",
+   "source": "lib/zstd.h",
+   "seated": "lib/common/zstd_internal.h",
+   "cochange": 28,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1530",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1530",
+   "source": "lib/common/fse.h",
+   "seated": "lib/common/huf.h",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1532",
+   "source": "lib/zstd.h",
+   "seated": "lib/decompress/zstd_decompress.c",
+   "cochange": 66,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1532",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/compress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1540",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.h",
+   "cochange": 32,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1540",
+   "source": "programs/fileio.c",
+   "seated": "programs/fileio.h",
+   "cochange": 40,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1540",
+   "source": "lib/legacy/zstd_v05.c",
+   "seated": "lib/legacy/zstd_v03.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1540",
+   "source": "lib/decompress/zstd_decompress.c",
+   "seated": "lib/decompress/huf_decompress.c",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1726",
+   "source": "lib/zstd.h",
+   "seated": "lib/decompress/zstd_decompress.c",
+   "cochange": 76,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1726",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/compress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1726",
+   "source": "lib/dictBuilder/zdict.h",
+   "seated": "lib/dictBuilder/zdict.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1726",
+   "source": "contrib/linux-kernel/lib/zstd/fse.h",
+   "seated": "contrib/linux-kernel/lib/zstd/huf_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1726",
+   "source": "lib/common/fse.h",
+   "seated": "lib/compress/fse_compress.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1726",
+   "source": "lib/compress/zstd_compress_internal.h",
+   "seated": "lib/compress/zstd_fast.c",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1733",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.c",
+   "cochange": 54,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1733",
+   "source": "lib/common/fse.h",
+   "seated": "lib/compress/huf_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1733",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1733",
+   "source": "contrib/linux-kernel/lib/zstd/fse.h",
+   "seated": "contrib/linux-kernel/lib/zstd/huf_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1733",
+   "source": "lib/legacy/zstd_v06.c",
+   "seated": "lib/legacy/zstd_v02.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1837",
+   "source": "lib/decompress/zstd_decompress.c",
+   "seated": "programs/fileio.c",
+   "cochange": 19,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1837",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.h",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-1837",
+   "source": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "seated": "contrib/linux-kernel/lib/zstd/fse_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-1837",
+   "source": "lib/legacy/zstd_v04.c",
+   "seated": "lib/dictBuilder/zdict.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2094",
+   "source": "lib/zstd.h",
+   "seated": "programs/fileio.c",
+   "cochange": 44,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-2094",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/compress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2094",
+   "source": "contrib/linux-kernel/lib/zstd/fse.h",
+   "seated": "contrib/linux-kernel/lib/zstd/huf_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2094",
+   "source": "lib/legacy/zstd_v07.c",
+   "seated": "lib/legacy/zstd_v02.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2130",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.h",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-2130",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2130",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.c",
+   "cochange": 34,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-2130",
+   "source": "programs/fileio.c",
+   "seated": "programs/fileio.h",
+   "cochange": 48,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2130",
+   "source": "lib/decompress/zstd_decompress.c",
+   "seated": "lib/legacy/zstd_v06.c",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2451",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.h",
+   "cochange": 20,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2451",
+   "source": "lib/decompress/zstd_decompress_block.c",
+   "seated": "lib/decompress/zstd_ddict.c",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-2451",
+   "source": "programs/fileio.c",
+   "seated": "programs/fileio.h",
+   "cochange": 56,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3223",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.c",
+   "cochange": 51,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3223",
+   "source": "programs/zstdcli.c",
+   "seated": "programs/fileio.h",
+   "cochange": 48,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-3223",
+   "source": "lib/legacy/zstd_v06.c",
+   "seated": "lib/common/bitstream.h",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3362",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.c",
+   "cochange": 51,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-3362",
+   "source": "lib/common/fse.h",
+   "seated": "lib/compress/fse_compress.c",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3362",
+   "source": "lib/legacy/zstd_v06.c",
+   "seated": "lib/legacy/zstd_v01.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3362",
+   "source": "lib/compress/zstd_compress_internal.h",
+   "seated": "lib/compress/zstd_ldm.c",
+   "cochange": 30,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3362",
+   "source": "lib/decompress/zstd_decompress_block.c",
+   "seated": "lib/decompress/zstd_decompress_block.h",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3438",
+   "source": "lib/zstd.h",
+   "seated": "programs/fileio.c",
+   "cochange": 41,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3438",
+   "source": "lib/decompress/zstd_decompress_block.c",
+   "seated": "lib/decompress/zstd_decompress_block.h",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3530",
+   "source": "lib/zstd.h",
+   "seated": "lib/decompress/zstd_decompress.c",
+   "cochange": 65,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-3530",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/compress/zstd_opt.c",
+   "cochange": 48,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-3530",
+   "source": "programs/fileio.c",
+   "seated": "programs/fileio.h",
+   "cochange": 54,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3942",
+   "source": "lib/zstd.h",
+   "seated": "lib/decompress/zstd_decompress.c",
+   "cochange": 63,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3942",
+   "source": "programs/zstdcli.c",
+   "seated": "programs/util.h",
+   "cochange": 26,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-3942",
+   "source": "lib/common/fse.h",
+   "seated": "lib/compress/fse_compress.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-3942",
+   "source": "lib/compress/zstd_compress_internal.h",
+   "seated": "lib/compress/zstd_ldm.c",
+   "cochange": 30,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-637",
+   "source": "lib/zstd.h",
+   "seated": "lib/dictBuilder/zdict.c",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-637",
+   "source": "lib/compress/zstdmt_compress.c",
+   "seated": "lib/common/pool.c",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-637",
+   "source": "lib/compress/zstd_compress.c",
+   "seated": "lib/common/zstd_internal.h",
+   "cochange": 28,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-637",
+   "source": "programs/fileio.c",
+   "seated": "programs/datagen.c",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-637",
+   "source": "lib/legacy/zstd_v07.c",
+   "seated": "lib/legacy/zstd_v02.c",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-809",
+   "source": "lib/dictBuilder/zdict.h",
+   "seated": "programs/dibio.h",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-809",
+   "source": "lib/dictBuilder/zdict.c",
+   "seated": "lib/common/zstd_internal.h",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-809",
+   "source": "lib/zstd.h",
+   "seated": "programs/bench.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-836",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "facebook__zstd-836",
+   "source": "contrib/linux-kernel/lib/zstd/decompress.c",
+   "seated": "contrib/linux-kernel/lib/zstd/fse_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-836",
+   "source": "lib/legacy/zstd_v07.c",
+   "seated": "lib/legacy/zstd_v01.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-938",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstd_compress.c",
+   "cochange": 118,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-938",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/compress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-938",
+   "source": "contrib/linux-kernel/lib/zstd/fse.h",
+   "seated": "contrib/linux-kernel/lib/zstd/huf_compress.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-938",
+   "source": "lib/legacy/zstd_v06.c",
+   "seated": "lib/legacy/zstd_v02.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-983",
+   "source": "lib/zstd.h",
+   "seated": "lib/compress/zstdmt_compress.c",
+   "cochange": 30,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-983",
+   "source": "contrib/linux-kernel/include/linux/zstd.h",
+   "seated": "contrib/linux-kernel/lib/zstd/compress.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "facebook__zstd-983",
+   "source": "lib/legacy/zstd_v04.c",
+   "seated": "lib/common/mem.h",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-2133",
+   "source": "src/parser.c",
+   "seated": "src/compile.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-2157",
+   "source": "src/parser.h",
+   "seated": "src/lexer.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-2646",
+   "source": "src/main.c",
+   "seated": "src/jq.h",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-2658",
+   "source": "src/main.c",
+   "seated": "src/jq.h",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "jqlang__jq-2674",
+   "source": "src/parser.c",
+   "seated": "src/lexer.h",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-2728",
+   "source": "src/main.c",
+   "seated": "src/jq.h",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "jqlang__jq-2824",
+   "source": "src/main.c",
+   "seated": "src/jq.h",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-2839",
+   "source": "src/builtin.c",
+   "seated": "src/compile.h",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-2840",
+   "source": "src/parser.c",
+   "seated": "src/lexer.c",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-2919",
+   "source": "src/main.c",
+   "seated": "src/jq.h",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "jqlang__jq-3161",
+   "source": "src/main.c",
+   "seated": "src/jq.h",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-3165",
+   "source": "src/main.c",
+   "seated": "src/jq.h",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "jqlang__jq-3238",
+   "source": "src/builtin.c",
+   "seated": "src/compile.h",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-1051",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1051",
+   "source": "src/libponyc/expr/control.c",
+   "seated": "src/libponyc/expr/operator.c",
+   "cochange": 20,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-1051",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parserapi.c",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1057",
+   "source": "src/libponyc/expr/reference.c",
+   "seated": "src/libponyc/expr/postfix.c",
+   "cochange": 33,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-1095",
+   "source": "src/libponyc/type/matchtype.c",
+   "seated": "src/libponyc/type/subtype.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-1095",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 21,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1124",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1339",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1339",
+   "source": "src/libponyc/pass/syntax.c",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1339",
+   "source": "src/libponyc/pass/expr.c",
+   "seated": "src/libponyc/expr/operator.c",
+   "cochange": 23,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1339",
+   "source": "src/libponyc/expr/control.c",
+   "seated": "src/libponyc/codegen/gencontrol.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1411",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1411",
+   "source": "src/libponyc/pass/sugar.c",
+   "seated": "src/libponyc/ast/lexer.c",
+   "cochange": 26,
+   "seated_is_gold": true,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1486",
+   "source": "src/libponyc/expr/reference.c",
+   "seated": "src/libponyc/expr/postfix.c",
+   "cochange": 34,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-1536",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1852",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1867",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/codegen/codegen.h",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1867",
+   "source": "src/libponyc/pass/pass.c",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1867",
+   "source": "src/ponyc/main.c",
+   "seated": "src/libponyc/codegen/gencall.c",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-1867",
+   "source": "src/libponyc/expr/lambda.c",
+   "seated": "src/libponyc/ast/treecheckdef.h",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2126",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2168",
+   "source": "src/libponyc/expr/literal.c",
+   "seated": "src/libponyc/expr/postfix.c",
+   "cochange": 28,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-2176",
+   "source": "src/libponyc/codegen/genreference.c",
+   "seated": "src/libponyc/expr/operator.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2176",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyrt/actor/actor.c",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2201",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2201",
+   "source": "src/ponyc/main.c",
+   "seated": "src/libponyc/codegen/gencall.c",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2203",
+   "source": "src/ponyc/main.c",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2203",
+   "source": "src/libponyc/codegen/genexe.c",
+   "seated": "src/libponyrt/actor/actor.c",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2203",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/ast/ast.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2205",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 23,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2214",
+   "source": "src/libponyc/ast/lexer.c",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 46,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-2261",
+   "source": "src/libponyc/pass/traits.c",
+   "seated": "src/libponyc/ast/ast.h",
+   "cochange": 22,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2261",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2261",
+   "source": "src/libponyc/expr/call.c",
+   "seated": "src/libponyc/expr/postfix.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2272",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 23,
+   "seated_is_gold": true,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2504",
+   "source": "src/libponyc/expr/literal.c",
+   "seated": "src/libponyc/expr/postfix.c",
+   "cochange": 28,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2504",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2504",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/genprim.c",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2504",
+   "source": "src/libponyc/expr/call.c",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-2586",
+   "source": "src/libponyc/pass/sugar.c",
+   "seated": "src/libponyc/ast/ast.h",
+   "cochange": 34,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-2586",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2586",
+   "source": "src/libponyc/expr/lambda.c",
+   "seated": "src/libponyc/expr/call.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2586",
+   "source": "src/libponyc/pass/docgen.c",
+   "seated": "src/libponyc/codegen/gentype.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2660",
+   "source": "src/libponyc/type/cap.c",
+   "seated": "src/libponyc/type/viewpoint.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-2660",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2664",
+   "source": "src/libponyc/codegen/genexpr.c",
+   "seated": "src/libponyc/pass/expr.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2664",
+   "source": "src/libponyc/codegen/genexe.c",
+   "seated": "src/libponyrt/actor/actor.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2853",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 23,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2853",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/token.h",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-2853",
+   "source": "src/libponyc/expr/control.c",
+   "seated": "src/libponyc/expr/operator.c",
+   "cochange": 21,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3006",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3293",
+   "source": "src/libponyc/codegen/gentype.c",
+   "seated": "src/libponyc/codegen/genexpr.c",
+   "cochange": 23,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-3293",
+   "source": "src/libponyc/expr/ffi.c",
+   "seated": "src/libponyc/pass/expr.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-3293",
+   "source": "src/libponyc/expr/reference.c",
+   "seated": "src/libponyc/ast/ast.c",
+   "cochange": 29,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-3586",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3586",
+   "source": "src/libponyc/pass/sugar.c",
+   "seated": "src/libponyc/ast/lexer.c",
+   "cochange": 30,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-3586",
+   "source": "src/libponyc/options/options.c",
+   "seated": "src/libponyrt/sched/scheduler.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3586",
+   "source": "src/libponyc/ast/parser.c",
+   "seated": "src/libponyc/ast/treecheckdef.h",
+   "cochange": 17,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3586",
+   "source": "src/libponyc/expr/operator.c",
+   "seated": "src/libponyc/expr/literal.c",
+   "cochange": 22,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3647",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3647",
+   "source": "src/libponyc/pkg/package.c",
+   "seated": "src/libponyc/expr/postfix.c",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3647",
+   "source": "src/libponyc/pass/pass.c",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3647",
+   "source": "src/libponyc/pass/syntax.c",
+   "seated": "src/libponyc/ast/token.h",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3650",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3650",
+   "source": "src/libponyc/codegen/genexe.c",
+   "seated": "src/libponyc/codegen/genfun.c",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3650",
+   "source": "src/libponyc/options/options.c",
+   "seated": "src/libponyrt/sched/start.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3650",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 21,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3723",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 23,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3723",
+   "source": "src/libponyrt/sched/scheduler.c",
+   "seated": "src/libponyrt/sched/scheduler.h",
+   "cochange": 20,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3723",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3723",
+   "source": "src/libponyrt/actor/actor.c",
+   "seated": "src/libponyrt/gc/gc.c",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3725",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 25,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3725",
+   "source": "src/libponyc/pass/traits.c",
+   "seated": "src/libponyc/ast/lexer.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-3725",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/genprim.c",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3725",
+   "source": "src/libponyc/expr/lambda.c",
+   "seated": "src/libponyc/ast/treecheckdef.h",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3739",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3746",
+   "source": "src/libponyc/expr/match.c",
+   "seated": "src/libponyc/expr/operator.c",
+   "cochange": 15,
+   "seated_is_gold": true,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-3746",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyrt/gc/cycle.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3746",
+   "source": "src/libponyrt/actor/actor.c",
+   "seated": "src/libponyrt/sched/scheduler.h",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3758",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 24,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3758",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/genprim.c",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3758",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyrt/gc/cycle.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3758",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3763",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/codegen/codegen.h",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3763",
+   "source": "src/libponyc/expr/lambda.c",
+   "seated": "src/libponyc/ast/treecheckdef.h",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3763",
+   "source": "src/libponyc/options/options.c",
+   "seated": "src/libponyrt/sched/start.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3763",
+   "source": "src/libponyc/codegen/genexe.c",
+   "seated": "src/libponyc/codegen/genfun.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3777",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3781",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3781",
+   "source": "src/libponyrt/actor/actor.c",
+   "seated": "src/libponyrt/gc/gc.h",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3781",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 24,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3819",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 21,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3953",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3953",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3962",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 16,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3971",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3971",
+   "source": "src/libponyc/expr/lambda.c",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3971",
+   "source": "src/libponyc/expr/reference.c",
+   "seated": "src/libponyc/codegen/gencall.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3973",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3973",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3991",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3991",
+   "source": "src/libponyc/codegen/genexe.c",
+   "seated": "src/libponyc/codegen/genfun.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-3991",
+   "source": "src/libponyc/options/options.c",
+   "seated": "src/libponyrt/sched/start.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4005",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4005",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/lexer.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4005",
+   "source": "src/libponyc/pass/syntax.c",
+   "seated": "src/libponyc/expr/operator.c",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4006",
+   "source": "src/libponyc/pass/refer.c",
+   "seated": "src/libponyc/ast/ast.c",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4006",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4006",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/lexer.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4006",
+   "source": "src/libponyrt/actor/actor.c",
+   "seated": "src/libponyrt/gc/cycle.c",
+   "cochange": 22,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4017",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4017",
+   "source": "src/libponyc/pass/flatten.c",
+   "seated": "src/libponyc/expr/call.c",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4017",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4024",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4024",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 14,
+   "seated_is_gold": true,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4057",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4061",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4061",
+   "source": "src/libponyrt/actor/actor.c",
+   "seated": "src/libponyrt/gc/cycle.c",
+   "cochange": 22,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4067",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/gendebug.cc",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4067",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4067",
+   "source": "src/libponyc/options/options.c",
+   "seated": "src/libponyrt/sched/start.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4087",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/ast/ast.h",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4087",
+   "source": "src/libponyc/codegen/genexe.c",
+   "seated": "src/libponyc/codegen/genfun.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4087",
+   "source": "src/libponyc/pass/syntax.c",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4132",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyc/codegen/genexe.c",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4132",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 18,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4182",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4182",
+   "source": "src/libponyc/pass/refer.c",
+   "seated": "src/libponyc/ast/ast.h",
+   "cochange": 3,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4182",
+   "source": "src/libponyrt/actor/actor.c",
+   "seated": "src/libponyrt/gc/cycle.c",
+   "cochange": 22,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4263",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4263",
+   "source": "src/libponyc/expr/call.c",
+   "seated": "src/libponyc/expr/control.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4263",
+   "source": "src/libponyc/expr/operator.c",
+   "seated": "src/libponyc/ast/ast.c",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4263",
+   "source": "src/libponyc/expr/lambda.c",
+   "seated": "src/libponyc/ast/treecheckdef.h",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4288",
+   "source": "src/libponyc/pass/pass.c",
+   "seated": "src/ponyc/main.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4288",
+   "source": "src/libponyc/expr/operator.c",
+   "seated": "src/libponyc/expr/control.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4288",
+   "source": "src/libponyc/options/options.c",
+   "seated": "src/libponyrt/sched/start.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4288",
+   "source": "src/libponyc/expr/lambda.c",
+   "seated": "src/libponyc/ast/treecheckdef.h",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4294",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyc/codegen/genexe.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4294",
+   "source": "src/libponyrt/sched/scheduler.c",
+   "seated": "src/libponyrt/sched/cpu.c",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4294",
+   "source": "src/libponyrt/actor/actor.c",
+   "seated": "src/libponyrt/gc/gc.h",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4294",
+   "source": "src/libponyrt/gc/cycle.c",
+   "seated": "src/libponyrt/gc/cycle.h",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4294",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/codegen.h",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4299",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 15,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4458",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 13,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4505",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/ponyc/main.c",
+   "cochange": 8,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4505",
+   "source": "src/libponyc/pass/refer.c",
+   "seated": "src/libponyc/ast/ast.c",
+   "cochange": 4,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4505",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/codegen.h",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4505",
+   "source": "src/libponyc/codegen/genexe.c",
+   "seated": "src/libponyc/reach/reach.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4506",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 11,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4506",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/codegen.h",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4506",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4506",
+   "source": "src/libponyc/codegen/genexe.c",
+   "seated": "src/libponyc/reach/reach.c",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4583",
+   "source": "src/libponyrt/sched/scheduler.c",
+   "seated": "src/libponyrt/pony.h",
+   "cochange": 9,
+   "seated_is_gold": false,
+   "source_is_gold": true
+  },
+  {
+   "instance_id": "ponylang__ponyc-4583",
+   "source": "src/libponyrt/actor/actor.c",
+   "seated": "src/libponyc/codegen/codegen.c",
+   "cochange": 12,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4583",
+   "source": "src/libponyrt/gc/cycle.c",
+   "seated": "src/libponyrt/gc/cycle.h",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4588",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4588",
+   "source": "src/libponyc/codegen/host.cc",
+   "seated": "src/libponyc/codegen/codegen.h",
+   "cochange": 6,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4588",
+   "source": "src/libponyrt/pony.h",
+   "seated": "src/libponyrt/actor/actor.c",
+   "cochange": 14,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4595",
+   "source": "src/libponyc/pass/pass.h",
+   "seated": "src/libponyc/pass/pass.c",
+   "cochange": 10,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4595",
+   "source": "src/libponyc/codegen/genopt.cc",
+   "seated": "src/libponyc/codegen/codegen.h",
+   "cochange": 7,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4595",
+   "source": "src/libponyc/ast/parserapi.h",
+   "seated": "src/libponyc/ast/parser.c",
+   "cochange": 5,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-4595",
+   "source": "src/libponyc/pass/refer.c",
+   "seated": "src/libponyc/expr/match.c",
+   "cochange": 2,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  },
+  {
+   "instance_id": "ponylang__ponyc-671",
+   "source": "src/libponyc/pkg/package.c",
+   "seated": "src/libponyc/ast/ast.c",
+   "cochange": 19,
+   "seated_is_gold": false,
+   "source_is_gold": false
+  }
+ ],
+ "changed_bundles": [
+  {
+   "instance_id": "facebook__zstd-1008",
+   "n_gold_files": 2,
+   "added": [
+    "contrib/linux-kernel/lib/zstd/fse_compress.c"
+   ],
+   "dropped": [
+    "lib/compress/zstd_ldm.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1080",
+   "n_gold_files": 2,
+   "added": [
+    "lib/common/mem.h",
+    "lib/compress/fse_compress.c"
+   ],
+   "dropped": [
+    "lib/legacy/zstd_v07.h",
+    "programs/zstdcli.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1105",
+   "n_gold_files": 2,
+   "added": [
+    "lib/compress/huf_compress.c"
+   ],
+   "dropped": [
+    "lib/legacy/zstd_v01.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1106",
+   "n_gold_files": 1,
+   "added": [
+    "contrib/adaptive-compression/adapt.c"
+   ],
+   "dropped": [
+    "lib/legacy/zstd_v06.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1107",
+   "n_gold_files": 2,
+   "added": [
+    "lib/compress/zstd_opt.h"
+   ],
+   "dropped": [
+    "lib/compress/zstd_double_fast.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1243",
+   "n_gold_files": 5,
+   "added": [
+    "lib/compress/zstd_opt.h"
+   ],
+   "dropped": [
+    "lib/compress/huf_compress.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1390",
+   "n_gold_files": 1,
+   "added": [
+    "lib/common/entropy_common.c",
+    "lib/compress/zstd_opt.h",
+    "programs/fileio.h"
+   ],
+   "dropped": [
+    "lib/compress/zstdmt_compress.h",
+    "programs/bench.c",
+    "programs/zstdcli.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1458",
+   "n_gold_files": 1,
+   "added": [
+    "lib/compress/zstd_opt.h"
+   ],
+   "dropped": [
+    "lib/legacy/zstd_v05.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1459",
+   "n_gold_files": 1,
+   "added": [
+    "lib/common/entropy_common.c",
+    "lib/compress/zstd_opt.c",
+    "lib/dictBuilder/cover.c"
+   ],
+   "dropped": [
+    "lib/common/xxhash.c",
+    "lib/common/xxhash.h",
+    "programs/benchfn.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1540",
+   "n_gold_files": 4,
+   "added": [
+    "lib/compress/zstd_opt.h",
+    "lib/decompress/huf_decompress.c",
+    "programs/fileio.h"
+   ],
+   "dropped": [
+    "lib/common/huf.h",
+    "lib/compress/fse_compress.c",
+    "lib/compress/zstd_lazy.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1726",
+   "n_gold_files": 4,
+   "added": [
+    "contrib/linux-kernel/lib/zstd/huf_compress.c",
+    "lib/compress/fse_compress.c",
+    "lib/compress/zstd_fast.c"
+   ],
+   "dropped": [
+    "lib/compress/zstdmt_compress.c",
+    "lib/dictBuilder/cover.h",
+    "programs/dibio.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-1733",
+   "n_gold_files": 7,
+   "added": [
+    "contrib/linux-kernel/lib/zstd/huf_compress.c",
+    "lib/compress/huf_compress.c"
+   ],
+   "dropped": [
+    "lib/dictBuilder/cover.c",
+    "programs/zstdcli.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": [
+    "programs/zstdcli.c"
+   ]
+  },
+  {
+   "instance_id": "facebook__zstd-1837",
+   "n_gold_files": 4,
+   "added": [
+    "contrib/linux-kernel/lib/zstd/fse_compress.c"
+   ],
+   "dropped": [
+    "contrib/linux-kernel/lib/zstd/zstd_internal.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-2094",
+   "n_gold_files": 5,
+   "added": [
+    "contrib/linux-kernel/lib/zstd/huf_compress.c"
+   ],
+   "dropped": [
+    "contrib/linux-kernel/lib/zstd/huf.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-2130",
+   "n_gold_files": 3,
+   "added": [
+    "programs/fileio.h"
+   ],
+   "dropped": [
+    "lib/decompress/zstd_ddict.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-2451",
+   "n_gold_files": 1,
+   "added": [
+    "lib/decompress/zstd_ddict.c",
+    "programs/fileio.h"
+   ],
+   "dropped": [
+    "lib/compress/huf_compress.c",
+    "lib/compress/zstd_ldm.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-3223",
+   "n_gold_files": 4,
+   "added": [
+    "lib/common/bitstream.h",
+    "programs/fileio.h"
+   ],
+   "dropped": [
+    "programs/benchzstd.h",
+    "programs/platform.h"
+   ],
+   "added_gold": [
+    "programs/fileio.h"
+   ],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-3362",
+   "n_gold_files": 2,
+   "added": [
+    "lib/compress/fse_compress.c",
+    "lib/compress/zstd_ldm.c",
+    "lib/decompress/zstd_decompress_block.h"
+   ],
+   "dropped": [
+    "lib/zdict.h",
+    "programs/dibio.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-3438",
+   "n_gold_files": 3,
+   "added": [
+    "lib/decompress/zstd_decompress_block.h"
+   ],
+   "dropped": [
+    "lib/zdict.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-3530",
+   "n_gold_files": 2,
+   "added": [
+    "programs/fileio.h"
+   ],
+   "dropped": [
+    "programs/benchzstd.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-3942",
+   "n_gold_files": 2,
+   "added": [
+    "lib/compress/fse_compress.c",
+    "lib/compress/zstd_ldm.c",
+    "programs/util.h"
+   ],
+   "dropped": [
+    "lib/compress/huf_compress.c",
+    "lib/compress/zstd_fast.c",
+    "lib/compress/zstd_lazy.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-637",
+   "n_gold_files": 3,
+   "added": [
+    "lib/common/pool.c",
+    "programs/datagen.c",
+    "programs/util.h"
+   ],
+   "dropped": [
+    "lib/legacy/zstd_v01.c",
+    "lib/legacy/zstd_v05.h",
+    "lib/legacy/zstd_v06.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-836",
+   "n_gold_files": 4,
+   "added": [
+    "contrib/linux-kernel/lib/zstd/fse_compress.c"
+   ],
+   "dropped": [
+    "lib/legacy/zstd_v06.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "facebook__zstd-983",
+   "n_gold_files": 1,
+   "added": [
+    "lib/common/mem.h"
+   ],
+   "dropped": [
+    "contrib/linux-kernel/include/linux/xxhash.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "jqlang__jq-2646",
+   "n_gold_files": 4,
+   "added": [
+    "src/jq.h"
+   ],
+   "dropped": [
+    "src/decNumber/decimal32.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "jqlang__jq-2728",
+   "n_gold_files": 1,
+   "added": [],
+   "dropped": [
+    "src/jv.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "jqlang__jq-2824",
+   "n_gold_files": 4,
+   "added": [
+    "src/jq.h"
+   ],
+   "dropped": [
+    "src/jv_print.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": [
+    "src/jv_print.c"
+   ]
+  },
+  {
+   "instance_id": "jqlang__jq-2839",
+   "n_gold_files": 1,
+   "added": [],
+   "dropped": [
+    "src/lexer.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "jqlang__jq-2919",
+   "n_gold_files": 3,
+   "added": [
+    "src/jq.h"
+   ],
+   "dropped": [
+    "src/jv_print.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "jqlang__jq-3161",
+   "n_gold_files": 4,
+   "added": [
+    "src/jq.h"
+   ],
+   "dropped": [],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "jqlang__jq-3165",
+   "n_gold_files": 1,
+   "added": [
+    "src/jq.h"
+   ],
+   "dropped": [
+    "src/jv.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-1051",
+   "n_gold_files": 2,
+   "added": [
+    "src/libponyc/ast/parserapi.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/docgen.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-1124",
+   "n_gold_files": 5,
+   "added": [
+    "src/libponyc/codegen/codegen.c"
+   ],
+   "dropped": [
+    "lib/gtest/gtest/gtest-param-test.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-1339",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/codegen/gencontrol.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/docgen.c",
+    "src/libponyc/pkg/package.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-1411",
+   "n_gold_files": 12,
+   "added": [
+    "src/libponyc/ast/lexer.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "lib/gtest/gtest/gtest-typed-test.h",
+    "lib/gtest/gtest/gtest_pred_impl.h"
+   ],
+   "added_gold": [
+    "src/libponyc/ast/lexer.c"
+   ],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-1536",
+   "n_gold_files": 1,
+   "added": [
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "lib/gtest/gtest/internal/gtest-tuple.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-1852",
+   "n_gold_files": 5,
+   "added": [
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/docgen.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-1867",
+   "n_gold_files": 2,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/ast/treecheckdef.h",
+    "src/libponyc/codegen/codegen.h"
+   ],
+   "dropped": [
+    "src/libponyc/ast/ast.c",
+    "src/libponyc/pass/import.c",
+    "src/libponyc/pass/refer.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2126",
+   "n_gold_files": 1,
+   "added": [
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "lib/gtest/gtest/internal/gtest-linked_ptr.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2168",
+   "n_gold_files": 42,
+   "added": [
+    "src/libponyc/expr/postfix.c"
+   ],
+   "dropped": [
+    "lib/gbenchmark/src/benchmark.cc"
+   ],
+   "added_gold": [
+    "src/libponyc/expr/postfix.c"
+   ],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2176",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyrt/actor/actor.c"
+   ],
+   "dropped": [],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2201",
+   "n_gold_files": 2,
+   "added": [
+    "src/libponyc/codegen/gencall.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/names.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2203",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/ast.c",
+    "src/libponyrt/actor/actor.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/gendesc.c",
+    "src/libponyc/pass/traits.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2205",
+   "n_gold_files": 12,
+   "added": [
+    "src/libponyc/pass/pass.c"
+   ],
+   "dropped": [
+    "lib/gtest/gtest/internal/gtest-linked_ptr.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2214",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/parser.c"
+   ],
+   "dropped": [
+    "src/libponyc/expr/reference.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2261",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/codegen/codegen.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/docgen.c",
+    "src/libponyc/pass/expr.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2504",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/codegen/genprim.c",
+    "src/libponyc/expr/postfix.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/expr/operator.c",
+    "src/libponyc/pass/refer.c",
+    "src/libponyc/pass/syntax.c",
+    "src/libponyc/pkg/package.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2586",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/ast.h",
+    "src/libponyc/codegen/gentype.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/ast/ast.c",
+    "src/libponyc/ast/token.h",
+    "src/libponyc/expr/operator.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2660",
+   "n_gold_files": 7,
+   "added": [
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/expr/reference.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2664",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyrt/actor/actor.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/gencall.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-2853",
+   "n_gold_files": 2,
+   "added": [
+    "src/libponyc/ast/token.h"
+   ],
+   "dropped": [
+    "src/libponyc/ast/lexer.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3006",
+   "n_gold_files": 1,
+   "added": [
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "lib/gtest/gtest/internal/gtest-linked_ptr.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3293",
+   "n_gold_files": 18,
+   "added": [
+    "src/libponyc/codegen/genexpr.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/gencontrol.c",
+    "src/libponyc/codegen/gentype.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3586",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/lexer.c",
+    "src/libponyc/ast/treecheckdef.h",
+    "src/libponyc/expr/literal.c",
+    "src/libponyrt/sched/scheduler.c"
+   ],
+   "dropped": [
+    "src/common/platform.h",
+    "src/libponyc/pass/flatten.c",
+    "src/libponyc/pass/names.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3647",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/ast/token.h",
+    "src/libponyc/expr/postfix.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/import.c",
+    "src/libponyc/pass/names.c",
+    "src/libponyc/pkg/ifdef.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3650",
+   "n_gold_files": 2,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/codegen/genfun.c",
+    "src/libponyrt/sched/start.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/gencontrol.c",
+    "src/libponyc/codegen/genmatch.c",
+    "src/libponyc/codegen/genprim.c",
+    "src/libponyc/pass/expr.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3723",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/pass/pass.c",
+    "src/libponyrt/gc/gc.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/refer.c",
+    "src/libponyc/pass/traits.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3725",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/treecheckdef.h",
+    "src/libponyc/codegen/genprim.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/options/options.c",
+    "src/libponyc/pass/expr.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3746",
+   "n_gold_files": 4,
+   "added": [
+    "src/libponyrt/gc/cycle.c",
+    "src/libponyrt/sched/scheduler.h"
+   ],
+   "dropped": [
+    "packages/ponytest/unit_test.pony",
+    "src/libponyc/expr/control.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3758",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/codegen/genprim.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/codegen.h",
+    "src/libponyc/expr/reference.c",
+    "src/libponyc/pkg/package.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3763",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/treecheckdef.h",
+    "src/libponyc/codegen/codegen.h",
+    "src/libponyc/codegen/genprim.c",
+    "src/libponyrt/sched/start.c"
+   ],
+   "dropped": [
+    "src/libponyc/expr/literal.c",
+    "src/libponyc/expr/operator.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3777",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/codegen/codegen.c"
+   ],
+   "dropped": [
+    "packages/files/file_info.pony"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3781",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyrt/gc/gc.h",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "packages/ponytest/unit_test.pony",
+    "src/libponyc/codegen/gentype.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3819",
+   "n_gold_files": 4,
+   "added": [],
+   "dropped": [
+    "packages/process/_pipe.pony"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3953",
+   "n_gold_files": 13,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/pass/pass.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/genfun.c",
+    "src/libponyc/pass/sugar.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3962",
+   "n_gold_files": 17,
+   "added": [
+    "src/libponyrt/gc/cycle.c"
+   ],
+   "dropped": [
+    "packages/net/ossockopt.pony"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3971",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyrt/gc/cycle.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/docgen.c",
+    "src/libponyc/pkg/package.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3973",
+   "n_gold_files": 12,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/pass/pass.c"
+   ],
+   "dropped": [
+    "packages/builtin/runtime_options.pony",
+    "src/libponyc/pass/docgen.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-3991",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/codegen/genprim.c",
+    "src/libponyrt/sched/start.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/codegen.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4005",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/lexer.c",
+    "src/libponyc/expr/operator.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/ast/token.h",
+    "src/libponyc/ast/treecheck.c",
+    "src/libponyc/pass/names.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4006",
+   "n_gold_files": 6,
+   "added": [
+    "src/libponyc/ast/ast.c",
+    "src/libponyc/ast/lexer.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/ast/bnfprint.c",
+    "src/libponyc/pass/docgen.c",
+    "src/libponyc/pass/scope.c",
+    "src/libponyrt/actor/actor.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4017",
+   "n_gold_files": 1,
+   "added": [
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/ast/lexer.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4024",
+   "n_gold_files": 21,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/pass/pass.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/docgen.c",
+    "src/libponyc/pass/traits.c"
+   ],
+   "added_gold": [
+    "src/libponyc/ast/parser.c"
+   ],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4061",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/pass/pass.c",
+    "src/libponyrt/gc/cycle.c"
+   ],
+   "dropped": [
+    "packages/pony_test/unit_test.pony",
+    "src/libponyc/pass/docgen.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4067",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/pass/expr.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/gendesc.c",
+    "src/libponyc/codegen/genserialise.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4087",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/ast.h",
+    "src/libponyc/ast/parser.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/gendesc.c",
+    "src/libponyc/codegen/genreference.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4132",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/pass/pass.c"
+   ],
+   "dropped": [
+    "src/libponyc/pass/docgen.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4182",
+   "n_gold_files": 2,
+   "added": [
+    "src/libponyc/ast/ast.h",
+    "src/libponyc/codegen/gencall.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "packages/pony_test/unit_test.pony",
+    "src/libponyc/pass/docgen.c",
+    "src/libponyc/pass/scope.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4263",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/ast.c",
+    "src/libponyc/ast/treecheckdef.h",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/options/options.c",
+    "src/libponyc/pass/traits.c",
+    "src/libponyc/pkg/package.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4288",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/treecheckdef.h",
+    "src/libponyc/expr/control.c",
+    "src/libponyrt/sched/scheduler.h",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/expr/array.c",
+    "src/libponyc/pass/names.c",
+    "src/libponyc/pass/scope.c",
+    "src/libponyc/pass/verify.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4294",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/codegen/codegen.h",
+    "src/libponyrt/gc/gc.h",
+    "src/libponyrt/sched/cpu.c"
+   ],
+   "dropped": [
+    "src/libponyrt/asio/epoll.c",
+    "src/libponyrt/sched/mpmcq.c",
+    "src/libponyrt/sched/systematic_testing.h"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4299",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/pass/pass.c"
+   ],
+   "dropped": [
+    "packages/net/udp_socket.pony"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4458",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/codegen/codegen.c"
+   ],
+   "dropped": [
+    "packages/net/net_address.pony"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4505",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/codegen/codegen.h",
+    "src/libponyc/reach/reach.c",
+    "src/ponyc/main.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/genprim.c",
+    "src/libponyc/pass/expr.c",
+    "src/libponyc/pass/scope.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4506",
+   "n_gold_files": 10,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/codegen/codegen.h",
+    "src/libponyc/reach/reach.c"
+   ],
+   "dropped": [
+    "src/libponyc/options/options.c",
+    "src/libponyc/pass/refer.c",
+    "src/libponyc/pkg/package.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4588",
+   "n_gold_files": 5,
+   "added": [
+    "src/libponyc/codegen/codegen.h",
+    "src/libponyc/pass/pass.c",
+    "src/libponyrt/actor/actor.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/genfun.c",
+    "src/libponyc/codegen/gentype.c",
+    "src/libponyc/expr/operator.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-4595",
+   "n_gold_files": 1,
+   "added": [
+    "src/libponyc/ast/parser.c",
+    "src/libponyc/codegen/codegen.h",
+    "src/libponyc/expr/match.c",
+    "src/libponyc/pass/pass.c"
+   ],
+   "dropped": [
+    "packages/pony_test/unit_test.pony",
+    "src/libponyc/pass/docgen.c",
+    "src/libponyc/pass/sugar.c",
+    "src/libponyc/pass/traits.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  },
+  {
+   "instance_id": "ponylang__ponyc-671",
+   "n_gold_files": 4,
+   "added": [
+    "src/libponyc/ast/ast.c"
+   ],
+   "dropped": [
+    "src/libponyc/codegen/codegen.c"
+   ],
+   "added_gold": [],
+   "dropped_gold": []
+  }
+ ]
+}

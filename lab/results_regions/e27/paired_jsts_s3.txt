@@ -1,0 +1,38 @@
+
+=== jsts_s3 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     580    1    46.38 ( 269)    31.21 ( 181)    14.14 (  82)   0.26156
+arm         580    1    46.55 ( 270)    31.03 ( 180)    13.97 (  81)   0.26133
+delta                   +0.17           -0.18           -0.17         -0.00023
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default     280    1    72.50 ( 203)    41.79 ( 117)    26.43 (  74)   0.32002
+          arm         280    1    72.86 ( 204)    41.79 ( 117)    26.07 (  73)   0.31959
+          delta                   +0.36           +0.00           -0.36         -0.00043   FILE McNemar 0/1 p=1.0000
+2         default      93    0    48.39 (  45)    26.88 (  25)     5.38 (   5)   0.23629
+          arm          93    0    48.39 (  45)    25.81 (  24)     5.38 (   5)   0.23494
+          delta                   +0.00           -1.07           +0.00         -0.00135   FILE McNemar 0/0 p=1.0000
+3+        default     207    0    10.14 (  21)    18.84 (  39)     1.45 (   3)   0.19411
+          arm         207    0    10.14 (  21)    18.84 (  39)     1.45 (   3)   0.19465
+          delta                   +0.00           +0.00           +0.00         +0.00053   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  1 p=1.0000
+McNemar FUNCTION  default-only=  1 arm-only=  0 p=1.0000
+McNemar LINE      default-only=  1 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=12 up=5 down=7 p=0.4697
+
+changed instances: 13 of 580
+  vuejs__core-10869                          [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.8889       (-0.1111)
+  mui__material-ui-24945                     [3+] FILE =      FUNC =      LINE =      frac 0.1852->0.0963       (-0.0889)
+  vuejs__core-11761                          [2 ] FILE =      FUNC =      LINE =      frac 0.1346->0.0673       (-0.0673)
+  darkreader__darkreader-6747                [2 ] FILE =      FUNC 1->0   LINE =      frac 0.5946->0.5405       (-0.0541)
+  mui__material-ui-24794                     [3+] FILE =      FUNC =      LINE =      frac 0.1329->0.0983       (-0.0347)
+  sveltejs__svelte-12460                     [1 ] FILE =      FUNC =      LINE =      frac 0.4400->0.4300       (-0.0100)
+  sveltejs__svelte-13018                     [2 ] FILE =      FUNC =      LINE =      frac 0.0595->0.0558       (-0.0037)
+  vuejs__core-8785                           [1 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  anuraghazra__github-readme-stats-3442      [3+] FILE =      FUNC =      LINE =      frac 0.3383->0.3479       (+0.0095)
+  mui__material-ui-34401                     [3+] FILE =      FUNC =      LINE =      frac 0.0426->0.0532       (+0.0106)
+  mui__material-ui-24968                     [3+] FILE =      FUNC =      LINE =      frac 0.0992->0.1240       (+0.0248)
+  sveltejs__svelte-12215                     [3+] FILE =      FUNC =      LINE =      frac 0.1553->0.1825       (+0.0272)
+  mui__material-ui-34131                     [3+] FILE =      FUNC =      LINE =      frac 0.4865->0.6486       (+0.1622)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/jsts_s3_paired.json

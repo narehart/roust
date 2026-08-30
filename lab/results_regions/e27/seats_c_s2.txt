@@ -1,0 +1,6 @@
+=== c_s2 seat-fire anatomy ===
+  fired on 106/127 instances (83.46%), 290 extra seats total, mean 2.736 where fired, max 6
+  seated file was gold: 10/290 (3.45%); of those 4 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 56 (19.31%)
+  bundles changed: 88/128 (68.75%); files +161 (gold 4) / -159 (gold 2), net gold +2
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_c_s2.json

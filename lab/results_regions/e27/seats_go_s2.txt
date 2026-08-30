@@ -1,0 +1,6 @@
+=== go_s2 seat-fire anatomy ===
+  fired on 406/427 instances (95.08%), 1234 extra seats total, mean 3.039 where fired, max 6
+  seated file was gold: 16/1234 (1.3%); of those 9 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 187 (15.15%)
+  bundles changed: 371/428 (86.68%); files +979 (gold 9) / -910 (gold 18), net gold -9
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_go_s2.json

@@ -17,19 +17,25 @@ pub const CODE_EXTENSIONS: &[&str] = &[
     ".py", ".ts", ".js", ".go", ".rs", ".java", ".kt", ".cs", ".swift", ".tsx", ".jsx",
 ];
 
-// E26 (per-language parity campaign): source extensions the allowlist above
-// never covered, all flag-gated behind --ext-v2 until the gate clears.
-// Chosen from measured gold mass, not from a list of languages that exist:
-// on the Multi-SWE slices these carry gold that roust currently cannot
-// retrieve at any rank because the file is never indexed --
-//   .pony  90 gold files (C slice, ponylang/ponyc)
-//   .rb    31 gold files (Java slice, elastic/logstash's Ruby core)
-//   .svelte/.mjs/.cts  6 gold files (JS/TS slice, WS1d's actionable finding)
-// Docs/config extensions carrying larger gold mass (.md, .json, .toml) are
-// deliberately EXCLUDED: WS1 measured that indexing them costs more in
-// boilerplate displacement than it recovers (FILE 46.4 -> 31.2).
-pub const EXT_V2_EXTENSIONS: &[&str] =
-    &[".rb", ".pony", ".svelte", ".mjs", ".cjs", ".cts", ".mts", ".vue", ".scala", ".php"];
+// E26 (per-language parity campaign, ADOPTED default ON): source
+// extensions the original allowlist never covered. Narrowed to exactly the
+// two the gate measured as wins -- every entry here carries gold that roust
+// previously could not retrieve at ANY rank, because the file was never
+// indexed at all (the default arm retrieved 0 of 148 such gold files):
+//   .pony  109 gold files (C slice, ponylang/ponyc)  -> FILE 46.88 -> 51.56
+//   .rb     32 gold files (Java slice, elastic/logstash) -> FUNCTION +1.56
+//
+// Deliberately NOT here, each for a measured reason:
+//   .svelte  rejected -- 2,927 files for 5 gold; cost jsts FILE -5.17
+//            unguarded and -2.76 even with the fixture guard (McNemar
+//            p=0.0001). The extension is a net harm on this corpus.
+//   .mjs .cjs .cts .mts .vue .scala .php  dropped as unmeasured: they
+//            carry zero gold on every slice we gate, so shipping them would
+//            be widening the corpus on faith.
+//   .md .json .toml  docs/config, measured net-harmful by WS1 (FILE 46.4
+//            -> 31.2) -- indexing them costs more in boilerplate
+//            displacement than it recovers.
+pub const EXT_V2_EXTENSIONS: &[&str] = &[".rb", ".pony"];
 
 // WS2 (campaign #56 workstream 2, grammar batch): the C-family extensions,
 // indexed ONLY under --cfamily-ext (default OFF). They cannot join
@@ -57,7 +63,7 @@ pub fn cfamily_ext_enabled() -> bool {
 // E26: same one-shot-at-parse discipline as CFAMILY_EXT, and the cache key
 // gains an ":e2" marker when ON so a flagged and an unflagged run can never
 // serve each other a corpus.
-static EXT_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static EXT_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(true);
 
 pub fn set_ext_v2(on: bool) {
     EXT_V2.store(on, std::sync::atomic::Ordering::Relaxed);
@@ -3224,6 +3230,14 @@ pub struct SelectParams<'a> {
     pub floor_ratio: f64,
     pub cochange: Option<&'a IndexMap<String, IndexMap<String, i64>>>,
     pub cochange_strong: i64,
+    /// E27: max neighbours a single source may seat via Guarantee 2 (1 =
+    /// pre-E27 behaviour). Extra seats require co-change evidence.
+    pub cochange_seats: i64,
+    /// E27: minimum co-change count for an extra seat.
+    pub cochange_seat_min: i64,
+    /// E27b: extra seats fire only when at least this many files carry
+    /// >= 50% of the top lexical score (0 = ungated, E27 behaviour).
+    pub cochange_seat_breadth: i64,
     pub anchors: Option<&'a [(String, f64)]>,
     pub use_testbridge: bool,
     pub use_docsbridge: bool,
@@ -3263,6 +3277,9 @@ impl<'a> Default for SelectParams<'a> {
             floor_ratio: 0.05,
             cochange: None,
             cochange_strong: 5,
+            cochange_seats: 1,
+            cochange_seat_min: 2,
+            cochange_seat_breadth: 0,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3669,10 +3686,35 @@ pub fn select_files(
         }
 
         // Guarantee 2: each source's best neighbor overall.
+        //
+        // E27 (per-language parity campaign): `cochange_seats` widens this
+        // from exactly one neighbour per source to up to N, but ONLY for
+        // candidates carrying co-change evidence with that source.
+        //
+        // Mined motivation: on multi-gold-file instances the engine returns
+        // ~30 files yet finds barely half the gold, and 62% of the MISSED
+        // gold is already in this candidate pool -- it loses the ranking, not
+        // the retrieval. Those siblings score low lexically (that is why they
+        // were missed), so `add_score` cannot rescue them; but 72-89% of them
+        // co-changed historically with a gold file the engine DID select.
+        // One guaranteed seat per source can seat one of them; a patch that
+        // edits five files needs more. Seats are evidence-gated (co-change
+        // count >= `cochange_seat_min`) rather than score-gated, which is the
+        // shape that has survived this campaign's gates -- additive score
+        // bonuses are 0-for-7 here.
+        //
+        // `cochange_seats == 1` reproduces the pre-E27 engine exactly.
         let mut groups: IndexMap<String, Vec<String>> = IndexMap::new();
         for c in &eligible {
             groups.entry(owner.get(c).cloned().unwrap_or_default()).or_default().push(c.clone());
         }
+        // E27 measurement only: when ROUST_E27_SEAT_TRACE names a path, every
+        // extra seat this run admits is appended there as one JSON line. The
+        // variable is read once per call and NOTHING downstream branches on
+        // it, so an unset environment leaves the engine bit-for-bit the
+        // pre-instrumentation engine -- the payload-identity gate proves it.
+        let e27_trace_path = std::env::var("ROUST_E27_SEAT_TRACE").ok();
+        let mut e27_seated: Vec<(String, String, i64)> = Vec::new();
         for s in &sources {
             if let Some(grp) = groups.get(s) {
                 if let Some(first) = grp.first() {
@@ -3680,6 +3722,65 @@ pub fn select_files(
                         additions.push(first.clone());
                     }
                 }
+                // E27b: seats are gated on BREADTH -- how many files carry
+                // strong lexical evidence. Measured cause: E27 seats helped
+                // where multi-file evidence was real (go FUNCTION +3.04) but
+                // fired on single-site fixes where a sibling cannot exist,
+                // and on SWE-bench Lite -- which is 300/300 single-gold-file
+                // -- every instance they touched got worse (0 better / 3
+                // worse). A concentrated query is a single-site fix; only a
+                // spread one can have siblings to seat.
+                let broad = params.cochange_seat_breadth <= 0 || {
+                    let mx = bm_n.values().cloned().fold(0.0_f64, f64::max);
+                    if mx <= 0.0 {
+                        false
+                    } else {
+                        bm_n.values().filter(|v| **v >= 0.5 * mx).count() as i64
+                            >= params.cochange_seat_breadth
+                    }
+                };
+                if params.cochange_seats > 1 && broad {
+                    // Extra seats: co-change partners of this source only,
+                    // strongest evidence first, deterministic on ties.
+                    let co_partners: Option<&IndexMap<String, i64>> =
+                        params.cochange.and_then(|c| c.get(s));
+                    if let Some(cop) = co_partners {
+                        let mut evidenced: Vec<(i64, String)> = grp
+                            .iter()
+                            .filter(|c| !additions.contains(*c))
+                            .filter_map(|c| {
+                                let n = cop.get(c).copied().unwrap_or(0);
+                                (n >= params.cochange_seat_min).then(|| (n, c.clone()))
+                            })
+                            .collect();
+                        evidenced.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| a.1.cmp(&b.1)));
+                        for (n, c) in evidenced.into_iter().take((params.cochange_seats - 1) as usize) {
+                            if !additions.contains(&c) {
+                                if e27_trace_path.is_some() {
+                                    e27_seated.push((s.clone(), c.clone(), n));
+                                }
+                                additions.push(c);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if let Some(tp) = e27_trace_path.as_deref() {
+            use std::io::Write as _;
+            let tag = std::env::var("ROUST_E27_TAG").unwrap_or_default();
+            let esc = |v: &str| v.replace('\\', "\\\\").replace('"', "\\\"");
+            let items: Vec<String> = e27_seated
+                .iter()
+                .map(|(src, cand, n)| format!("[\"{}\",\"{}\",{}]", esc(src), esc(cand), n))
+                .collect();
+            let line = format!(
+                "{{\"tag\":\"{}\",\"seats\":{},\"seat_min\":{},\"n_sources\":{},\"n_extra\":{},\"extra\":[{}]}}\n",
+                esc(&tag), params.cochange_seats, params.cochange_seat_min,
+                sources.len(), e27_seated.len(), items.join(",")
+            );
+            if let Ok(mut fh) = std::fs::OpenOptions::new().create(true).append(true).open(tp) {
+                let _ = fh.write_all(line.as_bytes());
             }
         }
         for c in &eligible {

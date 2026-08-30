@@ -1,0 +1,6 @@
+=== jsts_s2 seat-fire anatomy ===
+  fired on 283/579 instances (48.88%), 461 extra seats total, mean 1.629 where fired, max 6
+  seated file was gold: 9/461 (1.95%); of those 2 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 64 (13.88%)
+  bundles changed: 141/580 (24.31%); files +245 (gold 2) / -233 (gold 1), net gold +1
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_jsts_s2.json

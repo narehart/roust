@@ -1,0 +1,49 @@
+ARM_DONE java_s0 exit=0
+ARM_DONE java_s2 exit=0
+ARM_DONE c_s0 exit=0
+ARM_DONE c_s2 exit=0
+ARM_DONE rust_s0 exit=0
+ARM_DONE rust_s2 exit=0
+ARM_DONE cpp_s0 exit=0
+ARM_DONE java_s3 exit=0
+CHAIN_DONE java/lab/ws3b_repos/java_base
+ARM_DONE cpp_s2 exit=0
+ARM_DONE java_s4 exit=0
+CHAIN_DONE java/lab/ws3b_repos/java_v2
+ARM_DONE c_s3 exit=0
+CHAIN_DONE c/lab/ws3b_repos/c_base
+ARM_DONE c_s4 exit=0
+CHAIN_DONE c/lab/e26_repos/c_ext
+ARM_DONE go_s2 exit=0
+ARM_DONE go_s0 exit=0
+ARM_DONE rust_s3 exit=0
+CHAIN_DONE rust/lab/ws3a_repos/rust_base
+ARM_DONE rust_s4 exit=0
+CHAIN_DONE rust/lab/ws3a_repos/rust_v2
+ARM_DONE lite_s2 exit=0
+ARM_DONE lite_s0 exit=0
+ARM_DONE cpp_s3 exit=0
+CHAIN_DONE cpp/lab/ws3a_repos/cpp_base
+ARM_DONE cpp_s4 exit=0
+CHAIN_DONE cpp/lab/ws3a_repos/cpp_v2
+ARM_DONE jsts_s0 exit=0
+ARM_DONE jsts_s2 exit=0
+ARM_DONE ver_s2 exit=0
+ARM_DONE ver_s0 exit=0
+ARM_DONE go_s3 exit=0
+CHAIN_DONE go/lab/ws3b_repos/go_base
+ARM_DONE go_s4 exit=0
+CHAIN_DONE go/lab/ws3b_repos/go_v2
+ARM_DONE lite_s3 exit=0
+CHAIN_DONE lite/lab/ws3a_repos/repos_lite_base
+ARM_DONE lite_s4 exit=0
+CHAIN_DONE lite/lab/ws3a_repos/repos_lite_v2
+ARM_DONE ver_s4 exit=0
+CHAIN_DONE ver/lab/ws3a_repos/repos_ver_v2
+ARM_DONE ver_s3 exit=0
+CHAIN_DONE ver/lab/ws3a_repos/repos_ver_base
+ARM_DONE jsts_s3 exit=0
+CHAIN_DONE jsts/lab/mswe_repos_e23
+ARM_DONE jsts_s4 exit=0
+CHAIN_DONE jsts/lab/mswe_repos_private
+E27_ALL_ARMS_DONE

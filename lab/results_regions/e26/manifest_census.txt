@@ -1,0 +1,48 @@
+E26 cache-manifest / corpus membership census (sveltejs__svelte @ dc8ca4661,
+2,927 .svelte + 1,966 .js in tree). Binaries: unguarded fcb2562 (=5ebd6ab
+engine), guarded 11a8a2f (=b0cf3a9 engine). Cache cleared between every run
+because both builds write the same ":e2" key (the collision fixed on main as
+":e2g").
+
+CODE CORPUS (corpus.doclen) -- what retrieval actually ranks over:
+  unguarded --ext-v2 : 4951
+  guarded   --ext-v2 : 2334      <- guard removes ~2,617 fixture .svelte files
+  (independently matches the coordinator's 4,951 -> 2,334)
+
+DOCS CHANNEL (corpus.docs_avg_len / docs_df) -- IDENTICAL across both arms:
+  docs_avg_len  = 286.62060889929745   (both)
+  docs_df terms = 9916                 (both)
+  => the guard does NOT disturb docs indexing in the corpus; the guarded
+     arms are not confounded by a docs change.
+
+CACHE MANIFEST (payload.manifest) -- the staleness snapshot, NOT retrieval:
+  unguarded --ext-v2 : 2463  = .js 1966 + .md 427 + .ts 69 + .txt 1
+  guarded   --ext-v2 : 2035  = .js 1966 + .ts 69
+  cache key both arms: <sha>:h1:d1:cf1:e2:sv2
+
+TWO LATENT CACHE-HYGIENE BUGS, both invisible to this gate and both with ZERO
+effect on the round's numbers (the harness does `git checkout -f` + `git clean
+-fdq` per instance and `.roust` is not gitignored, so every instance rebuilds
+the corpus cold; the manifest is only consulted on a WARM cache):
+
+  (1) PRE-EXISTING (5ebd6ab): the manifest's `exts` pre-filter never included
+      the EXT_V2 suffixes, so 0 of svelte's 2,927 .svelte files appear in the
+      manifest even though the corpus indexes them. Under --ext-v2 on a warm
+      cache, edits to ext-v2 files cannot invalidate the cache.
+
+  (2) INTRODUCED by b0cf3a9: `scan_manifest` now also skips anything failing
+      `core::path_indexable(rel)`, but that predicate only knows CODE and
+      EXT_V2 suffixes -- it does not know DOCS_EXTENSIONS. So all 428 docs
+      entries (.md 427 + .txt 1) were evicted from the manifest. The corpus
+      docs channel is unaffected (identical docs_df above); only staleness
+      tracking for docs files is lost.
+
+  Suggested fix for (2): in scan_manifest, apply the fixture guard only to
+  EXT_V2 admissions, e.g. keep the entry when
+  `path_indexable(rel) || DOCS_EXTENSIONS.contains(suffix_of(rel))`.
+  Suggested fix for (1): include EXT_V2_EXTENSIONS in the `exts` set the
+  manifest scan is built from whenever ext_v2_enabled().
+
+GENERAL LESSON: the corpus walk and the manifest scan must be filtered by the
+SAME predicate, and any flag that changes corpus MEMBERSHIP must re-key the
+cache. WS2c's ":cf1" is the precedent that got both right.

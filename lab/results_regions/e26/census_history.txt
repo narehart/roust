@@ -1,0 +1,5 @@
+# E26 census: files with an EXT_V2 extension ever present on ANY ref, per repo
+lab/ws3b_repos/go_base/cli__cli/                   1
+lab/ws3b_repos/go_base/grpc__grpc-go/              0
+lab/ws3b_repos/go_base/zeromicro__go-zero/         0
+lab/ws3a_repos/repos_lite_base/sympy__sympy        1

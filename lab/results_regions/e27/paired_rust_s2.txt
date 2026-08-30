@@ -1,0 +1,39 @@
+
+=== rust_s2 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     239    0    60.25 ( 144)    19.67 (  47)     7.53 (  18)   0.24315
+arm         239    0    60.67 ( 145)    19.67 (  47)     7.53 (  18)   0.24342
+delta                   +0.42           +0.00           +0.00         +0.00027
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default      82    0    97.56 (  80)    39.02 (  32)    21.95 (  18)   0.36417
+          arm          82    0    97.56 (  80)    39.02 (  32)    21.95 (  18)   0.36611
+          delta                   +0.00           +0.00           +0.00         +0.00194   FILE McNemar 0/0 p=1.0000
+2         default      52    0    67.31 (  35)    11.54 (   6)     0.00 (   0)   0.20951
+          arm          52    0    69.23 (  36)    11.54 (   6)     0.00 (   0)   0.21028
+          delta                   +1.92           +0.00           +0.00         +0.00077   FILE McNemar 0/1 p=1.0000
+3+        default     105    0    27.62 (  29)     8.57 (   9)     0.00 (   0)   0.16529
+          arm         105    0    27.62 (  29)     8.57 (   9)     0.00 (   0)   0.16401
+          delta                   +0.00           +0.00           +0.00         -0.00128   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  1 p=1.0000
+McNemar FUNCTION  default-only=  0 arm-only=  0 p=1.0000
+McNemar LINE      default-only=  0 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=13 up=8 down=5 p=0.5417
+
+changed instances: 14 of 239
+  tokio-rs__tokio-6290                       [3+] FILE =      FUNC =      LINE =      frac 0.4667->0.3333       (-0.1333)
+  tokio-rs__tokio-6742                       [3+] FILE =      FUNC =      LINE =      frac 0.0816->0.0612       (-0.0204)
+  clap-rs__clap-3990                         [3+] FILE =      FUNC =      LINE =      frac 0.2075->0.1887       (-0.0189)
+  tokio-rs__tracing-1523                     [3+] FILE =      FUNC =      LINE =      frac 0.0711->0.0674       (-0.0037)
+  tokio-rs__tracing-1015                     [3+] FILE =      FUNC =      LINE =      frac 0.0560->0.0559       (-0.0001)
+  clap-rs__clap-3874                         [2 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  clap-rs__clap-4103                         [3+] FILE =      FUNC =      LINE =      frac 0.0458->0.0462       (+0.0004)
+  clap-rs__clap-3975                         [3+] FILE =      FUNC =      LINE =      frac 0.1338->0.1347       (+0.0009)
+  rayon-rs__rayon-863                        [1 ] FILE =      FUNC =      LINE =      frac 0.8645->0.8738       (+0.0093)
+  clap-rs__clap-4080                         [3+] FILE =      FUNC =      LINE =      frac 0.1340->0.1443       (+0.0103)
+  clap-rs__clap-3684                         [3+] FILE =      FUNC =      LINE =      frac 0.1062->0.1187       (+0.0125)
+  clap-rs__clap-4056                         [3+] FILE =      FUNC =      LINE =      frac 0.0579->0.0756       (+0.0176)
+  tokio-rs__tokio-5520                       [2 ] FILE =      FUNC =      LINE =      frac 0.4933->0.5333       (+0.0400)
+  nushell__nushell-11169                     [1 ] FILE =      FUNC =      LINE =      frac 0.0000->0.1500       (+0.1500)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/rust_s2_paired.json

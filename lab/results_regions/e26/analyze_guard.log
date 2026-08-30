@@ -1,0 +1,7 @@
+scored jsts_guard
+scored java_guard
+scored c_guard
+=== paired jsts_guard exit=0
+=== paired java_guard exit=0
+=== paired c_guard exit=0
+E26_GUARD_ANALYSIS_DONE

@@ -1,0 +1,26 @@
+
+=== rust (n=239) ===
+arm        err             FILE         FUNCTION             LINE       frac
+default      0     60.25 (144)     19.67 ( 47)      7.53 ( 18)    0.24315
+ext-v2       0     60.25 (144)     19.67 ( 47)      7.53 ( 18)    0.24287
+delta              +0.00           +0.00           +0.00         -0.00028
+McNemar FILE      default-only=  0 ext-only=  0 p=1.0000
+McNemar FUNCTION  default-only=  0 ext-only=  0 p=1.0000
+McNemar LINE      default-only=  0 ext-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=2 up=1 down=1 p=1.0000
+
+stratum      n arm           FILE  FUNCTION     LINE      frac
+1           82 default      97.56     39.02    21.95   0.36417
+1           82 ext-v2       97.56     39.02    21.95   0.36417
+2           52 default      67.31     11.54     0.00   0.20951
+2           52 ext-v2       67.31     11.54     0.00   0.20951
+3+         105 default      27.62      8.57     0.00   0.16529
+3+         105 ext-v2       27.62      8.57     0.00   0.16465
+
+ceiling: 0 EXT_V2 gold files in 0 instances -- default retrieved 0, ext-v2 retrieved 0
+displacement: non-EXT_V2 gold files lost=0 gained=0
+
+changed instances: 2 of 239
+  sharkdp__bat-1518                          gold=  5 FILE =      FUNC =      LINE =      frac 0.2276->0.1517       (-0.0759)
+  sharkdp__bat-2896                          gold= 19 FILE =      FUNC =      LINE =      frac 0.2680->0.2767       (+0.0086)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e26/rust_ext_paired.json

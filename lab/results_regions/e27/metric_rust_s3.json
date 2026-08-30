@@ -1,0 +1,2400 @@
+{
+  "convention": "errors-count-as-wrong-at-all-levels/v1: FILE, FUNCTION, and LINE share the same denominator (n = all loaded records); engine errors and git_show failures count as WRONG and are reported separately (*_counted_wrong / n_engine_errors keys).",
+  "source": {
+    "predictions": [
+      "lab/results_regions/e27/rust_s3.jsonl"
+    ],
+    "gold": "lab/ws3a_rust.parquet",
+    "n_instances": 239,
+    "n_region_eval_errors": 0,
+    "engine_shas_seen": [
+      "d5263f6"
+    ],
+    "engine_dirty_seen": [
+      false
+    ],
+    "bm25_only": false,
+    "pipeline": "shipped roust-rs engine, --budget 8192, confidence-scheduled packing (parity/region_eval_full.py Part A, no-LLM), FULL SWE-bench test split (paper eval wave)"
+  },
+  "all_instances": {
+    "n": 239,
+    "file": {
+      "pct_correct": 60.67,
+      "n": 239,
+      "n_correct": 145,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 19.25,
+      "n": 239,
+      "n_judged": 239,
+      "n_correct": 46,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "BurntSushi__ripgrep-1294",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-1367",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-1642",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-1980",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-2209",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-2295",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-2488",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-2576",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-2610",
+          "n_gold_functions": 142,
+          "n_predicted_functions": 64,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-2626",
+          "n_gold_functions": 317,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-454",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 84,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-723",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 71,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-727",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 89,
+          "correct": true
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-954",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 64,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-1624",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-1710",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-1869",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-1958",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-1972",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-1975",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2008",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2027",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 63,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2058",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2075",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2085",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2093",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2135",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2154",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2161",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2166",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2168",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2182",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2190",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2203",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2251",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2253",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2296",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2297",
+          "n_gold_functions": 35,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2309",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2310",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2329",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2358",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2360",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2400",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2501",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2529",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2534",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2543",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2587",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2609",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2611",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2633",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2635",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2642",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2643",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2648",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2653",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2669",
+          "n_gold_functions": 20,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2677",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2696",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2701",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2730",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 53,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2749",
+          "n_gold_functions": 34,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2758",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2771",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2773",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2796",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2804",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2867",
+          "n_gold_functions": 18,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2878",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2882",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2895",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2930",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2990",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2993",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-3020",
+          "n_gold_functions": 16,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3023",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3169",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3179",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 50,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-3196",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3212",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3225",
+          "n_gold_functions": 26,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3311",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3334",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3391",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 77,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3394",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3402",
+          "n_gold_functions": 43,
+          "n_predicted_functions": 62,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3420",
+          "n_gold_functions": 23,
+          "n_predicted_functions": 64,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3421",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3423",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3453",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3455",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3521",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3670",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3678",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3684",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3700",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3732",
+          "n_gold_functions": 106,
+          "n_predicted_functions": 42,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3775",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3874",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3960",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3968",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3972",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3974",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3975",
+          "n_gold_functions": 33,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3989",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 70,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3990",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4005",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-4006",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-4032",
+          "n_gold_functions": 46,
+          "n_predicted_functions": 34,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4039",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4056",
+          "n_gold_functions": 21,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4059",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4072",
+          "n_gold_functions": 133,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4077",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4080",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4081",
+          "n_gold_functions": 42,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4101",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4103",
+          "n_gold_functions": 301,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4151",
+          "n_gold_functions": 14,
+          "n_predicted_functions": 89,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4159",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4248",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4408",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4465",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4474",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 64,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4523",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4573",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-4601",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4635",
+          "n_gold_functions": 16,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4667",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4902",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4909",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5015",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5025",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5075",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5080",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5084",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5206",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 77,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5227",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5228",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5298",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5489",
+          "n_gold_functions": 23,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5520",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5527",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5873",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-941",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-10381",
+          "n_gold_functions": 15,
+          "n_predicted_functions": 35,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-10395",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-10405",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-10613",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-10629",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-11169",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-11292",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 81,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-11493",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "nushell__nushell-11672",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-11948",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 78,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-12118",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-12901",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 81,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-13357",
+          "n_gold_functions": 39,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-13870",
+          "n_gold_functions": 22,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "rayon-rs__rayon-863",
+          "n_gold_functions": 40,
+          "n_predicted_functions": 84,
+          "correct": false
+        },
+        {
+          "instance_id": "rayon-rs__rayon-986",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 87,
+          "correct": false
+        },
+        {
+          "instance_id": "serde-rs__serde-2709",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "serde-rs__serde-2798",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 131,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-1197",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 74,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-1276",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-1402",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 83,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__bat-1518",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 87,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-2544",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-2665",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 76,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-2896",
+          "n_gold_functions": 17,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-3075",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__bat-3108",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-3189",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-1079",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 66,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-1121",
+          "n_gold_functions": 13,
+          "n_predicted_functions": 64,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__fd-1162",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-1394",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 27,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-497",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 23,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__fd-546",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-555",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-558",
+          "n_gold_functions": 20,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__fd-569",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-590",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__fd-658",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-813",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 29,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__fd-866",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__fd-986",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 64,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__bytes-543",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 96,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__bytes-547",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 93,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__bytes-643",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__bytes-721",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__bytes-732",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-4519",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-4613",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-4789",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5144",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5179",
+          "n_gold_functions": 24,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5200",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5244",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 24,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5343",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5520",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5566",
+          "n_gold_functions": 17,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5583",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5781",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6205",
+          "n_gold_functions": 22,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6252",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6280",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6290",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 67,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6339",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6345",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6409",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6462",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 28,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6618",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 60,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6742",
+          "n_gold_functions": 21,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6967",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-7111",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-7124",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1015",
+          "n_gold_functions": 407,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1017",
+          "n_gold_functions": 56,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1045",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 73,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1228",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1233",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1236",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1252",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1291",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1297",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 70,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1523",
+          "n_gold_functions": 148,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1619",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 60,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1853",
+          "n_gold_functions": 43,
+          "n_predicted_functions": 53,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1983",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 86,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2001",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2008",
+          "n_gold_functions": 17,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2027",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 44,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2090",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2335",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2883",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2892",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2897",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 7.53,
+      "n": 239,
+      "n_correct_all_or_nothing": 18,
+      "mean_fraction_covered": 0.2426435158163982,
+      "median_fraction_covered": 0.09561752988047809,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.02405797379162479,
+      "median_precision": 0.006829268292682927,
+      "n": 239,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1023.4937238493724,
+      "median_total_region_lines_per_instance": 1016.0
+    }
+  },
+  "file_correct_subset": {
+    "n": 145,
+    "file": {
+      "pct_correct": 100.0,
+      "n": 145,
+      "n_correct": 145,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 26.21,
+      "n": 145,
+      "n_judged": 145,
+      "n_correct": 38,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "BurntSushi__ripgrep-1367",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 68,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-1642",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-1980",
+          "n_gold_functions": 10,
+          "n_predicted_functions": 55,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-2209",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-2295",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-454",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 84,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-727",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 89,
+          "correct": true
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-954",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 64,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-1710",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-1958",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-1972",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2008",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2027",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 63,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2058",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2075",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2085",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2093",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2135",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2154",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 42,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2161",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2166",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2168",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2182",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2190",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2203",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 38,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2251",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2253",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2296",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2297",
+          "n_gold_functions": 35,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2309",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2310",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2329",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2360",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2400",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2501",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2529",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 45,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2534",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2587",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2609",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2633",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2635",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2643",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2648",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2696",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 33,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2701",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2730",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 53,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2749",
+          "n_gold_functions": 34,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2771",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2773",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2796",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2804",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-2878",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 47,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2882",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2895",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2930",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-2993",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-3169",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3196",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3225",
+          "n_gold_functions": 26,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3311",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 59,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3334",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3391",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 77,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3394",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3420",
+          "n_gold_functions": 23,
+          "n_predicted_functions": 64,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3421",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3423",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3521",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3670",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3700",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3775",
+          "n_gold_functions": 6,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3874",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3960",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-3974",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4005",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-4006",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-4039",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 69,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4059",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 36,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4077",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 50,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4101",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4465",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 32,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4523",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 37,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4573",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-4667",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-4902",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5015",
+          "n_gold_functions": 7,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5025",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 58,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5075",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5080",
+          "n_gold_functions": 9,
+          "n_predicted_functions": 49,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5084",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5228",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 56,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5298",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 48,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5520",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5527",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 72,
+          "correct": false
+        },
+        {
+          "instance_id": "clap-rs__clap-5873",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 46,
+          "correct": true
+        },
+        {
+          "instance_id": "clap-rs__clap-941",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 41,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-10405",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 66,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-11169",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 60,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-11292",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 81,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-11493",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 43,
+          "correct": true
+        },
+        {
+          "instance_id": "nushell__nushell-11672",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "nushell__nushell-12901",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 81,
+          "correct": false
+        },
+        {
+          "instance_id": "rayon-rs__rayon-863",
+          "n_gold_functions": 40,
+          "n_predicted_functions": 84,
+          "correct": false
+        },
+        {
+          "instance_id": "rayon-rs__rayon-986",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 87,
+          "correct": false
+        },
+        {
+          "instance_id": "serde-rs__serde-2709",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "serde-rs__serde-2798",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 131,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__bat-3075",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 65,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-1162",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 48,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-1394",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 27,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-497",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 23,
+          "correct": false
+        },
+        {
+          "instance_id": "sharkdp__fd-546",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 41,
+          "correct": true
+        },
+        {
+          "instance_id": "sharkdp__fd-558",
+          "n_gold_functions": 20,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__bytes-543",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 96,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__bytes-547",
+          "n_gold_functions": 11,
+          "n_predicted_functions": 93,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__bytes-643",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 63,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__bytes-732",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 43,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-4519",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 37,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-4613",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 30,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-4789",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 39,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5244",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 24,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5343",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 44,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5583",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 36,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-5781",
+          "n_gold_functions": 12,
+          "n_predicted_functions": 45,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6205",
+          "n_gold_functions": 22,
+          "n_predicted_functions": 61,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6252",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 35,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6290",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 67,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6339",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 31,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6345",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 57,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6409",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 54,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6462",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 28,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6618",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 60,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tokio-6967",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1045",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 73,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1233",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 39,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1236",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1252",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1297",
+          "n_gold_functions": 3,
+          "n_predicted_functions": 70,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-1619",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 60,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2001",
+          "n_gold_functions": 5,
+          "n_predicted_functions": 65,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2008",
+          "n_gold_functions": 17,
+          "n_predicted_functions": 57,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2027",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 44,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2090",
+          "n_gold_functions": 1,
+          "n_predicted_functions": 51,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2335",
+          "n_gold_functions": 8,
+          "n_predicted_functions": 40,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2883",
+          "n_gold_functions": 0,
+          "n_predicted_functions": 40,
+          "correct": true
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2892",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 54,
+          "correct": false
+        },
+        {
+          "instance_id": "tokio-rs__tracing-2897",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 59,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 12.41,
+      "n": 145,
+      "n_correct_all_or_nothing": 18,
+      "mean_fraction_covered": 0.2937763536513081,
+      "median_fraction_covered": 0.10734463276836158,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.013444671953231587,
+      "median_precision": 0.005415162454873646,
+      "n": 145,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1023.1724137931035,
+      "median_total_region_lines_per_instance": 1018.0
+    },
+    "note": "restricted to instances where FILE-level was already correct -- isolates region/line/function quality from file recall"
+  },
+  "agentless_gpt4o_published": {
+    "file": 69.7,
+    "function": 52.0,
+    "line": 35.3
+  },
+  "agentless_note": "AGENTLESS_GPT4O numbers are Agentless's published SWE-bench LITE localization rates (arXiv:2407.01489 Table 1) -- context only; no published Agentless full-split localization numbers exist to compare against directly."
+}

@@ -1,0 +1,45 @@
+
+=== ver_s3 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     407    0    92.38 ( 376)    47.17 ( 192)    35.14 ( 143)   0.47635
+arm         407    0    92.14 ( 375)    45.70 ( 186)    35.14 ( 143)   0.47247
+delta                   -0.24           -1.47           +0.00         -0.00387
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default     336    0    95.83 ( 322)    53.57 ( 180)    41.07 ( 138)   0.51165
+          arm         336    0    95.24 ( 320)    52.08 ( 175)    41.07 ( 138)   0.50737
+          delta                   -0.59           -1.49           +0.00         -0.00428   FILE McNemar 2/0 p=0.5000
+2         default      49    0    81.63 (  40)    22.45 (  11)     8.16 (   4)   0.33709
+          arm          49    0    81.63 (  40)    20.41 (  10)     8.16 (   4)   0.33765
+          delta                   +0.00           -2.04           +0.00         +0.00055   FILE McNemar 0/0 p=1.0000
+3+        default      22    0    63.64 (  14)     4.55 (   1)     4.55 (   1)   0.24733
+          arm          22    0    68.18 (  15)     4.55 (   1)     4.55 (   1)   0.23980
+          delta                   +4.54           +0.00           +0.00         -0.00753   FILE McNemar 1/2 p=1.0000
+McNemar FILE      default-only=  3 arm-only=  2 p=1.0000
+McNemar FUNCTION  default-only=  7 arm-only=  1 p=0.0703
+McNemar LINE      default-only=  1 arm-only=  1 p=1.0000
+Wilcoxon frac    n_nonzero=17 up=5 down=12 p=0.1298
+
+changed instances: 20 of 407
+  astropy__astropy-13977                     [1 ] FILE =      FUNC 1->0   LINE 1->0   frac 1.0000->0.0000       (-1.0000)
+  django__django-13569                       [1 ] FILE 1->0   FUNC 1->0   LINE =      frac 0.6667->0.0000       (-0.6667)
+  psf__requests-1724                         [1 ] FILE =      FUNC 1->0   LINE =      frac 0.4615->0.0000       (-0.4615)
+  django__django-14539                       [1 ] FILE =      FUNC 1->0   LINE =      frac 0.2500->0.0000       (-0.2500)
+  django__django-16502                       [1 ] FILE =      FUNC 1->0   LINE =      frac 0.9091->0.7273       (-0.1818)
+  django__django-16938                       [2 ] FILE =      FUNC =      LINE =      frac 0.5000->0.3571       (-0.1429)
+  django__django-12155                       [2 ] FILE =      FUNC =      LINE =      frac 0.8409->0.7273       (-0.1136)
+  pytest-dev__pytest-5840                    [2 ] FILE =      FUNC =      LINE =      frac 0.3231->0.2154       (-0.1077)
+  django__django-11400                       [3+] FILE =      FUNC =      LINE =      frac 0.7188->0.6250       (-0.0938)
+  matplotlib__matplotlib-25775               [3+] FILE 0->1   FUNC =      LINE =      frac 0.6364->0.5455       (-0.0909)
+  sympy__sympy-20916                         [1 ] FILE 1->0   FUNC 1->0   LINE =      frac 0.0714->0.0000       (-0.0714)
+  django__django-11138                       [3+] FILE =      FUNC =      LINE =      frac 0.1122->0.1020       (-0.0102)
+  django__django-11734                       [3+] FILE 1->0   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-16631                       [2 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  sympy__sympy-14248                         [3+] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  django__django-13121                       [3+] FILE =      FUNC =      LINE =      frac 0.4369->0.4660       (+0.0291)
+  sympy__sympy-12489                         [1 ] FILE =      FUNC =      LINE =      frac 0.3288->0.3739       (+0.0450)
+  django__django-11087                       [1 ] FILE =      FUNC =      LINE =      frac 0.0000->0.1481       (+0.1481)
+  django__django-14376                       [2 ] FILE =      FUNC =      LINE =      frac 0.0000->0.3913       (+0.3913)
+  sympy__sympy-12096                         [1 ] FILE =      FUNC 0->1   LINE 0->1   frac 0.0000->1.0000       (+1.0000)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/ver_s3_paired.json

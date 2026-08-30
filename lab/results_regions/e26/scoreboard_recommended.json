@@ -1,0 +1,410 @@
+{
+ "c (ext-v2+guard)": {
+  "all": {
+   "n": 128,
+   "n_errors": 1,
+   "file_pct": 51.56,
+   "file_n": 66,
+   "function_pct": 28.12,
+   "function_n": 36,
+   "line_pct": 13.28,
+   "line_n": 17,
+   "mean_fraction": 0.22513
+  },
+  "strata": {
+   "1": {
+    "n": 66,
+    "n_errors": 1,
+    "file_pct": 78.79,
+    "file_n": 52,
+    "function_pct": 43.94,
+    "function_n": 29,
+    "line_pct": 25.76,
+    "line_n": 17,
+    "mean_fraction": 0.31955
+   },
+   "2": {
+    "n": 16,
+    "n_errors": 0,
+    "file_pct": 75.0,
+    "file_n": 12,
+    "function_pct": 18.75,
+    "function_n": 3,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.21182
+   },
+   "3+": {
+    "n": 46,
+    "n_errors": 0,
+    "file_pct": 4.35,
+    "file_n": 2,
+    "function_pct": 8.7,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.09635
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e26/c_guard.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e26/metric_c_guard.json"
+  }
+ },
+ "java (ext-v2+guard)": {
+  "all": {
+   "n": 128,
+   "n_errors": 0,
+   "file_pct": 49.22,
+   "file_n": 63,
+   "function_pct": 36.72,
+   "function_n": 47,
+   "line_pct": 14.06,
+   "line_n": 18,
+   "mean_fraction": 0.41522
+  },
+  "strata": {
+   "1": {
+    "n": 51,
+    "n_errors": 0,
+    "file_pct": 94.12,
+    "file_n": 48,
+    "function_pct": 52.94,
+    "function_n": 27,
+    "line_pct": 35.29,
+    "line_n": 18,
+    "mean_fraction": 0.62986
+   },
+   "2": {
+    "n": 37,
+    "n_errors": 0,
+    "file_pct": 18.92,
+    "file_n": 7,
+    "function_pct": 43.24,
+    "function_n": 16,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.32774
+   },
+   "3+": {
+    "n": 40,
+    "n_errors": 0,
+    "file_pct": 20.0,
+    "file_n": 8,
+    "function_pct": 10.0,
+    "function_n": 4,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.22247
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e26/java_guard.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e26/metric_java_guard.json"
+  }
+ },
+ "jsts (default)": {
+  "all": {
+   "n": 580,
+   "n_errors": 1,
+   "file_pct": 46.38,
+   "file_n": 269,
+   "function_pct": 31.21,
+   "function_n": 181,
+   "line_pct": 14.14,
+   "line_n": 82,
+   "mean_fraction": 0.26156
+  },
+  "strata": {
+   "1": {
+    "n": 280,
+    "n_errors": 1,
+    "file_pct": 72.5,
+    "file_n": 203,
+    "function_pct": 41.79,
+    "function_n": 117,
+    "line_pct": 26.43,
+    "line_n": 74,
+    "mean_fraction": 0.32002
+   },
+   "2": {
+    "n": 93,
+    "n_errors": 0,
+    "file_pct": 48.39,
+    "file_n": 45,
+    "function_pct": 26.88,
+    "function_n": 25,
+    "line_pct": 5.38,
+    "line_n": 5,
+    "mean_fraction": 0.23629
+   },
+   "3+": {
+    "n": 207,
+    "n_errors": 0,
+    "file_pct": 10.14,
+    "file_n": 21,
+    "function_pct": 18.84,
+    "function_n": 39,
+    "line_pct": 1.45,
+    "line_n": 3,
+    "mean_fraction": 0.19411
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/jsts_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_jsts_def.json"
+  }
+ },
+ "rust (default)": {
+  "all": {
+   "n": 239,
+   "n_errors": 0,
+   "file_pct": 60.25,
+   "file_n": 144,
+   "function_pct": 19.67,
+   "function_n": 47,
+   "line_pct": 7.53,
+   "line_n": 18,
+   "mean_fraction": 0.24315
+  },
+  "strata": {
+   "1": {
+    "n": 82,
+    "n_errors": 0,
+    "file_pct": 97.56,
+    "file_n": 80,
+    "function_pct": 39.02,
+    "function_n": 32,
+    "line_pct": 21.95,
+    "line_n": 18,
+    "mean_fraction": 0.36417
+   },
+   "2": {
+    "n": 52,
+    "n_errors": 0,
+    "file_pct": 67.31,
+    "file_n": 35,
+    "function_pct": 11.54,
+    "function_n": 6,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.20951
+   },
+   "3+": {
+    "n": 105,
+    "n_errors": 0,
+    "file_pct": 27.62,
+    "file_n": 29,
+    "function_pct": 8.57,
+    "function_n": 9,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.16529
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/rust_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_rust_def.json"
+  }
+ },
+ "cpp (default)": {
+  "all": {
+   "n": 129,
+   "n_errors": 0,
+   "file_pct": 65.89,
+   "file_n": 85,
+   "function_pct": 17.83,
+   "function_n": 23,
+   "line_pct": 6.98,
+   "line_n": 9,
+   "mean_fraction": 0.29866
+  },
+  "strata": {
+   "1": {
+    "n": 47,
+    "n_errors": 0,
+    "file_pct": 100.0,
+    "file_n": 47,
+    "function_pct": 34.04,
+    "function_n": 16,
+    "line_pct": 19.15,
+    "line_n": 9,
+    "mean_fraction": 0.52564
+   },
+   "2": {
+    "n": 27,
+    "n_errors": 0,
+    "file_pct": 88.89,
+    "file_n": 24,
+    "function_pct": 7.41,
+    "function_n": 2,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.28496
+   },
+   "3+": {
+    "n": 55,
+    "n_errors": 0,
+    "file_pct": 25.45,
+    "file_n": 14,
+    "function_pct": 9.09,
+    "function_n": 5,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.11142
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/cpp_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_cpp_def.json"
+  }
+ },
+ "go (default)": {
+  "all": {
+   "n": 428,
+   "n_errors": 1,
+   "file_pct": 64.95,
+   "file_n": 278,
+   "function_pct": 28.97,
+   "function_n": 124,
+   "line_pct": 16.59,
+   "line_n": 71,
+   "mean_fraction": 0.41021
+  },
+  "strata": {
+   "1": {
+    "n": 188,
+    "n_errors": 1,
+    "file_pct": 88.3,
+    "file_n": 166,
+    "function_pct": 53.19,
+    "function_n": 100,
+    "line_pct": 31.38,
+    "line_n": 59,
+    "mean_fraction": 0.50559
+   },
+   "2": {
+    "n": 97,
+    "n_errors": 0,
+    "file_pct": 75.26,
+    "file_n": 73,
+    "function_pct": 19.59,
+    "function_n": 19,
+    "line_pct": 11.34,
+    "line_n": 11,
+    "mean_fraction": 0.46279
+   },
+   "3+": {
+    "n": 143,
+    "n_errors": 0,
+    "file_pct": 27.27,
+    "file_n": 39,
+    "function_pct": 3.5,
+    "function_n": 5,
+    "line_pct": 0.7,
+    "line_n": 1,
+    "mean_fraction": 0.2498
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/go_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_go_def.json"
+  }
+ },
+ "python Lite": {
+  "all": {
+   "n": 300,
+   "n_errors": 0,
+   "file_pct": 92.33,
+   "file_n": 277,
+   "function_pct": 54.67,
+   "function_n": 164,
+   "line_pct": 44.0,
+   "line_n": 132,
+   "mean_fraction": 0.52728
+  },
+  "strata": {
+   "1": {
+    "n": 300,
+    "n_errors": 0,
+    "file_pct": 92.33,
+    "file_n": 277,
+    "function_pct": 54.67,
+    "function_n": 164,
+    "line_pct": 44.0,
+    "line_n": 132,
+    "mean_fraction": 0.52728
+   },
+   "2": {
+    "n": 0,
+    "file_pct": null,
+    "function_pct": null,
+    "line_pct": null,
+    "mean_fraction": null
+   },
+   "3+": {
+    "n": 0,
+    "file_pct": null,
+    "function_pct": null,
+    "line_pct": null,
+    "mean_fraction": null
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/lite300_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_lite300_def.json"
+  }
+ },
+ "python Verified": {
+  "all": {
+   "n": 407,
+   "n_errors": 0,
+   "file_pct": 92.38,
+   "file_n": 376,
+   "function_pct": 47.17,
+   "function_n": 192,
+   "line_pct": 35.14,
+   "line_n": 143,
+   "mean_fraction": 0.47635
+  },
+  "strata": {
+   "1": {
+    "n": 336,
+    "n_errors": 0,
+    "file_pct": 95.83,
+    "file_n": 322,
+    "function_pct": 53.57,
+    "function_n": 180,
+    "line_pct": 41.07,
+    "line_n": 138,
+    "mean_fraction": 0.51165
+   },
+   "2": {
+    "n": 49,
+    "n_errors": 0,
+    "file_pct": 81.63,
+    "file_n": 40,
+    "function_pct": 22.45,
+    "function_n": 11,
+    "line_pct": 8.16,
+    "line_n": 4,
+    "mean_fraction": 0.33709
+   },
+   "3+": {
+    "n": 22,
+    "n_errors": 0,
+    "file_pct": 63.64,
+    "file_n": 14,
+    "function_pct": 4.55,
+    "function_n": 1,
+    "line_pct": 4.55,
+    "line_n": 1,
+    "mean_fraction": 0.24733
+   }
+  },
+  "sources": {
+   "predictions": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/ver407_def.jsonl",
+   "metric": "/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e25/metric_ver407_def.json"
+  }
+ }
+}

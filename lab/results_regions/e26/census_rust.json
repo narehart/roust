@@ -1,0 +1,51 @@
+{
+  "slice": "rust",
+  "instances": 239,
+  "gold_files_total": 1165,
+  "gold_files_ext_v2": 0,
+  "gold_ext_v2_by_suffix": {},
+  "instances_with_ext_v2_gold": 0,
+  "per_repo_tree_scan": {
+    "BurntSushi__ripgrep": {
+      "base_commits": 14,
+      "with_ext_v2_files": 14
+    },
+    "clap-rs__clap": {
+      "base_commits": 128,
+      "with_ext_v2_files": 0
+    },
+    "nushell__nushell": {
+      "base_commits": 14,
+      "with_ext_v2_files": 0
+    },
+    "rayon-rs__rayon": {
+      "base_commits": 2,
+      "with_ext_v2_files": 0
+    },
+    "serde-rs__serde": {
+      "base_commits": 2,
+      "with_ext_v2_files": 0
+    },
+    "sharkdp__bat": {
+      "base_commits": 10,
+      "with_ext_v2_files": 10
+    },
+    "sharkdp__fd": {
+      "base_commits": 14,
+      "with_ext_v2_files": 0
+    },
+    "tokio-rs__bytes": {
+      "base_commits": 5,
+      "with_ext_v2_files": 0
+    },
+    "tokio-rs__tokio": {
+      "base_commits": 25,
+      "with_ext_v2_files": 0
+    },
+    "tokio-rs__tracing": {
+      "base_commits": 20,
+      "with_ext_v2_files": 0
+    }
+  },
+  "detail": []
+}

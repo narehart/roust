@@ -1,0 +1,31 @@
+{
+  "slice": "cpp",
+  "instances": 129,
+  "gold_files_total": 723,
+  "gold_files_ext_v2": 0,
+  "gold_ext_v2_by_suffix": {},
+  "instances_with_ext_v2_gold": 0,
+  "per_repo_tree_scan": {
+    "catchorg__Catch2": {
+      "base_commits": 12,
+      "with_ext_v2_files": 0
+    },
+    "fmtlib__fmt": {
+      "base_commits": 38,
+      "with_ext_v2_files": 0
+    },
+    "nlohmann__json": {
+      "base_commits": 52,
+      "with_ext_v2_files": 0
+    },
+    "simdjson__simdjson": {
+      "base_commits": 20,
+      "with_ext_v2_files": 20
+    },
+    "yhirose__cpp-httplib": {
+      "base_commits": 1,
+      "with_ext_v2_files": 0
+    }
+  },
+  "detail": []
+}

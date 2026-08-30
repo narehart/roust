@@ -1,0 +1,148 @@
+{
+ "label": "lite_s2",
+ "default": {
+  "n": 300,
+  "n_errors": 0,
+  "file_pct": 92.33,
+  "file_n": 277,
+  "function_pct": 54.67,
+  "function_n": 164,
+  "line_pct": 44.0,
+  "line_n": 132,
+  "mean_fraction": 0.5272798372513313
+ },
+ "arm": {
+  "n": 300,
+  "n_errors": 0,
+  "file_pct": 92.33,
+  "file_n": 277,
+  "function_pct": 54.0,
+  "function_n": 162,
+  "line_pct": 43.67,
+  "line_n": 131,
+  "mean_fraction": 0.5218036467751408
+ },
+ "delta": {
+  "file": 0.0,
+  "function": -0.67,
+  "line": -0.33,
+  "mean_fraction": -0.005476
+ },
+ "strata": {
+  "1": {
+   "n": 300,
+   "default": {
+    "n": 300,
+    "n_errors": 0,
+    "file_pct": 92.33,
+    "file_n": 277,
+    "function_pct": 54.67,
+    "function_n": 164,
+    "line_pct": 44.0,
+    "line_n": 132,
+    "mean_fraction": 0.5272798372513313
+   },
+   "arm": {
+    "n": 300,
+    "n_errors": 0,
+    "file_pct": 92.33,
+    "file_n": 277,
+    "function_pct": 54.0,
+    "function_n": 162,
+    "line_pct": 43.67,
+    "line_n": 131,
+    "mean_fraction": 0.5218036467751408
+   },
+   "delta_file": 0.0,
+   "delta_function": -0.67,
+   "delta_line": -0.33,
+   "delta_fraction": -0.005476,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 0.25,
+   "frac_up": 0,
+   "frac_down": 3
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "FUNCTION": {
+   "b_def_only": 2,
+   "c_arm_only": 0,
+   "p": 0.5
+  },
+  "LINE": {
+   "b_def_only": 1,
+   "c_arm_only": 0,
+   "p": 1.0
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 3,
+   "statistic": 0.0,
+   "p": 0.25,
+   "n_up": 0,
+   "n_down": 3
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 4,
+ "changed": [
+  {
+   "instance_id": "pydata__xarray-4094",
+   "repo": "pydata/xarray",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.0000",
+   "fraction_delta": -1.0
+  },
+  {
+   "instance_id": "sympy__sympy-15609",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5714->0.0000",
+   "fraction_delta": -0.571429
+  },
+  {
+   "instance_id": "sympy__sympy-12419",
+   "repo": "sympy/sympy",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0714->0.0000",
+   "fraction_delta": -0.071429
+  },
+  {
+   "instance_id": "scikit-learn__scikit-learn-25638",
+   "repo": "scikit-learn/scikit-learn",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}

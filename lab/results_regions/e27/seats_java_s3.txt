@@ -1,0 +1,6 @@
+=== java_s3 seat-fire anatomy ===
+  fired on 105/128 instances (82.03%), 562 extra seats total, mean 5.352 where fired, max 11
+  seated file was gold: 6/562 (1.07%); of those 4 were gold the DEFAULT arm did not have
+  seat's source file was itself gold: 84 (14.95%)
+  bundles changed: 97/128 (75.78%); files +423 (gold 4) / -304 (gold 2), net gold +2
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/seats_java_s3.json

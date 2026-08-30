@@ -1,0 +1,913 @@
+{
+ "label": "go_s3",
+ "default": {
+  "n": 428,
+  "n_errors": 1,
+  "file_pct": 64.95,
+  "file_n": 278,
+  "function_pct": 28.97,
+  "function_n": 124,
+  "line_pct": 16.59,
+  "line_n": 71,
+  "mean_fraction": 0.4102055631337121
+ },
+ "arm": {
+  "n": 428,
+  "n_errors": 1,
+  "file_pct": 65.42,
+  "file_n": 280,
+  "function_pct": 30.37,
+  "function_n": 130,
+  "line_pct": 16.82,
+  "line_n": 72,
+  "mean_fraction": 0.41566903930232324
+ },
+ "delta": {
+  "file": 0.47,
+  "function": 1.4,
+  "line": 0.23,
+  "mean_fraction": 0.005463
+ },
+ "strata": {
+  "1": {
+   "n": 188,
+   "default": {
+    "n": 188,
+    "n_errors": 1,
+    "file_pct": 88.3,
+    "file_n": 166,
+    "function_pct": 53.19,
+    "function_n": 100,
+    "line_pct": 31.38,
+    "line_n": 59,
+    "mean_fraction": 0.5055921300183392
+   },
+   "arm": {
+    "n": 188,
+    "n_errors": 1,
+    "file_pct": 88.83,
+    "file_n": 167,
+    "function_pct": 55.85,
+    "function_n": 105,
+    "line_pct": 31.91,
+    "line_n": 60,
+    "mean_fraction": 0.5165797862355368
+   },
+   "delta_file": 0.53,
+   "delta_function": 2.66,
+   "delta_line": 0.53,
+   "delta_fraction": 0.010988,
+   "file_mcnemar": {
+    "b_def_only": 1,
+    "c_arm_only": 2,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 0.1513671875,
+   "frac_up": 9,
+   "frac_down": 3
+  },
+  "2": {
+   "n": 97,
+   "default": {
+    "n": 97,
+    "n_errors": 0,
+    "file_pct": 75.26,
+    "file_n": 73,
+    "function_pct": 19.59,
+    "function_n": 19,
+    "line_pct": 11.34,
+    "line_n": 11,
+    "mean_fraction": 0.4627940345259213
+   },
+   "arm": {
+    "n": 97,
+    "n_errors": 0,
+    "file_pct": 74.23,
+    "file_n": 72,
+    "function_pct": 20.62,
+    "function_n": 20,
+    "line_pct": 11.34,
+    "line_n": 11,
+    "mean_fraction": 0.46752042758471757
+   },
+   "delta_file": -1.03,
+   "delta_function": 1.03,
+   "delta_line": 0.0,
+   "delta_fraction": 0.004726,
+   "file_mcnemar": {
+    "b_def_only": 1,
+    "c_arm_only": 0,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 0.67724609375,
+   "frac_up": 7,
+   "frac_down": 5
+  },
+  "3+": {
+   "n": 143,
+   "default": {
+    "n": 143,
+    "n_errors": 0,
+    "file_pct": 27.27,
+    "file_n": 39,
+    "function_pct": 3.5,
+    "function_n": 5,
+    "line_pct": 0.7,
+    "line_n": 1,
+    "mean_fraction": 0.24979738318637254
+   },
+   "arm": {
+    "n": 143,
+    "n_errors": 0,
+    "file_pct": 28.67,
+    "file_n": 41,
+    "function_pct": 3.5,
+    "function_n": 5,
+    "line_pct": 0.7,
+    "line_n": 1,
+    "mean_fraction": 0.24853691105125206
+   },
+   "delta_file": 1.4,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": -0.00126,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 2,
+    "p": 0.5
+   },
+   "fraction_wilcoxon_p": 0.8464598199352622,
+   "frac_up": 14,
+   "frac_down": 18
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 2,
+   "c_arm_only": 4,
+   "p": 0.6875
+  },
+  "FUNCTION": {
+   "b_def_only": 5,
+   "c_arm_only": 11,
+   "p": 0.210113525390625
+  },
+  "LINE": {
+   "b_def_only": 1,
+   "c_arm_only": 2,
+   "p": 1.0
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 56,
+   "statistic": 655.0,
+   "p": 0.24342530951125518,
+   "n_up": 30,
+   "n_down": 26
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 67,
+ "changed": [
+  {
+   "instance_id": "cli__cli-1986",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8267->0.1867",
+   "fraction_delta": -0.64
+  },
+  {
+   "instance_id": "cli__cli-7363",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4000->0.0000",
+   "fraction_delta": -0.4
+  },
+  {
+   "instance_id": "cli__cli-8773",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7042->0.3380",
+   "fraction_delta": -0.366197
+  },
+  {
+   "instance_id": "cli__cli-3997",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8071->0.5429",
+   "fraction_delta": -0.264286
+  },
+  {
+   "instance_id": "cli__cli-2282",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "1->0",
+   "fraction": "1.0000->0.8293",
+   "fraction_delta": -0.170732
+  },
+  {
+   "instance_id": "cli__cli-9037",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1648->0.0170",
+   "fraction_delta": -0.147727
+  },
+  {
+   "instance_id": "cli__cli-7347",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3235->0.1765",
+   "fraction_delta": -0.147059
+  },
+  {
+   "instance_id": "cli__cli-6074",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6061->0.5152",
+   "fraction_delta": -0.090909
+  },
+  {
+   "instance_id": "cli__cli-7954",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6364->0.5455",
+   "fraction_delta": -0.090909
+  },
+  {
+   "instance_id": "cli__cli-4534",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2442->0.1716",
+   "fraction_delta": -0.072607
+  },
+  {
+   "instance_id": "cli__cli-7311",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 9,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1447->0.0932",
+   "fraction_delta": -0.051447
+  },
+  {
+   "instance_id": "cli__cli-8953",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0476->0.0000",
+   "fraction_delta": -0.047619
+  },
+  {
+   "instance_id": "cli__cli-5973",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.7391->0.6957",
+   "fraction_delta": -0.043478
+  },
+  {
+   "instance_id": "cli__cli-728",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 8,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4689->0.4357",
+   "fraction_delta": -0.033195
+  },
+  {
+   "instance_id": "cli__cli-5452",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0802->0.0472",
+   "fraction_delta": -0.033019
+  },
+  {
+   "instance_id": "cli__cli-3519",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 16,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1051->0.0739",
+   "fraction_delta": -0.031128
+  },
+  {
+   "instance_id": "cli__cli-3414",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 20,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1396->0.1096",
+   "fraction_delta": -0.030075
+  },
+  {
+   "instance_id": "cli__cli-5524",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8750->0.8500",
+   "fraction_delta": -0.025
+  },
+  {
+   "instance_id": "cli__cli-8935",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5122->0.4878",
+   "fraction_delta": -0.02439
+  },
+  {
+   "instance_id": "cli__cli-4199",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 165,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1322->0.1202",
+   "fraction_delta": -0.011966
+  },
+  {
+   "instance_id": "cli__cli-2316",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 35,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1278->0.1175",
+   "fraction_delta": -0.010252
+  },
+  {
+   "instance_id": "cli__cli-5306",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 6,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4141->0.4040",
+   "fraction_delta": -0.010101
+  },
+  {
+   "instance_id": "cli__cli-3286",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 28,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0414->0.0358",
+   "fraction_delta": -0.005515
+  },
+  {
+   "instance_id": "cli__cli-3308",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 61,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0329->0.0288",
+   "fraction_delta": -0.004119
+  },
+  {
+   "instance_id": "cli__cli-8157",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 37,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0996->0.0976",
+   "fraction_delta": -0.002012
+  },
+  {
+   "instance_id": "cli__cli-7201",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 129,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0256->0.0243",
+   "fraction_delta": -0.001263
+  },
+  {
+   "instance_id": "cli__cli-2239",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "cli__cli-3779",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "cli__cli-5254",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-5356",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-5671",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "cli__cli-6567",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "cli__cli-7560",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "cli__cli-8393",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "0->1",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-9088",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-9115",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0.0
+  },
+  {
+   "instance_id": "grpc__grpc-go-3258",
+   "repo": "grpc/grpc-go",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "1->0",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "cli__cli-8516",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0670->0.0722",
+   "fraction_delta": 0.005155
+  },
+  {
+   "instance_id": "cli__cli-9934",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 10,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1739->0.1812",
+   "fraction_delta": 0.007246
+  },
+  {
+   "instance_id": "cli__cli-6969",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6000->0.6200",
+   "fraction_delta": 0.02
+  },
+  {
+   "instance_id": "cli__cli-6043",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 13,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1614->0.1825",
+   "fraction_delta": 0.021053
+  },
+  {
+   "instance_id": "cli__cli-2004",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.2903->0.3145",
+   "fraction_delta": 0.024194
+  },
+  {
+   "instance_id": "cli__cli-2058",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3375->0.3625",
+   "fraction_delta": 0.025
+  },
+  {
+   "instance_id": "cli__cli-5597",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 6,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0299",
+   "fraction_delta": 0.029851
+  },
+  {
+   "instance_id": "cli__cli-7589",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3072->0.3399",
+   "fraction_delta": 0.03268
+  },
+  {
+   "instance_id": "cli__cli-5692",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1930->0.2281",
+   "fraction_delta": 0.035088
+  },
+  {
+   "instance_id": "cli__cli-9128",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5155->0.5528",
+   "fraction_delta": 0.037267
+  },
+  {
+   "instance_id": "cli__cli-9794",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.5000->0.5385",
+   "fraction_delta": 0.038462
+  },
+  {
+   "instance_id": "cli__cli-2108",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1452->0.1935",
+   "fraction_delta": 0.048387
+  },
+  {
+   "instance_id": "cli__cli-5049",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0545",
+   "fraction_delta": 0.054545
+  },
+  {
+   "instance_id": "cli__cli-9642",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.5588->0.6176",
+   "fraction_delta": 0.058824
+  },
+  {
+   "instance_id": "cli__cli-4410",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.0600",
+   "fraction_delta": 0.06
+  },
+  {
+   "instance_id": "cli__cli-4005",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.4699->0.5301",
+   "fraction_delta": 0.060241
+  },
+  {
+   "instance_id": "cli__cli-8229",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3291->0.3924",
+   "fraction_delta": 0.063291
+  },
+  {
+   "instance_id": "cli__cli-5567",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0959->0.1918",
+   "fraction_delta": 0.09589
+  },
+  {
+   "instance_id": "cli__cli-7768",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1176",
+   "fraction_delta": 0.117647
+  },
+  {
+   "instance_id": "cli__cli-3924",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1837->0.3061",
+   "fraction_delta": 0.122449
+  },
+  {
+   "instance_id": "cli__cli-2982",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "0->1",
+   "fraction": "0.8750->1.0000",
+   "fraction_delta": 0.125
+  },
+  {
+   "instance_id": "cli__cli-7709",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.4821->0.6071",
+   "fraction_delta": 0.125
+  },
+  {
+   "instance_id": "cli__cli-8141",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.3529->0.5294",
+   "fraction_delta": 0.176471
+  },
+  {
+   "instance_id": "cli__cli-2250",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.6250->0.8542",
+   "fraction_delta": 0.229167
+  },
+  {
+   "instance_id": "cli__cli-3972",
+   "repo": "cli/cli",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1934->0.4340",
+   "fraction_delta": 0.240566
+  },
+  {
+   "instance_id": "cli__cli-9385",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.5556->0.8889",
+   "fraction_delta": 0.333333
+  },
+  {
+   "instance_id": "cli__cli-4416",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "0->1",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.5000",
+   "fraction_delta": 0.5
+  },
+  {
+   "instance_id": "cli__cli-4310",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "=",
+   "fraction": "0.3370->0.9348",
+   "fraction_delta": 0.597826
+  },
+  {
+   "instance_id": "cli__cli-4489",
+   "repo": "cli/cli",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0410->0.8443",
+   "fraction_delta": 0.803279
+  },
+  {
+   "instance_id": "cli__cli-2671",
+   "repo": "cli/cli",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "0->1",
+   "line_allornothing": "0->1",
+   "fraction": "0.0000->1.0000",
+   "fraction_delta": 1.0
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}

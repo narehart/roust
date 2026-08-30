@@ -1,0 +1,92 @@
+
+=== go_s3 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     428    1    64.95 ( 278)    28.97 ( 124)    16.59 (  71)   0.41021
+arm         428    1    65.42 ( 280)    30.37 ( 130)    16.82 (  72)   0.41567
+delta                   +0.47           +1.40           +0.23         +0.00546
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default     188    1    88.30 ( 166)    53.19 ( 100)    31.38 (  59)   0.50559
+          arm         188    1    88.83 ( 167)    55.85 ( 105)    31.91 (  60)   0.51658
+          delta                   +0.53           +2.66           +0.53         +0.01099   FILE McNemar 1/2 p=1.0000
+2         default      97    0    75.26 (  73)    19.59 (  19)    11.34 (  11)   0.46279
+          arm          97    0    74.23 (  72)    20.62 (  20)    11.34 (  11)   0.46752
+          delta                   -1.03           +1.03           +0.00         +0.00473   FILE McNemar 1/0 p=1.0000
+3+        default     143    0    27.27 (  39)     3.50 (   5)     0.70 (   1)   0.24980
+          arm         143    0    28.67 (  41)     3.50 (   5)     0.70 (   1)   0.24854
+          delta                   +1.40           +0.00           +0.00         -0.00126   FILE McNemar 0/2 p=0.5000
+McNemar FILE      default-only=  2 arm-only=  4 p=0.6875
+McNemar FUNCTION  default-only=  5 arm-only= 11 p=0.2101
+McNemar LINE      default-only=  1 arm-only=  2 p=1.0000
+Wilcoxon frac    n_nonzero=56 up=30 down=26 p=0.2434
+
+changed instances: 67 of 428
+  cli__cli-1986                              [1 ] FILE =      FUNC =      LINE =      frac 0.8267->0.1867       (-0.6400)
+  cli__cli-7363                              [2 ] FILE 1->0   FUNC =      LINE =      frac 0.4000->0.0000       (-0.4000)
+  cli__cli-8773                              [2 ] FILE =      FUNC =      LINE =      frac 0.7042->0.3380       (-0.3662)
+  cli__cli-3997                              [3+] FILE =      FUNC =      LINE =      frac 0.8071->0.5429       (-0.2643)
+  cli__cli-2282                              [1 ] FILE =      FUNC =      LINE 1->0   frac 1.0000->0.8293       (-0.1707)
+  cli__cli-9037                              [3+] FILE =      FUNC =      LINE =      frac 0.1648->0.0170       (-0.1477)
+  cli__cli-7347                              [3+] FILE =      FUNC =      LINE =      frac 0.3235->0.1765       (-0.1471)
+  cli__cli-6074                              [1 ] FILE =      FUNC =      LINE =      frac 0.6061->0.5152       (-0.0909)
+  cli__cli-7954                              [2 ] FILE =      FUNC =      LINE =      frac 0.6364->0.5455       (-0.0909)
+  cli__cli-4534                              [3+] FILE =      FUNC =      LINE =      frac 0.2442->0.1716       (-0.0726)
+  cli__cli-7311                              [3+] FILE =      FUNC =      LINE =      frac 0.1447->0.0932       (-0.0514)
+  cli__cli-8953                              [3+] FILE =      FUNC =      LINE =      frac 0.0476->0.0000       (-0.0476)
+  cli__cli-5973                              [2 ] FILE =      FUNC =      LINE =      frac 0.7391->0.6957       (-0.0435)
+  cli__cli-728                               [3+] FILE =      FUNC =      LINE =      frac 0.4689->0.4357       (-0.0332)
+  cli__cli-5452                              [3+] FILE =      FUNC =      LINE =      frac 0.0802->0.0472       (-0.0330)
+  cli__cli-3519                              [3+] FILE =      FUNC =      LINE =      frac 0.1051->0.0739       (-0.0311)
+  cli__cli-3414                              [3+] FILE =      FUNC =      LINE =      frac 0.1396->0.1096       (-0.0301)
+  cli__cli-5524                              [2 ] FILE =      FUNC =      LINE =      frac 0.8750->0.8500       (-0.0250)
+  cli__cli-8935                              [3+] FILE =      FUNC =      LINE =      frac 0.5122->0.4878       (-0.0244)
+  cli__cli-4199                              [3+] FILE =      FUNC =      LINE =      frac 0.1322->0.1202       (-0.0120)
+  cli__cli-2316                              [3+] FILE =      FUNC =      LINE =      frac 0.1278->0.1175       (-0.0103)
+  cli__cli-5306                              [3+] FILE =      FUNC =      LINE =      frac 0.4141->0.4040       (-0.0101)
+  cli__cli-3286                              [3+] FILE =      FUNC =      LINE =      frac 0.0414->0.0358       (-0.0055)
+  cli__cli-3308                              [3+] FILE =      FUNC =      LINE =      frac 0.0329->0.0288       (-0.0041)
+  cli__cli-8157                              [3+] FILE =      FUNC =      LINE =      frac 0.0996->0.0976       (-0.0020)
+  cli__cli-7201                              [3+] FILE =      FUNC =      LINE =      frac 0.0256->0.0243       (-0.0013)
+  cli__cli-2239                              [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  cli__cli-3779                              [3+] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  cli__cli-5254                              [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  cli__cli-5356                              [1 ] FILE =      FUNC 0->1   LINE =      frac =                    (+0.0000)
+  cli__cli-5671                              [2 ] FILE =      FUNC 0->1   LINE =      frac =                    (+0.0000)
+  cli__cli-6567                              [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  cli__cli-7560                              [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  cli__cli-8393                              [1 ] FILE 0->1   FUNC 0->1   LINE =      frac =                    (+0.0000)
+  cli__cli-9088                              [1 ] FILE =      FUNC 1->0   LINE =      frac =                    (+0.0000)
+  cli__cli-9115                              [1 ] FILE =      FUNC 0->1   LINE =      frac =                    (+0.0000)
+  grpc__grpc-go-3258                         [1 ] FILE 1->0   FUNC =      LINE =      frac =                    (+0.0000)
+  cli__cli-8516                              [3+] FILE =      FUNC =      LINE =      frac 0.0670->0.0722       (+0.0052)
+  cli__cli-9934                              [3+] FILE =      FUNC =      LINE =      frac 0.1739->0.1812       (+0.0072)
+  cli__cli-6969                              [2 ] FILE =      FUNC =      LINE =      frac 0.6000->0.6200       (+0.0200)
+  cli__cli-6043                              [3+] FILE =      FUNC =      LINE =      frac 0.1614->0.1825       (+0.0211)
+  cli__cli-2004                              [3+] FILE =      FUNC =      LINE =      frac 0.2903->0.3145       (+0.0242)
+  cli__cli-2058                              [3+] FILE =      FUNC =      LINE =      frac 0.3375->0.3625       (+0.0250)
+  cli__cli-5597                              [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0299       (+0.0299)
+  cli__cli-7589                              [2 ] FILE =      FUNC =      LINE =      frac 0.3072->0.3399       (+0.0327)
+  cli__cli-5692                              [3+] FILE =      FUNC =      LINE =      frac 0.1930->0.2281       (+0.0351)
+  cli__cli-9128                              [3+] FILE =      FUNC =      LINE =      frac 0.5155->0.5528       (+0.0373)
+  cli__cli-9794                              [1 ] FILE =      FUNC 0->1   LINE =      frac 0.5000->0.5385       (+0.0385)
+  cli__cli-2108                              [3+] FILE =      FUNC =      LINE =      frac 0.1452->0.1935       (+0.0484)
+  cli__cli-5049                              [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0545       (+0.0545)
+  cli__cli-9642                              [2 ] FILE =      FUNC =      LINE =      frac 0.5588->0.6176       (+0.0588)
+  cli__cli-4410                              [3+] FILE =      FUNC =      LINE =      frac 0.0000->0.0600       (+0.0600)
+  cli__cli-4005                              [1 ] FILE =      FUNC 0->1   LINE =      frac 0.4699->0.5301       (+0.0602)
+  cli__cli-8229                              [3+] FILE 0->1   FUNC =      LINE =      frac 0.3291->0.3924       (+0.0633)
+  cli__cli-5567                              [3+] FILE =      FUNC =      LINE =      frac 0.0959->0.1918       (+0.0959)
+  cli__cli-7768                              [2 ] FILE =      FUNC =      LINE =      frac 0.0000->0.1176       (+0.1176)
+  cli__cli-3924                              [2 ] FILE =      FUNC =      LINE =      frac 0.1837->0.3061       (+0.1224)
+  cli__cli-2982                              [1 ] FILE =      FUNC =      LINE 0->1   frac 0.8750->1.0000       (+0.1250)
+  cli__cli-7709                              [1 ] FILE =      FUNC 0->1   LINE =      frac 0.4821->0.6071       (+0.1250)
+  cli__cli-8141                              [1 ] FILE =      FUNC =      LINE =      frac 0.3529->0.5294       (+0.1765)
+  cli__cli-2250                              [2 ] FILE =      FUNC =      LINE =      frac 0.6250->0.8542       (+0.2292)
+  cli__cli-3972                              [3+] FILE =      FUNC =      LINE =      frac 0.1934->0.4340       (+0.2406)
+  cli__cli-9385                              [1 ] FILE =      FUNC 0->1   LINE =      frac 0.5556->0.8889       (+0.3333)
+  cli__cli-4416                              [1 ] FILE 0->1   FUNC 0->1   LINE =      frac 0.0000->0.5000       (+0.5000)
+  cli__cli-4310                              [1 ] FILE =      FUNC 0->1   LINE =      frac 0.3370->0.9348       (+0.5978)
+  cli__cli-4489                              [2 ] FILE =      FUNC =      LINE =      frac 0.0410->0.8443       (+0.8033)
+  cli__cli-2671                              [1 ] FILE =      FUNC 0->1   LINE 0->1   frac 0.0000->1.0000       (+1.0000)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/go_s3_paired.json

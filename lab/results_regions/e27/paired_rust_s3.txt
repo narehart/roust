@@ -1,0 +1,39 @@
+
+=== rust_s3 ===
+arm           n  err             FILE         FUNCTION             LINE      frac
+default     239    0    60.25 ( 144)    19.67 (  47)     7.53 (  18)   0.24315
+arm         239    0    60.67 ( 145)    19.25 (  46)     7.53 (  18)   0.24264
+delta                   +0.42           -0.42           +0.00         -0.00050
+
+--- stratified by gold-file count ---
+stratum   arm           n  err             FILE         FUNCTION             LINE      frac
+1         default      82    0    97.56 (  80)    39.02 (  32)    21.95 (  18)   0.36417
+          arm          82    0    97.56 (  80)    37.80 (  31)    21.95 (  18)   0.36355
+          delta                   +0.00           -1.22           +0.00         -0.00062   FILE McNemar 0/0 p=1.0000
+2         default      52    0    67.31 (  35)    11.54 (   6)     0.00 (   0)   0.20951
+          arm          52    0    69.23 (  36)    11.54 (   6)     0.00 (   0)   0.21028
+          delta                   +1.92           +0.00           +0.00         +0.00077   FILE McNemar 0/1 p=1.0000
+3+        default     105    0    27.62 (  29)     8.57 (   9)     0.00 (   0)   0.16529
+          arm         105    0    27.62 (  29)     8.57 (   9)     0.00 (   0)   0.16424
+          delta                   +0.00           +0.00           +0.00         -0.00105   FILE McNemar 0/0 p=1.0000
+McNemar FILE      default-only=  0 arm-only=  1 p=1.0000
+McNemar FUNCTION  default-only=  1 arm-only=  0 p=1.0000
+McNemar LINE      default-only=  0 arm-only=  0 p=1.0000
+Wilcoxon frac    n_nonzero=13 up=8 down=5 p=0.8926
+
+changed instances: 14 of 239
+  rayon-rs__rayon-986                        [1 ] FILE =      FUNC 1->0   LINE =      frac 0.2727->0.0909       (-0.1818)
+  tokio-rs__tokio-6290                       [3+] FILE =      FUNC =      LINE =      frac 0.4667->0.3333       (-0.1333)
+  tokio-rs__tokio-6742                       [3+] FILE =      FUNC =      LINE =      frac 0.0816->0.0612       (-0.0204)
+  rayon-rs__rayon-863                        [1 ] FILE =      FUNC =      LINE =      frac 0.8645->0.8458       (-0.0187)
+  nushell__nushell-10381                     [3+] FILE =      FUNC =      LINE =      frac 0.0983->0.0956       (-0.0027)
+  clap-rs__clap-3874                         [2 ] FILE 0->1   FUNC =      LINE =      frac =                    (+0.0000)
+  clap-rs__clap-3975                         [3+] FILE =      FUNC =      LINE =      frac 0.1338->0.1347       (+0.0009)
+  clap-rs__clap-4072                         [3+] FILE =      FUNC =      LINE =      frac 0.0354->0.0395       (+0.0040)
+  clap-rs__clap-4103                         [3+] FILE =      FUNC =      LINE =      frac 0.0458->0.0511       (+0.0053)
+  tokio-rs__tracing-1523                     [3+] FILE =      FUNC =      LINE =      frac 0.0711->0.0772       (+0.0061)
+  clap-rs__clap-3684                         [3+] FILE =      FUNC =      LINE =      frac 0.1062->0.1187       (+0.0125)
+  clap-rs__clap-4056                         [3+] FILE =      FUNC =      LINE =      frac 0.0579->0.0756       (+0.0176)
+  tokio-rs__tokio-5520                       [2 ] FILE =      FUNC =      LINE =      frac 0.4933->0.5333       (+0.0400)
+  nushell__nushell-11169                     [1 ] FILE =      FUNC =      LINE =      frac 0.0000->0.1500       (+0.1500)
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e27/rust_s3_paired.json

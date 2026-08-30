@@ -1,0 +1,388 @@
+{
+ "label": "rust_s4",
+ "default": {
+  "n": 239,
+  "n_errors": 0,
+  "file_pct": 60.25,
+  "file_n": 144,
+  "function_pct": 19.67,
+  "function_n": 47,
+  "line_pct": 7.53,
+  "line_n": 18,
+  "mean_fraction": 0.2431473886942461
+ },
+ "arm": {
+  "n": 239,
+  "n_errors": 0,
+  "file_pct": 60.67,
+  "file_n": 145,
+  "function_pct": 18.83,
+  "function_n": 45,
+  "line_pct": 7.53,
+  "line_n": 18,
+  "mean_fraction": 0.24247504253029206
+ },
+ "delta": {
+  "file": 0.42,
+  "function": -0.84,
+  "line": 0.0,
+  "mean_fraction": -0.000672
+ },
+ "strata": {
+  "1": {
+   "n": 82,
+   "default": {
+    "n": 82,
+    "n_errors": 0,
+    "file_pct": 97.56,
+    "file_n": 80,
+    "function_pct": 39.02,
+    "function_n": 32,
+    "line_pct": 21.95,
+    "line_n": 18,
+    "mean_fraction": 0.36417044882546734
+   },
+   "arm": {
+    "n": 82,
+    "n_errors": 0,
+    "file_pct": 97.56,
+    "file_n": 80,
+    "function_pct": 36.59,
+    "function_n": 30,
+    "line_pct": 21.95,
+    "line_n": 18,
+    "mean_fraction": 0.3631426186661122
+   },
+   "delta_file": 0.0,
+   "delta_function": -2.43,
+   "delta_line": 0.0,
+   "delta_fraction": -0.001028,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 0.75,
+   "frac_up": 1,
+   "frac_down": 2
+  },
+  "2": {
+   "n": 52,
+   "default": {
+    "n": 52,
+    "n_errors": 0,
+    "file_pct": 67.31,
+    "file_n": 35,
+    "function_pct": 11.54,
+    "function_n": 6,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.20951211463597225
+   },
+   "arm": {
+    "n": 52,
+    "n_errors": 0,
+    "file_pct": 69.23,
+    "file_n": 36,
+    "function_pct": 11.54,
+    "function_n": 6,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.210281345405203
+   },
+   "delta_file": 1.92,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": 0.000769,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 1,
+    "p": 1.0
+   },
+   "fraction_wilcoxon_p": 1.0,
+   "frac_up": 1,
+   "frac_down": 0
+  },
+  "3+": {
+   "n": 105,
+   "default": {
+    "n": 105,
+    "n_errors": 0,
+    "file_pct": 27.62,
+    "file_n": 29,
+    "function_pct": 8.57,
+    "function_n": 9,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.16529161079205654
+   },
+   "arm": {
+    "n": 105,
+    "n_errors": 0,
+    "file_pct": 27.62,
+    "file_n": 29,
+    "function_pct": 8.57,
+    "function_n": 9,
+    "line_pct": 0.0,
+    "line_n": 0,
+    "mean_fraction": 0.16418295688617188
+   },
+   "delta_file": 0.0,
+   "delta_function": 0.0,
+   "delta_line": 0.0,
+   "delta_fraction": -0.001109,
+   "file_mcnemar": {
+    "b_def_only": 0,
+    "c_arm_only": 0,
+    "p": 1.0,
+    "note": "no discordant pairs"
+   },
+   "fraction_wilcoxon_p": 0.946044921875,
+   "frac_up": 8,
+   "frac_down": 5
+  }
+ },
+ "paired_stats": {
+  "FILE": {
+   "b_def_only": 0,
+   "c_arm_only": 1,
+   "p": 1.0
+  },
+  "FUNCTION": {
+   "b_def_only": 2,
+   "c_arm_only": 0,
+   "p": 0.5
+  },
+  "LINE": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "fraction_wilcoxon": {
+   "n_nonzero": 17,
+   "statistic": 74.0,
+   "p": 0.926513671875,
+   "n_up": 10,
+   "n_down": 7
+  }
+ },
+ "crosscheck_ok": true,
+ "n_changed": 19,
+ "changed": [
+  {
+   "instance_id": "rayon-rs__rayon-986",
+   "repo": "rayon-rs/rayon",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "0.2727->0.0455",
+   "fraction_delta": -0.227273
+  },
+  {
+   "instance_id": "tokio-rs__tokio-6290",
+   "repo": "tokio-rs/tokio",
+   "stratum": "3+",
+   "n_gold_files": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4667->0.3333",
+   "fraction_delta": -0.133333
+  },
+  {
+   "instance_id": "tokio-rs__tokio-6742",
+   "repo": "tokio-rs/tokio",
+   "stratum": "3+",
+   "n_gold_files": 14,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0816->0.0612",
+   "fraction_delta": -0.020408
+  },
+  {
+   "instance_id": "clap-rs__clap-4080",
+   "repo": "clap-rs/clap",
+   "stratum": "3+",
+   "n_gold_files": 5,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1340->0.1237",
+   "fraction_delta": -0.010309
+  },
+  {
+   "instance_id": "rayon-rs__rayon-863",
+   "repo": "rayon-rs/rayon",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.8645->0.8575",
+   "fraction_delta": -0.007009
+  },
+  {
+   "instance_id": "nushell__nushell-10381",
+   "repo": "nushell/nushell",
+   "stratum": "3+",
+   "n_gold_files": 4,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0983->0.0930",
+   "fraction_delta": -0.005312
+  },
+  {
+   "instance_id": "nushell__nushell-13357",
+   "repo": "nushell/nushell",
+   "stratum": "3+",
+   "n_gold_files": 19,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0635->0.0600",
+   "fraction_delta": -0.003527
+  },
+  {
+   "instance_id": "clap-rs__clap-3874",
+   "repo": "clap-rs/clap",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "0->1",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "tokio-rs__tracing-2090",
+   "repo": "tokio-rs/tracing",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "1->0",
+   "line_allornothing": "=",
+   "fraction": "=",
+   "fraction_delta": 0
+  },
+  {
+   "instance_id": "clap-rs__clap-3975",
+   "repo": "clap-rs/clap",
+   "stratum": "3+",
+   "n_gold_files": 37,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1338->0.1347",
+   "fraction_delta": 0.000917
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1015",
+   "repo": "tokio-rs/tracing",
+   "stratum": "3+",
+   "n_gold_files": 76,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0560->0.0577",
+   "fraction_delta": 0.00166
+  },
+  {
+   "instance_id": "clap-rs__clap-4103",
+   "repo": "clap-rs/clap",
+   "stratum": "3+",
+   "n_gold_files": 54,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0458->0.0485",
+   "fraction_delta": 0.002652
+  },
+  {
+   "instance_id": "clap-rs__clap-4072",
+   "repo": "clap-rs/clap",
+   "stratum": "3+",
+   "n_gold_files": 23,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0354->0.0395",
+   "fraction_delta": 0.004047
+  },
+  {
+   "instance_id": "tokio-rs__tracing-1523",
+   "repo": "tokio-rs/tracing",
+   "stratum": "3+",
+   "n_gold_files": 10,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0711->0.0772",
+   "fraction_delta": 0.006083
+  },
+  {
+   "instance_id": "clap-rs__clap-3684",
+   "repo": "clap-rs/clap",
+   "stratum": "3+",
+   "n_gold_files": 9,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.1062->0.1125",
+   "fraction_delta": 0.00625
+  },
+  {
+   "instance_id": "clap-rs__clap-2878",
+   "repo": "clap-rs/clap",
+   "stratum": "3+",
+   "n_gold_files": 3,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4828->0.5000",
+   "fraction_delta": 0.017241
+  },
+  {
+   "instance_id": "clap-rs__clap-4056",
+   "repo": "clap-rs/clap",
+   "stratum": "3+",
+   "n_gold_files": 7,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0579->0.0756",
+   "fraction_delta": 0.017632
+  },
+  {
+   "instance_id": "tokio-rs__tokio-5520",
+   "repo": "tokio-rs/tokio",
+   "stratum": "2",
+   "n_gold_files": 2,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.4933->0.5333",
+   "fraction_delta": 0.04
+  },
+  {
+   "instance_id": "nushell__nushell-11169",
+   "repo": "nushell/nushell",
+   "stratum": "1",
+   "n_gold_files": 1,
+   "file": "=",
+   "function": "=",
+   "line_allornothing": "=",
+   "fraction": "0.0000->0.1500",
+   "fraction_delta": 0.15
+  }
+ ],
+ "instance_set_mismatch": {
+  "default_only": [],
+  "arm_only": []
+ }
+}
