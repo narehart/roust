@@ -282,3 +282,70 @@ E33 ("Java/C++/Rust are saturated" -- refuted by raising the seed count). The
 discipline that would have prevented both: **before calling anything a
 ceiling, enumerate the knobs upstream of the one being swept, and either
 sweep them or scope the claim to the ones held fixed.**
+
+---
+
+# E35 — the comparison itself was confounded
+
+Before spending another arm, I checked whether the slices being compared are
+comparable. They are not. The ">= 3 gold files" stratum has a very different
+*difficulty* in each language, and the metric is all-or-nothing over EVERY
+gold file:
+
+| slice | n | mean gold files | median | instances with > 6 |
+|---|---|---|---|---|
+| **Python Verified** | 22 | **4.32** | 3.0 | 1 |
+| Java | 40 | 4.88 | 3.0 | 6 |
+| Go | 143 | 7.95 | 4.0 | 32 |
+| Rust | 105 | 8.87 | 6.0 | 42 |
+| C | 46 | 9.17 | 5.0 | 16 |
+| C++ | 55 | 10.00 | 5.0 | 24 |
+| **JS/TS** | 207 | **10.99** | 5.0 | 84 |
+
+Python's stratum is the easiest in the set -- 13 of its 22 instances have
+exactly three gold files and only one exceeds six -- while JS/TS averages
+eleven files per instance. Requiring all of eleven files is enormously harder
+than requiring all of three, so every cross-slice "3+ FILE" comparison in
+this campaign, including the ones framing the goal, compared unlike things.
+
+## Like-for-like: exactly 3 gold files
+
+Shipped defaults:
+
+| slice | ver | rust | cpp | go | java | jsts | c |
+|---|---|---|---|---|---|---|---|
+| FILE % | 69.23 | 54.55 | 50.00 | 42.62 | 33.33 | 16.33 | 0.00 |
+| n | 13 | 22 | 16 | 61 | 21 | 49 | 7 |
+
+At a common improved config (cap 128):
+
+| slice | ver | go | rust | cpp | java | jsts | c |
+|---|---|---|---|---|---|---|---|
+| FILE % | 92.31 | 62.30 | 54.55 | 50.00 | 33.33 | 24.49 | 14.29 |
+
+**Roughly half the apparent language gap was the confound.** At shipped
+defaults the Python-to-Rust gap is 14.7pp, not the 36.0pp that the raw
+stratum comparison (63.64 vs 27.62) reported. Python still leads at matched
+difficulty and matched config, so the gap is real -- it is just about half
+the size the goal was framed around.
+
+## The bar rests on 13 instances
+
+Python Verified contributes **13 instances** at exactly three gold files and
+22 in the whole 3+ stratum. Every "Python level" number in this campaign --
+63.64, 86.36, 100.00 -- is computed on that sample. A 100.00 is 22 of 22; a
+92.31 is 12 of 13. These are not a defensible basis for a cross-language
+parity target, and no amount of engine work changes that.
+
+## Recommendation
+
+Retire "all languages to Python-level measurements" as posed. It compares
+strata of unequal difficulty against a 13-22 instance reference. The
+defensible successor questions:
+
+1. **Matched-difficulty parity**: at exactly k gold files, how far behind
+   Python is each language? (Answer today: ~15pp for Rust at k=3, default.)
+2. **The adoptable subset**: `--import-edges-v2` closes a real
+   language-agnostic hole (Java/C/C++ had NO import graph); C goes 4.35 ->
+   28.26 on the 3+ stratum, 0.00 -> 28.57 at exactly 3. That deserves a
+   dual-gate round at a sane operating point on its own merits.
