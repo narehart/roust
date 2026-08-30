@@ -324,6 +324,12 @@ def main() -> None:
                           "16 = shipped). 0 (the default here) is a SENTINEL meaning forward "
                           "NO flag at all, so a default arm's argv is byte-identical to "
                           "every pre-E28 default arm's.")
+    ap.add_argument("--seats-per-source", type=int, default=0,
+                     help="E30 (per-language parity campaign): append --seats-per-source N to "
+                          "every roust invocation -- how many owned candidates each source "
+                          "file seats in the per-source guarantee (engine default 1 = shipped). "
+                          "0 (the default here) is a SENTINEL meaning forward NO flag at all, "
+                          "so a default arm's argv is byte-identical to every pre-E30 default arm's.")
     ap.add_argument("--budget", type=int, default=0,
                      help="E29 (cost-of-parity curve): override the packer token budget by "
                           "rebinding the module-global BUDGET (run_roust already passes "
@@ -399,6 +405,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--ext-v2")
     if args.max_additions:
         EXTRA_ENGINE_FLAGS.extend(["--max-additions", str(args.max_additions)])
+    if args.seats_per_source:
+        EXTRA_ENGINE_FLAGS.extend(["--seats-per-source", str(args.seats_per_source)])
     if args.budget:
         BUDGET = args.budget
     if args.repos_dir is not None:
