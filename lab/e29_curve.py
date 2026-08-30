@@ -27,12 +27,17 @@ Reported per slice per arm: all-gold FILE %, FUNCTION, LINE, mean gold-line
 fraction, mean bundle tokens, mean files returned, plus exact-McNemar /
 Wilcoxon paired stats against a1. Then the two derived artifacts:
 
+  * FILE-SET INVARIANCE -- whether the budget changes WHICH files come back at
+    all. This runs first because it decides how the rest of the round reads.
   * the CURVE -- 3+ FILE and gold-line fraction against token budget, per language;
   * BUDGET TO PARITY -- the budget at which each language's 3+ stratum reaches
     Python-Verified's default 3+ FILE baseline (63.64), and whether its line
-    fraction at that budget is at or above its OWN 8192 default. A language
-    that reaches the FILE bar while sitting below its own default fraction has
-    not reached parity; it has bought files with depth at a higher price.
+    fraction at that budget is at or above its OWN 8192 default.
+  * DEPTH-NEUTRAL BUDGET -- the budget at which the cap-32 arm's gold-line
+    fraction returns to the slice's OWN cap-16 @ 8192 default. If breadth and
+    depth turn out to be governed by different knobs, this -- not the parity
+    bar -- is the round's real price tag: what it costs in tokens to keep
+    E28's FILE gain without paying E28's depth.
 
 Usage:
   uv run --no-project --with scipy python lab/e29_curve.py --dir DIR > tables.md
@@ -46,7 +51,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from e28_paired import (load_records, load_function_detail,  # noqa: E402
+from e29_common import (load_records, load_function_detail,  # noqa: E402
                         headline, mcnemar_exact)
 from scipy import stats  # noqa: E402
 
@@ -111,6 +116,47 @@ def main() -> None:
     if missing:
         print(f"> **MISSING ARMS:** {', '.join(missing)}\n")
 
+    # ---------- 0. file-set invariance -------------------------------------
+    # THE controlling fact of this round. `regions` is the returned file ->
+    # spans map, so its KEY SET is exactly the set of files the bundle returns.
+    # If that set does not move when the budget moves, then the budget cannot
+    # buy files at all, and no "budget to parity" number can exist -- the
+    # curve would be flat by construction rather than by measurement. Tested
+    # in both directions: cap held at 32 while the budget triples, and the
+    # budget held at 24576 while the cap moves.
+    print("## File-set invariance\n")
+    print("Does spending more tokens change WHICH files come back? "
+          "`regions`' key set is the returned file set.\n")
+    print("| slice | n | cap32: 8192 vs 16384 | cap32: 8192 vs 24576 "
+          "| cap16 vs cap32 @ 24576 |")
+    print("|---|---|---|---|---|")
+    inv = {}
+    tot = [0, 0, 0, 0]
+    for s_ in SLICES:
+        need = ["a2_c32b8192", "a3_c32b16384", "a4_c32b24576", "a5_c16b24576"]
+        if not all(t in data[s_] for t in need):
+            continue
+        a, b, c, e5 = (data[s_][t]["recs"] for t in need)
+        ids = sorted(set(a) & set(b) & set(c) & set(e5))
+        def fs(r, i):
+            return set(r[i].get("regions") or {})
+        s1 = sum(1 for i in ids if fs(a, i) == fs(b, i))
+        s2 = sum(1 for i in ids if fs(a, i) == fs(c, i))
+        s3 = sum(1 for i in ids if fs(e5, i) == fs(c, i))
+        inv[s_] = {"n": len(ids), "same_8192_16384": s1,
+                   "same_8192_24576": s2, "same_cap16_cap32_at_24576": s3}
+        tot = [tot[0] + len(ids), tot[1] + s1, tot[2] + s2, tot[3] + s3]
+        print(f"| {SLICE_LABEL[s_]} | {len(ids)} | {s1}/{len(ids)} | {s2}/{len(ids)} "
+              f"| {s3}/{len(ids)} |")
+    if tot[0]:
+        print(f"| **TOTAL** | **{tot[0]}** | **{tot[1]}/{tot[0]}** "
+              f"| **{tot[2]}/{tot[0]}** | **{tot[3]}/{tot[0]}** |")
+        print(f"\nBudget-invariant on {tot[2]}/{tot[0]} instances; the cap changes "
+              f"the set on {tot[0] - tot[3]}/{tot[0]}.\n")
+    inv["_total"] = {"n": tot[0], "same_8192_16384": tot[1],
+                     "same_8192_24576": tot[2],
+                     "same_cap16_cap32_at_24576": tot[3]}
+
     # ---------- 1. per-slice per-arm table ---------------------------------
     print("## Per-slice, per-arm results (>=3 gold files only)\n")
     print("| slice | n | arm | budget | FILE | FUNCTION | LINE | line frac "
@@ -123,9 +169,10 @@ def main() -> None:
             if not e:
                 continue
             h = e["h"]
-            name = SLICE_LABEL[s] if tag == ARMS[0][0] else ""
-            n = str(h["n"]) if tag == ARMS[0][0] else ""
-            print(f"| **{name}** | {n} | {lab} | {bud} "
+            first = tag == ARMS[0][0]
+            name = f"**{SLICE_LABEL[s]}**" if first else ""
+            n = str(h["n"]) if first else ""
+            print(f"| {name} | {n} | {lab} | {bud} "
                   f"| {h['file_pct']:.2f} ({h['file_n']}) "
                   f"| {h['function_pct']:.2f} ({h['function_n']}) "
                   f"| {h['line_pct']:.2f} ({h['line_n']}) "
@@ -229,8 +276,53 @@ def main() -> None:
         print(f"| {SLICE_LABEL[s]} | {d_file:.2f} | {d_frac:.5f} | {reached} "
               f"| {est_s} | {f_there:.2f} | {fr_there:.5f} | {held} |")
 
+    # ---------- 5. depth-neutral budget ------------------------------------
+    # If the budget cannot buy files, the parity bar is unreachable by
+    # spending and the meaningful price becomes a different one: how many
+    # tokens it takes for the cap-32 arm to stop being SHALLOWER than the
+    # shipped default. That is the true cost of E28's FILE gain, paid in
+    # budget instead of in depth.
+    print("\n## Depth-neutral budget -- the price of E28's breadth, paid in tokens\n")
+    print("The smallest cap-32 budget whose mean gold-line fraction is at or "
+          "above the SAME slice's cap-16 @ 8192 default. `est.` interpolates "
+          "linearly between the two bracketing measured points and is an "
+          "estimate, not a measurement. `premium` is that budget over 8192.\n")
+    print("| slice | default frac (cap16@8192) | cap32@8192 frac | cap32@16384 frac "
+          "| est. depth-neutral budget | premium | FILE bought |")
+    print("|---|---|---|---|---|---|---|")
+    neutral = {}
+    for s_ in SLICES:
+        base = data[s_].get("a1_c16b8192")
+        pts = [(data[s_][t]["budget"], data[s_][t]["h"]["mean_fraction"])
+               for t in ("a2_c32b8192", "a3_c32b16384", "a4_c32b24576")
+               if t in data[s_]]
+        if not base or not pts:
+            continue
+        target = base["h"]["mean_fraction"]
+        hit = next((pt for pt in pts if pt[1] >= target), None)
+        if hit is None:
+            est_s, prem_s, est = "not by 24576", "—", None
+        elif hit[0] == pts[0][0]:
+            est, est_s, prem_s = 8192, "8192 (already neutral)", "none"
+        else:
+            lo = [pt for pt in pts if pt[0] < hit[0]][-1]
+            span = hit[1] - lo[1]
+            est = lo[0] + (hit[0] - lo[0]) * (target - lo[1]) / span if span > 0 else hit[0]
+            est_s = f"~{est:.0f}"
+            prem_s = f"+{est - 8192:.0f} ({100 * (est - 8192) / 8192:.0f}%)"
+        d_file = base["h"]["file_pct"]
+        a_file = data[s_]["a2_c32b8192"]["h"]["file_pct"]
+        neutral[s_] = {"default_frac": target, "est_budget": est,
+                       "premium": prem_s, "file_delta": round(a_file - d_file, 2)}
+        f8 = data[s_]["a2_c32b8192"]["h"]["mean_fraction"]
+        f16 = (data[s_]["a3_c32b16384"]["h"]["mean_fraction"]
+               if "a3_c32b16384" in data[s_] else float("nan"))
+        print(f"| {SLICE_LABEL[s_]} | {target:.5f} | {f8:.5f} | {f16:.5f} "
+              f"| {est_s} | {prem_s} | {a_file - d_file:+.2f} |")
+
     (args.dir / "curve.json").write_text(json.dumps(
         {"parity_bar": PARITY_BAR, "parity": parity, "paired": stat_out,
+         "file_set_invariance": inv, "depth_neutral": neutral,
          "arms": [{"tag": t, "cap": c, "budget": b, "label": l} for t, c, b, l in ARMS],
          "headline": {s: {t: data[s][t]["h"] for t in data[s]} for s in SLICES}},
         indent=1, default=str))

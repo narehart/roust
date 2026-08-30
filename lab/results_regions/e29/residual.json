@@ -1,0 +1,125 @@
+{
+ "jsts": {
+  "n": 207,
+  "delta_file": 0.97,
+  "delta_function": -0.48,
+  "delta_fraction": 0.000537,
+  "file_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 2,
+   "p": 0.5
+  },
+  "function_mcnemar": {
+   "b_def_only": 2,
+   "c_arm_only": 1,
+   "p": 1.0
+  },
+  "fraction_wilcoxon_p": 0.8665690290626071
+ },
+ "java": {
+  "n": 40,
+  "delta_file": 0.0,
+  "delta_function": -2.5,
+  "delta_fraction": -0.019893,
+  "file_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "function_mcnemar": {
+   "b_def_only": 1,
+   "c_arm_only": 0,
+   "p": 1.0
+  },
+  "fraction_wilcoxon_p": 0.0078125
+ },
+ "go": {
+  "n": 143,
+  "delta_file": 9.79,
+  "delta_function": -2.1,
+  "delta_fraction": -0.003514,
+  "file_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 14,
+   "p": 0.0001220703125
+  },
+  "function_mcnemar": {
+   "b_def_only": 4,
+   "c_arm_only": 1,
+   "p": 0.375
+  },
+  "fraction_wilcoxon_p": 0.25025151938976886
+ },
+ "rust": {
+  "n": 105,
+  "delta_file": 0.0,
+  "delta_function": 0.96,
+  "delta_fraction": 0.000594,
+  "file_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "function_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 1,
+   "p": 1.0
+  },
+  "fraction_wilcoxon_p": 0.6720751523971558
+ },
+ "c": {
+  "n": 46,
+  "delta_file": 4.35,
+  "delta_function": 0.0,
+  "delta_fraction": 0.004705,
+  "file_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 2,
+   "p": 0.5
+  },
+  "function_mcnemar": {
+   "b_def_only": 1,
+   "c_arm_only": 1,
+   "p": 1.0
+  },
+  "fraction_wilcoxon_p": 0.71484375
+ },
+ "cpp": {
+  "n": 55,
+  "delta_file": 1.82,
+  "delta_function": 0.0,
+  "delta_fraction": -0.000303,
+  "file_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 1,
+   "p": 1.0
+  },
+  "function_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "fraction_wilcoxon_p": 0.625
+ },
+ "ver": {
+  "n": 22,
+  "delta_file": 9.09,
+  "delta_function": 0.0,
+  "delta_fraction": -0.042994,
+  "file_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 2,
+   "p": 0.5
+  },
+  "function_mcnemar": {
+   "b_def_only": 0,
+   "c_arm_only": 0,
+   "p": 1.0,
+   "note": "no discordant pairs"
+  },
+  "fraction_wilcoxon_p": 0.125
+ }
+}
