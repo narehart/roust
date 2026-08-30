@@ -271,6 +271,7 @@ def main() -> None:
             rec["ext_v2"] = args.ext_v2
             rec["displacement_guard"] = args.displacement_guard
             rec["max_additions"] = args.max_additions
+            rec["seats_per_source"] = args.seats_per_source
             rec["budget"] = rev.BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()

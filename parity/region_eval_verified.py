@@ -444,6 +444,7 @@ def main() -> None:
         for i, row in enumerate(rows, 1):
             rec = eval_verified_instance(row, args.timeout, args.pad_lines, args.len_exp)
             rec["max_additions"] = args.max_additions
+            rec["seats_per_source"] = args.seats_per_source
             rec["budget"] = BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
