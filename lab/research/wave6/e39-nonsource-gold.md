@@ -92,11 +92,17 @@ symbol graph and second-hop generation.
 | shipped | 580 | 46.38 | .2616 | 8.5k |
 | symbol-graph + cap 32 | 580 | 52.07 | .2276 | 8.8k |
 | + 2 hops | 580 | 54.48 | .2271 | 8.8k |
-| + cap 64, budget 16384 | 575 | **59.13** | **.3130** | 17.2k |
+| + cap 64, budget 16384 | 580 | **59.31** | **.3108** | 17.2k |
 
 **+12.75 over shipped with line depth ABOVE shipped** (.3130 vs .2616) -- the
 E29 pattern once more: the breadth was never paid for out of depth, only out
-of a fixed budget. 4.51 short of 63.64, against a 76.68 ceiling.
+of a fixed budget. 4.33 short of 63.64, against a 76.68 ceiling.
+
+A seed-count arm (k_lex 30 on top of the above) was also launched and
+**abandoned**: k_lex multiplies the seeds and each seed drives a 2-hop walk,
+so the pool explodes on this slice -- it advanced 2 records in 37 minutes.
+That is the third ceiling probe on the two largest corpora to die the same
+way, and it bounds what this harness can measure, not what the engine can do.
 
 A further arm at cap 128 / budget 24576 was launched and **abandoned**: it
 advanced ~5 records per several minutes on the 580-instance slice (the same
@@ -111,7 +117,7 @@ have taken hours without being able to change the conclusion. Not reported.
 | C++ | **68.99** | yes | 69.77 |
 | C | **67.19** | yes (2x tokens) | -- |
 | Rust | **65.27** | yes | 69.87 |
-| JS/TS | 59.13 | no (-4.51) | 50.00 (worse) |
+| JS/TS | 59.31 | no (-4.33) | 50.00 (worse) |
 | Java | 51.56 | **impossible** (ceiling 57.03) | 75.00 |
 
 Four of six clear on genuine retrieval improvements. **Java cannot clear
