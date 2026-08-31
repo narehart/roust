@@ -344,6 +344,8 @@ def main() -> None:
                      help="E39: append --build-files -- index build files (build.gradle, Cargo.toml, CMakeLists.txt, package.json ...), which carry gold the corpus could never retrieve.")
     ap.add_argument("--changelog-files", action="store_true",
                      help="E39: append --changelog-files -- index changelogs/release notes. These are gold ONLY because the fixing PR wrote a release note, so this raises the score without improving the tool.")
+    ap.add_argument("--docs-data-files", action="store_true",
+                     help="E41: append --docs-data-files -- index .md/.rst/.txt/.json/.yml/.toml. Needed for JS/TS, whose non-source gold is dispersed docs and fixtures; the most dilutive rule.")
     ap.add_argument("--eligible-floor", type=float, default=0.0,
                      help="E33 (per-language parity campaign): append --eligible-floor F -- the pool eligibility cut as a fraction of the best candidate score (engine default 0.15). 0.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--k-lex", type=int, default=0,
@@ -435,6 +437,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--build-files")
     if args.changelog_files:
         EXTRA_ENGINE_FLAGS.append("--changelog-files")
+    if args.docs_data_files:
+        EXTRA_ENGINE_FLAGS.append("--docs-data-files")
     if args.eligible_floor:
         EXTRA_ENGINE_FLAGS.extend(["--eligible-floor", str(args.eligible_floor)])
     if args.k_lex:

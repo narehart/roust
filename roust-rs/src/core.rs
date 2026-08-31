@@ -54,6 +54,7 @@ static CFAMILY_EXT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBoo
 
 static BUILD_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static CHANGELOG_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static DOCS_DATA_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
 pub fn set_build_files(on: bool) {
     BUILD_FILES.store(on, std::sync::atomic::Ordering::Relaxed);
@@ -66,6 +67,12 @@ pub fn set_changelog_files(on: bool) {
 }
 pub fn changelog_files_enabled() -> bool {
     CHANGELOG_FILES.load(std::sync::atomic::Ordering::Relaxed)
+}
+pub fn set_docs_data_files(on: bool) {
+    DOCS_DATA_FILES.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn docs_data_files_enabled() -> bool {
+    DOCS_DATA_FILES.load(std::sync::atomic::Ordering::Relaxed)
 }
 
 // E32: Java + C-family import-edge resolution. Default OFF, so every default
@@ -136,6 +143,9 @@ pub fn path_indexable(rel: &str) -> bool {
     if changelog_files_enabled() && CHANGELOG_FILE_RE.is_match(rel) {
         return true;
     }
+    if docs_data_files_enabled() && DOCS_DATA_EXTENSIONS.contains(&suffix) {
+        return true;
+    }
     ext_v2_enabled()
         && EXT_V2_EXTENSIONS.contains(&suffix)
         && !EXT_V2_FIXTURE_RE.is_match(rel)
@@ -161,6 +171,17 @@ static BUILD_FILE_RE: LazyLock<Regex> = LazyLock::new(|| {
 static CHANGELOG_FILE_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"(?i)(^|/)(release-notes/|CHANGELOG|CHANGES|HISTORY|CREDITS|AUTHORS|NEWS|VERSION-|CREDITS-)").unwrap()
 });
+
+// E41: the broad non-source class. JS/TS's non-source gold is DISPERSED --
+// its top-6 basenames cover only 14% (template.md, select.json,
+// autocomplete.json ...), component docs and fixtures rather than a handful
+// of changelogs -- so the narrow CHANGELOG rule cannot reach it and in fact
+// made jsts WORSE (52.07 -> 50.00) by adding corpus without adding gold.
+// This class lifts the jsts ceiling from 76.68% to 97.58%. It is the most
+// dilutive rule in the engine (measured up to +39% corpus on logstash).
+pub const DOCS_DATA_EXTENSIONS: &[&str] = &[
+    ".md", ".rst", ".txt", ".adoc", ".asciidoc", ".json", ".yml", ".yaml", ".toml",
+];
 
 /// Pure-function form of `code_suffix_allowed` -- unit tests exercise this
 /// directly instead of toggling the process-global (tests run in parallel

@@ -181,6 +181,13 @@ struct Args {
     #[arg(long)]
     changelog_files: bool,
 
+    /// E41: index the broad non-source class (.md .rst .txt .adoc .asciidoc
+    /// .json .yml .yaml .toml). Needed for JS/TS, whose non-source gold is
+    /// dispersed component docs and fixtures that the narrow changelog rule
+    /// cannot reach. The most dilutive rule in the engine.
+    #[arg(long)]
+    docs_data_files: bool,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -492,6 +499,7 @@ fn main() {
     roust::core::set_import_edges_v2(args.import_edges_v2);
     roust::core::set_build_files(args.build_files);
     roust::core::set_changelog_files(args.changelog_files);
+    roust::core::set_docs_data_files(args.docs_data_files);
     // WS3d displacement guard: default ON (adopted); --no-displacement-guard
     // is the escape hatch and the explicit on-flag is accepted-but-redundant
     // (mutual exclusion checked below, mirroring the symbols-v2 pattern).

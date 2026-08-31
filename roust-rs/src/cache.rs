@@ -240,7 +240,8 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // indexes a different file set and must never be served to a run with them.
     let bf = if core::build_files_enabled() { ":bf" } else { "" };
     let cl = if core::changelog_files_enabled() { ":cl" } else { "" };
-    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}{ie}{bf}{cl}", with_history as i32, with_docs as i32)
+    let dd = if core::docs_data_files_enabled() { ":dd" } else { "" };
+    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}{ie}{bf}{cl}{dd}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {
