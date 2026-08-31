@@ -1,0 +1,17 @@
+engine version: roust 0.3.2 (6d3a9ad, clean)
+EXTRA_ENGINE_FLAGS=['--import-edges-v2']
+[25/300] django__django-11848                          elapsed=145s (ok) ok=25 err=0
+[50/300] django__django-13220                          elapsed=320s (ok) ok=50 err=0
+[75/300] django__django-14580                          elapsed=461s (ok) ok=75 err=0
+[100/300] django__django-15814                          elapsed=599s (ok) ok=100 err=0
+[125/300] matplotlib__matplotlib-23314                  elapsed=744s (ok) ok=125 err=0
+[150/300] pallets__flask-5063                           elapsed=864s (ok) ok=150 err=0
+[175/300] pytest-dev__pytest-5692                       elapsed=932s (ok) ok=175 err=0
+[200/300] scikit-learn__scikit-learn-14894              elapsed=1001s (ok) ok=200 err=0
+[225/300] sympy__sympy-11870                            elapsed=1126s (ok) ok=225 err=0
+[250/300] sympy__sympy-15011                            elapsed=1272s (ok) ok=250 err=0
+[275/300] sympy__sympy-19487                            elapsed=1433s (ok) ok=275 err=0
+[300/300] sympy__sympy-24909                            elapsed=1579s (ok) ok=300 err=0
+
+engine version: roust 0.3.2 (6d3a9ad, clean)
+wrote 300 records (300 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e36/arms/lite_ie2.jsonl
