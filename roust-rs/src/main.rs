@@ -166,6 +166,21 @@ struct Args {
     #[arg(long)]
     symbol_graph: bool,
 
+    /// E39: index build files (build.gradle, Cargo.toml, CMakeLists.txt,
+    /// package.json, pom.xml, go.mod, Makefile ...). Genuinely useful to
+    /// return -- real changes often edit them -- and they carry gold that the
+    /// corpus could not retrieve at any rank.
+    #[arg(long)]
+    build_files: bool,
+
+    /// E39: index changelogs and release notes (CHANGELOG, release-notes/,
+    /// VERSION-*, CREDITS-*). These are gold ONLY because the fixing PR also
+    /// wrote a release note, so this raises the benchmark score without
+    /// making the tool more useful. Kept separate from --build-files for
+    /// exactly that reason; do not adopt silently.
+    #[arg(long)]
+    changelog_files: bool,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -475,6 +490,8 @@ fn main() {
     // mirroring the trace-formats-v2 pattern).
     roust::core::set_symbols_v2(!args.no_symbols_v2);
     roust::core::set_import_edges_v2(args.import_edges_v2);
+    roust::core::set_build_files(args.build_files);
+    roust::core::set_changelog_files(args.changelog_files);
     // WS3d displacement guard: default ON (adopted); --no-displacement-guard
     // is the escape hatch and the explicit on-flag is accepted-but-redundant
     // (mutual exclusion checked below, mirroring the symbols-v2 pattern).

@@ -52,6 +52,22 @@ pub const CFAMILY_EXTENSIONS: &[&str] = &[".c", ".h", ".cc", ".cpp", ".cxx", ".h
 
 static CFAMILY_EXT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
+static BUILD_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static CHANGELOG_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_build_files(on: bool) {
+    BUILD_FILES.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn build_files_enabled() -> bool {
+    BUILD_FILES.load(std::sync::atomic::Ordering::Relaxed)
+}
+pub fn set_changelog_files(on: bool) {
+    CHANGELOG_FILES.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn changelog_files_enabled() -> bool {
+    CHANGELOG_FILES.load(std::sync::atomic::Ordering::Relaxed)
+}
+
 // E32: Java + C-family import-edge resolution. Default OFF, so every default
 // arm's import graph -- and therefore every published number -- is unchanged.
 static IMPORT_EDGES_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
@@ -114,10 +130,37 @@ pub fn path_indexable(rel: &str) -> bool {
     if code_suffix_allowed_with(suffix, cfamily_ext_enabled()) {
         return true;
     }
+    if build_files_enabled() && BUILD_FILE_RE.is_match(rel) {
+        return true;
+    }
+    if changelog_files_enabled() && CHANGELOG_FILE_RE.is_match(rel) {
+        return true;
+    }
     ext_v2_enabled()
         && EXT_V2_EXTENSIONS.contains(&suffix)
         && !EXT_V2_FIXTURE_RE.is_match(rel)
 }
+
+// E39: two classes of non-source gold that the corpus never indexed, kept
+// DELIBERATELY SEPARATE because they differ in real-world value, not just in
+// score. Measured share of gold files that are non-source: Python Verified
+// 0.2%, Go 4.7%, C 4.2%, Rust 18.5%, C++ 23.3%, Java 25.3%, JS/TS 28.7% --
+// SWE-bench Verified was curated to pure source changes and Multi-SWE-bench
+// was not, so a large part of the apparent cross-language gap is which files
+// each benchmark calls an answer.
+//
+// BUILD: genuinely useful to return -- a real change to a dependency or a
+// target often does require editing these.
+static BUILD_FILE_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"(?i)(^|/)(build\.gradle(\.kts)?|settings\.gradle(\.kts)?|pom\.xml|Cargo\.toml|CMakeLists\.txt|Makefile|package\.json|go\.mod|setup\.py|pyproject\.toml)$").unwrap()
+});
+// CHANGELOG: a benchmark artifact. These are "gold" only because the fixing
+// PR also wrote a release note; no user wants CREDITS-2.x back from a bug
+// query. Indexing them raises the measured score WITHOUT improving the tool,
+// so it is a separate flag and must never be adopted silently.
+static CHANGELOG_FILE_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"(?i)(^|/)(release-notes/|CHANGELOG|CHANGES|HISTORY|CREDITS|AUTHORS|NEWS|VERSION-|CREDITS-)").unwrap()
+});
 
 /// Pure-function form of `code_suffix_allowed` -- unit tests exercise this
 /// directly instead of toggling the process-global (tests run in parallel

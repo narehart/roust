@@ -235,7 +235,12 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // it, or the new edges silently never appear. Flag-off keys are
     // byte-identical to main's format.
     let ie = if core::import_edges_v2_enabled() { ":ie2" } else { "" };
-    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}{ie}", with_history as i32, with_docs as i32)
+    // E39: both flags change corpus MEMBERSHIP (new files enter the index),
+    // so they re-key exactly as :cf1 and :e2g do -- a cache built without them
+    // indexes a different file set and must never be served to a run with them.
+    let bf = if core::build_files_enabled() { ":bf" } else { "" };
+    let cl = if core::changelog_files_enabled() { ":cl" } else { "" };
+    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}{ie}{bf}{cl}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {

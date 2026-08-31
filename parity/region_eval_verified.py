@@ -340,6 +340,10 @@ def main() -> None:
                      help="E32 (per-language parity campaign): append --import-edges-v2 -- resolve Java and C-family import edges, which the import graph never covered at all.")
     ap.add_argument("--symbol-graph", action="store_true",
                      help="E37 (per-language parity campaign): append --symbol-graph -- language-agnostic candidate generation from the symbol-reference graph (a file that references a rare symbol another file defines becomes its neighbour); no per-language import syntax.")
+    ap.add_argument("--build-files", action="store_true",
+                     help="E39: append --build-files -- index build files (build.gradle, Cargo.toml, CMakeLists.txt, package.json ...), which carry gold the corpus could never retrieve.")
+    ap.add_argument("--changelog-files", action="store_true",
+                     help="E39: append --changelog-files -- index changelogs/release notes. These are gold ONLY because the fixing PR wrote a release note, so this raises the score without improving the tool.")
     ap.add_argument("--eligible-floor", type=float, default=0.0,
                      help="E33 (per-language parity campaign): append --eligible-floor F -- the pool eligibility cut as a fraction of the best candidate score (engine default 0.15). 0.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--k-lex", type=int, default=0,
@@ -427,6 +431,10 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--import-edges-v2")
     if args.symbol_graph:
         EXTRA_ENGINE_FLAGS.append("--symbol-graph")
+    if args.build_files:
+        EXTRA_ENGINE_FLAGS.append("--build-files")
+    if args.changelog_files:
+        EXTRA_ENGINE_FLAGS.append("--changelog-files")
     if args.eligible_floor:
         EXTRA_ENGINE_FLAGS.extend(["--eligible-floor", str(args.eligible_floor)])
     if args.k_lex:
