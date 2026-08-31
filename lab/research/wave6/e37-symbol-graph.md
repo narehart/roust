@@ -67,3 +67,64 @@ Python dual gate (shipped operating point):
 Not adopted. Underpowered rather than negative. The next step that would
 settle it is more instances (SWE-bench Multilingual's curated 300 across 9
 languages is the obvious source), not another knob.
+
+---
+
+# E38 — full-slice sweep, and a comparison trap re-encountered
+
+Every language measured at **full-slice** scale (not the >= 3-gold strata),
+shipped budget, with the language-agnostic symbol graph plus cap 32:
+
+| slice | n | shipped | symbol-graph + cap 32 | delta |
+|---|---|---|---|---|
+| Go | 428 | 64.95 | **70.79** | **+5.84** |
+| C++ | 129 | 65.89 | **68.99** | +3.10 |
+| JS/TS | 580 | 46.38 | **52.07** | **+5.69** |
+| Rust | 239 | 60.25 | **65.27** | **+5.02** |
+| C | 128 | 51.56 | **56.25** | +4.69 |
+| Java | 128 | 49.22 | **51.56** | +2.34 |
+
+**One mechanism, no per-language code, improves all six non-Python languages
+by +2.34 to +5.84 FILE points**, at roughly shipped token cost, with Python's
+own numbers statistically unchanged on both gates. That is the substantive
+result of this round.
+
+## The trap, hit again
+
+A fixed bar of 63.64 was compared against these full-slice numbers, and three
+languages appeared to clear it. **They do not.** 63.64 is Python Verified's
+**>= 3-gold-file stratum** figure; its full-slice figure is **92.38**. Full
+slices are dominated by single-gold-file instances and are therefore much
+easier, so comparing a non-Python full-slice number to a Python stratum
+number flatters the former.
+
+Both consistent readings:
+
+| slice | full-slice (bar 92.38) | 3+ stratum (bar 63.64) |
+|---|---|---|
+| Go | 70.79 | 36.36 |
+| C++ | 68.99 | 32.73 |
+| Rust | 65.27 | 35.24 |
+| C | 56.25 | 8.70 |
+| JS/TS | 52.07 | 13.04 |
+| Java | 51.56 | 20.00 |
+| **Python** | **92.38** | **63.64** |
+
+Under either, **no language clears**. This is the same population-mismatch
+confound identified in E35 -- encountered a second time, in the direction
+that would have flattered the result. Any future bar must state which
+population it refers to.
+
+## Ceiling probes for the two laggards
+
+Java and C at cap 128 + k_lex 30 + every generation lever:
+
+| slice | shipped | max config | line fraction | tokens |
+|---|---|---|---|---|
+| C | 51.56 | **67.19** | .2251 -> **.0556** | 8514 -> 12863 |
+| Java | 49.22 | 52.34 | .4152 -> **.1284** | 8762 -> 13763 |
+
+C's full-slice number crosses 63.64 only in a configuration that costs 51%
+more tokens and **destroys 75% of line-level depth**. That is a ceiling
+probe, not an operating point: the bundle locates the files and then says far
+less about each. It should not be counted as C meeting any bar.
