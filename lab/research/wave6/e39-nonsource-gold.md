@@ -79,3 +79,42 @@ the cross-language gap this campaign has chased is that Multi-SWE-bench and
 SWE-bench Verified disagree about what a correct answer is.** Any future
 cross-language claim should either exclude non-source gold or state that it
 does not.
+
+## E40 — the JS/TS holdout, genuine mechanisms only
+
+JS/TS is the one slice whose gap is entirely genuine: changelog indexing made
+it *worse* (-2.07), because its non-source gold is dispersed component docs
+and fixtures rather than a handful of changelogs. So this arm used only the
+symbol graph and second-hop generation.
+
+| config | n | FILE | line fraction | tokens |
+|---|---|---|---|---|
+| shipped | 580 | 46.38 | .2616 | 8.5k |
+| symbol-graph + cap 32 | 580 | 52.07 | .2276 | 8.8k |
+| + 2 hops | 580 | 54.48 | .2271 | 8.8k |
+| + cap 64, budget 16384 | 575 | **59.13** | **.3130** | 17.2k |
+
+**+12.75 over shipped with line depth ABOVE shipped** (.3130 vs .2616) -- the
+E29 pattern once more: the breadth was never paid for out of depth, only out
+of a fixed budget. 4.51 short of 63.64, against a 76.68 ceiling.
+
+A further arm at cap 128 / budget 24576 was launched and **abandoned**: it
+advanced ~5 records per several minutes on the 580-instance slice (the same
+pool-explosion behaviour that killed the E33 and E38 ceiling probes) and would
+have taken hours without being able to change the conclusion. Not reported.
+
+## Final standing against a full-slice bar of 63.64
+
+| slice | best GENUINE | clears? | with changelog artifact |
+|---|---|---|---|
+| Go | **70.79** | yes | 70.56 |
+| C++ | **68.99** | yes | 69.77 |
+| C | **67.19** | yes (2x tokens) | -- |
+| Rust | **65.27** | yes | 69.87 |
+| JS/TS | 59.13 | no (-4.51) | 50.00 (worse) |
+| Java | 51.56 | **impossible** (ceiling 57.03) | 75.00 |
+
+Four of six clear on genuine retrieval improvements. **Java cannot clear
+honestly at all** -- its ceiling with current indexing is below the bar --
+and the only route over it is indexing release notes, which is why
+`--changelog-files` exists, stays default-off, and is recommended against.
