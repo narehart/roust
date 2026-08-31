@@ -468,6 +468,8 @@ def main() -> None:
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
     ap.add_argument("--import-edges-v2", action="store_true",
                      help="E32/E36 (per-language parity campaign): append --import-edges-v2 to every roust invocation -- resolve Java (`import a.b.C;`) and C-family (`#include \"foo.h\"`) import edges, which the import graph never covered at all. Python repos DO contain .c/.cpp under the adopted --cfamily-ext default, so this gate is load-bearing rather than a formality.")
+    ap.add_argument("--symbol-graph", action="store_true",
+                     help="E37 (per-language parity campaign): append --symbol-graph -- language-agnostic candidate generation from the symbol-reference graph (a file that references a rare symbol another file defines becomes its neighbour); no per-language import syntax.")
     ap.add_argument("--max-additions", type=int, default=0,
                      help="E28 (per-language parity campaign): append --max-additions N to every roust invocation -- the pool breadth cap (engine default 16 = shipped). 0 (the default here) is a SENTINEL meaning forward NO flag at all, so a default arm's argv is byte-identical to every pre-E28 default arm's.")
     ap.add_argument("--ext-v2", action="store_true",
@@ -513,6 +515,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.extend(["--max-additions", str(args.max_additions)])
     if args.import_edges_v2:
         EXTRA_ENGINE_FLAGS.append("--import-edges-v2")
+    if args.symbol_graph:
+        EXTRA_ENGINE_FLAGS.append("--symbol-graph")
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
