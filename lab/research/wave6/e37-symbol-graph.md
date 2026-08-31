@@ -128,3 +128,49 @@ C's full-slice number crosses 63.64 only in a configuration that costs 51%
 more tokens and **destroys 75% of line-level depth**. That is a ceiling
 probe, not an operating point: the bundle locates the files and then says far
 less about each. It should not be counted as C meeting any bar.
+
+## E38c — depth is budget-recoverable, and C clears
+
+The maxed generation config at budget 8192 crossed 63.64 on C but collapsed
+line depth 75% (.2251 -> .0556). E29 predicted that cost is a fixed-budget
+artifact, not a property of the breadth. Re-run at budget 16384:
+
+| slice | n | shipped | maxed + budget 16384 | vs 63.64 | line fraction | tokens |
+|---|---|---|---|---|---|---|
+| **C** | 128 | 51.56 | **67.19** | **CLEARS** | .2251 -> **.2075** | 8.5k -> 17.7k |
+| Java | 128 | 49.22 | 52.34 | -11.30 | .4152 -> .4045 | 8.8k -> 19.1k |
+
+C's depth comes back almost entirely (.2075 against a shipped .2251) while
+keeping the full breadth gain -- the prediction confirmed on a second slice.
+The cost is 2x tokens.
+
+## Standing against a full-slice bar of 63.64
+
+| slice | best full-slice | config | cost |
+|---|---|---|---|
+| Go | **70.79** | symbol-graph + cap 32 | ~shipped |
+| C++ | **68.99** | symbol-graph + cap 32 | ~shipped |
+| C | **67.19** | maxed + budget 16384 | 2x tokens |
+| Rust | **65.27** | symbol-graph + cap 32 | ~shipped |
+| JS/TS | 52.07 | symbol-graph + cap 32 | ~shipped |
+| Java | 52.34 | maxed + budget 16384 | 2x tokens |
+
+Four of six clear; three of those four at essentially shipped cost. **JS/TS
+and Java do not**, and Java is the outlier: it gains only 3.12 with every
+lever maxed and the budget doubled, from a lower base than C, which cleared.
+
+Ceiling probes for both were attempted and **abandoned**: at cap 500 / cap 128
+with k_lex 30 on the two largest corpora the pool explosion made the arms
+effectively non-terminating (JS/TS advanced 2 records in 37 minutes; Java
+produced none). Those partial arms were discarded rather than reported. The
+practical consequence is that no measurement exists for Java or JS/TS above
+the settings listed here, and the honest statement is that neither reaches
+63.64 at any setting this harness can actually run.
+
+## Caveat that applies to the whole table
+
+A full-slice bar of 63.64 is **not** the like-for-like Python comparison:
+Python Verified's full-slice figure is 92.38, and 63.64 is its >= 3-gold-file
+stratum. Against Python measured on the same population, none of these
+clear. The table above answers the fixed numeric target as posed, not
+"parity with Python".
