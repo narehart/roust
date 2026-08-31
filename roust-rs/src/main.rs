@@ -157,6 +157,15 @@ struct Args {
     #[arg(long, default_value_t = 10)]
     k_lex: usize,
 
+    /// E37 (per-language parity campaign): generate candidates from the
+    /// SYMBOL-REFERENCE graph -- a file that references a rare symbol another
+    /// file defines becomes its neighbour. Language-agnostic by construction:
+    /// it uses the existing definition index and term index, so it needs no
+    /// per-language import syntax and subsumes the per-language import
+    /// parsers rather than adding another one.
+    #[arg(long)]
+    symbol_graph: bool,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -627,6 +636,7 @@ fn main() {
         import_hops: args.import_hops,
         eligible_floor: args.eligible_floor,
         k_lex: args.k_lex,
+        symbol_graph: args.symbol_graph,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,

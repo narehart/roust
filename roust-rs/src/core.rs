@@ -3328,6 +3328,17 @@ pub struct SelectParams<'a> {
     pub cochange_strong: i64,
     /// E28: cap on pool additions beyond the lexical picks (16 = shipped).
     pub max_additions: i64,
+    /// E37: language-agnostic candidate generation from the SYMBOL-REFERENCE
+    /// graph -- file A is a neighbour of file B when A references a rare
+    /// symbol that B defines. Both halves already exist and are already
+    /// cached (`def_index` for definitions, `tf` for references), so this
+    /// needs no per-language syntax at all: it is the Aider repo-map
+    /// relationship rather than seven different import parsers. NOTE this is
+    /// GENERATION, not ranking -- shared identifiers were previously found
+    /// useless for DISCRIMINATING among candidates already in the pool
+    /// (E20/WS3d), which says nothing about proposing candidates that the
+    /// pool never contained.
+    pub symbol_graph: bool,
     /// E33: the pool eligibility floor -- a candidate survives only if its
     /// add_score is at least this fraction of the best candidate's (0.15 =
     /// shipped). This cut runs BEFORE any admission rule, so it bounds every
@@ -3389,6 +3400,7 @@ impl<'a> Default for SelectParams<'a> {
             seats_per_source: 1,
             import_hops: 1,
             eligible_floor: 0.15,
+            symbol_graph: false,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3675,6 +3687,37 @@ pub fn select_files(
     let fileset: HashSet<&String> = corpus.files.iter().collect();
     let lex_picks_set: HashSet<&String> = lex_picks.iter().collect();
 
+    // E37: normalise each defined symbol through the SAME stemmer the term
+    // index uses, so a definition can be matched against a referencing file's
+    // `tf` keys. Rare symbols only: a name defined in many files, or common
+    // across the corpus, carries no locality. Values are sorted so the walk
+    // is deterministic despite `def_index` being a HashMap.
+    let mut symdef: HashMap<String, Vec<String>> = HashMap::new();
+    if params.symbol_graph {
+        let ndocs = corpus.files.len().max(1) as f64;
+        let mut syms: Vec<&String> = corpus.def_index.keys().collect();
+        syms.sort();
+        for sym in syms {
+            let key = stem(&py_lower(sym));
+            if key.chars().count() <= 3 {
+                continue;
+            }
+            if (corpus.df.get(&key).copied().unwrap_or(0) as f64) / ndocs >= 0.05 {
+                continue;
+            }
+            if let Some(defs) = corpus.def_index.get(sym) {
+                if defs.len() > 3 {
+                    continue;
+                }
+                symdef.entry(key).or_default().extend(defs.iter().cloned());
+            }
+        }
+        for v in symdef.values_mut() {
+            v.sort();
+            v.dedup();
+        }
+    }
+
     for s in &sources {
         let w = bm_n.get(s).copied().unwrap_or(0.0);
         let mut imp: Vec<String> = Vec::new();
@@ -3709,6 +3752,19 @@ pub fn select_files(
             for c in cop.keys() {
                 if fileset.contains(c) && !neighbors.contains(c) {
                     neighbors.push(c.clone());
+                }
+            }
+        }
+        if params.symbol_graph {
+            if let Some(tfs) = corpus.tf.get(s) {
+                for term in tfs.keys() {
+                    if let Some(defs) = symdef.get(term) {
+                        for f in defs {
+                            if f != s && fileset.contains(f) && !neighbors.contains(f) {
+                                neighbors.push(f.clone());
+                            }
+                        }
+                    }
                 }
             }
         }
