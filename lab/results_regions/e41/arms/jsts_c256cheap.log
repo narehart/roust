@@ -1,0 +1,25 @@
+engine version: roust 0.3.2 (943b7f5, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_jsts.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_repos_private
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=256 budget=8192 instances=None
+shard 1/1: rows [0:580] of the sorted split (580 instances)
+[25/580] darkreader__darkreader-6747                   elapsed=53s (ok) ok=25 err=0
+[50/580] iamkun__dayjs-1611                            elapsed=116s (ok) ok=50 err=0
+[75/580] iamkun__dayjs-857                             elapsed=193s (ERR) ok=74 err=1
+[100/580] mui__material-ui-24794                        elapsed=479s (ok) ok=99 err=1
+[125/580] mui__material-ui-26413                        elapsed=1053s (ok) ok=124 err=1
+[150/580] mui__material-ui-30561                        elapsed=1636s (ok) ok=149 err=1
+[175/580] mui__material-ui-33812                        elapsed=2178s (ok) ok=174 err=1
+[200/580] mui__material-ui-34829                        elapsed=2758s (ok) ok=199 err=1
+[225/580] mui__material-ui-36426                        elapsed=3282s (ok) ok=224 err=1
+[250/580] mui__material-ui-39071                        elapsed=3906s (ok) ok=249 err=1
+[275/580] sveltejs__svelte-10291                        elapsed=4215s (ok) ok=274 err=1
+[300/580] sveltejs__svelte-10917                        elapsed=4362s (ok) ok=299 err=1
+[325/580] sveltejs__svelte-11378                        elapsed=4560s (ok) ok=324 err=1
+[350/580] sveltejs__svelte-12047                        elapsed=4765s (ok) ok=349 err=1
+[375/580] sveltejs__svelte-12474                        elapsed=4978s (ok) ok=374 err=1
+[400/580] sveltejs__svelte-13008                        elapsed=5232s (ok) ok=399 err=1
+[425/580] sveltejs__svelte-13445                        elapsed=5525s (ok) ok=424 err=1
+[450/580] sveltejs__svelte-13774                        elapsed=5813s (ok) ok=449 err=1
+[475/580] sveltejs__svelte-14440                        elapsed=6171s (ok) ok=474 err=1
+[500/580] sveltejs__svelte-14993                        elapsed=6541s (ok) ok=499 err=1

@@ -26,3 +26,7 @@ shard 1/1: rows [0:580] of the sorted split (580 instances)
 [525/580] sveltejs__svelte-9811                         elapsed=3648s (ok) ok=524 err=1
 [550/580] vuejs__core-11165                             elapsed=3828s (ok) ok=549 err=1
 [575/580] vuejs__core-9442                              elapsed=4001s (ok) ok=574 err=1
+[580/580] vuejs__core-9751                              elapsed=4037s (ok) ok=579 err=1
+
+engine version: roust 0.3.2 (e4aefae, clean)
+wrote 580 records (579 ok, 1 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e41/arms/jsts_dd.jsonl
