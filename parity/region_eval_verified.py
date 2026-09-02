@@ -346,6 +346,8 @@ def main() -> None:
                      help="E39: append --changelog-files -- index changelogs/release notes. These are gold ONLY because the fixing PR wrote a release note, so this raises the score without improving the tool.")
     ap.add_argument("--docs-data-files", action="store_true",
                      help="E41: append --docs-data-files -- index .md/.rst/.txt/.json/.yml/.toml. Needed for JS/TS, whose non-source gold is dispersed docs and fixtures; the most dilutive rule.")
+    ap.add_argument("--ppr-budget", type=float, default=0.0,
+                     help="E44: append --ppr-budget L -- concentrate packing budget on query-connected, graph-central files via personalized PageRank (engine default 0.0 = off). Does not change the returned file set. 0.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--eligible-floor", type=float, default=0.0,
                      help="E33 (per-language parity campaign): append --eligible-floor F -- the pool eligibility cut as a fraction of the best candidate score (engine default 0.15). 0.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--k-lex", type=int, default=0,
@@ -439,6 +441,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--changelog-files")
     if args.docs_data_files:
         EXTRA_ENGINE_FLAGS.append("--docs-data-files")
+    if args.ppr_budget:
+        EXTRA_ENGINE_FLAGS.extend(["--ppr-budget", str(args.ppr_budget)])
     if args.eligible_floor:
         EXTRA_ENGINE_FLAGS.extend(["--eligible-floor", str(args.eligible_floor)])
     if args.k_lex:
@@ -483,6 +487,7 @@ def main() -> None:
             rec["seats_per_source"] = args.seats_per_source
             rec["import_hops"] = args.import_hops
             rec["import_edges_v2"] = args.import_edges_v2
+            rec["ppr_budget"] = args.ppr_budget
             rec["eligible_floor"] = args.eligible_floor
             rec["k_lex"] = args.k_lex
             rec["budget"] = BUDGET

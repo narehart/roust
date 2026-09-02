@@ -166,6 +166,13 @@ struct Args {
     #[arg(long)]
     symbol_graph: bool,
 
+    /// E44: concentrate packing BUDGET on query-connected, graph-central
+    /// files via personalized PageRank from the BM25 seeds (0.0 = off).
+    /// Does not change which files are returned -- only how deeply each is
+    /// packed -- so it attacks the depth loss that every breadth gain paid.
+    #[arg(long, default_value_t = 0.0)]
+    ppr_budget: f64,
+
     /// E39: index build files (build.gradle, Cargo.toml, CMakeLists.txt,
     /// package.json, pom.xml, go.mod, Makefile ...). Genuinely useful to
     /// return -- real changes often edit them -- and they carry gold that the
@@ -662,6 +669,7 @@ fn main() {
         eligible_floor: args.eligible_floor,
         k_lex: args.k_lex,
         symbol_graph: args.symbol_graph,
+        ppr_budget: args.ppr_budget,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,

@@ -476,6 +476,8 @@ def main() -> None:
                      help="E39: append --changelog-files -- index changelogs/release notes. These are gold ONLY because the fixing PR wrote a release note, so this raises the score without improving the tool.")
     ap.add_argument("--docs-data-files", action="store_true",
                      help="E41: append --docs-data-files -- index .md/.rst/.txt/.json/.yml/.toml. Needed for JS/TS, whose non-source gold is dispersed docs and fixtures; the most dilutive rule.")
+    ap.add_argument("--ppr-budget", type=float, default=0.0,
+                     help="E44: append --ppr-budget L -- concentrate packing budget on query-connected, graph-central files via personalized PageRank (engine default 0.0 = off). Does not change the returned file set. 0.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--max-additions", type=int, default=0,
                      help="E28 (per-language parity campaign): append --max-additions N to every roust invocation -- the pool breadth cap (engine default 16 = shipped). 0 (the default here) is a SENTINEL meaning forward NO flag at all, so a default arm's argv is byte-identical to every pre-E28 default arm's.")
     ap.add_argument("--ext-v2", action="store_true",
@@ -529,6 +531,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--changelog-files")
     if args.docs_data_files:
         EXTRA_ENGINE_FLAGS.append("--docs-data-files")
+    if args.ppr_budget:
+        EXTRA_ENGINE_FLAGS.extend(["--ppr-budget", str(args.ppr_budget)])
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
@@ -556,6 +560,7 @@ def main() -> None:
                                      args.no_trace_boost, args.file_score, args.test_bridge)
             rec["max_additions"] = args.max_additions
             rec["import_edges_v2"] = args.import_edges_v2
+            rec["ppr_budget"] = args.ppr_budget
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

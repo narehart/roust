@@ -2921,12 +2921,10 @@ pub fn update_import_graph_for_files(corpus: &Corpus, edges: &mut EdgeMap, old_t
     }
 }
 
-/// Random walk with restart -- present for structural parity with
-/// lanes2.py's `personalized_pagerank`, but note it is DEAD CODE relative
-/// to the actual CLI/driver wiring: `select_files(use_ppr=True)` never
-/// calls it (its own "structural expansion" block reimplements a different
-/// additive scheme directly). Kept for completeness only, never invoked.
-#[allow(dead_code)]
+/// Random walk with restart (parity with lanes2.py's `personalized_pagerank`:
+/// alpha 0.15, 25 iterations, same-directory edges at weight 0.35). Dead
+/// code from the port until E44, which uses it to CONCENTRATE packing budget
+/// on query-connected, graph-central files (see `SelectParams::ppr_budget`).
 pub fn personalized_pagerank(
     seeds: &IndexMap<String, f64>,
     edges: &EdgeMap,
@@ -3392,6 +3390,22 @@ pub struct SelectParams<'a> {
     pub cochange_strong: i64,
     /// E28: cap on pool additions beyond the lexical picks (16 = shipped).
     pub max_additions: i64,
+    /// E44: personalized-PageRank BUDGET concentration (0.0 = shipped, off).
+    /// Every breadth gain in E28-E42 paid in depth because `pack_regions`
+    /// spreads budget almost evenly over admitted files (its per-file
+    /// multiplier `0.3 + scores[f]` spans only ~0.6-1.3). E11b proved the
+    /// `scores` map IS the depth lever (raising a gold file's entry pulled
+    /// budget to it: FUNCTION 4G/0L), and E20 found gold files are
+    /// graph-CENTRAL. So: random-walk-with-restart from the BM25 seeds over
+    /// the import (+symbol) graph, normalised over the returned set, and the
+    /// budget map is sharpened multiplicatively:
+    ///     scores[f] *= (1 - lambda) + lambda * ppr_n[f]
+    /// The FILE SET is untouched by construction (this runs after selection),
+    /// so at fixed cap and budget any FUNCTION/LINE/fraction change is a pure
+    /// depth effect. Files with zero PPR mass keep (1-lambda) of their score
+    /// and their pass-1 seat, so nothing is starved. Language-agnostic,
+    /// deterministic, O(edges x 25) per query.
+    pub ppr_budget: f64,
     /// E37: language-agnostic candidate generation from the SYMBOL-REFERENCE
     /// graph -- file A is a neighbour of file B when A references a rare
     /// symbol that B defines. Both halves already exist and are already
@@ -3465,6 +3479,7 @@ impl<'a> Default for SelectParams<'a> {
             import_hops: 1,
             eligible_floor: 0.15,
             symbol_graph: false,
+            ppr_budget: 0.0,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3994,6 +4009,54 @@ pub fn select_files(
         let v = 0.3 + 0.5 * fb_n.get(f).copied().unwrap_or(0.0);
         let cur = scores.get(f).copied().unwrap_or(0.0);
         scores.insert(f.clone(), cur.max(v));
+    }
+
+    // E44: sharpen the BUDGET map toward query-connected, graph-central files.
+    // Runs strictly after the returned set `out` is fixed, so it cannot add
+    // or drop a file -- only redistribute depth among the files already
+    // being returned.
+    if params.ppr_budget > 0.0 {
+        let lam = params.ppr_budget.min(1.0);
+        // Restart mass = the BM25 seeds, weighted by their normalised score.
+        let mut seeds: IndexMap<String, f64> = IndexMap::new();
+        for f in &lex_picks {
+            let w = bm_n.get(f).copied().unwrap_or(0.0);
+            if w > 0.0 {
+                seeds.insert(f.clone(), w);
+            }
+        }
+        if !seeds.is_empty() {
+            // Walk over the import graph, plus symbol-reference edges among the
+            // returned set when the symbol graph is on (same relation E37 uses
+            // for generation: A references a rare symbol B defines).
+            let mut walk_edges: EdgeMap = edges.clone();
+            if params.symbol_graph && !symdef.is_empty() {
+                let outset: HashSet<&String> = out.iter().collect();
+                for a in &out {
+                    if let Some(tfs) = corpus.tf.get(a) {
+                        for term in tfs.keys() {
+                            if let Some(defs) = symdef.get(term) {
+                                for b in defs {
+                                    if b != a && outset.contains(b) {
+                                        walk_edges.entry(a.clone()).or_default().insert(b.clone());
+                                        walk_edges.entry(b.clone()).or_default().insert(a.clone());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            let rank = personalized_pagerank(&seeds, &walk_edges, &same_dir, 0.15, 25, 0.35);
+            let mx = out.iter().map(|f| rank.get(f).copied().unwrap_or(0.0)).fold(0.0_f64, f64::max);
+            if mx > 0.0 {
+                for f in &out {
+                    let r = rank.get(f).copied().unwrap_or(0.0) / mx;
+                    let cur = scores.get(f).copied().unwrap_or(0.0);
+                    scores.insert(f.clone(), cur * ((1.0 - lam) + lam * r));
+                }
+            }
+        }
     }
 
     let (out2, anchor_promotions) = apply_anchor_promotions(out, params.anchors);
