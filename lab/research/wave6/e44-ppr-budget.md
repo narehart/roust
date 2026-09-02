@@ -153,8 +153,23 @@ at 9216 the fraction is back to the shipped .2431 within .003; at 10240 it
 is ABOVE shipped. Both are significant beyond doubt (51/7 and 67/3
 instance-level gains/losses), and the file set is provably unchanged.
 
-So on Rust the genuine operating point is: **+5.02 FILE with shipped-level
-depth for ~13% more tokens**, or **+5.02 FILE with depth above shipped for
-~25%**. FUNCTION/LINE at these budgets are being scored to confirm on the
-exact metrics.
+### Exact metrics at 9216
+
+| Rust arm | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped (cap 16 @ 8192) | 60.25 | 19.67 | 7.53 | .2431 | 8464 |
+| sg + cap 32 @ 8192 | 65.27 | 17.57 | 6.28 | .2103 | 8577 |
+| **sg + cap 32 @ 9216** | **65.27** | **20.50** | 7.11 | .2397 | 9597 |
+
+Paired on FUNCTION: vs sg32@8192 **7 gained / 0 lost, McNemar p = .016**;
+vs shipped 4 gained / 2 lost, p = .69 (i.e. back to shipped, not below it).
+
+**So on Rust the proven operating point is: +5.02 FILE (12 more instances
+fully located out of 239) with FUNCTION and LINE at shipped level, for +13%
+tokens.** Not one column of that sentence is inferred: FILE is identical to
+the 8192 arm instance-for-instance, the FUNCTION recovery is significant,
+and the FUNCTION/LINE comparison to shipped is a measured null.
+
+At 10240 (+25% tokens) the fraction is above shipped (.2553); exact metrics
+pending.
 

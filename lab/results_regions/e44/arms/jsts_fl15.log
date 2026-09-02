@@ -5,3 +5,5 @@ pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_st
 shard 1/1: rows [0:580] of the sorted split (580 instances)
 [25/580] darkreader__darkreader-6747                   elapsed=26s (ok) ok=25 err=0
 [50/580] iamkun__dayjs-1611                            elapsed=55s (ok) ok=50 err=0
+[75/580] iamkun__dayjs-857                             elapsed=81s (ERR) ok=74 err=1
+[100/580] mui__material-ui-24794                        elapsed=154s (ok) ok=99 err=1
