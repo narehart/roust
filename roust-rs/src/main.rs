@@ -179,6 +179,12 @@ struct Args {
     #[arg(long)]
     ppr_additive: bool,
 
+    /// E45: the packer's per-file budget floor (0.3 = shipped). Every region
+    /// is weighted by (floor + file score); a high floor gives every admitted
+    /// file a near-equal claim, which is why wide admission spread budget thin.
+    #[arg(long, default_value_t = 0.3)]
+    pack_floor: f64,
+
     /// E39: index build files (build.gradle, Cargo.toml, CMakeLists.txt,
     /// package.json, pom.xml, go.mod, Makefile ...). Genuinely useful to
     /// return -- real changes often edit them -- and they carry gold that the
@@ -513,6 +519,7 @@ fn main() {
     roust::core::set_build_files(args.build_files);
     roust::core::set_changelog_files(args.changelog_files);
     roust::core::set_docs_data_files(args.docs_data_files);
+    roust::core::set_pack_floor(args.pack_floor);
     // WS3d displacement guard: default ON (adopted); --no-displacement-guard
     // is the escape hatch and the explicit on-flag is accepted-but-redundant
     // (mutual exclusion checked below, mirroring the symbols-v2 pattern).

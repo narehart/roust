@@ -52,6 +52,23 @@ pub const CFAMILY_EXTENSIONS: &[&str] = &[".c", ".h", ".cc", ".cpp", ".cxx", ".h
 
 static CFAMILY_EXT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
+// E45: the packer's per-file BUDGET FLOOR. Both packing passes weight a
+// region by `(PACK_FLOOR + scores[file])`; with the shipped 0.3 every
+// admitted file has a baseline claim of 0.3 against a top file's ~1.3, so a
+// wide admitted set gets nearly EVEN budget -- the mechanism behind every
+// breadth gain's depth tax. Lowering the floor makes allocation more
+// proportional to the (lexical) file score. Stored as f64 bits so the
+// twenty-odd pack_regions unit tests keep their signature; default 0.3 is
+// byte-identical to the shipped engine.
+static PACK_FLOOR_BITS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0x3FD3333333333333); // 0.3f64
+
+pub fn set_pack_floor(f: f64) {
+    PACK_FLOOR_BITS.store(f.to_bits(), std::sync::atomic::Ordering::Relaxed);
+}
+pub fn pack_floor() -> f64 {
+    f64::from_bits(PACK_FLOOR_BITS.load(std::sync::atomic::Ordering::Relaxed))
+}
+
 static BUILD_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static CHANGELOG_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static DOCS_DATA_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
@@ -5461,7 +5478,7 @@ pub fn pack_regions(
             if tok == 0 {
                 continue;
             }
-            let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
+            let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (pack_floor() + scores.get(rel).copied().unwrap_or(0.0));
             let ns = if w_name != 0.0 { name_score(region_symbol(&def_lines, a, b), &tset) } else { 0.0 };
             let tok_pow = (tok.max(1) as f64).powf(len_exp);
             candidates.push(Candidate {
@@ -5874,7 +5891,7 @@ pub fn pack_regions(
             let c = &candidates[i];
             let diff: HashSet<String> = c.terms.difference(&covered).cloned().collect();
             let new_weight = weight(&diff);
-            let base = (new_weight + 0.25 * weight(&c.terms) + 0.1) * (0.3 + scores.get(&c.file).copied().unwrap_or(0.0))
+            let base = (new_weight + 0.25 * weight(&c.terms) + 0.1) * (pack_floor() + scores.get(&c.file).copied().unwrap_or(0.0))
                 / c.tok_pow;
             // same undiluted-by-size name bonus as pass 1's selection metric
             // (see pack_regions' doc comment) -- otherwise a name-anchored

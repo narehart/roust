@@ -480,6 +480,8 @@ def main() -> None:
                      help="E44: append --ppr-budget L -- concentrate packing budget on query-connected, graph-central files via personalized PageRank (engine default 0.0 = off). Does not change the returned file set. 0.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--ppr-additive", action="store_true",
                      help="E44b: append --ppr-additive -- additive PPR budget boost instead of the multiplicative squash.")
+    ap.add_argument("--pack-floor", type=float, default=-1.0,
+                     help="E45: append --pack-floor F -- the packer per-file budget floor (engine default 0.3). -1.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--max-additions", type=int, default=0,
                      help="E28 (per-language parity campaign): append --max-additions N to every roust invocation -- the pool breadth cap (engine default 16 = shipped). 0 (the default here) is a SENTINEL meaning forward NO flag at all, so a default arm's argv is byte-identical to every pre-E28 default arm's.")
     ap.add_argument("--ext-v2", action="store_true",
@@ -537,6 +539,8 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.extend(["--ppr-budget", str(args.ppr_budget)])
     if args.ppr_additive:
         EXTRA_ENGINE_FLAGS.append("--ppr-additive")
+    if args.pack_floor >= 0.0:
+        EXTRA_ENGINE_FLAGS.extend(["--pack-floor", str(args.pack_floor)])
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
