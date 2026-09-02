@@ -79,10 +79,42 @@ lexical marginal (query-term coverage) is already the better allocator, and
 any graph reweighting on top of it is noise or worse. The `scores` map IS
 the depth lever (E11b), but PageRank is the wrong thing to put in it.
 
-## E45 — the direct knob: the packer's budget floor (running)
+## E45 — the packer's budget floor: NULL
 
-The diagnosis still stands: wide admission spreads budget because every
-admitted file has a baseline claim of `PACK_FLOOR = 0.3` against a top file's
-~1.3. Rather than a new signal, lower the floor so allocation follows the
-lexical score that already places regions. `--pack-floor` (default 0.3,
-byte-identical). Rust at 0.15 and 0.05, same identity gate.
+`--pack-floor` (default 0.3, byte-identical) lowers every file's baseline
+claim so allocation follows the lexical score more steeply.
+
+| arm | FILE | fraction delta | gain/loss | Wilcoxon |
+|---|---|---|---|---|
+| floor 0.15 | 65.27 (0 flips) | +.0051 | 14/11 | p=.77 |
+| floor 0.05 | 65.27 (0 flips) | -.0026 | 24/23 | p=.72 |
+
+Nothing moves. Taking the floor from 0.3 to 0.05 -- a 6x change in the one
+constant the diagnosis blamed -- changes the bundle by a handful of spans.
+
+## Why: the tax is the seat COUNT, measured from the bundles
+
+| Rust arm | files/bundle | spans/bundle | spans/file | files with exactly 1 span | tokens |
+|---|---|---|---|---|---|
+| shipped (cap 16) | 29.9 | 55.3 | 1.85 | 75% | 8464 |
+| symbol-graph + cap 32 | 42.5 | 65.7 | 1.55 | 81% | 8577 |
+| + floor 0.05 | 42.5 | 64.1 | 1.51 | 84% | 8569 |
+
+* The harness counts a file as retrieved only if it has **>= 1 span**
+  (`files_in_regions = set(regions.keys())`), so every returned file needs a
+  pass-1 seat. Cap 32 returns 12.6 more files; spans rise only 10.4; the
+  extra seats come straight out of pass-2 depth (spans/file 1.85 -> 1.55).
+* The seats are already small -- median first span is **11 lines** in the
+  top-16 files and **10 lines** in the tail -- so shrinking them ("stub
+  seats") has almost no headroom, and the tail holds 58% of first-span lines
+  only because there are more tail files.
+* Neither PPR (a new per-file signal) nor the floor (steeper use of the
+  existing signal) can help, because pass-2 allocation is not the problem:
+  pass-1's mandatory one-seat-per-file is, and it is what makes FILE count.
+
+**Conclusion, measured rather than argued: at a fixed token budget, breadth
+and depth are coupled through the mandatory seat count, and redistributing
+budget among the returned files cannot uncouple them.** The lever that does
+-- proven in E29 (FILE budget-invariant, depth fully budget-recoverable) --
+is budget. E46 therefore measures the smallest budget at which sg + cap 32
+restores shipped FUNCTION/LINE on Rust while keeping its +5.02 FILE.
