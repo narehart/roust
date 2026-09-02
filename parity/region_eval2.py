@@ -126,7 +126,24 @@ def check_engine_provenance(allow_stale: bool) -> str:
     except (subprocess.SubprocessError, OSError):
         pass
 
+    # E46 ops fix: a SHA mismatch only matters if the ENGINE changed between
+    # the binary's commit and HEAD. Docs/lab commits move HEAD constantly and
+    # were forcing a rebuild before every launch -- a rebuild that swaps the
+    # shared binary under any live arm (the exact hazard the guard exists to
+    # prevent). So: on mismatch, ask git whether roust-rs/ differs between the
+    # two commits; identical engine tree == not stale. Unknown/unresolvable
+    # binary SHAs stay a hard mismatch.
     sha_mismatch = repo_sha is not None and engine_sha != "unknown" and engine_sha != repo_sha
+    if sha_mismatch:
+        try:
+            d = subprocess.run(["git", "diff", "--quiet", engine_sha, "HEAD", "--", "roust-rs/"],
+                               cwd=REPO_ROOT, capture_output=True, text=True, timeout=10)
+            if d.returncode == 0:
+                print(f"engine provenance: binary {engine_sha} != HEAD {repo_sha} but roust-rs/ is "
+                      f"identical between them -- accepted.", file=sys.stderr, flush=True)
+                sha_mismatch = False
+        except (subprocess.SubprocessError, OSError):
+            pass
     stale = sha_mismatch or engine_dirty_label == "dirty" or bool(repo_dirty)
 
     if stale:
