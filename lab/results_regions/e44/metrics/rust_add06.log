@@ -1,0 +1,24 @@
+Computing exact FUNCTION-level metric + region precision via read-only `git show` (this walks every gold + returned .py file's AST)...
+
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e44/metrics/rust_add06.json
+
+==============================================================================
+Agentless-style %% Correct Location -- roust (no-LLM) vs GPT-4o Agentless
+(FUNCTION is EXACT, not a proxy -- SWE-bench Verified held-out)
+==============================================================================
+                                            roust   GPT-4o Agentless
+FILE   (predicted ⊇ gold files)             65.3%        69.7%
+FUNCTION (EXACT)                            16.7%        52.0%
+LINE   (all-or-nothing)                      5.9%        35.3%
+
+LINE mean-fraction covered (continuity w/ prior reporting)   0.1929
+REGION PRECISION (gold lines / total returned lines), mean   0.0204  (n=239, excluded=0)
+  mean total region lines / instance                         1037.0
+
+FUNCTION n=239 n_judged=239 n_correct=40 counted_wrong(engine_errors=0, git_show_failures=0)
+
+--- restricted to file-correct subset (n=156/239) ---
+FUNCTION (EXACT)                            21.1%          n/a
+LINE   (all-or-nothing)                      9.0%          n/a
+LINE mean-fraction covered                                   0.2247
+REGION PRECISION, mean                                       0.0107 (n=156)

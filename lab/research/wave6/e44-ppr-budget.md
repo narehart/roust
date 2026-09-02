@@ -53,9 +53,36 @@ Reading: the seeds already sit near score 1.0, so `scores *= (1-l) + l*ppr`
 mostly SQUASHES the additions -- and the multi-file gold lives in the
 additions. Concentrating on the seeds is concentrating on the wrong files.
 
-## E44b — additive form (running)
+## E44b — additive form: also negative
 
 `--ppr-additive`: `scores[f] += lambda * ppr_n[f]`. Raises graph-connected
 files toward seed-level funding without lowering anyone -- the E11b pattern,
 and E20's one positive mechanism (rescue by insertion, not smoothing).
-Rust at 0.3 and 0.6, same identity gate.
+
+| arm | FILE | FUNCTION | LINE | fraction | frac gain/loss | Wilcoxon |
+|---|---|---|---|---|---|---|
+| symbol-graph + cap 32 | 65.27 | 17.57 | 6.28 | .2103 | -- | -- |
+| + PPR mult 0.5 | 65.27 (0 flips) | 16.32 | 5.86 | .1936 | 20/29 | p=.12 |
+| + PPR mult 0.8 | 65.27 (0 flips) | 17.15 | 5.86 | .2023 | 32/36 | p=.57 |
+| + PPR add 0.3 | 65.27 (0 flips) | 17.15 | 6.28 | .2057 | 23/22 | p=.45 |
+| + PPR add 0.6 | 65.27 (0 flips) | 16.74 | 5.86 | .1929 | 20/27 | **p=.038** |
+
+**Falsified in both forms.** Every PPR arm is at or below the baseline on
+FUNCTION, LINE and fraction; the additive 0.6 arm is significantly negative.
+The identity gate held on all four (FILE 65.27 -> 65.27, zero per-instance
+flips), so this is a clean result about the SIGNAL, not a bug in the plumbing.
+
+Reading: E20's "gold files are graph-central" is a statement about which
+FILES are gold relative to the non-gold pool. It does not carry over to
+where the gold LINES are among the files already returned -- there, the
+lexical marginal (query-term coverage) is already the better allocator, and
+any graph reweighting on top of it is noise or worse. The `scores` map IS
+the depth lever (E11b), but PageRank is the wrong thing to put in it.
+
+## E45 — the direct knob: the packer's budget floor (running)
+
+The diagnosis still stands: wide admission spreads budget because every
+admitted file has a baseline claim of `PACK_FLOOR = 0.3` against a top file's
+~1.3. Rather than a new signal, lower the floor so allocation follows the
+lexical score that already places regions. `--pack-floor` (default 0.3,
+byte-identical). Rust at 0.15 and 0.05, same identity gate.
