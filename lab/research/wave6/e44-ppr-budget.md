@@ -89,8 +89,28 @@ claim so allocation follows the lexical score more steeply.
 | floor 0.15 | 65.27 (0 flips) | +.0051 | 14/11 | p=.77 |
 | floor 0.05 | 65.27 (0 flips) | -.0026 | 24/23 | p=.72 |
 
-Nothing moves. Taking the floor from 0.3 to 0.05 -- a 6x change in the one
-constant the diagnosis blamed -- changes the bundle by a handful of spans.
+On the fraction proxy nothing moves. The exact metrics, scored:
+
+| arm | FILE | FUNCTION | LINE | fraction | FUNCTION gain/loss vs sg32 | McNemar |
+|---|---|---|---|---|---|---|
+| symbol-graph + cap 32 | 65.27 | 17.57 | 6.28 | .2103 | -- | -- |
+| floor 0.15 | 65.27 (0 flips) | **18.83** | **6.69** | .2154 | **3 / 0** | p=.25 |
+| floor 0.05 | 65.27 (0 flips) | 17.99 | 5.86 | .2077 | 3 / 2 | p=1.0 |
+| PPR mult 0.5 | 65.27 | 16.32 | 5.86 | .1936 | 0 / 3 | p=.25 |
+| PPR mult 0.8 | 65.27 | 17.15 | 5.86 | .2023 | 2 / 3 | p=1.0 |
+| PPR add 0.3 | 65.27 | 17.15 | 6.28 | .2057 | 0 / 1 | p=1.0 |
+| PPR add 0.6 | 65.27 | 16.74 | 5.86 | .1929 | 0 / 2 | p=.50 |
+
+Floor 0.15 is the **first depth-only arm in this sequence to move FUNCTION
+up at fixed FILE** -- +1.26 (3 gained, 0 lost) with LINE +0.41 -- but three
+instances on a 239-slice is not evidence (p=.25), and the dose-response is
+non-monotone (0.05 is worse than 0.15 on LINE), which is what noise looks
+like. Recorded as a lead, not a result: it needs the two largest slices
+(Go 428, JS/TS 580) before it can be believed either way. Every PPR arm is
+at or below baseline on FUNCTION; none gains an instance it did not lose.
+
+Taking the floor from 0.3 to 0.05 -- a 6x change in the one constant the
+diagnosis blamed -- moves a handful of spans either way.
 
 ## Why: the tax is the seat COUNT, measured from the bundles
 
