@@ -170,6 +170,25 @@ tokens.** Not one column of that sentence is inferred: FILE is identical to
 the 8192 arm instance-for-instance, the FUNCTION recovery is significant,
 and the FUNCTION/LINE comparison to shipped is a measured null.
 
-At 10240 (+25% tokens) the fraction is above shipped (.2553); exact metrics
-pending.
+### Exact metrics at 10240
+
+| Rust arm | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped (cap 16 @ 8192) | 60.25 | 19.67 | 7.53 | .2431 | 8464 |
+| sg + cap 32 @ 9216 | 65.27 | 20.50 | 7.11 | .2397 | 9597 |
+| **sg + cap 32 @ 10240** | **65.27** | **20.92** | 7.11 | **.2553** | 10620 |
+
+Paired on FUNCTION: vs sg32@8192 **8 gained / 0 lost, p = .008**; vs shipped
+4 gained / 1 lost, p = .375. Fraction is now ABOVE shipped (.2553 vs .2431).
+
+Dose-response is clean and monotone: 8192 -> 9216 -> 10240 gives FUNCTION
+17.57 -> 20.50 -> 20.92 and fraction .2103 -> .2397 -> .2553, with FILE
+pinned at 65.27 throughout (0 flips at every budget). LINE plateaus at 7.11
+(one instance under shipped's 7.53) at both budgets -- the one column not
+fully recovered, and the smallest-n column (17-18 instances).
+
+**Operating points on Rust, all proven at instance level:**
+* +13% tokens: +5.02 FILE, FUNCTION/LINE at shipped (null vs shipped).
+* +25% tokens: +5.02 FILE, FUNCTION +1.25 and fraction +.012 over shipped,
+  LINE -0.42. Directionally better than shipped on depth, not significantly.
 

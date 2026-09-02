@@ -7,3 +7,5 @@ shard 1/1: rows [0:428] of the sorted split (428 instances)
 [50/428] cli__cli-1986                                 elapsed=155s (ok) ok=50 err=0
 [75/428] cli__cli-2404                                 elapsed=211s (ok) ok=75 err=0
 [100/428] cli__cli-3490                                 elapsed=275s (ok) ok=100 err=0
+[125/428] cli__cli-4003                                 elapsed=342s (ok) ok=125 err=0
+[150/428] cli__cli-4543                                 elapsed=408s (ok) ok=149 err=1
