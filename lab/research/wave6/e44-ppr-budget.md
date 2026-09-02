@@ -138,3 +138,23 @@ budget among the returned files cannot uncouple them.** The lever that does
 -- proven in E29 (FILE budget-invariant, depth fully budget-recoverable) --
 is budget. E46 therefore measures the smallest budget at which sg + cap 32
 restores shipped FUNCTION/LINE on Rust while keeping its +5.02 FILE.
+
+## E46 — the depth-neutral budget, Rust, sg + cap 32 (FILE identical by construction)
+
+| budget | FILE | fraction | frac gain/loss | Wilcoxon | tokens | premium |
+|---|---|---|---|---|---|---|
+| shipped, cap 16 | 60.25 | .2431 | -- | -- | 8464 | -- |
+| 8192, cap 32 | 65.27 | .2103 | -- | -- | 8577 | +1% |
+| **9216**, cap 32 | 65.27 (0 flips) | **.2397** | 51 / 7 | **p < 1e-4** | 9597 | **+13%** |
+| **10240**, cap 32 | 65.27 (0 flips) | **.2553** | 67 / 3 | **p < 1e-4** | 10620 | +25% |
+
+Budget does exactly what E29 predicted and what no redistribution could:
+at 9216 the fraction is back to the shipped .2431 within .003; at 10240 it
+is ABOVE shipped. Both are significant beyond doubt (51/7 and 67/3
+instance-level gains/losses), and the file set is provably unchanged.
+
+So on Rust the genuine operating point is: **+5.02 FILE with shipped-level
+depth for ~13% more tokens**, or **+5.02 FILE with depth above shipped for
+~25%**. FUNCTION/LINE at these budgets are being scored to confirm on the
+exact metrics.
+

@@ -7,3 +7,12 @@ shard 1/1: rows [0:239] of the sorted split (239 instances)
 [50/239] clap-rs__clap-2609                            elapsed=152s (ok) ok=50 err=0
 [75/239] clap-rs__clap-2993                            elapsed=229s (ok) ok=75 err=0
 [100/239] clap-rs__clap-3874                            elapsed=322s (ok) ok=100 err=0
+[125/239] clap-rs__clap-4474                            elapsed=413s (ok) ok=125 err=0
+[150/239] nushell__nushell-10613                        elapsed=510s (ok) ok=150 err=0
+[175/239] sharkdp__fd-1079                              elapsed=593s (ok) ok=175 err=0
+[200/239] tokio-rs__tokio-5244                          elapsed=642s (ok) ok=200 err=0
+[225/239] tokio-rs__tracing-1252                        elapsed=737s (ok) ok=225 err=0
+[239/239] tokio-rs__tracing-2897                        elapsed=791s (ok) ok=239 err=0
+
+engine version: roust 0.3.2 (b923189, clean)
+wrote 239 records (239 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e44/arms/rust_b9216.jsonl
