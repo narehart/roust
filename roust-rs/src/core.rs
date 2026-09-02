@@ -3406,6 +3406,17 @@ pub struct SelectParams<'a> {
     /// and their pass-1 seat, so nothing is starved. Language-agnostic,
     /// deterministic, O(edges x 25) per query.
     pub ppr_budget: f64,
+    /// E44b: how PPR reshapes the budget map. `false` (multiplicative, the
+    /// first cut) SQUASHES files with little PPR mass toward the floor --
+    /// which on Rust moved the fraction the wrong way (-.0167 at 0.5,
+    /// 20 gains / 29 losses): the seeds already sit near score 1.0, so
+    /// squashing mostly starves the ADDITIONS, and the multi-file gold lives
+    /// in the additions. `true` (additive) instead RAISES PPR-connected files
+    /// toward seed-level funding without lowering anyone:
+    ///     scores[f] += lambda * ppr_n[f]
+    /// -- the E11b pattern (an additive boost into the budget map lifted
+    /// FUNCTION 4G/0L) and E20's one positive finding (rescue by insertion).
+    pub ppr_additive: bool,
     /// E37: language-agnostic candidate generation from the SYMBOL-REFERENCE
     /// graph -- file A is a neighbour of file B when A references a rare
     /// symbol that B defines. Both halves already exist and are already
@@ -3480,6 +3491,7 @@ impl<'a> Default for SelectParams<'a> {
             eligible_floor: 0.15,
             symbol_graph: false,
             ppr_budget: 0.0,
+            ppr_additive: false,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -4053,7 +4065,8 @@ pub fn select_files(
                 for f in &out {
                     let r = rank.get(f).copied().unwrap_or(0.0) / mx;
                     let cur = scores.get(f).copied().unwrap_or(0.0);
-                    scores.insert(f.clone(), cur * ((1.0 - lam) + lam * r));
+                    let v = if params.ppr_additive { cur + lam * r } else { cur * ((1.0 - lam) + lam * r) };
+                    scores.insert(f.clone(), v);
                 }
             }
         }

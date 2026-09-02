@@ -173,6 +173,12 @@ struct Args {
     #[arg(long, default_value_t = 0.0)]
     ppr_budget: f64,
 
+    /// E44b: additive PPR budget boost (scores[f] += lambda * ppr) instead of
+    /// the multiplicative squash. Raises graph-connected additions toward
+    /// seed-level funding without lowering anyone.
+    #[arg(long)]
+    ppr_additive: bool,
+
     /// E39: index build files (build.gradle, Cargo.toml, CMakeLists.txt,
     /// package.json, pom.xml, go.mod, Makefile ...). Genuinely useful to
     /// return -- real changes often edit them -- and they carry gold that the
@@ -670,6 +676,7 @@ fn main() {
         k_lex: args.k_lex,
         symbol_graph: args.symbol_graph,
         ppr_budget: args.ppr_budget,
+        ppr_additive: args.ppr_additive,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,
