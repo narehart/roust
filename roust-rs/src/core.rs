@@ -91,6 +91,88 @@ pub fn tail_seat() -> (i64, usize) {
     (TAIL_SEAT_TOKENS.load(std::sync::atomic::Ordering::Relaxed), TAIL_SEAT_AFTER.load(std::sync::atomic::Ordering::Relaxed))
 }
 
+// E50: persistent side-cache of structural block spans. After E49 the
+// tree-sitter block pass over the RETURNED files was 40-60% of a query on
+// Rust/C++ repos (nlohmann 619 -> 262 ms without it), and those spans depend
+// only on a file's text and the block mode -- never on the query. Cached in
+// `.roust/blocks.json` keyed by (relpath, FNV-1a of the text, mode tag),
+// filled lazily on first use and flushed at exit (temp + rename, so a
+// concurrent reader never sees a torn file). Query-dependent window blocks
+// are NOT cached. Output-identical by construction: same text, same mode,
+// same spans.
+static BLOCK_CACHE: std::sync::Mutex<Option<BlockCache>> = std::sync::Mutex::new(None);
+
+struct BlockCache {
+    path: std::path::PathBuf,
+    map: HashMap<String, Vec<(usize, usize)>>,
+    dirty: bool,
+    hits: usize,
+    misses: usize,
+}
+
+pub fn fnv1a64(s: &str) -> u64 {
+    let mut h: u64 = 0xcbf29ce484222325;
+    for b in s.as_bytes() {
+        h ^= *b as u64;
+        h = h.wrapping_mul(0x100000001b3);
+    }
+    h
+}
+
+pub fn block_cache_open(repo_path: &std::path::Path) {
+    let path = repo_path.join(".roust").join("blocks.json");
+    let map: HashMap<String, Vec<(usize, usize)>> = std::fs::read(&path)
+        .ok()
+        .and_then(|b| serde_json::from_slice(&b).ok())
+        .unwrap_or_default();
+    *BLOCK_CACHE.lock().unwrap() = Some(BlockCache { path, map, dirty: false, hits: 0, misses: 0 });
+}
+
+/// (hits, misses) for this process, or None if the cache was never opened.
+pub fn block_cache_stats() -> Option<(usize, usize)> {
+    BLOCK_CACHE.lock().unwrap().as_ref().map(|c| (c.hits, c.misses))
+}
+
+pub fn block_cache_save() {
+    let mut guard = BLOCK_CACHE.lock().unwrap();
+    if let Some(c) = guard.as_mut() {
+        if !c.dirty {
+            return;
+        }
+        if let Some(dir) = c.path.parent() {
+            let _ = std::fs::create_dir_all(dir);
+        }
+        let tmp = c.path.with_extension("json.tmp");
+        if let Ok(bytes) = serde_json::to_vec(&c.map) {
+            if std::fs::write(&tmp, bytes).is_ok() {
+                let _ = std::fs::rename(&tmp, &c.path);
+            }
+        }
+        c.dirty = false;
+    }
+}
+
+fn cached_blocks(rel: &str, text: &str, tag: &str, compute: impl FnOnce() -> Vec<(usize, usize)>) -> Vec<(usize, usize)> {
+    let key = format!("{rel}|{:016x}|{tag}", fnv1a64(text));
+    {
+        let mut guard = BLOCK_CACHE.lock().unwrap();
+        if let Some(c) = guard.as_mut() {
+            if let Some(v) = c.map.get(&key) {
+                c.hits += 1;
+                return v.clone();
+            }
+        }
+    }
+    let v = compute();
+    let mut guard = BLOCK_CACHE.lock().unwrap();
+    if let Some(c) = guard.as_mut() {
+        c.misses += 1;
+        c.map.insert(key, v.clone());
+        c.dirty = true;
+    }
+    v
+}
+
 static BUILD_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static CHANGELOG_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static DOCS_DATA_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
@@ -4452,6 +4534,21 @@ fn shape_header_start(node: &tree_sitter::Node) -> Option<usize> {
 /// `ts_blocks`/`grammar_blocks`, but with `shape_header_start` in place of
 /// the per-language allowlist. Returns None when no grammar is linked for
 /// the file, so the caller can fall back exactly as before.
+/// E50: cached form of `shape_blocks`. `None` is cached as an empty vec
+/// under a distinct tag so the option round-trips exactly.
+fn shape_blocks_cached(text: &str, rel: &str) -> Option<Vec<(usize, usize)>> {
+    if BLOCK_CACHE.lock().unwrap().is_none() {
+        return shape_blocks(text, rel);
+    }
+    let key_tag = "shape";
+    let v = cached_blocks(rel, text, key_tag, || shape_blocks(text, rel).map(|mut s| { s.insert(0, (0, 1)); s }).unwrap_or_default());
+    if v.is_empty() {
+        None
+    } else {
+        Some(v[1..].to_vec())
+    }
+}
+
 fn shape_blocks(text: &str, rel: &str) -> Option<Vec<(usize, usize)>> {
     let language: tree_sitter::Language = if is_ts_family(rel) {
         if rel.ends_with(".tsx") {
@@ -5439,19 +5536,21 @@ pub fn pack_regions(
         // blocks instead of fixed windows -- the flag-OFF path is
         // byte-identical to the pre-E23 engine (same two branches).
         let use_ts_blocks = blocks != BlockMode::Windows;
+        // E50: the four content-only block kinds go through the persistent
+        // block cache; the query-dependent window fallback never does.
         let spans = if rel.ends_with(".py") {
-            python_blocks(text)
-        } else if let Some(shape) = shape_blocks(text, rel).filter(|_| blocks == BlockMode::Shape) {
+            cached_blocks(rel, text, "py", || python_blocks(text))
+        } else if let Some(shape) = shape_blocks_cached(text, rel).filter(|_| blocks == BlockMode::Shape) {
             // E25: same walker, headers chosen by shape instead of by a
             // per-language node-kind list.
             shape
         } else if use_ts_blocks && is_ts_family(rel) {
-            ts_blocks(text, rel)
+            cached_blocks(rel, text, "ts", || ts_blocks(text, rel))
         } else if let Some(fam) = sitter_family(rel).filter(|_| use_ts_blocks) {
             // WS2 grammar batch (campaign #56): Java/Go/Rust/C/C++ get the
             // same structural treatment under the same adopted default
             // (--no-structural-blocks restores windows for ALL non-Python).
-            grammar_blocks(text, fam)
+            cached_blocks(rel, text, &format!("grammar:{fam:?}"), || grammar_blocks(text, fam))
         } else {
             window_blocks(text, &hits, 30)
         };
