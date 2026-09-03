@@ -44,4 +44,10 @@ Bundle SHA-256 old vs new binary, and warm median wall time (3 runs):
 | apache/dubbo (Java) | identical | 2669 ms | 381 ms | 7.0x |
 
 All 113 engine tests pass unchanged. Full-slice identity (C, 128 instances,
-payload + regions dict vs the pre-fix binary): IDENTITY_PLACEHOLDER
+payload + regions dict vs the pre-fix binary): **128/128 payload-identical, regions dict identical**.
+Harness wall time for that slice: 463 s pre-fix → 171 s memoized (2.7×), same 128 instances, same machine.
+
+## Status
+
+Pure performance, output proven identical at instance level on a full slice.
+Adopted via PR (see ledger).
