@@ -259,11 +259,16 @@ scored with the same scorer. FILE must equal each slice's 8192 arm.
 | C | 128 | 56.25 (0 flips) | .2251 | .2102 | **.2249** | 15/2 | p=.002 | +13% |
 | C++ | 129 | 68.99 (0 flips) | .2988 | .2900 | **.3090** | **35/0** | p<1e-4 | +12% |
 | Go | 428 | 70.79 (0 flips) | .4102 | .3740 | **.4101** | **86/10** | p<1e-4 | +12% |
+| JS/TS | 580 | 52.07 (0 flips) | .2616 | .2276 | .2426 | **62/4** | p<1e-4 | +12% |
 
-Five for five: at 9216 the line fraction returns to shipped (Java and C++
-above it -- C++ 35 gains / 0 losses; Go lands on shipped to the fourth
-decimal, .4101 vs .4102, from 86 gains / 10 losses), with 0 FILE flips and
-12-15% more tokens. JS/TS is running.
+Six for six on direction, five for six on full restoration: at 9216 the
+line fraction returns to shipped on Rust, Java, C, C++ and Go (Java and C++
+above it; Go to the fourth decimal), with 0 FILE flips and 12-15% more
+tokens. **JS/TS is the exception**: 62 gains / 4 losses (p<1e-4) recovers
+.015 of its .034 tax, leaving the fraction at .2426 against shipped .2616.
+JS/TS carried the largest depth tax of any slice at cap 32 (its bundles
+carry the most files), so 9216 is not its depth-neutral budget -- by the
+Rust/Go dose-response, roughly 10.5-11k would be. Not measured.
 
 ### Exact metrics, Java and C at 9216
 
