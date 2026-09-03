@@ -1,0 +1,7 @@
+engine provenance: binary 0e7a0ad != HEAD 40bbf60 but roust-rs/ is identical between them -- accepted.
+engine version: roust 0.3.2 (0e7a0ad, clean)
+EXTRA_ENGINE_FLAGS=['--tail-seat-tokens', '40', '--tail-seat-after', '16']
+[25/300] django__django-11848                          elapsed=152s (ok) ok=25 err=0
+[50/300] django__django-13220                          elapsed=316s (ok) ok=50 err=0
+[75/300] django__django-14580                          elapsed=462s (ok) ok=75 err=0
+[100/300] django__django-15814                          elapsed=599s (ok) ok=100 err=0

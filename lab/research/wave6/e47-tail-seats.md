@@ -61,3 +61,19 @@ sg + cap 32 @ 8192, tail seat after rank 16, n = 239:
 
 The stub returns ~80% of what the +13% budget bought (fraction .2361 vs
 .2397 at 9216), for nothing. The pass criteria set above are all met.
+
+## Wide replication, tail seat 40 after rank 16, sg + cap 32 @ 8192
+
+| slice | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|
+| Rust | 239 | 65.27 (0 flips) | +.0258 | 46/17 | p<1e-4 | 8577 -> 8578 |
+| **Java** | 128 | 51.56 (0 flips) | **+.0343** | **22/1** | **p=.0001** | 9049 -> 9055 |
+| C | 128 | 56.25 (0 flips) | +.0064 | 15/8 | p=.20 | 8602 -> 8605 |
+| Go | 428 | running | | | | |
+| JS/TS | 580 | running | | | | |
+| C++ | 129 | running | | | | |
+
+Java -- the slice with the largest depth tax at cap 32 (FUNCTION -4.69) --
+gets the largest refund: 22 gains to 1 loss on fraction, tokens flat. C is
+directionally positive and underpowered. Exact FUNCTION/LINE chained.
+

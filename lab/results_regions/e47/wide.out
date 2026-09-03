@@ -1,0 +1,4 @@
+ARM_DONE java_ts40 rc=0 11:59:42
+java sg32 -> tail seat 40 n=128 FILE 51.56->51.56 (flips=0) | frac d=+0.03425 gain/loss=22/1 wilcoxon p=0.0001 | tok 9049->9055
+ARM_DONE c_ts40 rc=0 12:00:15
+c sg32 -> tail seat 40 n=128 FILE 56.25->56.25 (flips=0) | frac d=+0.00643 gain/loss=15/8 wilcoxon p=0.2002 | tok 8602->8605

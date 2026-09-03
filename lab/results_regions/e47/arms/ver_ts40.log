@@ -1,0 +1,9 @@
+engine provenance: binary 0e7a0ad != HEAD 40bbf60 but roust-rs/ is identical between them -- accepted.
+engine version: roust 0.3.2 (0e7a0ad, clean)
+EXTRA_ENGINE_FLAGS=['--tail-seat-tokens', '40', '--tail-seat-after', '16']
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/swebench_verified_heldout.parquet
+pad_lines=5 len_exp=0.85 max_additions=0 budget=8192 instances=None
+[25/407] django__django-11087                          elapsed=130s (ok) ok=25 err=0
+[50/407] django__django-11734                          elapsed=285s (ok) ok=50 err=0
+[75/407] django__django-12774                          elapsed=447s (ok) ok=75 err=0
+[100/407] django__django-13568                          elapsed=590s (ok) ok=100 err=0
