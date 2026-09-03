@@ -192,3 +192,19 @@ fully recovered, and the smallest-n column (17-18 instances).
 * +25% tokens: +5.02 FILE, FUNCTION +1.25 and fraction +.012 over shipped,
   LINE -0.42. Directionally better than shipped on depth, not significantly.
 
+## E46 wide — does 9216 replicate across languages?
+
+Same config (sg + cap 32), same budget 9216, full slices. Depth references
+scored with the same scorer. FILE must equal each slice's 8192 arm.
+
+| slice | n | FILE @8192 = @9216 | frac shipped | frac sg32@8192 | **frac @9216** | frac gain/loss | Wilcoxon | tok premium vs shipped |
+|---|---|---|---|---|---|---|---|---|
+| Rust | 239 | 65.27 (0 flips) | .2431 | .2103 | **.2397** | 51/7 | p<1e-4 | +13% |
+| Java | 128 | 51.56 (0 flips) | .4152 | .3940 | **.4182** | **16/0** | p=.0004 | +15% |
+| C | 128 | 56.25 (0 flips) | .2251 | .2102 | **.2249** | 15/2 | p=.002 | +13% |
+| C++ | 129 | -- | .2988 | .2900 | pending | | | |
+
+Three for three so far: at 9216 the line fraction returns to shipped (Java
+slightly above it), with 0 FILE flips and 13-15% more tokens. Exact
+FUNCTION/LINE for Java and C are being scored.
+
