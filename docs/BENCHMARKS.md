@@ -29,8 +29,8 @@ convention explicitly.
 
 ```text title="SWE-bench, Agentless metric"
                             FILE   FUNCTION   LINE   fraction
-roust — Lite (300)          92.33     54.67   44.33     .528
-roust — Verified (407)      92.38     47.67   36.86     .484
+roust — Lite (300)          92.33     57.67   46.00     .537
+roust — Verified (407)      92.38     48.89   37.84     .494
 Agentless GPT-4o            69.70     52.00   35.30        —
 archex (BM25 default)       56.00     38.30   25.70        —
 archex (vector/hybrid)      57.30     40.70   27.70        —
@@ -65,14 +65,14 @@ Artifact: `lab/results_regions/agentless_metric_full2294.json`.
 
 ```text title="Multi-SWE-bench, corrected language-aware scorer"
 slice (n)                  FILE   FUNCTION   LINE   fraction
-python — Lite (300)       92.33      54.67   44.33     .528
-python — Verified (407)   92.38      47.67   36.86     .484
-javascript/typescript     46.38      30.86   13.97     .259
-java (128)                49.22      39.06   14.06     .427
-go (428)                  64.95      29.44   17.52     .415
-rust (239)                60.25      20.50    7.53     .241
-c (128)                   51.56      27.34   13.28     .224
-c++ (129)                 65.89      19.38    7.75     .293
+python — Lite (300)       92.33      57.67   46.00     .537
+python — Verified (407)   92.38      48.89   37.84     .494
+javascript/typescript     46.38      31.55   14.14     .264
+java (128)                49.22      39.84   14.84     .433
+go (428)                  64.95      32.94   18.46     .423
+rust (239)                60.25      20.92    7.53     .249
+c (128)                   51.56      28.12   13.28     .225
+c++ (129)                 65.89      20.93    8.53     .311
 ```
 
 One capability note before the corrections: `.rb` and `.pony` sources are indexed
