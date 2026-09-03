@@ -19,6 +19,24 @@ only -- a typo'd or pre-release-suffixed tag does not trigger a publish).
 
 ---
 
+## v0.4.0 — shipped 2026-09-04
+
+First engine release since 0.3.x (pack floor 0.15, tiered pass-1 seats,
+memoized padding guard, per-file block/token cache; see `CHANGELOG.md`).
+Followed the per-release steps exactly: bump PR (#87), `workflow_dispatch`
+dry run green on all five targets, then `git tag v0.4.0 && git push origin
+v0.4.0`. Verified after the tag run: npm `roust-cli` 0.4.0 with all five
+platform packages pinned at 0.4.0, crates.io `roust` 0.4.0, GitHub Release
+with 10 assets, and a clean `npm install roust-cli@0.4.0` that runs
+`roust 0.4.0 (a09f52c, clean)`; both registry pages render the
+version-agnostic README. The GitHub Release body is the CHANGELOG section
+(`gh release edit --notes-file`), not the auto-generated compare link.
+
+Two runbook notes from this release: the commit-msg hook requires a
+conventional-commit type, so the bump commit is `chore(release): X.Y.Z ...`
+(a bare `release:` type is rejected); and `deploy-docs.yml` does not run on
+a bump commit that touches no `docs/` file, which is expected.
+
 ## v0.3.0 / v0.3.1 — shipped 2026-08-26
 
 Published and verified:
