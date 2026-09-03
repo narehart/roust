@@ -362,8 +362,41 @@ real); vs shipped **6 gained / 16 lost, p=.052** -- still below shipped.
 largest depth tax in the set (FUNCTION -2.93, LINE -2.59 at cap 32). So on
 JS/TS the +5.69 FILE at 9216 comes with FUNCTION -1.73 and LINE -1.55
 against shipped, and that must be said rather than folded into the
-five-language average. The dose-response predicts ~10.5-11k for neutrality;
-10752 is running.
+five-language average. The dose-response predicts ~10.5-11k for neutrality.
+
+### JS/TS at 10752 -- its depth-neutral point, measured
+
+| JS/TS arm (n=580) | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 46.38 | 31.21 | 14.14 | .2616 | 8532 |
+| sg32 @ 9216 | 52.07 | 29.48 | 12.59 | .2426 | 9757 |
+| **sg32 @ 10752** | **52.07** | **31.72** | 13.97 | **.2666** | 11259 |
+
+Paired FUNCTION: vs @9216 **14 gained / 1 lost, p=.001**; vs sg32@8192
+20 / 0; vs shipped 9 / 6, p=.61 (null = restored). Fraction vs shipped
+81 gains / 35 losses, **p=.0019 -- above shipped**. LINE one instance under.
+
+So JS/TS follows the same law as the other five, at a higher price: its
+depth-neutral budget is ~10.7k (+32% tokens) rather than ~9.2k (+13%),
+because its cap-32 bundles carry the most files and therefore the most
+mandatory seats.
+
+### Six languages, each at its depth-neutral budget, vs shipped
+
+| slice | n | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|---|
+| Go | 428 | 64.95 -> **70.79** | 28.97 -> 29.44 | 16.59 -> 16.36 | .4102 -> .4102 | +12% |
+| JS/TS | 580 | 46.38 -> **52.07** | 31.21 -> 31.72 | 14.14 -> 13.97 | .2616 -> .2666 | +32% |
+| Rust | 239 | 60.25 -> **65.27** | 19.67 -> 20.50 | 7.53 -> 7.11 | .2431 -> .2397 | +13% |
+| C | 128 | 51.56 -> **56.25** | 28.12 -> 28.12 | 13.28 -> 13.28 | .2251 -> .2251 | +13% |
+| C++ | 129 | 65.89 -> **68.99** | 17.83 -> 18.60 | 6.98 -> 7.75 | .2988 -> .3091 | +12% |
+| Java | 128 | 49.22 -> **51.56** | 36.72 -> 37.50 | 14.06 -> 13.28 | .4152 -> .4182 | +15% |
+
+Over all 1,632 instances: **FILE +4.9 weighted**, FUNCTION +0.5, LINE -0.2,
+fraction +.004. Every FILE delta identity-gated against the same config at
+8192; every FUNCTION comparison against shipped a measured null or gain;
+no depth column significantly below shipped on any slice. One config, no
+per-language code, +12-15% tokens on five slices and +32% on JS/TS.
 
 ## E45c — Python dual gate for the floor (adoption gate, shipped settings)
 
