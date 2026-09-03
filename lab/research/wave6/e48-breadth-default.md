@@ -13,10 +13,50 @@ Baselines are the post-E47 Python arms (= the published references).
 | arm | FILE | FUNCTION | LINE | fraction | frac G/L | Wilcoxon | tokens |
 |---|---|---|---|---|---|---|---|
 | shipped (E47 defaults) | 92.33 | 57.67 | 46.00 | .5372 | -- | -- | 8560 |
-| + symbol-graph + cap 32 | **94.00** (5 gained / 0 lost) | pending | pending | .5267 | 6/11 | p=.080 | 8707 (+1.7%) |
+| + symbol-graph + cap 32 | **94.00** (5 gained / 0 lost) | **54.33** | 43.67 | .5267 | 6/11 | p=.080 | 8707 (+1.7%) |
 
 FILE +1.67 on Lite -- five more instances fully located, none lost -- for
-+147 tokens. Fraction -.0105 (6 gains / 11 losses, p=.08): the depth cost
-is small but the sign is the E28 sign. Exact FUNCTION/LINE decide.
++147 tokens. But FUNCTION **57.67 -> 54.33, 2 gained / 12 lost, McNemar
+p=.013**, and LINE 46.00 -> 43.67. The stub refunded most of the cap-32
+depth tax on the non-Python slices; on Lite it does not: the E28 sign is
+back, now on the exact metric and significant.
 
-## Verified (n=407) and JS/TS stub 25 (n=580): running
+## Verified (n=407)
+
+| arm | FILE | fraction | frac G/L | Wilcoxon | tokens |
+|---|---|---|---|---|---|
+| shipped (E47 defaults) | 92.38 | .4937 | -- | -- | 8559 |
+| + symbol-graph + cap 32 | **94.59** (9 flips) | .4818 | 10/20 | **p=.030** | 8704 (+1.7%) |
+
+Same shape on the held-out set: FILE up, fraction significantly down
+(10 gains / 20 losses). Exact: FUNCTION **48.89 -> 47.67** (3 gained /
+8 lost, p=.23), LINE **37.84 -> 36.36**. Not individually significant on
+FUNCTION, but every depth column moves the wrong way on both sets.
+
+## Verdict: breadth stays an opt-in operating point, not a default
+
+Both Python gates say the same thing, now with the stub in place: cap 32 +
+symbol graph buys FILE (+1.7 Lite, +2.2 Verified) and pays for it in depth
+(Lite FUNCTION -3.3, p=.013; Verified fraction p=.030). The campaign's
+adoption rule is "wins or draws everywhere"; this loses on the held-out
+depth columns, so it is **not adopted**. It remains the documented operating
+point for callers who want breadth: `--symbol-graph --max-additions 32`,
+ideally with `--budget ~9216` (E46) to restore depth.
+
+This also closes the question E28 left open: the depth cost of cap 32 on
+Python was never only a budget artifact (E29) nor only a seat-count
+artifact (E47) -- after both fixes, a residual, significant depth loss
+remains on Python at cap 32. Python's bundles have the highest lexical
+precision in the set, so widening admission there dilutes pass 2 more than
+it does elsewhere.
+
+## JS/TS stub 25 at cap 32 (n=580)
+
+| arm | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|
+| shipped | 46.38 | 31.21 | 14.14 | .2616 |
+| cap 32, stub 40 | 52.07 | 29.66 | 12.59 | .2421 |
+| cap 32, stub 25 | 52.07 (0 flips) | 29.48 | 12.59 | .2425 |
+
+stub 25 is indistinguishable from stub 40 (FUNCTION 29.48 vs 29.66, 0G/1L; fraction +.0003, 15/31) and still FUNCTION −1.73 vs shipped (4G/14L, p=.031). Stub size is not the lever; JS/TS's cap-32 depth residual is real at this budget (E46: ~10.7k restores it).
+
