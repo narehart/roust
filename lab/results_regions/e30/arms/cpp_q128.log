@@ -1,0 +1,11 @@
+engine version: roust 0.3.2 (7c8f6bb, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_cpp.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3a_repos/cpp_base
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=128 budget=8192 instances=/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e29/instances/cpp.txt
+shard 1/1: rows [0:55] of the sorted split (55 instances)
+[25/55] nlohmann__json-3332                           elapsed=385s (ok) ok=25 err=0
+[50/55] simdjson__simdjson-543                        elapsed=720s (ok) ok=50 err=0
+[55/55] simdjson__simdjson-954                        elapsed=782s (ok) ok=55 err=0
+
+engine version: roust 0.3.2 (7c8f6bb, clean)
+wrote 55 records (55 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e30/arms/cpp_q128.jsonl

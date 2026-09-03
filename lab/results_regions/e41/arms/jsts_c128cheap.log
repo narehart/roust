@@ -1,0 +1,32 @@
+engine version: roust 0.3.2 (943b7f5, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_jsts.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_repos_e23
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=128 budget=8192 instances=None
+shard 1/1: rows [0:580] of the sorted split (580 instances)
+[25/580] darkreader__darkreader-6747                   elapsed=36s (ok) ok=25 err=0
+[50/580] iamkun__dayjs-1611                            elapsed=91s (ok) ok=50 err=0
+[75/580] iamkun__dayjs-857                             elapsed=153s (ERR) ok=74 err=1
+[100/580] mui__material-ui-24794                        elapsed=305s (ok) ok=99 err=1
+[125/580] mui__material-ui-26413                        elapsed=559s (ok) ok=124 err=1
+[150/580] mui__material-ui-30561                        elapsed=860s (ok) ok=149 err=1
+[175/580] mui__material-ui-33812                        elapsed=1165s (ok) ok=174 err=1
+[200/580] mui__material-ui-34829                        elapsed=1465s (ok) ok=199 err=1
+[225/580] mui__material-ui-36426                        elapsed=1771s (ok) ok=224 err=1
+[250/580] mui__material-ui-39071                        elapsed=2114s (ok) ok=249 err=1
+[275/580] sveltejs__svelte-10291                        elapsed=2316s (ok) ok=274 err=1
+[300/580] sveltejs__svelte-10917                        elapsed=2457s (ok) ok=299 err=1
+[325/580] sveltejs__svelte-11378                        elapsed=2637s (ok) ok=324 err=1
+[350/580] sveltejs__svelte-12047                        elapsed=2826s (ok) ok=349 err=1
+[375/580] sveltejs__svelte-12474                        elapsed=3018s (ok) ok=374 err=1
+[400/580] sveltejs__svelte-13008                        elapsed=3224s (ok) ok=399 err=1
+[425/580] sveltejs__svelte-13445                        elapsed=3427s (ok) ok=424 err=1
+[450/580] sveltejs__svelte-13774                        elapsed=3623s (ok) ok=449 err=1
+[475/580] sveltejs__svelte-14440                        elapsed=3834s (ok) ok=474 err=1
+[500/580] sveltejs__svelte-14993                        elapsed=4046s (ok) ok=499 err=1
+[525/580] sveltejs__svelte-9811                         elapsed=4189s (ok) ok=524 err=1
+[550/580] vuejs__core-11165                             elapsed=4344s (ok) ok=549 err=1
+[575/580] vuejs__core-9442                              elapsed=4505s (ok) ok=574 err=1
+[580/580] vuejs__core-9751                              elapsed=4535s (ok) ok=579 err=1
+
+engine version: roust 0.3.2 (943b7f5, clean)
+wrote 580 records (579 ok, 1 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e41/arms/jsts_c128cheap.jsonl

@@ -52,6 +52,59 @@ pub const CFAMILY_EXTENSIONS: &[&str] = &[".c", ".h", ".cc", ".cpp", ".cxx", ".h
 
 static CFAMILY_EXT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
+// E45 (ADOPTED default 0.15, PR pending): the packer's per-file BUDGET FLOOR.
+// Both packing passes weight a region by `(PACK_FLOOR + scores[file])`; at
+// the pre-E45 0.3 every
+// admitted file has a baseline claim of 0.3 against a top file's ~1.3, so a
+// wide admitted set gets nearly EVEN budget -- the mechanism behind every
+// breadth gain's depth tax. Lowering the floor makes allocation more
+// proportional to the (lexical) file score. Stored as f64 bits so the
+// twenty-odd pack_regions unit tests keep their signature; default 0.3 is
+// byte-identical to the shipped engine.
+static PACK_FLOOR_BITS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0x3FC3333333333333); // 0.15f64 (E45 adopted; was 0.3)
+
+pub fn set_pack_floor(f: f64) {
+    PACK_FLOOR_BITS.store(f.to_bits(), std::sync::atomic::Ordering::Relaxed);
+}
+pub fn pack_floor() -> f64 {
+    f64::from_bits(PACK_FLOOR_BITS.load(std::sync::atomic::Ordering::Relaxed))
+}
+
+static BUILD_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static CHANGELOG_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static DOCS_DATA_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_build_files(on: bool) {
+    BUILD_FILES.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn build_files_enabled() -> bool {
+    BUILD_FILES.load(std::sync::atomic::Ordering::Relaxed)
+}
+pub fn set_changelog_files(on: bool) {
+    CHANGELOG_FILES.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn changelog_files_enabled() -> bool {
+    CHANGELOG_FILES.load(std::sync::atomic::Ordering::Relaxed)
+}
+pub fn set_docs_data_files(on: bool) {
+    DOCS_DATA_FILES.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn docs_data_files_enabled() -> bool {
+    DOCS_DATA_FILES.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+// E32: Java + C-family import-edge resolution. Default OFF, so every default
+// arm's import graph -- and therefore every published number -- is unchanged.
+static IMPORT_EDGES_V2: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_import_edges_v2(on: bool) {
+    IMPORT_EDGES_V2.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn import_edges_v2_enabled() -> bool {
+    IMPORT_EDGES_V2.load(std::sync::atomic::Ordering::Relaxed)
+}
+
 pub fn set_cfamily_ext(on: bool) {
     CFAMILY_EXT.store(on, std::sync::atomic::Ordering::Relaxed);
 }
@@ -102,10 +155,51 @@ pub fn path_indexable(rel: &str) -> bool {
     if code_suffix_allowed_with(suffix, cfamily_ext_enabled()) {
         return true;
     }
+    if build_files_enabled() && BUILD_FILE_RE.is_match(rel) {
+        return true;
+    }
+    if changelog_files_enabled() && CHANGELOG_FILE_RE.is_match(rel) {
+        return true;
+    }
+    if docs_data_files_enabled() && DOCS_DATA_EXTENSIONS.contains(&suffix) {
+        return true;
+    }
     ext_v2_enabled()
         && EXT_V2_EXTENSIONS.contains(&suffix)
         && !EXT_V2_FIXTURE_RE.is_match(rel)
 }
+
+// E39: two classes of non-source gold that the corpus never indexed, kept
+// DELIBERATELY SEPARATE because they differ in real-world value, not just in
+// score. Measured share of gold files that are non-source: Python Verified
+// 0.2%, Go 4.7%, C 4.2%, Rust 18.5%, C++ 23.3%, Java 25.3%, JS/TS 28.7% --
+// SWE-bench Verified was curated to pure source changes and Multi-SWE-bench
+// was not, so a large part of the apparent cross-language gap is which files
+// each benchmark calls an answer.
+//
+// BUILD: genuinely useful to return -- a real change to a dependency or a
+// target often does require editing these.
+static BUILD_FILE_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"(?i)(^|/)(build\.gradle(\.kts)?|settings\.gradle(\.kts)?|pom\.xml|Cargo\.toml|CMakeLists\.txt|Makefile|package\.json|go\.mod|setup\.py|pyproject\.toml)$").unwrap()
+});
+// CHANGELOG: a benchmark artifact. These are "gold" only because the fixing
+// PR also wrote a release note; no user wants CREDITS-2.x back from a bug
+// query. Indexing them raises the measured score WITHOUT improving the tool,
+// so it is a separate flag and must never be adopted silently.
+static CHANGELOG_FILE_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"(?i)(^|/)(release-notes/|CHANGELOG|CHANGES|HISTORY|CREDITS|AUTHORS|NEWS|VERSION-|CREDITS-)").unwrap()
+});
+
+// E41: the broad non-source class. JS/TS's non-source gold is DISPERSED --
+// its top-6 basenames cover only 14% (template.md, select.json,
+// autocomplete.json ...), component docs and fixtures rather than a handful
+// of changelogs -- so the narrow CHANGELOG rule cannot reach it and in fact
+// made jsts WORSE (52.07 -> 50.00) by adding corpus without adding gold.
+// This class lifts the jsts ceiling from 76.68% to 97.58%. It is the most
+// dilutive rule in the engine (measured up to +39% corpus on logstash).
+pub const DOCS_DATA_EXTENSIONS: &[&str] = &[
+    ".md", ".rst", ".txt", ".adoc", ".asciidoc", ".json", ".yml", ".yaml", ".toml",
+];
 
 /// Pure-function form of `code_suffix_allowed` -- unit tests exercise this
 /// directly instead of toggling the process-global (tests run in parallel
@@ -2516,6 +2610,28 @@ static RS_MOD_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?m)^\s*(?:pub
 static RS_USE_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"(?m)^\s*(?:pub\s+)?use\s+(?:crate|super|self)::([\w:]+)").unwrap());
 static GO_IMPORT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#""([\w./\-]+)""#).unwrap());
+// E32: Java and C-family import edges. `file_import_targets` covered only
+// .py/.js-ts/.rs/.go, so .java/.c/.cpp/.h files had an EMPTY import graph --
+// no candidate generation, no Guarantee-1 seat. That is why Java is inert to
+// every admission cap (20.00 at 16, 32 and 128) and why a second hop over its
+// graph was a byte-identical no-op: there were no edges to walk.
+static JAVA_IMPORT_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?m)^\s*import\s+(?:static\s+)?([\w.]+)\s*;").unwrap());
+static C_INCLUDE_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r#"(?m)^\s*#\s*include\s+"([^"]+)""#).unwrap());
+
+/// E32: basename -> files index, built ONCE per corpus so Java/C-family
+/// import resolution is a hash lookup plus a short suffix check instead of a
+/// full corpus scan per import statement (that was O(imports x files) per
+/// file and made a Java slice unrunnable).
+fn basename_index(files: &[String]) -> HashMap<String, Vec<String>> {
+    let mut idx: HashMap<String, Vec<String>> = HashMap::new();
+    for rel in files {
+        let base = rel.rsplit('/').next().unwrap_or(rel).to_string();
+        idx.entry(base).or_default().push(rel.clone());
+    }
+    idx
+}
 
 fn py_module_index(files: &[String]) -> HashMap<String, String> {
     let mut idx = HashMap::new();
@@ -2551,6 +2667,7 @@ fn file_import_targets(
     text: &str,
     pyidx: &HashMap<String, String>,
     fileset: &HashSet<&String>,
+    baseidx: &HashMap<String, Vec<String>>,
 ) -> HashSet<String> {
     let mut targets: HashSet<String> = HashSet::new();
 
@@ -2658,6 +2775,64 @@ fn file_import_targets(
                 }
             }
         }
+    } else if import_edges_v2_enabled() && rel.ends_with(".java") {
+        // `import a.b.C;` -> the file whose path ENDS WITH a/b/C.java, so the
+        // usual src/main/java/... prefixes resolve without hard-coding them.
+        // A trailing `.*` (wildcard import) names a package, not a type, so it
+        // resolves to the files directly under that package directory.
+        for cap in JAVA_IMPORT_RE.captures_iter(text) {
+            let fqcn = cap.get(1).unwrap().as_str();
+            if fqcn.starts_with("java.") || fqcn.starts_with("javax.") {
+                continue;
+            }
+            if fqcn.ends_with(".*") {
+                // A wildcard import names a package, not a type. Resolving it
+                // would mean a corpus scan per statement; the same-directory
+                // channel already covers package-mates, so it is skipped.
+                continue;
+            }
+            let simple = fqcn.rsplit('.').next().unwrap_or(fqcn);
+            let suffix = format!("/{}.java", fqcn.replace('.', "/"));
+            let bare = format!("{}.java", fqcn.replace('.', "/"));
+            if let Some(cands) = baseidx.get(&format!("{simple}.java")) {
+                for other in cands {
+                    if other.as_str() != rel && (other.ends_with(&suffix) || other.as_str() == bare) {
+                        targets.insert(other.clone());
+                    }
+                }
+            }
+        }
+    } else if import_edges_v2_enabled()
+        && (rel.ends_with(".c")
+        || rel.ends_with(".h")
+        || rel.ends_with(".cc")
+        || rel.ends_with(".cpp")
+        || rel.ends_with(".cxx")
+        || rel.ends_with(".hpp")
+        || rel.ends_with(".hh"))
+    {
+        // `#include "foo/bar.h"` resolves first relative to the including
+        // file's directory (the C rule), then by path suffix anywhere in the
+        // corpus, which covers -I include roots without knowing build flags.
+        // Angle-bracket includes are system headers and are skipped.
+        let base = py_parent(rel);
+        for cap in C_INCLUDE_RE.captures_iter(text) {
+            let spec = cap.get(1).unwrap().as_str();
+            let joined = normpath_join(base, spec);
+            if fileset.contains(&joined) && joined != rel {
+                targets.insert(joined);
+                continue;
+            }
+            let suffix = format!("/{spec}");
+            let simple = spec.rsplit('/').next().unwrap_or(spec);
+            if let Some(cands) = baseidx.get(simple) {
+                for other in cands {
+                    if other.as_str() != rel && (other.ends_with(&suffix) || other.as_str() == spec) {
+                        targets.insert(other.clone());
+                    }
+                }
+            }
+        }
     } else if rel.ends_with(".go") {
         for cap in GO_IMPORT_RE.captures_iter(text) {
             let pkg = cap.get(1).unwrap().as_str();
@@ -2675,11 +2850,12 @@ fn file_import_targets(
 pub fn build_import_graph(corpus: &Corpus) -> EdgeMap {
     let mut edges: EdgeMap = HashMap::new();
     let pyidx = py_module_index(&corpus.files);
+    let baseidx = basename_index(&corpus.files);
     let fileset: HashSet<&String> = corpus.files.iter().collect();
 
     for rel in &corpus.files {
         let text = &corpus.text[rel];
-        let targets = file_import_targets(rel, text, &pyidx, &fileset);
+        let targets = file_import_targets(rel, text, &pyidx, &fileset, &baseidx);
         for t in targets {
             edges.entry(rel.clone()).or_default().insert(t.clone());
             edges.entry(t).or_default().insert(rel.clone());
@@ -2705,8 +2881,9 @@ pub fn build_import_graph(corpus: &Corpus) -> EdgeMap {
 pub fn update_import_graph_for_files(corpus: &Corpus, edges: &mut EdgeMap, old_text: &HashMap<String, String>) {
     let fileset: HashSet<&String> = corpus.files.iter().collect();
     let pyidx = py_module_index(&corpus.files);
+    let baseidx = basename_index(&corpus.files);
 
-    let authored = |rel: &str, text: &str| -> HashSet<String> { file_import_targets(rel, text, &pyidx, &fileset) };
+    let authored = |rel: &str, text: &str| -> HashSet<String> { file_import_targets(rel, text, &pyidx, &fileset, &baseidx) };
 
     let mut new_authored: HashMap<String, HashSet<String>> = HashMap::new();
     let mut old_authored: HashMap<String, HashSet<String>> = HashMap::new();
@@ -2762,12 +2939,10 @@ pub fn update_import_graph_for_files(corpus: &Corpus, edges: &mut EdgeMap, old_t
     }
 }
 
-/// Random walk with restart -- present for structural parity with
-/// lanes2.py's `personalized_pagerank`, but note it is DEAD CODE relative
-/// to the actual CLI/driver wiring: `select_files(use_ppr=True)` never
-/// calls it (its own "structural expansion" block reimplements a different
-/// additive scheme directly). Kept for completeness only, never invoked.
-#[allow(dead_code)]
+/// Random walk with restart (parity with lanes2.py's `personalized_pagerank`:
+/// alpha 0.15, 25 iterations, same-directory edges at weight 0.35). Dead
+/// code from the port until E44, which uses it to CONCENTRATE packing budget
+/// on query-connected, graph-central files (see `SelectParams::ppr_budget`).
 pub fn personalized_pagerank(
     seeds: &IndexMap<String, f64>,
     edges: &EdgeMap,
@@ -3073,6 +3248,7 @@ fn compute_test_bridge(corpus: &Corpus, bm: &IndexMap<String, f64>) -> Vec<(Stri
     let s_top = top_tests[0].1;
 
     let pyidx = py_module_index(&corpus.files);
+    let baseidx = basename_index(&corpus.files);
     let fileset: HashSet<&String> = corpus.files.iter().collect();
     // file -> (raw_strength_sum, via_test, via_contrib, call_hits_via)
     let mut cand: IndexMap<String, (f64, String, f64, i64)> = IndexMap::new();
@@ -3081,7 +3257,7 @@ fn compute_test_bridge(corpus: &Corpus, bm: &IndexMap<String, f64>) -> Vec<(Stri
             Some(x) => x,
             None => continue,
         };
-        let mut targets: Vec<String> = file_import_targets(t, text, &pyidx, &fileset)
+        let mut targets: Vec<String> = file_import_targets(t, text, &pyidx, &fileset, &baseidx)
             .into_iter()
             .filter(|f| impl_prior(f) == 1.0)
             .collect();
@@ -3232,6 +3408,62 @@ pub struct SelectParams<'a> {
     pub cochange_strong: i64,
     /// E28: cap on pool additions beyond the lexical picks (16 = shipped).
     pub max_additions: i64,
+    /// E44: personalized-PageRank BUDGET concentration (0.0 = shipped, off).
+    /// Every breadth gain in E28-E42 paid in depth because `pack_regions`
+    /// spreads budget almost evenly over admitted files (its per-file
+    /// multiplier `0.3 + scores[f]` spans only ~0.6-1.3). E11b proved the
+    /// `scores` map IS the depth lever (raising a gold file's entry pulled
+    /// budget to it: FUNCTION 4G/0L), and E20 found gold files are
+    /// graph-CENTRAL. So: random-walk-with-restart from the BM25 seeds over
+    /// the import (+symbol) graph, normalised over the returned set, and the
+    /// budget map is sharpened multiplicatively:
+    ///     scores[f] *= (1 - lambda) + lambda * ppr_n[f]
+    /// The FILE SET is untouched by construction (this runs after selection),
+    /// so at fixed cap and budget any FUNCTION/LINE/fraction change is a pure
+    /// depth effect. Files with zero PPR mass keep (1-lambda) of their score
+    /// and their pass-1 seat, so nothing is starved. Language-agnostic,
+    /// deterministic, O(edges x 25) per query.
+    pub ppr_budget: f64,
+    /// E44b: how PPR reshapes the budget map. `false` (multiplicative, the
+    /// first cut) SQUASHES files with little PPR mass toward the floor --
+    /// which on Rust moved the fraction the wrong way (-.0167 at 0.5,
+    /// 20 gains / 29 losses): the seeds already sit near score 1.0, so
+    /// squashing mostly starves the ADDITIONS, and the multi-file gold lives
+    /// in the additions. `true` (additive) instead RAISES PPR-connected files
+    /// toward seed-level funding without lowering anyone:
+    ///     scores[f] += lambda * ppr_n[f]
+    /// -- the E11b pattern (an additive boost into the budget map lifted
+    /// FUNCTION 4G/0L) and E20's one positive finding (rescue by insertion).
+    pub ppr_additive: bool,
+    /// E37: language-agnostic candidate generation from the SYMBOL-REFERENCE
+    /// graph -- file A is a neighbour of file B when A references a rare
+    /// symbol that B defines. Both halves already exist and are already
+    /// cached (`def_index` for definitions, `tf` for references), so this
+    /// needs no per-language syntax at all: it is the Aider repo-map
+    /// relationship rather than seven different import parsers. NOTE this is
+    /// GENERATION, not ranking -- shared identifiers were previously found
+    /// useless for DISCRIMINATING among candidates already in the pool
+    /// (E20/WS3d), which says nothing about proposing candidates that the
+    /// pool never contained.
+    pub symbol_graph: bool,
+    /// E33: the pool eligibility floor -- a candidate survives only if its
+    /// add_score is at least this fraction of the best candidate's (0.15 =
+    /// shipped). This cut runs BEFORE any admission rule, so it bounds every
+    /// cap: with 2-hop generation proposing far more candidates, it is a
+    /// plausible binding constraint that no admission lever can reach.
+    pub eligible_floor: f64,
+    /// E32: how many hops of the import graph the candidate GENERATOR walks
+    /// from each source (1 = shipped). E31 split the slices into
+    /// admission-bound (Go, Python: cap 16 -> 128 moved FILE +25.17/+22.73)
+    /// and generation-bound (Java, Rust: exactly 0.00 at cap 32 AND 128), so
+    /// for the inert slices the pool never proposes the gold at any cap.
+    pub import_hops: i64,
+    /// E30: how many of each source's owned candidates Guarantee 2 seats
+    /// (1 = shipped behaviour). Unlike `max_additions`, which widens the
+    /// untargeted global tail, this widens breadth *per source*, so it
+    /// spends its admissions on ownership diversity rather than on the
+    /// next-ranked candidate overall.
+    pub seats_per_source: i64,
     pub anchors: Option<&'a [(String, f64)]>,
     pub use_testbridge: bool,
     pub use_docsbridge: bool,
@@ -3272,6 +3504,12 @@ impl<'a> Default for SelectParams<'a> {
             cochange: None,
             cochange_strong: 5,
             max_additions: 16,
+            seats_per_source: 1,
+            import_hops: 1,
+            eligible_floor: 0.15,
+            symbol_graph: false,
+            ppr_budget: 0.0,
+            ppr_additive: false,
             anchors: None,
             use_testbridge: false,
             use_docsbridge: false,
@@ -3416,12 +3654,13 @@ pub fn select_files(
     if let Some(tfs) = params.trace_files {
         if !tfs.is_empty() {
             let pyidx = py_module_index(&corpus.files);
+            let baseidx = basename_index(&corpus.files);
             let fileset: HashSet<&String> = corpus.files.iter().collect();
             let direct: HashSet<&str> = tfs.iter().map(|s| s.as_str()).collect();
             let mut spill: BTreeSet<String> = BTreeSet::new();
             for f in tfs.iter() {
                 if let Some(text) = corpus.text.get(f) {
-                    for t in file_import_targets(f, text, &pyidx, &fileset) {
+                    for t in file_import_targets(f, text, &pyidx, &fileset, &baseidx) {
                         if !direct.contains(t.as_str()) {
                             spill.insert(t);
                         }
@@ -3557,6 +3796,37 @@ pub fn select_files(
     let fileset: HashSet<&String> = corpus.files.iter().collect();
     let lex_picks_set: HashSet<&String> = lex_picks.iter().collect();
 
+    // E37: normalise each defined symbol through the SAME stemmer the term
+    // index uses, so a definition can be matched against a referencing file's
+    // `tf` keys. Rare symbols only: a name defined in many files, or common
+    // across the corpus, carries no locality. Values are sorted so the walk
+    // is deterministic despite `def_index` being a HashMap.
+    let mut symdef: HashMap<String, Vec<String>> = HashMap::new();
+    if params.symbol_graph {
+        let ndocs = corpus.files.len().max(1) as f64;
+        let mut syms: Vec<&String> = corpus.def_index.keys().collect();
+        syms.sort();
+        for sym in syms {
+            let key = stem(&py_lower(sym));
+            if key.chars().count() <= 3 {
+                continue;
+            }
+            if (corpus.df.get(&key).copied().unwrap_or(0) as f64) / ndocs >= 0.05 {
+                continue;
+            }
+            if let Some(defs) = corpus.def_index.get(sym) {
+                if defs.len() > 3 {
+                    continue;
+                }
+                symdef.entry(key).or_default().extend(defs.iter().cloned());
+            }
+        }
+        for v in symdef.values_mut() {
+            v.sort();
+            v.dedup();
+        }
+    }
+
     for s in &sources {
         let w = bm_n.get(s).copied().unwrap_or(0.0);
         let mut imp: Vec<String> = Vec::new();
@@ -3572,6 +3842,17 @@ pub fn select_files(
         // that way.
         if let Some(adj) = edges.get(s) {
             neighbors.extend(adj.iter().cloned());
+            // E32: second hop. `edges` is symmetric (both directions are
+            // inserted), so this reaches both what a 1-hop neighbour imports
+            // and what else imports it. Deduped below so the walk stays
+            // deterministic and a file seen at hop 1 keeps its hop-1 position.
+            if params.import_hops >= 2 {
+                for h in adj.iter() {
+                    if let Some(adj2) = edges.get(h) {
+                        neighbors.extend(adj2.iter().cloned());
+                    }
+                }
+            }
         }
         if let Some(sd) = same_dir.get(py_parent(s)) {
             neighbors.extend(sd.iter().cloned());
@@ -3582,6 +3863,23 @@ pub fn select_files(
                     neighbors.push(c.clone());
                 }
             }
+        }
+        if params.symbol_graph {
+            if let Some(tfs) = corpus.tf.get(s) {
+                for term in tfs.keys() {
+                    if let Some(defs) = symdef.get(term) {
+                        for f in defs {
+                            if f != s && fileset.contains(f) && !neighbors.contains(f) {
+                                neighbors.push(f.clone());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if params.import_hops >= 2 {
+            let mut seen: HashSet<String> = HashSet::new();
+            neighbors.retain(|c| seen.insert(c.clone()));
         }
 
         for c in &neighbors {
@@ -3620,7 +3918,8 @@ pub fn select_files(
     let mut additions: Vec<String> = Vec::new();
     if !ranked_pool.is_empty() {
         let pmax = add_score(&ranked_pool[0], &pool);
-        let eligible: Vec<String> = ranked_pool.iter().filter(|c| add_score(c, &pool) >= 0.15 * pmax).cloned().collect();
+        let eligible: Vec<String> =
+            ranked_pool.iter().filter(|c| add_score(c, &pool) >= params.eligible_floor * pmax).cloned().collect();
         let eligible_set: HashSet<&String> = eligible.iter().collect();
 
         let n = corpus.files.len().max(1) as f64;
@@ -3682,11 +3981,12 @@ pub fn select_files(
         for c in &eligible {
             groups.entry(owner.get(c).cloned().unwrap_or_default()).or_default().push(c.clone());
         }
+        let seats = params.seats_per_source.max(1) as usize;
         for s in &sources {
             if let Some(grp) = groups.get(s) {
-                if let Some(first) = grp.first() {
-                    if !additions.contains(first) {
-                        additions.push(first.clone());
+                for c in grp.iter().take(seats) {
+                    if !additions.contains(c) {
+                        additions.push(c.clone());
                     }
                 }
             }
@@ -3739,6 +4039,55 @@ pub fn select_files(
         let v = 0.3 + 0.5 * fb_n.get(f).copied().unwrap_or(0.0);
         let cur = scores.get(f).copied().unwrap_or(0.0);
         scores.insert(f.clone(), cur.max(v));
+    }
+
+    // E44: sharpen the BUDGET map toward query-connected, graph-central files.
+    // Runs strictly after the returned set `out` is fixed, so it cannot add
+    // or drop a file -- only redistribute depth among the files already
+    // being returned.
+    if params.ppr_budget > 0.0 {
+        let lam = params.ppr_budget.min(1.0);
+        // Restart mass = the BM25 seeds, weighted by their normalised score.
+        let mut seeds: IndexMap<String, f64> = IndexMap::new();
+        for f in &lex_picks {
+            let w = bm_n.get(f).copied().unwrap_or(0.0);
+            if w > 0.0 {
+                seeds.insert(f.clone(), w);
+            }
+        }
+        if !seeds.is_empty() {
+            // Walk over the import graph, plus symbol-reference edges among the
+            // returned set when the symbol graph is on (same relation E37 uses
+            // for generation: A references a rare symbol B defines).
+            let mut walk_edges: EdgeMap = edges.clone();
+            if params.symbol_graph && !symdef.is_empty() {
+                let outset: HashSet<&String> = out.iter().collect();
+                for a in &out {
+                    if let Some(tfs) = corpus.tf.get(a) {
+                        for term in tfs.keys() {
+                            if let Some(defs) = symdef.get(term) {
+                                for b in defs {
+                                    if b != a && outset.contains(b) {
+                                        walk_edges.entry(a.clone()).or_default().insert(b.clone());
+                                        walk_edges.entry(b.clone()).or_default().insert(a.clone());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            let rank = personalized_pagerank(&seeds, &walk_edges, &same_dir, 0.15, 25, 0.35);
+            let mx = out.iter().map(|f| rank.get(f).copied().unwrap_or(0.0)).fold(0.0_f64, f64::max);
+            if mx > 0.0 {
+                for f in &out {
+                    let r = rank.get(f).copied().unwrap_or(0.0) / mx;
+                    let cur = scores.get(f).copied().unwrap_or(0.0);
+                    let v = if params.ppr_additive { cur + lam * r } else { cur * ((1.0 - lam) + lam * r) };
+                    scores.insert(f.clone(), v);
+                }
+            }
+        }
     }
 
     let (out2, anchor_promotions) = apply_anchor_promotions(out, params.anchors);
@@ -5130,7 +5479,7 @@ pub fn pack_regions(
             if tok == 0 {
                 continue;
             }
-            let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (0.3 + scores.get(rel).copied().unwrap_or(0.0));
+            let gain = (weight(&seg_terms) + 0.5 * n_hits as f64) * (pack_floor() + scores.get(rel).copied().unwrap_or(0.0));
             let ns = if w_name != 0.0 { name_score(region_symbol(&def_lines, a, b), &tset) } else { 0.0 };
             let tok_pow = (tok.max(1) as f64).powf(len_exp);
             candidates.push(Candidate {
@@ -5543,7 +5892,7 @@ pub fn pack_regions(
             let c = &candidates[i];
             let diff: HashSet<String> = c.terms.difference(&covered).cloned().collect();
             let new_weight = weight(&diff);
-            let base = (new_weight + 0.25 * weight(&c.terms) + 0.1) * (0.3 + scores.get(&c.file).copied().unwrap_or(0.0))
+            let base = (new_weight + 0.25 * weight(&c.terms) + 0.1) * (pack_floor() + scores.get(&c.file).copied().unwrap_or(0.0))
                 / c.tok_pow;
             // same undiluted-by-size name bonus as pass 1's selection metric
             // (see pack_regions' doc comment) -- otherwise a name-anchored

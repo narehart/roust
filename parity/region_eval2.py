@@ -126,7 +126,24 @@ def check_engine_provenance(allow_stale: bool) -> str:
     except (subprocess.SubprocessError, OSError):
         pass
 
+    # E46 ops fix: a SHA mismatch only matters if the ENGINE changed between
+    # the binary's commit and HEAD. Docs/lab commits move HEAD constantly and
+    # were forcing a rebuild before every launch -- a rebuild that swaps the
+    # shared binary under any live arm (the exact hazard the guard exists to
+    # prevent). So: on mismatch, ask git whether roust-rs/ differs between the
+    # two commits; identical engine tree == not stale. Unknown/unresolvable
+    # binary SHAs stay a hard mismatch.
     sha_mismatch = repo_sha is not None and engine_sha != "unknown" and engine_sha != repo_sha
+    if sha_mismatch:
+        try:
+            d = subprocess.run(["git", "diff", "--quiet", engine_sha, "HEAD", "--", "roust-rs/"],
+                               cwd=REPO_ROOT, capture_output=True, text=True, timeout=10)
+            if d.returncode == 0:
+                print(f"engine provenance: binary {engine_sha} != HEAD {repo_sha} but roust-rs/ is "
+                      f"identical between them -- accepted.", file=sys.stderr, flush=True)
+                sha_mismatch = False
+        except (subprocess.SubprocessError, OSError):
+            pass
     stale = sha_mismatch or engine_dirty_label == "dirty" or bool(repo_dirty)
 
     if stale:
@@ -466,6 +483,22 @@ def main() -> None:
                           "seating); omitted by default (binary default: off)")
     ap.add_argument("--shape-blocks", action="store_true",
                      help="E25 (campaign #56 follow-on): append --shape-blocks to every roust invocation -- zero-config SHAPE-based structural headers in place of the per-language node-kind allowlists")
+    ap.add_argument("--import-edges-v2", action="store_true",
+                     help="E32/E36 (per-language parity campaign): append --import-edges-v2 to every roust invocation -- resolve Java (`import a.b.C;`) and C-family (`#include \"foo.h\"`) import edges, which the import graph never covered at all. Python repos DO contain .c/.cpp under the adopted --cfamily-ext default, so this gate is load-bearing rather than a formality.")
+    ap.add_argument("--symbol-graph", action="store_true",
+                     help="E37 (per-language parity campaign): append --symbol-graph -- language-agnostic candidate generation from the symbol-reference graph (a file that references a rare symbol another file defines becomes its neighbour); no per-language import syntax.")
+    ap.add_argument("--build-files", action="store_true",
+                     help="E39: append --build-files -- index build files (build.gradle, Cargo.toml, CMakeLists.txt, package.json ...), which carry gold the corpus could never retrieve.")
+    ap.add_argument("--changelog-files", action="store_true",
+                     help="E39: append --changelog-files -- index changelogs/release notes. These are gold ONLY because the fixing PR wrote a release note, so this raises the score without improving the tool.")
+    ap.add_argument("--docs-data-files", action="store_true",
+                     help="E41: append --docs-data-files -- index .md/.rst/.txt/.json/.yml/.toml. Needed for JS/TS, whose non-source gold is dispersed docs and fixtures; the most dilutive rule.")
+    ap.add_argument("--ppr-budget", type=float, default=0.0,
+                     help="E44: append --ppr-budget L -- concentrate packing budget on query-connected, graph-central files via personalized PageRank (engine default 0.0 = off). Does not change the returned file set. 0.0 here is a SENTINEL meaning forward NO flag at all.")
+    ap.add_argument("--ppr-additive", action="store_true",
+                     help="E44b: append --ppr-additive -- additive PPR budget boost instead of the multiplicative squash.")
+    ap.add_argument("--pack-floor", type=float, default=-1.0,
+                     help="E45: append --pack-floor F -- the packer per-file budget floor (engine default 0.3). -1.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--max-additions", type=int, default=0,
                      help="E28 (per-language parity campaign): append --max-additions N to every roust invocation -- the pool breadth cap (engine default 16 = shipped). 0 (the default here) is a SENTINEL meaning forward NO flag at all, so a default arm's argv is byte-identical to every pre-E28 default arm's.")
     ap.add_argument("--ext-v2", action="store_true",
@@ -509,6 +542,22 @@ def main() -> None:
         EXTRA_ENGINE_FLAGS.append("--ext-v2")
     if args.max_additions:
         EXTRA_ENGINE_FLAGS.extend(["--max-additions", str(args.max_additions)])
+    if args.import_edges_v2:
+        EXTRA_ENGINE_FLAGS.append("--import-edges-v2")
+    if args.symbol_graph:
+        EXTRA_ENGINE_FLAGS.append("--symbol-graph")
+    if args.build_files:
+        EXTRA_ENGINE_FLAGS.append("--build-files")
+    if args.changelog_files:
+        EXTRA_ENGINE_FLAGS.append("--changelog-files")
+    if args.docs_data_files:
+        EXTRA_ENGINE_FLAGS.append("--docs-data-files")
+    if args.ppr_budget:
+        EXTRA_ENGINE_FLAGS.extend(["--ppr-budget", str(args.ppr_budget)])
+    if args.ppr_additive:
+        EXTRA_ENGINE_FLAGS.append("--ppr-additive")
+    if args.pack_floor >= 0.0:
+        EXTRA_ENGINE_FLAGS.extend(["--pack-floor", str(args.pack_floor)])
 
     if not ROUST_BIN.exists():
         raise SystemExit(f"roust binary not found at {ROUST_BIN}")
@@ -535,6 +584,8 @@ def main() -> None:
                                      args.lexboost, args.lexboost_graph, args.trace_boost,
                                      args.no_trace_boost, args.file_score, args.test_bridge)
             rec["max_additions"] = args.max_additions
+            rec["import_edges_v2"] = args.import_edges_v2
+            rec["ppr_budget"] = args.ppr_budget
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
             if rec["error"] is None:

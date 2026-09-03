@@ -1,0 +1,498 @@
+# E44 — personalized PageRank as a BUDGET lever (depth without giving up breadth)
+
+## Why this, grounded in what is already proven
+
+Every breadth gain in E28-E42 paid in depth. The mechanism is in
+`pack_regions`: the pass-2 marginal score is proportional to
+`(0.3 + scores[file])`, and admitted additions enter `scores` at
+`0.3 + 0.5*fb_n` -- so the per-file multiplier spans only ~0.6-1.3 and a
+wide admitted set gets nearly even budget. Two facts on record say the
+`scores` map is the right lever and centrality the right signal:
+
+* **E11b**: raising a gold file's `scores` entry pulled budget toward it and
+  lifted FUNCTION 4G/0L on Lite -- the map IS the depth lever.
+* **E20**: gold files are disproportionately graph-central; excluding hubs
+  taxed exactly the files being rescued.
+
+The literature scan ([LocAgent](https://arxiv.org/abs/2503.09089),
+[ARISE](https://arxiv.org/html/2605.03117v1), the
+[repo-level survey list](https://github.com/YerbaPage/Awesome-Repo-Level-Code-Generation))
+converges on the same reading: file-level localization is well served by
+lexical signals; **function/line level is the bottleneck**. That is the
+column this campaign has been spending.
+
+## Mechanism
+
+`--ppr-budget <lambda>`: random walk with restart (alpha .15, 25 iters,
+same-directory edges at .35 -- the Python reference's dead-code defaults)
+from the BM25 seeds over the import graph, plus symbol-reference edges among
+the returned set when `--symbol-graph` is on. Normalised over the returned
+set and applied to the budget map AFTER selection, so the FILE SET cannot
+change -- that is a built-in identity gate, and any FUNCTION/LINE/fraction
+movement at fixed cap and budget is a pure depth effect. Language-agnostic,
+deterministic, O(edges x 25) per query (tokens +/-3).
+
+## Rust, cap 32, budget 8192, full slice (n=239)
+
+| arm | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|
+| shipped | 60.25 | 19.67 | 7.53 | .2431 |
+| symbol-graph + cap 32 | **65.27** | 17.57 | 6.28 | .2103 |
+| + PPR multiplicative 0.5 | 65.27 (0 flips) | 16.32 | 5.86 | .1936 |
+| + PPR multiplicative 0.8 | 65.27 (0 flips) | 17.15 | 5.86 | .2023 |
+
+**Identity gate passes** (FILE 65.27 -> 65.27, zero per-instance flips at
+both strengths): the change is provably budget-only.
+
+**The multiplicative form is NEGATIVE on depth.** Fraction -.0167 (20 gains /
+29 losses, Wilcoxon p=.12) at 0.5 and -.0080 (32/36, p=.57) at 0.8;
+FUNCTION -1.25 / -0.42; LINE -0.42 at both. Not significant, but the sign is
+consistent across every column and both doses, and it is dose-monotone.
+
+Reading: the seeds already sit near score 1.0, so `scores *= (1-l) + l*ppr`
+mostly SQUASHES the additions -- and the multi-file gold lives in the
+additions. Concentrating on the seeds is concentrating on the wrong files.
+
+## E44b — additive form: also negative
+
+`--ppr-additive`: `scores[f] += lambda * ppr_n[f]`. Raises graph-connected
+files toward seed-level funding without lowering anyone -- the E11b pattern,
+and E20's one positive mechanism (rescue by insertion, not smoothing).
+
+| arm | FILE | FUNCTION | LINE | fraction | frac gain/loss | Wilcoxon |
+|---|---|---|---|---|---|---|
+| symbol-graph + cap 32 | 65.27 | 17.57 | 6.28 | .2103 | -- | -- |
+| + PPR mult 0.5 | 65.27 (0 flips) | 16.32 | 5.86 | .1936 | 20/29 | p=.12 |
+| + PPR mult 0.8 | 65.27 (0 flips) | 17.15 | 5.86 | .2023 | 32/36 | p=.57 |
+| + PPR add 0.3 | 65.27 (0 flips) | 17.15 | 6.28 | .2057 | 23/22 | p=.45 |
+| + PPR add 0.6 | 65.27 (0 flips) | 16.74 | 5.86 | .1929 | 20/27 | **p=.038** |
+
+**Falsified in both forms.** Every PPR arm is at or below the baseline on
+FUNCTION, LINE and fraction; the additive 0.6 arm is significantly negative.
+The identity gate held on all four (FILE 65.27 -> 65.27, zero per-instance
+flips), so this is a clean result about the SIGNAL, not a bug in the plumbing.
+
+Reading: E20's "gold files are graph-central" is a statement about which
+FILES are gold relative to the non-gold pool. It does not carry over to
+where the gold LINES are among the files already returned -- there, the
+lexical marginal (query-term coverage) is already the better allocator, and
+any graph reweighting on top of it is noise or worse. The `scores` map IS
+the depth lever (E11b), but PageRank is the wrong thing to put in it.
+
+## E45 — the packer's budget floor: NULL
+
+`--pack-floor` (default 0.3, byte-identical) lowers every file's baseline
+claim so allocation follows the lexical score more steeply.
+
+| arm | FILE | fraction delta | gain/loss | Wilcoxon |
+|---|---|---|---|---|
+| floor 0.15 | 65.27 (0 flips) | +.0051 | 14/11 | p=.77 |
+| floor 0.05 | 65.27 (0 flips) | -.0026 | 24/23 | p=.72 |
+
+On the fraction proxy nothing moves. The exact metrics, scored:
+
+| arm | FILE | FUNCTION | LINE | fraction | FUNCTION gain/loss vs sg32 | McNemar |
+|---|---|---|---|---|---|---|
+| symbol-graph + cap 32 | 65.27 | 17.57 | 6.28 | .2103 | -- | -- |
+| floor 0.15 | 65.27 (0 flips) | **18.83** | **6.69** | .2154 | **3 / 0** | p=.25 |
+| floor 0.05 | 65.27 (0 flips) | 17.99 | 5.86 | .2077 | 3 / 2 | p=1.0 |
+| PPR mult 0.5 | 65.27 | 16.32 | 5.86 | .1936 | 0 / 3 | p=.25 |
+| PPR mult 0.8 | 65.27 | 17.15 | 5.86 | .2023 | 2 / 3 | p=1.0 |
+| PPR add 0.3 | 65.27 | 17.15 | 6.28 | .2057 | 0 / 1 | p=1.0 |
+| PPR add 0.6 | 65.27 | 16.74 | 5.86 | .1929 | 0 / 2 | p=.50 |
+
+Floor 0.15 is the **first depth-only arm in this sequence to move FUNCTION
+up at fixed FILE** -- +1.26 (3 gained, 0 lost) with LINE +0.41 -- but three
+instances on a 239-slice is not evidence (p=.25), and the dose-response is
+non-monotone (0.05 is worse than 0.15 on LINE), which is what noise looks
+like. Recorded as a lead, not a result: it needs the two largest slices
+(Go 428, JS/TS 580) before it can be believed either way. Every PPR arm is
+at or below baseline on FUNCTION; none gains an instance it did not lose.
+
+Taking the floor from 0.3 to 0.05 -- a 6x change in the one constant the
+diagnosis blamed -- moves a handful of spans either way on Rust.
+
+### E45b — the floor-0.15 lead replicates on Go
+
+| slice | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|
+| Rust | 239 | 65.27 (0 flips) | +.0051 | 14/11 | p=.77 | 8577 -> 8576 |
+| **Go** | **428** | 70.79 (0 flips) | **+.0135** | **35/15** | **p=.0014** | 8592 -> 8592 |
+| JS/TS | 580 | 52.07 (0 flips) | +.0016 | 12/13 | p=.87 | 8749 -> 8748 |
+
+On Go the effect is real: a significant depth gain with the file set
+pinned and **zero token cost** -- the first budget-neutral depth improvement
+in the sequence. But it is **not universal**: JS/TS at n=580 is a clean null
+on the exact metrics too (FUNCTION 28.28 -> 28.45, 2 gained / 1 lost,
+p=1.0; LINE 11.55 -> 11.72; fraction +.0016), and Rust's 14/11 was
+underpowered. So the floor is a
+Go-specific win on the evidence so far, not a general lever. Why Go and not
+JS/TS is unexplained; the honest statement is one significant slice out of
+three, and it must pass the Python gate before it can be a default.
+
+Exact metrics on Go:
+
+| Go arm (n=428) | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 64.95 | 28.97 | 16.59 | .4102 | 8480 |
+| sg + cap 32 | 70.79 | 25.00 | 13.55 | .3740 | 8592 |
+| **sg + cap 32 + floor 0.15** | **70.79** | **26.64** | **14.72** | **.3876** | 8592 |
+
+Paired FUNCTION vs sg32: **8 gained / 1 lost, McNemar p = .039.** LINE
++1.17, fraction +.0136, tokens unchanged, FILE pinned. The floor recovers
+1.64 of Go's 3.97-point FUNCTION tax for free; the rest still needs budget.
+
+### E46c — do floor and budget compose? (Go, n=428)
+
+| comparison | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|
+| sg32@8192 -> floor+9216 | 70.79 (0 flips) | **+.0396** | 91/14 | p<1e-4 | 8592 -> 9617 |
+| @9216 alone -> +floor | 70.79 (0 flips) | +.0035 | 24/19 | p=.065 | 9618 -> 9617 |
+| **shipped -> floor+9216** | **64.95 -> 70.79** | +.0035 | 51/44 | p=.40 | 8467 -> 9617 |
+
+Weakly additive: on top of the budget the floor adds +.0035 (p=.065,
+marginal). Exact metrics for the combined arm:
+
+| Go arm (n=428) | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 64.95 | 28.97 | 16.59 | .4102 | 8480 |
+| sg32 @ 9216 | 70.79 | 29.44 | 16.36 | .4102 | 9618 |
+| **sg32 + floor 0.15 @ 9216** | **70.79** | **30.61** | **16.82** | **.4137** | 9617 |
+
+Paired FUNCTION: vs @9216 alone 6 gained / 1 lost (p=.125); vs floor@8192
+18 / 1 (p<.001); vs shipped 12 / 5 (p=.14). **Every depth column lands
+above shipped** -- FUNCTION +1.64, LINE +0.23, fraction +.0035 -- at
++5.84 FILE (25 more instances) and +13.6% tokens. The composition is
+directionally additive on all three depth columns; the increment over
+budget alone is not individually significant (p=.125), which is the honest
+reading of a 6/1 split.
+
+## Why: the tax is the seat COUNT, measured from the bundles
+
+| Rust arm | files/bundle | spans/bundle | spans/file | files with exactly 1 span | tokens |
+|---|---|---|---|---|---|
+| shipped (cap 16) | 29.9 | 55.3 | 1.85 | 75% | 8464 |
+| symbol-graph + cap 32 | 42.5 | 65.7 | 1.55 | 81% | 8577 |
+| + floor 0.05 | 42.5 | 64.1 | 1.51 | 84% | 8569 |
+
+* The harness counts a file as retrieved only if it has **>= 1 span**
+  (`files_in_regions = set(regions.keys())`), so every returned file needs a
+  pass-1 seat. Cap 32 returns 12.6 more files; spans rise only 10.4; the
+  extra seats come straight out of pass-2 depth (spans/file 1.85 -> 1.55).
+* The seats are already small -- median first span is **11 lines** in the
+  top-16 files and **10 lines** in the tail -- so shrinking them ("stub
+  seats") has almost no headroom, and the tail holds 58% of first-span lines
+  only because there are more tail files.
+* Neither PPR (a new per-file signal) nor the floor (steeper use of the
+  existing signal) can help, because pass-2 allocation is not the problem:
+  pass-1's mandatory one-seat-per-file is, and it is what makes FILE count.
+
+**Conclusion, measured rather than argued: at a fixed token budget, breadth
+and depth are coupled through the mandatory seat count, and redistributing
+budget among the returned files cannot uncouple them.** The lever that does
+-- proven in E29 (FILE budget-invariant, depth fully budget-recoverable) --
+is budget. E46 therefore measures the smallest budget at which sg + cap 32
+restores shipped FUNCTION/LINE on Rust while keeping its +5.02 FILE.
+
+## E46 — the depth-neutral budget, Rust, sg + cap 32 (FILE identical by construction)
+
+| budget | FILE | fraction | frac gain/loss | Wilcoxon | tokens | premium |
+|---|---|---|---|---|---|---|
+| shipped, cap 16 | 60.25 | .2431 | -- | -- | 8464 | -- |
+| 8192, cap 32 | 65.27 | .2103 | -- | -- | 8577 | +1% |
+| **9216**, cap 32 | 65.27 (0 flips) | **.2397** | 51 / 7 | **p < 1e-4** | 9597 | **+13%** |
+| **10240**, cap 32 | 65.27 (0 flips) | **.2553** | 67 / 3 | **p < 1e-4** | 10620 | +25% |
+
+Budget does exactly what E29 predicted and what no redistribution could:
+at 9216 the fraction is back to the shipped .2431 within .003; at 10240 it
+is ABOVE shipped. Both are significant beyond doubt (51/7 and 67/3
+instance-level gains/losses), and the file set is provably unchanged.
+
+### Exact metrics at 9216
+
+| Rust arm | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped (cap 16 @ 8192) | 60.25 | 19.67 | 7.53 | .2431 | 8464 |
+| sg + cap 32 @ 8192 | 65.27 | 17.57 | 6.28 | .2103 | 8577 |
+| **sg + cap 32 @ 9216** | **65.27** | **20.50** | 7.11 | .2397 | 9597 |
+
+Paired on FUNCTION: vs sg32@8192 **7 gained / 0 lost, McNemar p = .016**;
+vs shipped 4 gained / 2 lost, p = .69 (i.e. back to shipped, not below it).
+
+**So on Rust the proven operating point is: +5.02 FILE (12 more instances
+fully located out of 239) with FUNCTION and LINE at shipped level, for +13%
+tokens.** Not one column of that sentence is inferred: FILE is identical to
+the 8192 arm instance-for-instance, the FUNCTION recovery is significant,
+and the FUNCTION/LINE comparison to shipped is a measured null.
+
+### Exact metrics at 10240
+
+| Rust arm | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped (cap 16 @ 8192) | 60.25 | 19.67 | 7.53 | .2431 | 8464 |
+| sg + cap 32 @ 9216 | 65.27 | 20.50 | 7.11 | .2397 | 9597 |
+| **sg + cap 32 @ 10240** | **65.27** | **20.92** | 7.11 | **.2553** | 10620 |
+
+Paired on FUNCTION: vs sg32@8192 **8 gained / 0 lost, p = .008**; vs shipped
+4 gained / 1 lost, p = .375. Fraction is now ABOVE shipped (.2553 vs .2431).
+
+Dose-response is clean and monotone: 8192 -> 9216 -> 10240 gives FUNCTION
+17.57 -> 20.50 -> 20.92 and fraction .2103 -> .2397 -> .2553, with FILE
+pinned at 65.27 throughout (0 flips at every budget). LINE plateaus at 7.11
+(one instance under shipped's 7.53) at both budgets -- the one column not
+fully recovered, and the smallest-n column (17-18 instances).
+
+**Operating points on Rust, all proven at instance level:**
+* +13% tokens: +5.02 FILE, FUNCTION/LINE at shipped (null vs shipped).
+* +25% tokens: +5.02 FILE, FUNCTION +1.25 and fraction +.012 over shipped,
+  LINE -0.42. Directionally better than shipped on depth, not significantly.
+
+## E46 wide — does 9216 replicate across languages?
+
+Same config (sg + cap 32), same budget 9216, full slices. Depth references
+scored with the same scorer. FILE must equal each slice's 8192 arm.
+
+| slice | n | FILE @8192 = @9216 | frac shipped | frac sg32@8192 | **frac @9216** | frac gain/loss | Wilcoxon | tok premium vs shipped |
+|---|---|---|---|---|---|---|---|---|
+| Rust | 239 | 65.27 (0 flips) | .2431 | .2103 | **.2397** | 51/7 | p<1e-4 | +13% |
+| Java | 128 | 51.56 (0 flips) | .4152 | .3940 | **.4182** | **16/0** | p=.0004 | +15% |
+| C | 128 | 56.25 (0 flips) | .2251 | .2102 | **.2249** | 15/2 | p=.002 | +13% |
+| C++ | 129 | 68.99 (0 flips) | .2988 | .2900 | **.3090** | **35/0** | p<1e-4 | +12% |
+| Go | 428 | 70.79 (0 flips) | .4102 | .3740 | **.4101** | **86/10** | p<1e-4 | +12% |
+| JS/TS | 580 | 52.07 (0 flips) | .2616 | .2276 | .2426 | **62/4** | p<1e-4 | +12% |
+
+Six for six on direction, five for six on full restoration: at 9216 the
+line fraction returns to shipped on Rust, Java, C, C++ and Go (Java and C++
+above it; Go to the fourth decimal), with 0 FILE flips and 12-15% more
+tokens. **JS/TS is the exception**: 62 gains / 4 losses (p<1e-4) recovers
+.015 of its .034 tax, leaving the fraction at .2426 against shipped .2616.
+JS/TS carried the largest depth tax of any slice at cap 32 (its bundles
+carry the most files), so 9216 is not its depth-neutral budget -- by the
+Rust/Go dose-response, roughly 10.5-11k would be. Not measured.
+
+### Exact metrics, Java and C at 9216
+
+| slice | arm | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|---|
+| Java | shipped | 49.22 | 36.72 | 14.06 | .4152 |
+| Java | sg32 @ 8192 | 51.56 | 32.03 | 11.72 | .3940 |
+| Java | **sg32 @ 9216** | **51.56** | **37.50** | 13.28 | **.4182** |
+| C | shipped | 51.56 | 28.12 | 13.28 | .2251 |
+| C | sg32 @ 8192 | 56.25 | 26.56 | 11.72 | .2102 |
+| C | **sg32 @ 9216** | **56.25** | **28.12** | **13.28** | **.2251** |
+
+Paired FUNCTION at 9216: Java vs sg32@8192 **7 gained / 0 lost, p=.016**,
+vs shipped 2/1 (p=1.0); C vs sg32@8192 2/0, vs shipped **0/0 -- identical**.
+
+C is a perfect restoration: FUNCTION, LINE and fraction return to the
+shipped values to the last digit, with FILE +4.69. Java's FUNCTION lands
+ABOVE shipped (37.50 vs 36.72) and its fraction above shipped; LINE is one
+instance under (13.28 vs 14.06, n=17-18). Java had the largest depth tax of
+any slice at 8192 (FUNCTION -4.69), and 15% more tokens erased it.
+
+**Across Rust, Java and C the pattern is identical and instance-level
+proven: +2.3 to +5.0 FILE, depth back to shipped, +13-15% tokens.**
+
+### Exact metrics, C++ at 9216
+
+| slice | arm | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|---|
+| C++ | shipped | 65.89 | 17.83 | 6.98 | .2988 |
+| C++ | sg32 @ 8192 | 68.99 | 17.05 | 6.98 | .2900 |
+| C++ | **sg32 @ 9216** | **68.99** | **18.60** | **7.75** | **.3091** |
+
+Paired FUNCTION: vs sg32@8192 2/0, vs shipped 1/0. Every depth column lands
+ABOVE shipped at +3.10 FILE and +12% tokens.
+
+### Four languages, exact metrics, same config (sg + cap 32 @ 9216) vs shipped
+
+| slice | n | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|---|
+| Rust | 239 | 60.25 -> **65.27** | 19.67 -> 20.50 | 7.53 -> 7.11 | .2431 -> .2397 | +13% |
+| Java | 128 | 49.22 -> **51.56** | 36.72 -> 37.50 | 14.06 -> 13.28 | .4152 -> .4182 | +15% |
+| C | 128 | 51.56 -> **56.25** | 28.12 -> 28.12 | 13.28 -> 13.28 | .2251 -> .2251 | +13% |
+| C++ | 129 | 65.89 -> **68.99** | 17.83 -> 18.60 | 6.98 -> 7.75 | .2988 -> .3091 | +12% |
+
+FILE up on all four (identity-gated against the 8192 arm in every case);
+FUNCTION at or above shipped on all four; LINE at or above shipped on two,
+one instance under on two (n=17-18 per slice, the noisiest column);
+fraction at or above shipped on all four. No paired FUNCTION comparison
+against shipped is significant in either direction -- which is the point:
+depth is back to shipped, not traded away.
+
+### Go, exact metrics at 9216 (n=428, the largest slice)
+
+| Go arm | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 64.95 | 28.97 | 16.59 | .4102 | 8480 |
+| sg32 @ 8192 | 70.79 | 25.00 | 13.55 | .3740 | 8592 |
+| **sg32 @ 9216** | **70.79** | **29.44** | 16.36 | **.4102** | 9618 |
+
+Paired FUNCTION: vs sg32@8192 **20 gained / 1 lost, p < .001**; vs shipped
+10 gained / 8 lost, p = .82. Fraction returns to shipped to the fourth
+decimal; LINE is one instance under (70 vs 71 of 428).
+
+**Five languages, one config, every column measured against shipped:**
+
+| slice | n | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|---|
+| Go | 428 | 64.95 -> **70.79** | 28.97 -> 29.44 | 16.59 -> 16.36 | .4102 -> .4102 | +12% |
+| Rust | 239 | 60.25 -> **65.27** | 19.67 -> 20.50 | 7.53 -> 7.11 | .2431 -> .2397 | +13% |
+| C | 128 | 51.56 -> **56.25** | 28.12 -> 28.12 | 13.28 -> 13.28 | .2251 -> .2251 | +13% |
+| C++ | 129 | 65.89 -> **68.99** | 17.83 -> 18.60 | 6.98 -> 7.75 | .2988 -> .3091 | +12% |
+| Java | 128 | 49.22 -> **51.56** | 36.72 -> 37.50 | 14.06 -> 13.28 | .4152 -> .4182 | +15% |
+
+Weighted over the 1,052 instances: **FILE +4.6 points** with FUNCTION +0.5,
+LINE -0.2 and fraction +.003 -- i.e. breadth bought outright, depth held --
+for **+12-15% tokens**. Every FILE delta is identity-gated (0 flips at
+8192 vs 9216 on every slice); every depth comparison against shipped is a
+measured null or a gain.
+
+### JS/TS at 9216 -- the exception, stated plainly
+
+| JS/TS arm (n=580) | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 46.38 | 31.21 | 14.14 | .2616 | 8532 |
+| sg32 @ 8192 | 52.07 | 28.28 | 11.55 | .2276 | 8749 |
+| sg32 @ 9216 | 52.07 | 29.48 | 12.59 | .2426 | 9757 |
+
+Paired FUNCTION: vs sg32@8192 **8 gained / 1 lost, p=.039** (the recovery is
+real); vs shipped **6 gained / 16 lost, p=.052** -- still below shipped.
+9216 is NOT JS/TS's depth-neutral budget: it recovers about 40% of the
+largest depth tax in the set (FUNCTION -2.93, LINE -2.59 at cap 32). So on
+JS/TS the +5.69 FILE at 9216 comes with FUNCTION -1.73 and LINE -1.55
+against shipped, and that must be said rather than folded into the
+five-language average. The dose-response predicts ~10.5-11k for neutrality.
+
+### JS/TS at 10752 -- its depth-neutral point, measured
+
+| JS/TS arm (n=580) | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 46.38 | 31.21 | 14.14 | .2616 | 8532 |
+| sg32 @ 9216 | 52.07 | 29.48 | 12.59 | .2426 | 9757 |
+| **sg32 @ 10752** | **52.07** | **31.72** | 13.97 | **.2666** | 11259 |
+
+Paired FUNCTION: vs @9216 **14 gained / 1 lost, p=.001**; vs sg32@8192
+20 / 0; vs shipped 9 / 6, p=.61 (null = restored). Fraction vs shipped
+81 gains / 35 losses, **p=.0019 -- above shipped**. LINE one instance under.
+
+So JS/TS follows the same law as the other five, at a higher price: its
+depth-neutral budget is ~10.7k (+32% tokens) rather than ~9.2k (+13%),
+because its cap-32 bundles carry the most files and therefore the most
+mandatory seats.
+
+### Six languages, each at its depth-neutral budget, vs shipped
+
+| slice | n | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|---|
+| Go | 428 | 64.95 -> **70.79** | 28.97 -> 29.44 | 16.59 -> 16.36 | .4102 -> .4102 | +12% |
+| JS/TS | 580 | 46.38 -> **52.07** | 31.21 -> 31.72 | 14.14 -> 13.97 | .2616 -> .2666 | +32% |
+| Rust | 239 | 60.25 -> **65.27** | 19.67 -> 20.50 | 7.53 -> 7.11 | .2431 -> .2397 | +13% |
+| C | 128 | 51.56 -> **56.25** | 28.12 -> 28.12 | 13.28 -> 13.28 | .2251 -> .2251 | +13% |
+| C++ | 129 | 65.89 -> **68.99** | 17.83 -> 18.60 | 6.98 -> 7.75 | .2988 -> .3091 | +12% |
+| Java | 128 | 49.22 -> **51.56** | 36.72 -> 37.50 | 14.06 -> 13.28 | .4152 -> .4182 | +15% |
+
+Over all 1,632 instances: **FILE +4.9 weighted**, FUNCTION +0.5, LINE -0.2,
+fraction +.004. Every FILE delta identity-gated against the same config at
+8192; every FUNCTION comparison against shipped a measured null or gain;
+no depth column significantly below shipped on any slice. One config, no
+per-language code, +12-15% tokens on five slices and +32% on JS/TS.
+
+## E45c — Python dual gate for the floor (adoption gate, shipped settings)
+
+`--pack-floor 0.15` alone, cap 16, budget 8192, no symbol graph. Baselines
+are E36's, equal to the published references.
+
+| gate | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|
+| Lite | 300 | 92.33 -> 92.33 (0 flips) | +.0004 | 5/3 | p=.55 | 8559 -> 8556 |
+| Verified | 407 | 92.38 -> 92.38 (0 flips) | +.0076 | 11/3 | p=.068 | 8558 -> 8556 |
+
+Both gates: FILE pinned, fraction neutral-to-positive (Verified 11 gains /
+3 losses), and barely touched -- 8 of 300 and 14 of 407 instances change at
+all. On fraction the floor clears the dual gate.
+
+### Lite, exact metrics (the adoption numbers)
+
+| Lite (n=300) | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|
+| shipped (= published reference) | 92.33 | 54.67 | 44.00 | .52728 |
+| **floor 0.15** | 92.33 | 54.67 | **44.33** | .52769 |
+
+Baseline reproduces the published reference to the last digit. Floor 0.15:
+FUNCTION identical (2 gained / 2 lost, p=1.0), LINE +0.33 (one instance),
+fraction +.0004. **Lite-neutral on every column.**
+
+### Verified, exact metrics
+
+| Verified (n=407) | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|
+| shipped (= published reference) | 92.38 | 47.17 | 35.14 | .47635 |
+| **floor 0.15** | 92.38 | **47.67** | **36.86** | **.48393** |
+
+Baseline reproduces the published reference to the last digit. Floor 0.15:
+FUNCTION +0.49 (3 gained / 1 lost, p=.63), **LINE +1.72** (7 instances),
+fraction +.0076 (11 gains / 3 losses, p=.068), FILE pinned. **Positive on
+every depth column on the held-out set**, none individually significant.
+
+### Dual-gate verdict for the floor
+
+| | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| Lite | = | = | +0.33 | +.0004 | -3 |
+| Verified | = | +0.49 | +1.72 | +.0076 | -2 |
+| Go (sg+cap32) | = | **+1.64 (p=.039)** | +1.17 | +.0136 | 0 |
+| Rust (sg+cap32) | = | +1.26 | +0.41 | +.0051 | -1 |
+| JS/TS (sg+cap32) | = | +0.17 | +0.17 | +.0016 | -1 |
+
+Nine depth cells across five populations; **not one is negative**, one is
+significant, two more are one-sided by 3:1 or better, and the cost is zero.
+FILE is pinned everywhere by construction. That is an adoption case -- with
+one measurement still owed: the non-Python slices above were measured at
+cap 32, not at the shipped cap 16 that a default flip would actually ship.
+
+### E45d — floor 0.15 at SHIPPED settings (cap 16, budget 8192), all six slices
+
+| slice | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|
+| Java | 128 | 49.22 (0 flips) | **+.0114** | **8/2** | **p=.0098** | 8762 -> 8762 |
+| Go | 428 | 64.95 (0 flips) | +.0048 | 25/18 | p=.098 | 8467 -> 8466 |
+| Rust | 239 | 60.25 (0 flips) | -.0019 | 17/12 | p=.72 | 8464 -> 8463 |
+| C | 128 | 51.56 (0 flips) | -.0016 | 3/3 | p=.69 | 8447 -> 8445 |
+| JS/TS | 580 | 46.38 (0 flips) | -.0021 | 13/11 | p=.91 | 8517 -> 8517 |
+| C++ | 129 | 65.89 (0 flips) | -.0059 | 11/11 | p=.82 | 8510 -> 8510 |
+
+At the shipped cap the picture is the same shape but smaller: Java is
+significantly positive, Go marginal, the other four are nulls whose signs
+are noise (gain/loss 17/12, 3/3, 13/11, 11/11). No slice regresses; FILE is
+pinned on all six; tokens unchanged.
+
+Exact FUNCTION/LINE, floor 0.15 vs shipped, cap 16 / budget 8192:
+
+| slice | n | FILE | FUNCTION | G/L | LINE | fraction |
+|---|---|---|---|---|---|---|
+| Java | 128 | = | 36.72 -> **39.06** | 3/0 | 14.06 -> 14.06 | .4152 -> .4266 |
+| C++ | 129 | = | 17.83 -> **19.38** | 2/0 | 6.98 -> **7.75** | .2988 -> .2929 |
+| Rust | 239 | = | 19.67 -> **20.50** | 2/0 | 7.53 -> 7.53 | .2431 -> .2412 |
+| Go | 428 | = | 28.97 -> **29.44** | 4/2 | 16.59 -> **17.52** | .4102 -> .4150 |
+| JS/TS | 580 | = | 31.21 -> 30.86 | 1/3 | 14.14 -> 13.97 | .2616 -> .2595 |
+| C | 128 | = | 28.12 -> 27.34 | 0/1 | 13.28 -> 13.28 | .2251 -> .2235 |
+| Lite | 300 | = | 54.67 -> 54.67 | 2/2 | 44.00 -> **44.33** | .5273 -> .5277 |
+| Verified | 407 | = | 47.17 -> **47.67** | 3/1 | 35.14 -> **36.86** | .4764 -> .4839 |
+
+## Adoption verdict: flip the default to 0.15
+
+Eight populations, 2,339 instances, FILE pinned on every one (the change
+cannot touch selection), tokens unchanged. FUNCTION: gains on five slices
+and Verified, identical on Lite, and the only two negatives are **2 of 580**
+(JS/TS) and **1 of 128** (C) -- 17 instances gained against 9 lost pooled.
+LINE: never below shipped except one instance on JS/TS; up on Go, C++,
+Lite and Verified. No comparison is significantly negative anywhere; Java
+(fraction p=.0098) and Go at cap 32 (FUNCTION p=.039) are significantly
+positive. The dual gate is clear: Lite neutral, Verified positive on every
+depth column.
+
+This is the campaign's standard for adoption -- a change that wins or
+draws everywhere it is measured, costs nothing, and cannot regress FILE by
+construction. `--pack-floor 0.3` restores the pre-E45 engine exactly.
+

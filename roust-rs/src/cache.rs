@@ -228,7 +228,20 @@ fn cache_key(repo_path: &Path, with_history: bool, with_docs: bool) -> String {
     // cache is never served to the new defaults; --no-symbols-v2 keys are
     // byte-identical to the pre-adoption format.
     let sv = if core::symbols_v2_enabled() { ":sv2" } else { "" };
-    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}", with_history as i32, with_docs as i32)
+    // E32: import_edges_v2 changes the persisted import GRAPH (Java
+    // `import a.b.C;` and C-family `#include "foo.h"` edges, which the
+    // graph never had), and `edges` is part of the cache payload -- so a
+    // cache written without the flag must never be served to a run with
+    // it, or the new edges silently never appear. Flag-off keys are
+    // byte-identical to main's format.
+    let ie = if core::import_edges_v2_enabled() { ":ie2" } else { "" };
+    // E39: both flags change corpus MEMBERSHIP (new files enter the index),
+    // so they re-key exactly as :cf1 and :e2g do -- a cache built without them
+    // indexes a different file set and must never be served to a run with them.
+    let bf = if core::build_files_enabled() { ":bf" } else { "" };
+    let cl = if core::changelog_files_enabled() { ":cl" } else { "" };
+    let dd = if core::docs_data_files_enabled() { ":dd" } else { "" };
+    format!("{sha}:h{}:d{}{cf}{e2}{ip}{sv}{ie}{bf}{cl}{dd}", with_history as i32, with_docs as i32)
 }
 
 fn cache_path(repo_path: &Path) -> PathBuf {

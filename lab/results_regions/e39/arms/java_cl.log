@@ -1,0 +1,14 @@
+engine version: roust 0.3.2 (e404087, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_java.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_repos/java_v2
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=32 budget=8192 instances=None
+shard 1/1: rows [0:128] of the sorted split (128 instances)
+[25/128] elastic__logstash-14970                       elapsed=112s (ok) ok=25 err=0
+[50/128] fasterxml__jackson-core-1142                  elapsed=198s (ok) ok=50 err=0
+[75/128] fasterxml__jackson-databind-3701              elapsed=319s (ok) ok=75 err=0
+[100/128] fasterxml__jackson-databind-4365              elapsed=470s (ok) ok=100 err=0
+[125/128] mockito__mockito-3167                         elapsed=562s (ok) ok=125 err=0
+[128/128] mockito__mockito-3424                         elapsed=572s (ok) ok=128 err=0
+
+engine version: roust 0.3.2 (e404087, clean)
+wrote 128 records (128 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e39/arms/java_cl.jsonl

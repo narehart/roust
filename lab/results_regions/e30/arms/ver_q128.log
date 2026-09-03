@@ -1,0 +1,8 @@
+engine version: roust 0.3.2 (7c8f6bb, clean)
+EXTRA_ENGINE_FLAGS=['--max-additions', '128']
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/swebench_verified_heldout.parquet
+pad_lines=5 len_exp=0.85 max_additions=128 budget=8192 instances=/Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e29/instances/ver.txt
+[22/22] sympy__sympy-20438                            elapsed=406s (ok) ok=22 err=0
+
+engine version: roust 0.3.2 (7c8f6bb, clean)
+wrote 22 records (22 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e30/arms/ver_q128.jsonl

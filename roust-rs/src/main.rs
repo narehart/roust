@@ -119,6 +119,95 @@ struct Args {
     #[arg(long, default_value_t = 16)]
     max_additions: i64,
 
+    /// E30 (per-language parity campaign): how many of each source file's
+    /// owned pool candidates the per-source seating guarantee admits
+    /// (1 = shipped behaviour). E29 showed file selection is blind to the
+    /// token budget, so breadth is only reachable through admission; unlike
+    /// --max-additions this spends admissions on ownership diversity rather
+    /// than on the next-ranked candidate overall.
+    #[arg(long, default_value_t = 1)]
+    seats_per_source: i64,
+
+    /// E32 (per-language parity campaign): how many hops of the import graph
+    /// the candidate GENERATOR walks out from each source file (1 = shipped).
+    /// E31 showed Java and Rust are exactly inert to the admission cap (0.00
+    /// at 32 and at 128), i.e. their gold is never proposed as a candidate at
+    /// any cap -- a generation limit, not an admission one.
+    #[arg(long, default_value_t = 1)]
+    import_hops: i64,
+
+    /// E32 (per-language parity campaign): resolve import edges for Java
+    /// (`import a.b.C;`) and the C family (`#include "foo.h"`), which the
+    /// import graph never covered -- those files had NO edges at all, hence
+    /// no candidate generation and no Guarantee-1 seat. Default off.
+    #[arg(long)]
+    import_edges_v2: bool,
+
+    /// E33 (per-language parity campaign): pool eligibility floor as a
+    /// fraction of the best candidate's score (0.15 = shipped). Applied
+    /// BEFORE any admission rule, so it bounds every cap.
+    #[arg(long, default_value_t = 0.15)]
+    eligible_floor: f64,
+
+    /// E34 (per-language parity campaign): how many BM25-ranked files seed
+    /// the retrieval as `sources` (10 = shipped). E33 showed Java, C++ and
+    /// Rust saturate under maximum candidate GENERATION, so the residue is
+    /// upstream of the graph: everything is expanded outward from these
+    /// seeds, and gold more than two hops from all of them is unreachable.
+    #[arg(long, default_value_t = 10)]
+    k_lex: usize,
+
+    /// E37 (per-language parity campaign): generate candidates from the
+    /// SYMBOL-REFERENCE graph -- a file that references a rare symbol another
+    /// file defines becomes its neighbour. Language-agnostic by construction:
+    /// it uses the existing definition index and term index, so it needs no
+    /// per-language import syntax and subsumes the per-language import
+    /// parsers rather than adding another one.
+    #[arg(long)]
+    symbol_graph: bool,
+
+    /// E44: concentrate packing BUDGET on query-connected, graph-central
+    /// files via personalized PageRank from the BM25 seeds (0.0 = off).
+    /// Does not change which files are returned -- only how deeply each is
+    /// packed -- so it attacks the depth loss that every breadth gain paid.
+    #[arg(long, default_value_t = 0.0)]
+    ppr_budget: f64,
+
+    /// E44b: additive PPR budget boost (scores[f] += lambda * ppr) instead of
+    /// the multiplicative squash. Raises graph-connected additions toward
+    /// seed-level funding without lowering anyone.
+    #[arg(long)]
+    ppr_additive: bool,
+
+    /// E45 (adopted): the packer's per-file budget floor (0.15; 0.3 restores
+    /// the pre-E45 engine). Every region
+    /// is weighted by (floor + file score); a high floor gives every admitted
+    /// file a near-equal claim, which is why wide admission spread budget thin.
+    #[arg(long, default_value_t = 0.15)]
+    pack_floor: f64,
+
+    /// E39: index build files (build.gradle, Cargo.toml, CMakeLists.txt,
+    /// package.json, pom.xml, go.mod, Makefile ...). Genuinely useful to
+    /// return -- real changes often edit them -- and they carry gold that the
+    /// corpus could not retrieve at any rank.
+    #[arg(long)]
+    build_files: bool,
+
+    /// E39: index changelogs and release notes (CHANGELOG, release-notes/,
+    /// VERSION-*, CREDITS-*). These are gold ONLY because the fixing PR also
+    /// wrote a release note, so this raises the benchmark score without
+    /// making the tool more useful. Kept separate from --build-files for
+    /// exactly that reason; do not adopt silently.
+    #[arg(long)]
+    changelog_files: bool,
+
+    /// E41: index the broad non-source class (.md .rst .txt .adoc .asciidoc
+    /// .json .yml .yaml .toml). Needed for JS/TS, whose non-source gold is
+    /// dispersed component docs and fixtures that the narrow changelog rule
+    /// cannot reach. The most dilutive rule in the engine.
+    #[arg(long)]
+    docs_data_files: bool,
+
     /// pad every selected region by N lines in each direction (clamped to
     /// file bounds), merging spans that end up overlapping or adjacent
     /// (E12/span-padding experiment): default 5, adopted from the comboA
@@ -427,6 +516,11 @@ fn main() {
     // on-flag is accepted-but-redundant (mutual exclusion checked below,
     // mirroring the trace-formats-v2 pattern).
     roust::core::set_symbols_v2(!args.no_symbols_v2);
+    roust::core::set_import_edges_v2(args.import_edges_v2);
+    roust::core::set_build_files(args.build_files);
+    roust::core::set_changelog_files(args.changelog_files);
+    roust::core::set_docs_data_files(args.docs_data_files);
+    roust::core::set_pack_floor(args.pack_floor);
     // WS3d displacement guard: default ON (adopted); --no-displacement-guard
     // is the escape hatch and the explicit on-flag is accepted-but-redundant
     // (mutual exclusion checked below, mirroring the symbols-v2 pattern).
@@ -584,6 +678,13 @@ fn main() {
     let params = SelectParams {
         cochange,
         max_additions: args.max_additions,
+        seats_per_source: args.seats_per_source,
+        import_hops: args.import_hops,
+        eligible_floor: args.eligible_floor,
+        k_lex: args.k_lex,
+        symbol_graph: args.symbol_graph,
+        ppr_budget: args.ppr_budget,
+        ppr_additive: args.ppr_additive,
         anchors: anchors.as_deref(),
         use_testbridge,
         use_docsbridge: with_docs,

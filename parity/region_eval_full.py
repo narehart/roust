@@ -157,6 +157,38 @@ def main() -> None:
                           "16 = shipped). 0 (the default here) is a SENTINEL meaning forward "
                           "NO flag at all, so a default arm's argv is byte-identical to "
                           "every pre-E28 default arm's.")
+    ap.add_argument("--seats-per-source", type=int, default=0,
+                     help="E30 (per-language parity campaign): append --seats-per-source N to "
+                          "every roust invocation -- how many owned candidates each source "
+                          "file seats in the per-source guarantee (engine default 1 = shipped). "
+                          "0 (the default here) is a SENTINEL meaning forward NO flag at all, "
+                          "so a default arm's argv is byte-identical to every pre-E30 default arm's.")
+    ap.add_argument("--import-hops", type=int, default=0,
+                     help="E32 (per-language parity campaign): append --import-hops N to "
+                          "every roust invocation -- how many hops of the import graph the "
+                          "candidate GENERATOR walks from each source (engine default 1 = "
+                          "shipped). 0 (the default here) is a SENTINEL meaning forward NO "
+                          "flag at all.")
+    ap.add_argument("--import-edges-v2", action="store_true",
+                     help="E32 (per-language parity campaign): append --import-edges-v2 -- resolve Java and C-family import edges, which the import graph never covered at all.")
+    ap.add_argument("--symbol-graph", action="store_true",
+                     help="E37 (per-language parity campaign): append --symbol-graph -- language-agnostic candidate generation from the symbol-reference graph (a file that references a rare symbol another file defines becomes its neighbour); no per-language import syntax.")
+    ap.add_argument("--build-files", action="store_true",
+                     help="E39: append --build-files -- index build files (build.gradle, Cargo.toml, CMakeLists.txt, package.json ...), which carry gold the corpus could never retrieve.")
+    ap.add_argument("--changelog-files", action="store_true",
+                     help="E39: append --changelog-files -- index changelogs/release notes. These are gold ONLY because the fixing PR wrote a release note, so this raises the score without improving the tool.")
+    ap.add_argument("--docs-data-files", action="store_true",
+                     help="E41: append --docs-data-files -- index .md/.rst/.txt/.json/.yml/.toml. Needed for JS/TS, whose non-source gold is dispersed docs and fixtures; the most dilutive rule.")
+    ap.add_argument("--ppr-budget", type=float, default=0.0,
+                     help="E44: append --ppr-budget L -- concentrate packing budget on query-connected, graph-central files via personalized PageRank (engine default 0.0 = off). Does not change the returned file set. 0.0 here is a SENTINEL meaning forward NO flag at all.")
+    ap.add_argument("--ppr-additive", action="store_true",
+                     help="E44b: append --ppr-additive -- additive PPR budget boost instead of the multiplicative squash.")
+    ap.add_argument("--pack-floor", type=float, default=-1.0,
+                     help="E45: append --pack-floor F -- the packer per-file budget floor (engine default 0.3). -1.0 here is a SENTINEL meaning forward NO flag at all.")
+    ap.add_argument("--eligible-floor", type=float, default=0.0,
+                     help="E33 (per-language parity campaign): append --eligible-floor F -- the pool eligibility cut as a fraction of the best candidate score (engine default 0.15). 0.0 here is a SENTINEL meaning forward NO flag at all.")
+    ap.add_argument("--k-lex", type=int, default=0,
+                     help="E34 (per-language parity campaign): append --k-lex N -- how many BM25-ranked files seed retrieval as `sources` (engine default 10). 0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--budget", type=int, default=0,
                      help="E29 (cost-of-parity curve): override the packer token budget by "
                           "setting region_eval_verified.BUDGET (the harness already passes "
@@ -215,6 +247,30 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ext-v2"]
     if args.max_additions:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--max-additions", str(args.max_additions)]
+    if args.seats_per_source:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--seats-per-source", str(args.seats_per_source)]
+    if args.import_hops:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--import-hops", str(args.import_hops)]
+    if args.import_edges_v2:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--import-edges-v2"]
+    if args.symbol_graph:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--symbol-graph"]
+    if args.build_files:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--build-files"]
+    if args.changelog_files:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--changelog-files"]
+    if args.docs_data_files:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--docs-data-files"]
+    if args.ppr_budget:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ppr-budget", str(args.ppr_budget)]
+    if args.ppr_additive:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ppr-additive"]
+    if args.pack_floor >= 0.0:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--pack-floor", str(args.pack_floor)]
+    if args.eligible_floor:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--eligible-floor", str(args.eligible_floor)]
+    if args.k_lex:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--k-lex", str(args.k_lex)]
     if args.budget:
         rev.BUDGET = args.budget
 
@@ -263,6 +319,12 @@ def main() -> None:
             rec["ext_v2"] = args.ext_v2
             rec["displacement_guard"] = args.displacement_guard
             rec["max_additions"] = args.max_additions
+            rec["seats_per_source"] = args.seats_per_source
+            rec["import_hops"] = args.import_hops
+            rec["import_edges_v2"] = args.import_edges_v2
+            rec["ppr_budget"] = args.ppr_budget
+            rec["eligible_floor"] = args.eligible_floor
+            rec["k_lex"] = args.k_lex
             rec["budget"] = rev.BUDGET
             fh.write(json.dumps(rec, default=str) + "\n")
             fh.flush()
