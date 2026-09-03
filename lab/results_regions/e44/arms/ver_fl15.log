@@ -14,3 +14,4 @@ pad_lines=5 len_exp=0.85 max_additions=0 budget=8192 instances=None
 [225/407] matplotlib__matplotlib-25287                  elapsed=1317s (ok) ok=225 err=0
 [250/407] pydata__xarray-4075                           elapsed=1405s (ok) ok=250 err=0
 [275/407] pytest-dev__pytest-10081                      elapsed=1487s (ok) ok=275 err=0
+[300/407] scikit-learn__scikit-learn-13328              elapsed=1562s (ok) ok=300 err=0

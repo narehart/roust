@@ -290,3 +290,16 @@ fraction at or above shipped on all four. No paired FUNCTION comparison
 against shipped is significant in either direction -- which is the point:
 depth is back to shipped, not traded away.
 
+## E45c — Python dual gate for the floor (adoption gate, shipped settings)
+
+`--pack-floor 0.15` alone, cap 16, budget 8192, no symbol graph. Baselines
+are E36's, equal to the published references.
+
+| gate | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|
+| Lite | 300 | 92.33 -> 92.33 (0 flips) | +.0004 | 5/3 | p=.55 | 8559 -> 8556 |
+| Verified | 407 | running | | | | |
+
+Lite: neutral, and barely touched -- 8 of 300 instances change at all.
+Exact FUNCTION/LINE on Lite pending; Verified running.
+
