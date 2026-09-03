@@ -141,8 +141,20 @@ Exact metrics on Go:
 Paired FUNCTION vs sg32: **8 gained / 1 lost, McNemar p = .039.** LINE
 +1.17, fraction +.0136, tokens unchanged, FILE pinned. The floor recovers
 1.64 of Go's 3.97-point FUNCTION tax for free; the rest still needs budget.
-Floor and budget act on different things (how budget is split vs how much
-there is), so they should compose -- that arm is running.
+
+### E46c — do floor and budget compose? (Go, n=428)
+
+| comparison | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|
+| sg32@8192 -> floor+9216 | 70.79 (0 flips) | **+.0396** | 91/14 | p<1e-4 | 8592 -> 9617 |
+| @9216 alone -> +floor | 70.79 (0 flips) | +.0035 | 24/19 | p=.065 | 9618 -> 9617 |
+| **shipped -> floor+9216** | **64.95 -> 70.79** | +.0035 | 51/44 | p=.40 | 8467 -> 9617 |
+
+Weakly additive: on top of the budget the floor adds +.0035 (p=.065,
+marginal). The combined arm against SHIPPED is the operating-point
+statement for Go: **+5.84 FILE (25 more instances out of 428) with the line
+fraction at-or-above shipped (+.0035, a measured null), for +13.6% tokens.**
+Exact FUNCTION/LINE for the combined arm are being scored.
 
 ## Why: the tax is the seat COUNT, measured from the bundles
 

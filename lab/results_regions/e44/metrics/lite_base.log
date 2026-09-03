@@ -490,3 +490,26 @@ Computing exact FUNCTION-level metric + region precision via read-only `git show
 <unknown>:1865: SyntaxWarning: invalid escape sequence '\c'
 <unknown>:947: SyntaxWarning: invalid escape sequence '\ '
 <unknown>:1062: SyntaxWarning: invalid escape sequence '\ '
+
+wrote lab/results_regions/e44/metrics/lite_base.json
+
+==============================================================================
+Agentless-style %% Correct Location -- roust (no-LLM) vs GPT-4o Agentless
+(FUNCTION is EXACT, not a proxy -- v4, canonical-summation re-baseline)
+==============================================================================
+                                            roust   GPT-4o Agentless
+FILE   (predicted ⊇ gold files)             92.3%        69.7%
+FUNCTION (EXACT)                            54.7%        52.0%
+LINE   (all-or-nothing)                     44.0%        35.3%
+
+LINE mean-fraction covered (continuity w/ prior reporting)   0.5273
+REGION PRECISION (gold lines / total returned lines), mean   0.0055  (n=300, excluded=0)
+  mean total region lines / instance                         1124.6
+
+FUNCTION n=300 n_judged=300 n_correct=164 counted_wrong(engine_errors=0, git_show_failures=0)
+
+--- restricted to file-correct subset (n=277/300) ---
+FUNCTION (EXACT)                            59.2%          n/a
+LINE   (all-or-nothing)                     47.6%          n/a
+LINE mean-fraction covered                                   0.5711
+REGION PRECISION, mean                                       0.0060 (n=277)
