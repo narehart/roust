@@ -1,0 +1,5 @@
+engine provenance: binary b8d09ea != HEAD f94f1af but roust-rs/ is identical between them -- accepted.
+engine version: roust 0.3.2 (b8d09ea, clean)
+EXTRA_ENGINE_FLAGS=['--pack-floor', '0.15']
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/swebench_verified_heldout.parquet
+pad_lines=5 len_exp=0.85 max_additions=0 budget=8192 instances=None

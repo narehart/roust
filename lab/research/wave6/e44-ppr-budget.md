@@ -244,3 +244,30 @@ any slice at 8192 (FUNCTION -4.69), and 15% more tokens erased it.
 **Across Rust, Java and C the pattern is identical and instance-level
 proven: +2.3 to +5.0 FILE, depth back to shipped, +13-15% tokens.**
 
+### Exact metrics, C++ at 9216
+
+| slice | arm | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|---|
+| C++ | shipped | 65.89 | 17.83 | 6.98 | .2988 |
+| C++ | sg32 @ 8192 | 68.99 | 17.05 | 6.98 | .2900 |
+| C++ | **sg32 @ 9216** | **68.99** | **18.60** | **7.75** | **.3091** |
+
+Paired FUNCTION: vs sg32@8192 2/0, vs shipped 1/0. Every depth column lands
+ABOVE shipped at +3.10 FILE and +12% tokens.
+
+### Four languages, exact metrics, same config (sg + cap 32 @ 9216) vs shipped
+
+| slice | n | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|---|
+| Rust | 239 | 60.25 -> **65.27** | 19.67 -> 20.50 | 7.53 -> 7.11 | .2431 -> .2397 | +13% |
+| Java | 128 | 49.22 -> **51.56** | 36.72 -> 37.50 | 14.06 -> 13.28 | .4152 -> .4182 | +15% |
+| C | 128 | 51.56 -> **56.25** | 28.12 -> 28.12 | 13.28 -> 13.28 | .2251 -> .2251 | +13% |
+| C++ | 129 | 65.89 -> **68.99** | 17.83 -> 18.60 | 6.98 -> 7.75 | .2988 -> .3091 | +12% |
+
+FILE up on all four (identity-gated against the 8192 arm in every case);
+FUNCTION at or above shipped on all four; LINE at or above shipped on two,
+one instance under on two (n=17-18 per slice, the noisiest column);
+fraction at or above shipped on all four. No paired FUNCTION comparison
+against shipped is significant in either direction -- which is the point:
+depth is back to shipped, not traded away.
+

@@ -339,3 +339,26 @@ Computing exact FUNCTION-level metric + region precision via read-only `git show
 <unknown>:200: SyntaxWarning: invalid escape sequence '\['
 <unknown>:291: SyntaxWarning: invalid escape sequence '\s'
 <unknown>:457: SyntaxWarning: invalid escape sequence '\S'
+
+wrote /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e44/metrics/cpp_b9216.json
+
+==============================================================================
+Agentless-style %% Correct Location -- roust (no-LLM) vs GPT-4o Agentless
+(FUNCTION is EXACT, not a proxy -- SWE-bench Verified held-out)
+==============================================================================
+                                            roust   GPT-4o Agentless
+FILE   (predicted ⊇ gold files)             69.0%        69.7%
+FUNCTION (EXACT)                            18.6%        52.0%
+LINE   (all-or-nothing)                      7.8%        35.3%
+
+LINE mean-fraction covered (continuity w/ prior reporting)   0.3091
+REGION PRECISION (gold lines / total returned lines), mean   0.0252  (n=129, excluded=0)
+  mean total region lines / instance                         1132.2
+
+FUNCTION n=129 n_judged=129 n_correct=24 counted_wrong(engine_errors=0, git_show_failures=0)
+
+--- restricted to file-correct subset (n=89/129) ---
+FUNCTION (EXACT)                            20.2%          n/a
+LINE   (all-or-nothing)                     11.2%          n/a
+LINE mean-fraction covered                                   0.3950
+REGION PRECISION, mean                                       0.0184 (n=89)
