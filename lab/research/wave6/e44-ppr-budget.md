@@ -371,5 +371,34 @@ all. On fraction the floor clears the dual gate.
 
 Baseline reproduces the published reference to the last digit. Floor 0.15:
 FUNCTION identical (2 gained / 2 lost, p=1.0), LINE +0.33 (one instance),
-fraction +.0004. **Lite-neutral on every column.** Verified exact pending.
+fraction +.0004. **Lite-neutral on every column.**
+
+### Verified, exact metrics
+
+| Verified (n=407) | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|
+| shipped (= published reference) | 92.38 | 47.17 | 35.14 | .47635 |
+| **floor 0.15** | 92.38 | **47.67** | **36.86** | **.48393** |
+
+Baseline reproduces the published reference to the last digit. Floor 0.15:
+FUNCTION +0.49 (3 gained / 1 lost, p=.63), **LINE +1.72** (7 instances),
+fraction +.0076 (11 gains / 3 losses, p=.068), FILE pinned. **Positive on
+every depth column on the held-out set**, none individually significant.
+
+### Dual-gate verdict for the floor
+
+| | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| Lite | = | = | +0.33 | +.0004 | -3 |
+| Verified | = | +0.49 | +1.72 | +.0076 | -2 |
+| Go (sg+cap32) | = | **+1.64 (p=.039)** | +1.17 | +.0136 | 0 |
+| Rust (sg+cap32) | = | +1.26 | +0.41 | +.0051 | -1 |
+| JS/TS (sg+cap32) | = | +0.17 | +0.17 | +.0016 | -1 |
+
+Nine depth cells across five populations; **not one is negative**, one is
+significant, two more are one-sided by 3:1 or better, and the cost is zero.
+FILE is pinned everywhere by construction. That is an adoption case -- with
+one measurement still owed: the non-Python slices above were measured at
+cap 32, not at the shipped cap 16 that a default flip would actually ship.
+Those six arms are running (E45d).
 
