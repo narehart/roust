@@ -4,9 +4,12 @@ metric JSONs. Refuses to print a row whose metric file is missing, so a
 stale row can never be pasted by accident."""
 import json, os, sys
 M = "lab/results_regions/e44/metrics"
-rows = [("Python — Lite 300","lite_fl15"),("Python — Verified 407 (held-out)","ver_fl15"),
-        ("JS/TS — MSWE 580","jsts_fl15ship"),("Java — MSWE 128","java_fl15ship"),("Go — MSWE 428","go_fl15ship"),
-        ("Rust — MSWE 239","rust_fl15ship"),("C — MSWE 128","c_fl15ship"),("C++ — MSWE 129","cpp_fl15ship")]
+# Usage: readme_rows.py [PY_SUFFIX MSWE_SUFFIX]  (defaults: fl15 fl15ship)
+PY_SUF = sys.argv[1] if len(sys.argv) > 1 else "fl15"
+MS_SUF = sys.argv[2] if len(sys.argv) > 2 else "fl15ship"
+rows = [("Python — Lite 300",f"lite_{PY_SUF}"),("Python — Verified 407 (held-out)",f"ver_{PY_SUF}"),
+        ("JS/TS — MSWE 580",f"jsts_{MS_SUF}"),("Java — MSWE 128",f"java_{MS_SUF}"),("Go — MSWE 428",f"go_{MS_SUF}"),
+        ("Rust — MSWE 239",f"rust_{MS_SUF}"),("C — MSWE 128",f"c_{MS_SUF}"),("C++ — MSWE 129",f"cpp_{MS_SUF}")]
 missing = []
 for label, name in rows:
     p = f"{M}/{name}.json"
