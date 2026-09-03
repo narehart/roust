@@ -6,3 +6,5 @@ ARM_DONE rust_ts40ship rc=0 12:51:43
 rust shipped -> tail seat 40 @cap16 n=239 FILE 60.25->60.25 (flips=0) | frac d=+0.00550 gain/loss=33/17 wilcoxon p=0.0262 | tok 8464->8464
 ARM_DONE cpp_ts40ship rc=0 12:57:36
 cpp shipped -> tail seat 40 @cap16 n=129 FILE 65.89->65.89 (flips=0) | frac d=+0.01218 gain/loss=25/6 wilcoxon p=0.0010 | tok 8510->8515
+ARM_DONE go_ts40ship rc=0 12:59:59
+go shipped -> tail seat 40 @cap16 n=428 FILE 64.95->64.95 (flips=0) | frac d=+0.01316 gain/loss=62/28 wilcoxon p=0.0002 | tok 8467->8468

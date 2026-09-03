@@ -148,12 +148,12 @@ What a default flip actually ships. Baselines E36/E37 `*_base`.
 | **C++** | 129 | 65.89 (0 flips) | **+.0122** | **25/6** | **p=.0010** | 8510 -> 8515 |
 | **Rust** | 239 | 60.25 (0 flips) | **+.0055** | **33/17** | **p=.026** | 8464 -> 8464 |
 | C | 128 | 51.56 (0 flips) | -.0002 | 8/4 | p=.47 | 8447 -> 8448 |
-| Go | 428 | running | | | | |
+| **Go** | 428 | 64.95 (0 flips) | **+.0132** | **62/28** | **p=.0002** | 8467 -> 8468 |
 | JS/TS | 580 | running | | | | |
 | Lite | 300 | 92.33 (0 flips) | +.0099 | 14/1 | p=.0097 | 8559 -> 8560 |
 | Verified | 407 | 92.38 (0 flips) | +.0173 | 27/7 | p=.0002 | 8558 -> 8559 |
 
-Three significant positives and one null so far on the non-Python slices,
-both Python gates significant, FILE pinned on all, tokens within +5.
-Exact FUNCTION/LINE chained.
+Four significant positives and one null so far on the non-Python slices
+(JS/TS running), both Python gates significant, FILE pinned on all, tokens
+within +5. Exact FUNCTION/LINE chained.
 
