@@ -179,10 +179,11 @@ struct Args {
     #[arg(long)]
     ppr_additive: bool,
 
-    /// E45: the packer's per-file budget floor (0.3 = shipped). Every region
+    /// E45 (adopted): the packer's per-file budget floor (0.15; 0.3 restores
+    /// the pre-E45 engine). Every region
     /// is weighted by (floor + file score); a high floor gives every admitted
     /// file a near-equal claim, which is why wide admission spread budget thin.
-    #[arg(long, default_value_t = 0.3)]
+    #[arg(long, default_value_t = 0.15)]
     pack_floor: f64,
 
     /// E39: index build files (build.gradle, Cargo.toml, CMakeLists.txt,

@@ -52,15 +52,16 @@ pub const CFAMILY_EXTENSIONS: &[&str] = &[".c", ".h", ".cc", ".cpp", ".cxx", ".h
 
 static CFAMILY_EXT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
-// E45: the packer's per-file BUDGET FLOOR. Both packing passes weight a
-// region by `(PACK_FLOOR + scores[file])`; with the shipped 0.3 every
+// E45 (ADOPTED default 0.15, PR pending): the packer's per-file BUDGET FLOOR.
+// Both packing passes weight a region by `(PACK_FLOOR + scores[file])`; at
+// the pre-E45 0.3 every
 // admitted file has a baseline claim of 0.3 against a top file's ~1.3, so a
 // wide admitted set gets nearly EVEN budget -- the mechanism behind every
 // breadth gain's depth tax. Lowering the floor makes allocation more
 // proportional to the (lexical) file score. Stored as f64 bits so the
 // twenty-odd pack_regions unit tests keep their signature; default 0.3 is
 // byte-identical to the shipped engine.
-static PACK_FLOOR_BITS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0x3FD3333333333333); // 0.3f64
+static PACK_FLOOR_BITS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0x3FC3333333333333); // 0.15f64 (E45 adopted; was 0.3)
 
 pub fn set_pack_floor(f: f64) {
     PACK_FLOOR_BITS.store(f.to_bits(), std::sync::atomic::Ordering::Relaxed);
