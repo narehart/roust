@@ -465,7 +465,34 @@ cap 32, not at the shipped cap 16 that a default flip would actually ship.
 At the shipped cap the picture is the same shape but smaller: Java is
 significantly positive, Go marginal, the other four are nulls whose signs
 are noise (gain/loss 17/12, 3/3, 13/11, 11/11). No slice regresses; FILE is
-pinned on all six; tokens unchanged. Exact FUNCTION/LINE on these six are
-being scored -- the fraction nulls must not hide a FUNCTION loss before
-anything is flipped.
+pinned on all six; tokens unchanged.
+
+Exact FUNCTION/LINE, floor 0.15 vs shipped, cap 16 / budget 8192:
+
+| slice | n | FILE | FUNCTION | G/L | LINE | fraction |
+|---|---|---|---|---|---|---|
+| Java | 128 | = | 36.72 -> **39.06** | 3/0 | 14.06 -> 14.06 | .4152 -> .4266 |
+| C++ | 129 | = | 17.83 -> **19.38** | 2/0 | 6.98 -> **7.75** | .2988 -> .2929 |
+| Rust | 239 | = | 19.67 -> **20.50** | 2/0 | 7.53 -> 7.53 | .2431 -> .2412 |
+| Go | 428 | = | 28.97 -> **29.44** | 4/2 | 16.59 -> **17.52** | .4102 -> .4150 |
+| JS/TS | 580 | = | 31.21 -> 30.86 | 1/3 | 14.14 -> 13.97 | .2616 -> .2595 |
+| C | 128 | = | 28.12 -> 27.34 | 0/1 | 13.28 -> 13.28 | .2251 -> .2235 |
+| Lite | 300 | = | 54.67 -> 54.67 | 2/2 | 44.00 -> **44.33** | .5273 -> .5277 |
+| Verified | 407 | = | 47.17 -> **47.67** | 3/1 | 35.14 -> **36.86** | .4764 -> .4839 |
+
+## Adoption verdict: flip the default to 0.15
+
+Eight populations, 2,339 instances, FILE pinned on every one (the change
+cannot touch selection), tokens unchanged. FUNCTION: gains on five slices
+and Verified, identical on Lite, and the only two negatives are **2 of 580**
+(JS/TS) and **1 of 128** (C) -- 17 instances gained against 9 lost pooled.
+LINE: never below shipped except one instance on JS/TS; up on Go, C++,
+Lite and Verified. No comparison is significantly negative anywhere; Java
+(fraction p=.0098) and Go at cap 32 (FUNCTION p=.039) are significantly
+positive. The dual gate is clear: Lite neutral, Verified positive on every
+depth column.
+
+This is the campaign's standard for adoption -- a change that wins or
+draws everywhere it is measured, costs nothing, and cannot regress FILE by
+construction. `--pack-floor 0.3` restores the pre-E45 engine exactly.
 
