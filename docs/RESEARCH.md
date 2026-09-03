@@ -79,7 +79,7 @@ that fire rarely on strong signals.
 
 ## Open problems <!-- note: what is still unsolved -->
 
-Line-level mean fraction is .527 against a measured lexical ceiling of .93 for
+Line-level mean fraction is .528 against a measured lexical ceiling of .93 for
 this corpus. The residual is dominated by patches that touch many sibling
 functions, where no single-site mechanism suffices. File ranking trails trained
 retrievers by roughly seven points on the depth-aligned metric. Both are
