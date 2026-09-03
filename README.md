@@ -414,6 +414,33 @@ startup overhead, not indexing or query work — visible as the gap between
 info, and per-repo `files_indexed`/disk-size in `lab/latency/latency_v1.json`;
 methodology in `lab/latency/bench_latency.py`.
 
+### Latency after E49/E50 (measured, `lab/latency/latency_v2.json`)
+
+Same methodology, seven disposable repo copies (three of them non-Python),
+engine `roust 0.3.2 (c72dbbc, clean)` vs the pre-E49 engine `a1db4f6`
+(`lab/latency/latency_v2_pre_e49.json`), same machine, back to back. The
+E49 padding-guard memo and the E50 per-file block/token cache change no
+output (byte-identical bundles proven on 128/128 full-slice instances and
+five hand-checked repos) and only cut time:
+
+| Repo | Files | Cold index wall (pre / now) | Warm index wall (pre / now) | Query p50 `query_ms` (pre / now) | Query p95 `query_ms` (pre / now) | Query wall p50 (pre / now) |
+|---|---|---|---|---|---|---|
+| requests | 122 | 580 / 203 ms | 533 / 78 ms | 1006 / 61 ms | 1981 / 76 ms | 1033 / 90 ms |
+| flask | 77 | 1536 / 232 ms | 1473 / 89 ms | 1057 / 65 ms | 1389 / 69 ms | 1086 / 94 ms |
+| django | 2,214 | 2512 / 1663 ms | 1315 / 339 ms | 2212 / 126 ms | 6159 / 164 ms | 2439 / 342 ms |
+| clap-rs/clap (Rust) | 98 | 2258 / 470 ms | 2117 / 103 ms | 1187 / 69 ms | 2060 / 84 ms | 1215 / 96 ms |
+| nlohmann/json (C++) | 192 | 1735 / 825 ms | 1470 / 114 ms | 2026 / 85 ms | 3553 / 147 ms | 2072 / 122 ms |
+| cli/cli (Go) | 711 | 1783 / 1486 ms | 893 / 529 ms | 1696 / 495 ms | 1975 / 552 ms | 1769 / 566 ms |
+| this working tree (incl. docs/lab) | 3,902 | 7150 / 3954 ms | 4123 / 571 ms | 2432 / 194 ms | 3708 / 325 ms | 2820 / 570 ms |
+
+Query time on a warm repo is now 7-25x lower than the previous engine on
+six of seven repos (cli/cli, whose time is dominated by candidate generation
+over a 711-file corpus rather than by packing, improves 3.4x). "Cold index"
+and "warm index" rows include one query, which is why they move too. The
+E50 cache lives at `<repo>/.roust/blocks.json` (140-400 KB after a query,
+covered by the same `.gitignore` advice as the index) and is skipped
+entirely under `--no-cache`.
+
 Competitor latency: archex (BM25 default mode) query wall time on the SWE-bench
 Lite corpora, `lab/results_regions/archex300_bm25_v1.jsonl` — index mean 5.69s,
 query median 9.68s (2 of 300 queries hit the 300s timeout); archex (vector/hybrid

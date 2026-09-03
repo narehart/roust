@@ -1,0 +1,624 @@
+{
+  "engine_version": "roust 0.3.2 (c72dbbc, clean)",
+  "machine": {
+    "uname_m": "arm64",
+    "cpu": "Apple M3 Max"
+  },
+  "timestamp": "2026-09-03T06:11:39Z",
+  "queries": [
+    "fix off-by-one error in loop boundary",
+    "add support for custom authentication headers",
+    "handle unicode decoding error in response body",
+    "connection pooling timeout not respected",
+    "improve error message when validation fails",
+    "memory leak when processing large files",
+    "race condition in concurrent request handling",
+    "deprecate old configuration option safely",
+    "unexpected behavior when parsing malformed input",
+    "add caching layer for repeated queries"
+  ],
+  "repos": {
+    "roust": {
+      "files_indexed": 3902,
+      "repo_size_bytes": 268747559,
+      "cold_index": {
+        "index_ms_median": 3362,
+        "wall_ms_median": 3953.8502080831677,
+        "index_ms_samples": [
+          3801,
+          3362,
+          3287
+        ],
+        "wall_ms_samples": [
+          4399.3,
+          3953.9,
+          3863.8
+        ]
+      },
+      "warm_index": {
+        "index_ms_median": 338,
+        "wall_ms_median": 571.4383330196142,
+        "index_ms_samples": [
+          337,
+          333,
+          341,
+          339,
+          338
+        ],
+        "wall_ms_samples": [
+          572.0,
+          560.3,
+          576.8,
+          571.4,
+          569.1
+        ]
+      },
+      "query": {
+        "query_ms_p50": 194,
+        "query_ms_p95": 325,
+        "wall_ms_p50": 570.1,
+        "wall_ms_p95": 704.3,
+        "query_ms_samples": [
+          203,
+          259,
+          250,
+          179,
+          305,
+          458,
+          325,
+          314,
+          222,
+          321,
+          194,
+          145,
+          166,
+          158,
+          159,
+          173,
+          149,
+          171,
+          141,
+          177
+        ],
+        "wall_ms_samples": [
+          571.7,
+          620.4,
+          615.2,
+          545.8,
+          670.7,
+          833.1,
+          704.3,
+          688.9,
+          591.6,
+          693.6,
+          570.1,
+          516.7,
+          540.7,
+          534.4,
+          529.7,
+          543.9,
+          525.2,
+          548.7,
+          516.2,
+          549.3
+        ]
+      }
+    },
+    "requests": {
+      "files_indexed": 122,
+      "repo_size_bytes": 1815187,
+      "cold_index": {
+        "index_ms_median": 73,
+        "wall_ms_median": 203.07291706558317,
+        "index_ms_samples": [
+          92,
+          72,
+          73
+        ],
+        "wall_ms_samples": [
+          220.4,
+          203.1,
+          201.5
+        ]
+      },
+      "warm_index": {
+        "index_ms_median": 18,
+        "wall_ms_median": 78.32270802464336,
+        "index_ms_samples": [
+          18,
+          19,
+          18,
+          18,
+          18
+        ],
+        "wall_ms_samples": [
+          77.6,
+          79.9,
+          77.7,
+          78.9,
+          78.3
+        ]
+      },
+      "query": {
+        "query_ms_p50": 61,
+        "query_ms_p95": 76,
+        "wall_ms_p50": 89.7,
+        "wall_ms_p95": 105.0,
+        "query_ms_samples": [
+          51,
+          79,
+          73,
+          48,
+          75,
+          63,
+          76,
+          54,
+          65,
+          61,
+          51,
+          65,
+          69,
+          46,
+          49,
+          51,
+          74,
+          48,
+          61,
+          59
+        ],
+        "wall_ms_samples": [
+          79.3,
+          106.6,
+          100.7,
+          76.6,
+          104.8,
+          91.2,
+          105.0,
+          82.7,
+          93.0,
+          89.1,
+          79.9,
+          93.3,
+          98.1,
+          75.4,
+          77.4,
+          81.0,
+          102.6,
+          76.8,
+          89.7,
+          87.0
+        ]
+      }
+    },
+    "flask": {
+      "files_indexed": 77,
+      "repo_size_bytes": 1575018,
+      "cold_index": {
+        "index_ms_median": 95,
+        "wall_ms_median": 232.21725004259497,
+        "index_ms_samples": [
+          110,
+          93,
+          95
+        ],
+        "wall_ms_samples": [
+          251.5,
+          232.2,
+          231.8
+        ]
+      },
+      "warm_index": {
+        "index_ms_median": 19,
+        "wall_ms_median": 88.85383303277194,
+        "index_ms_samples": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ],
+        "wall_ms_samples": [
+          90.3,
+          88.0,
+          88.0,
+          88.9,
+          89.4
+        ]
+      },
+      "query": {
+        "query_ms_p50": 65,
+        "query_ms_p95": 69,
+        "wall_ms_p50": 93.5,
+        "wall_ms_p95": 98.2,
+        "query_ms_samples": [
+          61,
+          56,
+          69,
+          45,
+          65,
+          67,
+          68,
+          67,
+          60,
+          57,
+          60,
+          51,
+          66,
+          45,
+          66,
+          69,
+          69,
+          69,
+          62,
+          57
+        ],
+        "wall_ms_samples": [
+          89.1,
+          84.0,
+          97.4,
+          73.5,
+          93.5,
+          96.1,
+          98.2,
+          95.1,
+          88.5,
+          84.7,
+          88.7,
+          79.8,
+          96.9,
+          73.8,
+          94.9,
+          99.0,
+          98.2,
+          98.0,
+          91.2,
+          86.2
+        ]
+      }
+    },
+    "django": {
+      "files_indexed": 2214,
+      "repo_size_bytes": 42568740,
+      "cold_index": {
+        "index_ms_median": 1416,
+        "wall_ms_median": 1662.7816669642925,
+        "index_ms_samples": [
+          1626,
+          1416,
+          1400
+        ],
+        "wall_ms_samples": [
+          1874.7,
+          1662.8,
+          1649.2
+        ]
+      },
+      "warm_index": {
+        "index_ms_median": 210,
+        "wall_ms_median": 339.33287498075515,
+        "index_ms_samples": [
+          214,
+          219,
+          210,
+          195,
+          197
+        ],
+        "wall_ms_samples": [
+          339.3,
+          346.3,
+          341.3,
+          319.8,
+          320.1
+        ]
+      },
+      "query": {
+        "query_ms_p50": 126,
+        "query_ms_p95": 164,
+        "wall_ms_p50": 342.5,
+        "wall_ms_p95": 391.3,
+        "query_ms_samples": [
+          104,
+          149,
+          153,
+          155,
+          164,
+          145,
+          126,
+          148,
+          139,
+          354,
+          103,
+          96,
+          108,
+          112,
+          112,
+          111,
+          109,
+          117,
+          109,
+          157
+        ],
+        "wall_ms_samples": [
+          319.2,
+          361.7,
+          371.9,
+          371.4,
+          380.3,
+          364.7,
+          342.5,
+          367.3,
+          364.0,
+          573.7,
+          318.4,
+          310.4,
+          323.1,
+          327.6,
+          330.2,
+          328.4,
+          329.3,
+          331.7,
+          324.0,
+          391.3
+        ]
+      }
+    },
+    "clap": {
+      "files_indexed": 98,
+      "repo_size_bytes": 1362612,
+      "cold_index": {
+        "index_ms_median": 144,
+        "wall_ms_median": 469.84879195224494,
+        "index_ms_samples": [
+          152,
+          143,
+          144
+        ],
+        "wall_ms_samples": [
+          469.8,
+          470.2,
+          464.7
+        ]
+      },
+      "warm_index": {
+        "index_ms_median": 18,
+        "wall_ms_median": 102.64412499964237,
+        "index_ms_samples": [
+          17,
+          18,
+          18,
+          18,
+          17
+        ],
+        "wall_ms_samples": [
+          101.0,
+          103.2,
+          102.4,
+          102.9,
+          102.6
+        ]
+      },
+      "query": {
+        "query_ms_p50": 69,
+        "query_ms_p95": 84,
+        "wall_ms_p50": 95.6,
+        "wall_ms_p95": 110.6,
+        "query_ms_samples": [
+          73,
+          84,
+          56,
+          35,
+          92,
+          69,
+          66,
+          73,
+          80,
+          52,
+          73,
+          70,
+          48,
+          36,
+          82,
+          68,
+          62,
+          64,
+          77,
+          50
+        ],
+        "wall_ms_samples": [
+          99.2,
+          110.6,
+          81.7,
+          58.9,
+          118.5,
+          95.6,
+          92.4,
+          99.3,
+          106.5,
+          78.5,
+          98.8,
+          96.1,
+          73.8,
+          59.8,
+          109.3,
+          93.7,
+          87.9,
+          90.5,
+          103.0,
+          75.7
+        ]
+      }
+    },
+    "nlohmann-json": {
+      "files_indexed": 192,
+      "repo_size_bytes": 250312600,
+      "cold_index": {
+        "index_ms_median": 247,
+        "wall_ms_median": 825.038917013444,
+        "index_ms_samples": [
+          256,
+          247,
+          242
+        ],
+        "wall_ms_samples": [
+          839.4,
+          824.8,
+          825.0
+        ]
+      },
+      "warm_index": {
+        "index_ms_median": 26,
+        "wall_ms_median": 114.17795903980732,
+        "index_ms_samples": [
+          26,
+          27,
+          26,
+          25,
+          26
+        ],
+        "wall_ms_samples": [
+          113.7,
+          118.7,
+          115.7,
+          113.6,
+          114.2
+        ]
+      },
+      "query": {
+        "query_ms_p50": 85,
+        "query_ms_p95": 147,
+        "wall_ms_p50": 122.0,
+        "wall_ms_p95": 182.8,
+        "query_ms_samples": [
+          78,
+          179,
+          135,
+          76,
+          100,
+          94,
+          147,
+          79,
+          113,
+          84,
+          80,
+          85,
+          70,
+          66,
+          90,
+          94,
+          73,
+          75,
+          105,
+          83
+        ],
+        "wall_ms_samples": [
+          113.8,
+          214.9,
+          172.0,
+          112.8,
+          137.0,
+          130.8,
+          182.8,
+          115.5,
+          149.5,
+          122.0,
+          116.0,
+          122.0,
+          110.2,
+          103.8,
+          127.3,
+          131.3,
+          111.0,
+          112.8,
+          142.9,
+          119.9
+        ]
+      }
+    },
+    "cli": {
+      "files_indexed": 711,
+      "repo_size_bytes": 5273214,
+      "cold_index": {
+        "index_ms_median": 933,
+        "wall_ms_median": 1486.1240839818493,
+        "index_ms_samples": [
+          979,
+          933,
+          925
+        ],
+        "wall_ms_samples": [
+          1553.2,
+          1486.1,
+          1481.8
+        ]
+      },
+      "warm_index": {
+        "index_ms_median": 56,
+        "wall_ms_median": 528.829374932684,
+        "index_ms_samples": [
+          55,
+          56,
+          56,
+          58,
+          55
+        ],
+        "wall_ms_samples": [
+          526.2,
+          529.7,
+          528.8,
+          536.8,
+          525.8
+        ]
+      },
+      "query": {
+        "query_ms_p50": 495,
+        "query_ms_p95": 552,
+        "wall_ms_p50": 566.2,
+        "wall_ms_p95": 623.2,
+        "query_ms_samples": [
+          465,
+          579,
+          552,
+          530,
+          523,
+          497,
+          497,
+          515,
+          508,
+          497,
+          470,
+          495,
+          494,
+          478,
+          476,
+          478,
+          481,
+          469,
+          489,
+          484
+        ],
+        "wall_ms_samples": [
+          536.4,
+          650.7,
+          623.2,
+          601.0,
+          594.9,
+          567.1,
+          567.9,
+          588.5,
+          581.0,
+          566.2,
+          540.0,
+          567.3,
+          565.7,
+          549.1,
+          550.2,
+          547.8,
+          555.3,
+          539.3,
+          563.5,
+          555.3
+        ]
+      }
+    }
+  }
+}
