@@ -110,7 +110,20 @@ like. Recorded as a lead, not a result: it needs the two largest slices
 at or below baseline on FUNCTION; none gains an instance it did not lose.
 
 Taking the floor from 0.3 to 0.05 -- a 6x change in the one constant the
-diagnosis blamed -- moves a handful of spans either way.
+diagnosis blamed -- moves a handful of spans either way on Rust.
+
+### E45b — the floor-0.15 lead replicates on Go
+
+| slice | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|
+| Rust | 239 | 65.27 (0 flips) | +.0051 | 14/11 | p=.77 | 8577 -> 8576 |
+| **Go** | **428** | 70.79 (0 flips) | **+.0135** | **35/15** | **p=.0014** | 8592 -> 8592 |
+
+On the slice large enough to see it, the effect is real: a significant
+depth gain with the file set pinned and **zero token cost**. This is the
+first budget-neutral depth improvement in the sequence. Rust's 14/11 was
+the same sign, underpowered. JS/TS is running; exact FUNCTION/LINE for Go
+are being scored.
 
 ## Why: the tax is the seat COUNT, measured from the bundles
 

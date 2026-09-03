@@ -19,3 +19,8 @@ shard 1/1: rows [0:428] of the sorted split (428 instances)
 [350/428] cli__cli-8824                                 elapsed=1059s (ok) ok=349 err=1
 [375/428] cli__cli-9452                                 elapsed=1166s (ok) ok=374 err=1
 [400/428] grpc__grpc-go-2630                            elapsed=1265s (ok) ok=399 err=1
+[425/428] zeromicro__go-zero-2537                       elapsed=1373s (ok) ok=424 err=1
+[428/428] zeromicro__go-zero-990                        elapsed=1380s (ok) ok=427 err=1
+
+engine version: roust 0.3.2 (b8d09ea, clean)
+wrote 428 records (427 ok, 1 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e44/arms/go_fl15.jsonl
