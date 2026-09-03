@@ -190,8 +190,8 @@ struct Args {
     /// beyond --tail-seat-after. Every returned file otherwise gets a flat
     /// 120-token seat, which at wide admission is the whole depth tax. The
     /// file still counts as retrieved; pass 2 can re-expand it on evidence.
-    /// 0 = off.
-    #[arg(long, default_value_t = 0)]
+    /// Adopted default 40 (E47); 0 restores the pre-E47 flat 120-token seat.
+    #[arg(long, default_value_t = 40)]
     tail_seat_tokens: i64,
 
     /// E47: rank (0-based, in returned order) from which the compact seat

@@ -78,8 +78,9 @@ pub fn pack_floor() -> f64 {
 // (lexical picks first, then additions by rank) get a compact allowance of
 // TAIL_SEAT_TOKENS instead of 120: the block is trimmed to its header (min 4
 // lines), the file still counts, and pass 2 can re-expand it on lexical
-// evidence exactly as it can any other file. 0 = off (byte-identical).
-static TAIL_SEAT_TOKENS: std::sync::atomic::AtomicI64 = std::sync::atomic::AtomicI64::new(0);
+// evidence exactly as it can any other file. ADOPTED default 40 (E47);
+// `--tail-seat-tokens 0` restores the pre-E47 flat seat.
+static TAIL_SEAT_TOKENS: std::sync::atomic::AtomicI64 = std::sync::atomic::AtomicI64::new(40); // E47 adopted default; 0 = pre-E47
 static TAIL_SEAT_AFTER: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(16);
 
 pub fn set_tail_seat(tokens: i64, after: usize) {
