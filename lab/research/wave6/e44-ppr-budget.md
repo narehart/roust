@@ -151,10 +151,21 @@ Paired FUNCTION vs sg32: **8 gained / 1 lost, McNemar p = .039.** LINE
 | **shipped -> floor+9216** | **64.95 -> 70.79** | +.0035 | 51/44 | p=.40 | 8467 -> 9617 |
 
 Weakly additive: on top of the budget the floor adds +.0035 (p=.065,
-marginal). The combined arm against SHIPPED is the operating-point
-statement for Go: **+5.84 FILE (25 more instances out of 428) with the line
-fraction at-or-above shipped (+.0035, a measured null), for +13.6% tokens.**
-Exact FUNCTION/LINE for the combined arm are being scored.
+marginal). Exact metrics for the combined arm:
+
+| Go arm (n=428) | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 64.95 | 28.97 | 16.59 | .4102 | 8480 |
+| sg32 @ 9216 | 70.79 | 29.44 | 16.36 | .4102 | 9618 |
+| **sg32 + floor 0.15 @ 9216** | **70.79** | **30.61** | **16.82** | **.4137** | 9617 |
+
+Paired FUNCTION: vs @9216 alone 6 gained / 1 lost (p=.125); vs floor@8192
+18 / 1 (p<.001); vs shipped 12 / 5 (p=.14). **Every depth column lands
+above shipped** -- FUNCTION +1.64, LINE +0.23, fraction +.0035 -- at
++5.84 FILE (25 more instances) and +13.6% tokens. The composition is
+directionally additive on all three depth columns; the increment over
+budget alone is not individually significant (p=.125), which is the honest
+reading of a 6/1 split.
 
 ## Why: the tax is the seat COUNT, measured from the bundles
 
