@@ -11,3 +11,6 @@ pad_lines=5 len_exp=0.85 max_additions=0 budget=8192 instances=None
 [150/407] django__django-15368                          elapsed=862s (ok) ok=150 err=0
 [175/407] django__django-16100                          elapsed=1022s (ok) ok=175 err=0
 [200/407] django__django-16901                          elapsed=1161s (ok) ok=200 err=0
+[225/407] matplotlib__matplotlib-25287                  elapsed=1317s (ok) ok=225 err=0
+[250/407] pydata__xarray-4075                           elapsed=1405s (ok) ok=250 err=0
+[275/407] pytest-dev__pytest-10081                      elapsed=1487s (ok) ok=275 err=0

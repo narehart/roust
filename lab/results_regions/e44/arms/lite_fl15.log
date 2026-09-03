@@ -10,3 +10,9 @@ EXTRA_ENGINE_FLAGS=['--pack-floor', '0.15']
 [175/300] pytest-dev__pytest-5692                       elapsed=913s (ok) ok=175 err=0
 [200/300] scikit-learn__scikit-learn-14894              elapsed=983s (ok) ok=200 err=0
 [225/300] sympy__sympy-11870                            elapsed=1108s (ok) ok=225 err=0
+[250/300] sympy__sympy-15011                            elapsed=1256s (ok) ok=250 err=0
+[275/300] sympy__sympy-19487                            elapsed=1411s (ok) ok=275 err=0
+[300/300] sympy__sympy-24909                            elapsed=1556s (ok) ok=300 err=0
+
+engine version: roust 0.3.2 (b8d09ea, clean)
+wrote 300 records (300 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e44/arms/lite_fl15.jsonl

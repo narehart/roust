@@ -233,10 +233,12 @@ scored with the same scorer. FILE must equal each slice's 8192 arm.
 | Java | 128 | 51.56 (0 flips) | .4152 | .3940 | **.4182** | **16/0** | p=.0004 | +15% |
 | C | 128 | 56.25 (0 flips) | .2251 | .2102 | **.2249** | 15/2 | p=.002 | +13% |
 | C++ | 129 | 68.99 (0 flips) | .2988 | .2900 | **.3090** | **35/0** | p<1e-4 | +12% |
+| Go | 428 | 70.79 (0 flips) | .4102 | .3740 | **.4101** | **86/10** | p<1e-4 | +12% |
 
-Four for four: at 9216 the line fraction returns to shipped (Java and C++
-above it -- C++ 35 gains / 0 losses), with 0 FILE flips and 12-15% more
-tokens. Go and JS/TS are running.
+Five for five: at 9216 the line fraction returns to shipped (Java and C++
+above it -- C++ 35 gains / 0 losses; Go lands on shipped to the fourth
+decimal, .4101 vs .4102, from 86 gains / 10 losses), with 0 FILE flips and
+12-15% more tokens. JS/TS is running.
 
 ### Exact metrics, Java and C at 9216
 
