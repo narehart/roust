@@ -155,5 +155,24 @@ What a default flip actually ships. Baselines E36/E37 `*_base`.
 
 Four significant positives and one null so far on the non-Python slices
 (JS/TS running), both Python gates significant, FILE pinned on all, tokens
-within +5. Exact FUNCTION/LINE chained.
+within +5.
+
+### Ship round, exact metrics vs shipped (FILE pinned, tokens flat, everywhere)
+
+| slice | n | FUNCTION | G/L | McNemar | LINE | fraction |
+|---|---|---|---|---|---|---|
+| **Go** | 428 | 28.97 -> **32.94** | **20/3** | **p<.001** | 16.59 -> **18.46** | .4102 -> **.4234** |
+| **Java** | 128 | 36.72 -> **39.84** | 4/0 | p=.125 | 14.06 -> **14.84** | .4152 -> **.4328** |
+| **C++** | 129 | 17.83 -> **20.93** | 4/0 | p=.125 | 6.98 -> **8.53** | .2988 -> **.3110** |
+| **Rust** | 239 | 19.67 -> **20.92** | 3/0 | p=.25 | 7.53 -> 7.53 | .2431 -> **.2486** |
+| C | 128 | 28.12 -> 28.12 | 0/0 | -- | 13.28 -> 13.28 | .2251 -> .2249 |
+| JS/TS | 580 | pending | | | | |
+| **Lite** | 300 | 54.67 -> **57.67** | **11/2** | **p=.022** | 44.00 -> **46.00** | .5273 -> **.5372** |
+| **Verified** | 407 | 47.17 -> **48.89** | **8/1** | **p=.039** | 35.14 -> **37.84** | .4764 -> **.4937** |
+
+Seven populations scored, 1,759 instances: **FUNCTION 50 gained / 6 lost
+pooled**, LINE up on five and flat on two, fraction up on six and flat on
+one, **not a single cell below shipped**, FILE pinned on all, tokens flat.
+Go alone is +3.97 FUNCTION (20 gained / 3 lost, p<.001) -- the largest
+FUNCTION gain on any slice in the campaign, at zero cost.
 
