@@ -49,3 +49,14 @@ artifact (E47) -- after both fixes, a residual, significant depth loss
 remains on Python at cap 32. Python's bundles have the highest lexical
 precision in the set, so widening admission there dilutes pass 2 more than
 it does elsewhere.
+
+## JS/TS stub 25 at cap 32 (n=580)
+
+| arm | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|
+| shipped | 46.38 | 31.21 | 14.14 | .2616 |
+| cap 32, stub 40 | 52.07 | 29.66 | 12.59 | .2421 |
+| cap 32, stub 25 | 52.07 (0 flips) | 29.48 | 12.59 | .2425 |
+
+stub 25 is indistinguishable from stub 40 (FUNCTION 29.48 vs 29.66, 0G/1L; fraction +.0003, 15/31) and still FUNCTION −1.73 vs shipped (4G/14L, p=.031). Stub size is not the lever; JS/TS's cap-32 depth residual is real at this budget (E46: ~10.7k restores it).
+
