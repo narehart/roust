@@ -185,6 +185,10 @@ def main() -> None:
                      help="E44b: append --ppr-additive -- additive PPR budget boost instead of the multiplicative squash.")
     ap.add_argument("--pack-floor", type=float, default=-1.0,
                      help="E45: append --pack-floor F -- the packer per-file budget floor (engine default 0.3). -1.0 here is a SENTINEL meaning forward NO flag at all.")
+    ap.add_argument("--tail-seat-tokens", type=int, default=0,
+                     help="E47: append --tail-seat-tokens N (compact pass-1 seat for tail-ranked files). 0 = forward NO flag.")
+    ap.add_argument("--tail-seat-after", type=int, default=16,
+                     help="E47: rank from which the compact seat applies (forwarded only with --tail-seat-tokens).")
     ap.add_argument("--eligible-floor", type=float, default=0.0,
                      help="E33 (per-language parity campaign): append --eligible-floor F -- the pool eligibility cut as a fraction of the best candidate score (engine default 0.15). 0.0 here is a SENTINEL meaning forward NO flag at all.")
     ap.add_argument("--k-lex", type=int, default=0,
@@ -267,6 +271,8 @@ def main() -> None:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--ppr-additive"]
     if args.pack_floor >= 0.0:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--pack-floor", str(args.pack_floor)]
+    if args.tail_seat_tokens > 0:
+        rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--tail-seat-tokens", str(args.tail_seat_tokens), "--tail-seat-after", str(args.tail_seat_after)]
     if args.eligible_floor:
         rev.EXTRA_ENGINE_FLAGS = rev.EXTRA_ENGINE_FLAGS + ["--eligible-floor", str(args.eligible_floor)]
     if args.k_lex:

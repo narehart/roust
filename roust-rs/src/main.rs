@@ -186,6 +186,19 @@ struct Args {
     #[arg(long, default_value_t = 0.15)]
     pack_floor: f64,
 
+    /// E47: compact pass-1 seat (in tokens) for returned files ranked at or
+    /// beyond --tail-seat-after. Every returned file otherwise gets a flat
+    /// 120-token seat, which at wide admission is the whole depth tax. The
+    /// file still counts as retrieved; pass 2 can re-expand it on evidence.
+    /// 0 = off.
+    #[arg(long, default_value_t = 0)]
+    tail_seat_tokens: i64,
+
+    /// E47: rank (0-based, in returned order) from which the compact seat
+    /// applies.
+    #[arg(long, default_value_t = 16)]
+    tail_seat_after: usize,
+
     /// E39: index build files (build.gradle, Cargo.toml, CMakeLists.txt,
     /// package.json, pom.xml, go.mod, Makefile ...). Genuinely useful to
     /// return -- real changes often edit them -- and they carry gold that the
@@ -521,6 +534,7 @@ fn main() {
     roust::core::set_changelog_files(args.changelog_files);
     roust::core::set_docs_data_files(args.docs_data_files);
     roust::core::set_pack_floor(args.pack_floor);
+    roust::core::set_tail_seat(args.tail_seat_tokens, args.tail_seat_after);
     // WS3d displacement guard: default ON (adopted); --no-displacement-guard
     // is the escape hatch and the explicit on-flag is accepted-but-redundant
     // (mutual exclusion checked below, mirroring the symbols-v2 pattern).

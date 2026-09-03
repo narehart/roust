@@ -70,6 +70,26 @@ pub fn pack_floor() -> f64 {
     f64::from_bits(PACK_FLOOR_BITS.load(std::sync::atomic::Ordering::Relaxed))
 }
 
+// E47: TIERED pass-1 seats. Every returned file needs >= 1 span to count as
+// retrieved, and pass 1 gives each one a flat `floor_tok = 120` allowance --
+// at cap 32 (42 files) that is ~5,000 of 8,192 tokens committed before any
+// depth is packed, which is the ENTIRE breadth/depth tax measured in E45/E46.
+// With these set, files at index >= TAIL_SEAT_AFTER in the returned order
+// (lexical picks first, then additions by rank) get a compact allowance of
+// TAIL_SEAT_TOKENS instead of 120: the block is trimmed to its header (min 4
+// lines), the file still counts, and pass 2 can re-expand it on lexical
+// evidence exactly as it can any other file. 0 = off (byte-identical).
+static TAIL_SEAT_TOKENS: std::sync::atomic::AtomicI64 = std::sync::atomic::AtomicI64::new(0);
+static TAIL_SEAT_AFTER: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(16);
+
+pub fn set_tail_seat(tokens: i64, after: usize) {
+    TAIL_SEAT_TOKENS.store(tokens, std::sync::atomic::Ordering::Relaxed);
+    TAIL_SEAT_AFTER.store(after, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn tail_seat() -> (i64, usize) {
+    (TAIL_SEAT_TOKENS.load(std::sync::atomic::Ordering::Relaxed), TAIL_SEAT_AFTER.load(std::sync::atomic::Ordering::Relaxed))
+}
+
 static BUILD_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static CHANGELOG_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static DOCS_DATA_FILES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
@@ -5560,10 +5580,17 @@ pub fn pack_regions(
             1.0
         }
     };
+    let (tail_tok, tail_after) = tail_seat();
     let caps: HashMap<String, i64> = files
         .iter()
-        .map(|f| {
+        .enumerate()
+        .map(|(rank, f)| {
             let sc = scores.get(f).copied().unwrap_or(0.0);
+            // E47: tail files get the compact seat; everything else is the
+            // pre-E47 formula verbatim.
+            if tail_tok > 0 && rank >= tail_after {
+                return (f.clone(), tail_tok);
+            }
             // Guard against a non-finite `scores` entry (NaN/inf, e.g. from
             // an upstream normalization/idf bug): `ratio` can otherwise be
             // NaN or +inf, and `(x as i64)` on +inf saturates to i64::MAX,
