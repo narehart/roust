@@ -355,6 +355,16 @@ are E36's, equal to the published references.
 
 Both gates: FILE pinned, fraction neutral-to-positive (Verified 11 gains /
 3 losses), and barely touched -- 8 of 300 and 14 of 407 instances change at
-all. On fraction the floor clears the dual gate. Exact FUNCTION/LINE on both
-sets pending; those are the adoption numbers.
+all. On fraction the floor clears the dual gate.
+
+### Lite, exact metrics (the adoption numbers)
+
+| Lite (n=300) | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|
+| shipped (= published reference) | 92.33 | 54.67 | 44.00 | .52728 |
+| **floor 0.15** | 92.33 | 54.67 | **44.33** | .52769 |
+
+Baseline reproduces the published reference to the last digit. Floor 0.15:
+FUNCTION identical (2 gained / 2 lost, p=1.0), LINE +0.33 (one instance),
+fraction +.0004. **Lite-neutral on every column.** Verified exact pending.
 
