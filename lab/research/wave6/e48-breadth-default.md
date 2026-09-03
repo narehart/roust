@@ -29,7 +29,9 @@ back, now on the exact metric and significant.
 | + symbol-graph + cap 32 | **94.59** (9 flips) | .4818 | 10/20 | **p=.030** | 8704 (+1.7%) |
 
 Same shape on the held-out set: FILE up, fraction significantly down
-(10 gains / 20 losses). Exact FUNCTION/LINE pending.
+(10 gains / 20 losses). Exact: FUNCTION **48.89 -> 47.67** (3 gained /
+8 lost, p=.23), LINE **37.84 -> 36.36**. Not individually significant on
+FUNCTION, but every depth column moves the wrong way on both sets.
 
 ## Verdict: breadth stays an opt-in operating point, not a default
 
