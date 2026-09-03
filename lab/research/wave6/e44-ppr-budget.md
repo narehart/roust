@@ -417,5 +417,22 @@ significant, two more are one-sided by 3:1 or better, and the cost is zero.
 FILE is pinned everywhere by construction. That is an adoption case -- with
 one measurement still owed: the non-Python slices above were measured at
 cap 32, not at the shipped cap 16 that a default flip would actually ship.
-Those six arms are running (E45d).
+
+### E45d — floor 0.15 at SHIPPED settings (cap 16, budget 8192), all six slices
+
+| slice | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|
+| Java | 128 | 49.22 (0 flips) | **+.0114** | **8/2** | **p=.0098** | 8762 -> 8762 |
+| Go | 428 | 64.95 (0 flips) | +.0048 | 25/18 | p=.098 | 8467 -> 8466 |
+| Rust | 239 | 60.25 (0 flips) | -.0019 | 17/12 | p=.72 | 8464 -> 8463 |
+| C | 128 | 51.56 (0 flips) | -.0016 | 3/3 | p=.69 | 8447 -> 8445 |
+| JS/TS | 580 | 46.38 (0 flips) | -.0021 | 13/11 | p=.91 | 8517 -> 8517 |
+| C++ | 129 | 65.89 (0 flips) | -.0059 | 11/11 | p=.82 | 8510 -> 8510 |
+
+At the shipped cap the picture is the same shape but smaller: Java is
+significantly positive, Go marginal, the other four are nulls whose signs
+are noise (gain/loss 17/12, 3/3, 13/11, 11/11). No slice regresses; FILE is
+pinned on all six; tokens unchanged. Exact FUNCTION/LINE on these six are
+being scored -- the fraction nulls must not hide a FUNCTION loss before
+anything is flipped.
 
