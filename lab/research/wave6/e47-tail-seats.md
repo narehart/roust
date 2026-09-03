@@ -39,6 +39,25 @@ shipped tokens.**
   and are not re-expanded by pass 2 -- that would show as FUNCTION/LINE
   losses concentrated in tail files.
 
-## Rust smoke (running)
+## Rust smoke: pass on every criterion
 
-sg + cap 32 @ 8192, tail seat 40 and 60 tokens, after rank 16.
+sg + cap 32 @ 8192, tail seat after rank 16, n = 239:
+
+| arm | FILE | FUNCTION | LINE | fraction | frac G/L | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|---|
+| shipped (cap 16) | 60.25 | 19.67 | 7.53 | .2431 | -- | -- | 8464 |
+| sg32 @ 8192 | 65.27 | 17.57 | 6.28 | .2103 | -- | -- | 8577 |
+| **+ tail seat 40** | 65.27 (0 flips) | **19.25** | 7.11 | **.2361** | **46/17** | **p<1e-4** | **8578** |
+| + tail seat 60 | 65.27 (0 flips) | 18.83 | 7.53 | .2327 | 39/16 | p=.0001 | 8578 |
+| sg32 @ 9216 (E46) | 65.27 | 20.50 | 7.11 | .2397 | 51/7 | p<1e-4 | 9597 |
+
+* Identity: FILE 65.27 -> 65.27, zero per-instance flips, both stubs.
+* Tokens: 8577 -> 8578. Zero cost.
+* Depth: fraction +.0258, FUNCTION +1.68 (4 gained / 0 lost vs the 8192
+  arm), LINE +0.83; against SHIPPED, FUNCTION is a measured null (2/3,
+  p=1.0) and the fraction is within .007.
+* Dose: 40 beats 60 on fraction and FUNCTION; 60 beats 40 on LINE by one
+  instance. Wide replication uses 40.
+
+The stub returns ~80% of what the +13% budget bought (fraction .2361 vs
+.2397 at 9216), for nothing. The pass criteria set above are all met.
