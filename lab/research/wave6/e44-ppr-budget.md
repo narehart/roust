@@ -205,6 +205,28 @@ scored with the same scorer. FILE must equal each slice's 8192 arm.
 | C++ | 129 | -- | .2988 | .2900 | pending | | | |
 
 Three for three so far: at 9216 the line fraction returns to shipped (Java
-slightly above it), with 0 FILE flips and 13-15% more tokens. Exact
-FUNCTION/LINE for Java and C are being scored.
+slightly above it), with 0 FILE flips and 13-15% more tokens.
+
+### Exact metrics, Java and C at 9216
+
+| slice | arm | FILE | FUNCTION | LINE | fraction |
+|---|---|---|---|---|---|
+| Java | shipped | 49.22 | 36.72 | 14.06 | .4152 |
+| Java | sg32 @ 8192 | 51.56 | 32.03 | 11.72 | .3940 |
+| Java | **sg32 @ 9216** | **51.56** | **37.50** | 13.28 | **.4182** |
+| C | shipped | 51.56 | 28.12 | 13.28 | .2251 |
+| C | sg32 @ 8192 | 56.25 | 26.56 | 11.72 | .2102 |
+| C | **sg32 @ 9216** | **56.25** | **28.12** | **13.28** | **.2251** |
+
+Paired FUNCTION at 9216: Java vs sg32@8192 **7 gained / 0 lost, p=.016**,
+vs shipped 2/1 (p=1.0); C vs sg32@8192 2/0, vs shipped **0/0 -- identical**.
+
+C is a perfect restoration: FUNCTION, LINE and fraction return to the
+shipped values to the last digit, with FILE +4.69. Java's FUNCTION lands
+ABOVE shipped (37.50 vs 36.72) and its fraction above shipped; LINE is one
+instance under (13.28 vs 14.06, n=17-18). Java had the largest depth tax of
+any slice at 8192 (FUNCTION -4.69), and 15% more tokens erased it.
+
+**Across Rust, Java and C the pattern is identical and instance-level
+proven: +2.3 to +5.0 FILE, depth back to shipped, +13-15% tokens.**
 

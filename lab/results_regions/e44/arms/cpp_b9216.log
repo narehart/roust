@@ -8,3 +8,4 @@ shard 1/1: rows [0:129] of the sorted split (129 instances)
 [50/129] fmtlib__fmt-4310                              elapsed=461s (ok) ok=50 err=0
 [75/129] nlohmann__json-2352                           elapsed=654s (ok) ok=75 err=0
 [100/129] nlohmann__json-4537                           elapsed=879s (ok) ok=100 err=0
+[125/129] simdjson__simdjson-644                        elapsed=1113s (ok) ok=125 err=0
