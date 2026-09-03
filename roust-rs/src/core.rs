@@ -6067,6 +6067,19 @@ pub fn pack_regions(
     // by padded start once per call (a single, precomputed pass -- no
     // per-merge-iteration comparator recomputation), ties broken by padded
     // end.
+    // E49 (perf, output-identical): the de-escalation guard below calls
+    // `build_padded` after EVERY single-line pad shave of EVERY origin -- up
+    // to (origins x pad_lines) full rebuilds -- and each rebuild re-split
+    // every file's text and re-tokenized every merged span. Measured on
+    // cli/cli (711 files): --pad-lines 0 cut query time 1626 -> 581 ms, i.e.
+    // this loop was ~64% of the query. Split each file's lines ONCE and
+    // memoize (file, span) -> (text, tok): between consecutive shaves only
+    // one origin moved, so nearly every span is a memo hit. Pure caching --
+    // the bundle is byte-identical (verified against the pre-E49 binary).
+    let lines_cache: HashMap<&String, Vec<&str>> =
+        by_file_idx.keys().map(|rel| (rel, py_splitlines(&corpus.text[rel]))).collect();
+    let tok_memo: std::cell::RefCell<HashMap<(String, usize, usize), (String, i64)>> =
+        std::cell::RefCell::new(HashMap::new());
     let build_padded = |origins: &[OriginSpan]| -> Vec<PaddedSpan> {
         let mut out: Vec<PaddedSpan> = Vec::new();
         for rel in files {
@@ -6074,7 +6087,7 @@ pub fn pack_regions(
                 Some(v) if !v.is_empty() => v,
                 _ => continue,
             };
-            let full_lines = py_splitlines(&corpus.text[rel]);
+            let full_lines = &lines_cache[rel];
             let n_lines = full_lines.len();
 
             let mut raw: Vec<((usize, usize), f64, bool)> = idxs
@@ -6107,10 +6120,21 @@ pub fn pack_regions(
             }
 
             for ((a, b), gain, pass1) in merged {
-                let start = a.saturating_sub(1).min(n_lines);
-                let end = b.min(n_lines);
-                let text = if start < end { full_lines[start..end].join("\n") } else { String::new() };
-                let tok = count_tokens(&text) as i64;
+                let key = (rel.clone(), a, b);
+                let (text, tok) = {
+                    let hit = tok_memo.borrow().get(&key).cloned();
+                    match hit {
+                        Some(v) => v,
+                        None => {
+                            let start = a.saturating_sub(1).min(n_lines);
+                            let end = b.min(n_lines);
+                            let text = if start < end { full_lines[start..end].join("\n") } else { String::new() };
+                            let tok = count_tokens(&text) as i64;
+                            tok_memo.borrow_mut().insert(key, (text.clone(), tok));
+                            (text, tok)
+                        }
+                    }
+                };
                 out.push(PaddedSpan { file: rel.clone(), span: (a, b), text, tok, gain, pass1 });
             }
         }
