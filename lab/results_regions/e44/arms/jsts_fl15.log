@@ -13,3 +13,7 @@ shard 1/1: rows [0:580] of the sorted split (580 instances)
 [200/580] mui__material-ui-34829                        elapsed=904s (ok) ok=199 err=1
 [225/580] mui__material-ui-36426                        elapsed=1124s (ok) ok=224 err=1
 [250/580] mui__material-ui-39071                        elapsed=1371s (ok) ok=249 err=1
+[275/580] sveltejs__svelte-10291                        elapsed=1530s (ok) ok=274 err=1
+[300/580] sveltejs__svelte-10917                        elapsed=1642s (ok) ok=299 err=1
+[325/580] sveltejs__svelte-11378                        elapsed=1747s (ok) ok=324 err=1
+[350/580] sveltejs__svelte-12047                        elapsed=1857s (ok) ok=349 err=1

@@ -3,3 +3,5 @@ engine version: roust 0.3.2 (b8d09ea, clean)
 EXTRA_ENGINE_FLAGS=['--pack-floor', '0.15']
 gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/swebench_verified_heldout.parquet
 pad_lines=5 len_exp=0.85 max_additions=0 budget=8192 instances=None
+[25/407] django__django-11087                          elapsed=115s (ok) ok=25 err=0
+[50/407] django__django-11734                          elapsed=263s (ok) ok=50 err=0

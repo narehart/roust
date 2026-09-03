@@ -7,3 +7,6 @@ shard 1/1: rows [0:580] of the sorted split (580 instances)
 [25/580] darkreader__darkreader-6747                   elapsed=29s (ok) ok=25 err=0
 [50/580] iamkun__dayjs-1611                            elapsed=59s (ok) ok=50 err=0
 [75/580] iamkun__dayjs-857                             elapsed=85s (ERR) ok=74 err=1
+[100/580] mui__material-ui-24794                        elapsed=161s (ok) ok=99 err=1
+[125/580] mui__material-ui-26413                        elapsed=299s (ok) ok=124 err=1
+[150/580] mui__material-ui-30561                        elapsed=498s (ok) ok=149 err=1

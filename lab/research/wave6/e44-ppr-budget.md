@@ -122,8 +122,21 @@ diagnosis blamed -- moves a handful of spans either way on Rust.
 On the slice large enough to see it, the effect is real: a significant
 depth gain with the file set pinned and **zero token cost**. This is the
 first budget-neutral depth improvement in the sequence. Rust's 14/11 was
-the same sign, underpowered. JS/TS is running; exact FUNCTION/LINE for Go
-are being scored.
+the same sign, underpowered. JS/TS is running.
+
+Exact metrics on Go:
+
+| Go arm (n=428) | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 64.95 | 28.97 | 16.59 | .4102 | 8480 |
+| sg + cap 32 | 70.79 | 25.00 | 13.55 | .3740 | 8592 |
+| **sg + cap 32 + floor 0.15** | **70.79** | **26.64** | **14.72** | **.3876** | 8592 |
+
+Paired FUNCTION vs sg32: **8 gained / 1 lost, McNemar p = .039.** LINE
++1.17, fraction +.0136, tokens unchanged, FILE pinned. The floor recovers
+1.64 of Go's 3.97-point FUNCTION tax for free; the rest still needs budget.
+Floor and budget act on different things (how budget is split vs how much
+there is), so they should compose -- that arm is running.
 
 ## Why: the tax is the seat COUNT, measured from the bundles
 

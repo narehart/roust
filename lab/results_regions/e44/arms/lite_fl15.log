@@ -1,3 +1,5 @@
 engine provenance: binary b8d09ea != HEAD f94f1af but roust-rs/ is identical between them -- accepted.
 engine version: roust 0.3.2 (b8d09ea, clean)
 EXTRA_ENGINE_FLAGS=['--pack-floor', '0.15']
+[25/300] django__django-11848                          elapsed=139s (ok) ok=25 err=0
+[50/300] django__django-13220                          elapsed=300s (ok) ok=50 err=0
