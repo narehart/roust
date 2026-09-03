@@ -123,7 +123,9 @@ diagnosis blamed -- moves a handful of spans either way on Rust.
 On Go the effect is real: a significant depth gain with the file set
 pinned and **zero token cost** -- the first budget-neutral depth improvement
 in the sequence. But it is **not universal**: JS/TS at n=580 is a clean null
-(12/13, p=.87), and Rust's 14/11 was underpowered. So the floor is a
+on the exact metrics too (FUNCTION 28.28 -> 28.45, 2 gained / 1 lost,
+p=1.0; LINE 11.55 -> 11.72; fraction +.0016), and Rust's 14/11 was
+underpowered. So the floor is a
 Go-specific win on the evidence so far, not a general lever. Why Go and not
 JS/TS is unexplained; the honest statement is one significant slice out of
 three, and it must pass the Python gate before it can be a default.
