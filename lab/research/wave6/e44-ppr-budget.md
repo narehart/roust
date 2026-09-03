@@ -304,6 +304,34 @@ fraction at or above shipped on all four. No paired FUNCTION comparison
 against shipped is significant in either direction -- which is the point:
 depth is back to shipped, not traded away.
 
+### Go, exact metrics at 9216 (n=428, the largest slice)
+
+| Go arm | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 64.95 | 28.97 | 16.59 | .4102 | 8480 |
+| sg32 @ 8192 | 70.79 | 25.00 | 13.55 | .3740 | 8592 |
+| **sg32 @ 9216** | **70.79** | **29.44** | 16.36 | **.4102** | 9618 |
+
+Paired FUNCTION: vs sg32@8192 **20 gained / 1 lost, p < .001**; vs shipped
+10 gained / 8 lost, p = .82. Fraction returns to shipped to the fourth
+decimal; LINE is one instance under (70 vs 71 of 428).
+
+**Five languages, one config, every column measured against shipped:**
+
+| slice | n | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|---|
+| Go | 428 | 64.95 -> **70.79** | 28.97 -> 29.44 | 16.59 -> 16.36 | .4102 -> .4102 | +12% |
+| Rust | 239 | 60.25 -> **65.27** | 19.67 -> 20.50 | 7.53 -> 7.11 | .2431 -> .2397 | +13% |
+| C | 128 | 51.56 -> **56.25** | 28.12 -> 28.12 | 13.28 -> 13.28 | .2251 -> .2251 | +13% |
+| C++ | 129 | 65.89 -> **68.99** | 17.83 -> 18.60 | 6.98 -> 7.75 | .2988 -> .3091 | +12% |
+| Java | 128 | 49.22 -> **51.56** | 36.72 -> 37.50 | 14.06 -> 13.28 | .4152 -> .4182 | +15% |
+
+Weighted over the 1,052 instances: **FILE +4.6 points** with FUNCTION +0.5,
+LINE -0.2 and fraction +.003 -- i.e. breadth bought outright, depth held --
+for **+12-15% tokens**. Every FILE delta is identity-gated (0 flips at
+8192 vs 9216 on every slice); every depth comparison against shipped is a
+measured null or a gain. JS/TS pending.
+
 ## E45c — Python dual gate for the floor (adoption gate, shipped settings)
 
 `--pack-floor 0.15` alone, cap 16, budget 8192, no symbol graph. Baselines
