@@ -1,0 +1,8 @@
+ARM_DONE java_ts40ship rc=0 12:48:51
+java shipped -> tail seat 40 @cap16 n=128 FILE 49.22->49.22 (flips=0) | frac d=+0.01761 gain/loss=17/0 wilcoxon p=0.0003 | tok 8762->8764
+ARM_DONE c_ts40ship rc=0 12:49:23
+c shipped -> tail seat 40 @cap16 n=128 FILE 51.56->51.56 (flips=0) | frac d=-0.00022 gain/loss=8/4 wilcoxon p=0.4697 | tok 8447->8448
+ARM_DONE rust_ts40ship rc=0 12:51:43
+rust shipped -> tail seat 40 @cap16 n=239 FILE 60.25->60.25 (flips=0) | frac d=+0.00550 gain/loss=33/17 wilcoxon p=0.0262 | tok 8464->8464
+ARM_DONE cpp_ts40ship rc=0 12:57:36
+cpp shipped -> tail seat 40 @cap16 n=129 FILE 65.89->65.89 (flips=0) | frac d=+0.01218 gain/loss=25/6 wilcoxon p=0.0010 | tok 8510->8515

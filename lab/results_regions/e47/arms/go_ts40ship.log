@@ -4,3 +4,19 @@ gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_go.parq
 repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_repos/go_base
 pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=0 budget=8192 instances=None
 shard 1/1: rows [0:428] of the sorted split (428 instances)
+[25/428] cli__cli-1283                                 elapsed=98s (ok) ok=25 err=0
+[50/428] cli__cli-1986                                 elapsed=152s (ok) ok=50 err=0
+[75/428] cli__cli-2404                                 elapsed=209s (ok) ok=75 err=0
+[100/428] cli__cli-3490                                 elapsed=267s (ok) ok=100 err=0
+[125/428] cli__cli-4003                                 elapsed=332s (ok) ok=125 err=0
+[150/428] cli__cli-4543                                 elapsed=393s (ok) ok=149 err=1
+[175/428] cli__cli-5047                                 elapsed=461s (ok) ok=174 err=1
+[200/428] cli__cli-5524                                 elapsed=525s (ok) ok=199 err=1
+[225/428] cli__cli-590                                  elapsed=599s (ok) ok=224 err=1
+[250/428] cli__cli-667                                  elapsed=664s (ok) ok=249 err=1
+[275/428] cli__cli-7254                                 elapsed=739s (ok) ok=274 err=1
+[300/428] cli__cli-7621                                 elapsed=817s (ok) ok=299 err=1
+[325/428] cli__cli-8180                                 elapsed=899s (ok) ok=324 err=1
+[350/428] cli__cli-8824                                 elapsed=987s (ok) ok=349 err=1
+[375/428] cli__cli-9452                                 elapsed=1078s (ok) ok=374 err=1
+[400/428] grpc__grpc-go-2630                            elapsed=1161s (ok) ok=399 err=1

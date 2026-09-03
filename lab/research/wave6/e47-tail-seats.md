@@ -114,12 +114,27 @@ exactly where the tax was largest (Java, Go).
 |---|---|---|---|---|---|---|---|---|---|
 | **Go** | 428 | 64.95 -> **70.79** | 28.97 -> **32.71** | **34/1** | **p<.001** | **19/3** | 16.59 -> **17.99** | .4102 -> **.4138** | flat |
 | Rust | 239 | 60.25 -> **65.27** | 19.67 -> 19.25 | 4/0 | p=.125 | 2/3 | 7.53 -> 7.11 | .2431 -> .2361 | flat |
-| Java | 128 | pending | | | | | | | |
-| JS/TS | 580 | pending | | | | | | | |
-| C | 128 | pending | | | | | | | |
-| C++ | 129 | pending | | | | | | | |
+| Java | 128 | 49.22 -> **51.56** | 36.72 -> **39.06** | **9/0** | **p=.004** | 3/0 | 14.06 -> **14.84** | .4152 -> **.4282** | flat |
+| C++ | 129 | 65.89 -> **68.99** | 17.83 -> **20.16** | 4/0 | p=.125 | 3/0 | 6.98 -> **8.53** | .2988 -> **.3072** | flat |
+| C | 128 | 51.56 -> **56.25** | 28.12 -> 28.12 | 2/0 | p=.50 | 0/0 | 13.28 -> 12.50 | .2251 -> .2167 | flat |
+| JS/TS | 580 | 46.38 -> **52.07** | 31.21 -> 29.66 | **8/0** | **p=.008** | **4/13, p=.049** | 14.14 -> 12.59 | .2616 -> .2421 | flat |
 
-On Go, symbol-graph + cap 32 + stub at the SHIPPED token budget beats shipped
-on every column -- FILE +5.84, FUNCTION +3.74, LINE +1.40, fraction +.0036.
-That is the combination E46 could only buy with +12% tokens, now at +0%.
+Three readings, all measured:
+
+* **Go, Java, C++: above shipped on every column at shipped tokens** -- the
+  combination E46 could only buy with +12-15% tokens, now at +0%. Go's
+  FUNCTION +3.74 (19 gained / 3 lost vs shipped, p=.001) is the largest
+  FUNCTION gain of the campaign on any slice.
+* **Rust, C: FILE up, depth a measured null vs shipped** (2/3 and 0/0).
+* **JS/TS: FILE +5.69 but FUNCTION still 1.55 UNDER shipped (4 gained / 13
+  lost, p=.049).** The stub recovers part of its cap-32 tax (8 gained / 0
+  lost vs the plain cap-32 arm) but JS/TS carries the largest tax in the
+  set and the stub alone does not close it. At cap 32 JS/TS still needs
+  budget (E46: ~10.7k) -- or a smaller cap -- and that must be stated
+  rather than averaged away.
+
+So the cap-32 operating point is now free on four slices, depth-null on two
+(Rust, C: null) and depth-negative on one (JS/TS). **None of this is the
+adoption question**: cap 32 is not proposed as a default. The stub alone at
+the shipped cap 16 is, and its rows are the E47 ship round below.
 

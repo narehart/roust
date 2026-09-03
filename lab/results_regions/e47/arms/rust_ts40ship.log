@@ -5,3 +5,15 @@ repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3a_repos/rust
 pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=0 budget=8192 instances=None
 shard 1/1: rows [0:239] of the sorted split (239 instances)
 [25/239] clap-rs__clap-2085                            elapsed=73s (ok) ok=25 err=0
+[50/239] clap-rs__clap-2609                            elapsed=146s (ok) ok=50 err=0
+[75/239] clap-rs__clap-2993                            elapsed=224s (ok) ok=75 err=0
+[100/239] clap-rs__clap-3874                            elapsed=316s (ok) ok=100 err=0
+[125/239] clap-rs__clap-4474                            elapsed=401s (ok) ok=125 err=0
+[150/239] nushell__nushell-10613                        elapsed=492s (ok) ok=150 err=0
+[175/239] sharkdp__fd-1079                              elapsed=574s (ok) ok=175 err=0
+[200/239] tokio-rs__tokio-5244                          elapsed=622s (ok) ok=200 err=0
+[225/239] tokio-rs__tracing-1252                        elapsed=697s (ok) ok=225 err=0
+[239/239] tokio-rs__tracing-2897                        elapsed=740s (ok) ok=239 err=0
+
+engine version: roust 0.3.2 (0e7a0ad, clean)
+wrote 239 records (239 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e47/arms/rust_ts40ship.jsonl
