@@ -1,6 +1,6 @@
 [package]
 name = "roust"
-version = "0.3.2"
+version = "0.4.0"
 edition = "2024"
 description = "Recall-first code retrieval for coding agents - one ranked, token-budgeted bundle per query across 8 languages, no model or API key required"
 license = "MIT"

@@ -5,6 +5,56 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-04 - Deeper regions at zero token cost, 8-23x faster queries
+
+Engine release. Every change below was measured on eight populations
+(SWE-bench Lite 300, SWE-bench Verified 407 held-out, Multi-SWE-bench Go 428,
+JS/TS 580, Rust 239, Java 128, C 128, C++ 129). None changes which files are
+returned; none costs tokens. Writeups under `lab/research/wave6/`.
+
+### Changed (defaults)
+
+- **Packer budget floor 0.3 -> 0.15** (#81). Region weight is
+  `(floor + file score)`; the lower floor lets the lexical score steer pass-2
+  depth more steeply. FILE pinned on all 2,339 instances; FUNCTION +17/-9
+  pooled; Verified LINE 35.14 -> 36.86. `--pack-floor 0.3` restores.
+- **Tiered pass-1 seats** (#82). Returned files ranked 16+ get a 40-token
+  first seat instead of a flat 120; the file still counts toward FILE, pass 2
+  re-expands it on evidence, and the freed budget goes to depth. FILE pinned;
+  FUNCTION +54/-8 pooled with no cell below 0.3.2; Lite FUNCTION 54.67 ->
+  57.67 (p=.022), Verified 47.17 -> 48.89 (p=.039), Go 28.97 -> 32.94
+  (p<.001). `--tail-seat-tokens 0` restores.
+
+### Performance (output byte-identical, proven on 128/128 full-slice instances)
+
+- **Memoized padding guard** (#83). The E12b de-escalation guard rebuilt every
+  padded span after every single-line shave; it now splits once and memoizes.
+- **Per-file block/token cache** (#86). Block spans, per-block tokenization,
+  cl100k token counts and def entries for returned files are cached lazily in
+  `<repo>/.roust/blocks.json` (atomic flush, 140-400 KB after a query, skipped
+  under `--no-cache`). Profiling showed the cost was re-tokenizing every block
+  of every returned file per query, not the tree-sitter parse.
+- Together, warm query time vs 0.3.2 on the same repos with identical bundles:
+  requests 1.56 s -> 68 ms, django 2.10 s -> 112 ms, nlohmann/json 421 -> 71 ms,
+  clap 179 -> 49 ms. Seven-repo before/after table (p50/p95, cold and warm
+  index) in the README latency section, artifacts in `lab/latency/latency_v2*.json`.
+
+### Added (opt-in, default off, measurement-grade)
+
+`--symbol-graph`, `--import-hops`, `--import-edges-v2`, `--eligible-floor`,
+`--k-lex`, `--ppr-budget` / `--ppr-additive`, `--build-files`,
+`--changelog-files`, `--docs-data-files`, `--seats-per-source`. Documented
+breadth operating point: `--symbol-graph --max-additions 32 --budget 9216`
+(FILE +4.9 weighted over six languages at shipped depth, +12-15% tokens; not
+a default because it fails the Python depth gate).
+
+### Scoreboard (shipped defaults: FILE / FUNCTION / LINE / fraction)
+
+Python Lite 92.33 / 57.67 / 46.00 / .537; Python Verified 92.38 / 48.89 /
+37.84 / .494; Go 64.95 / 32.94 / 18.46 / .423; Java 49.22 / 39.84 / 14.84 /
+.433; C++ 65.89 / 20.93 / 8.53 / .311; Rust 60.25 / 20.92 / 7.53 / .249;
+C 51.56 / 28.12 / 13.28 / .225; JS/TS 46.38 / 31.55 / 14.14 / .264.
+
 ## [0.3.2] - 2026-08-26 - Evergreen install banner
 
 Documentation-only release. The README's install banner named a specific
