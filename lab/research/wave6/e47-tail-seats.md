@@ -138,3 +138,22 @@ So the cap-32 operating point is now free on four slices, depth-null on two
 adoption question**: cap 32 is not proposed as a default. The stub alone at
 the shipped cap 16 is, and its rows are the E47 ship round below.
 
+## Ship round: stub 40 / after 16 ALONE at shipped settings (cap 16, 8192, no symbol graph)
+
+What a default flip actually ships. Baselines E36/E37 `*_base`.
+
+| slice | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|
+| **Java** | 128 | 49.22 (0 flips) | **+.0176** | **17/0** | **p=.0003** | 8762 -> 8764 |
+| **C++** | 129 | 65.89 (0 flips) | **+.0122** | **25/6** | **p=.0010** | 8510 -> 8515 |
+| **Rust** | 239 | 60.25 (0 flips) | **+.0055** | **33/17** | **p=.026** | 8464 -> 8464 |
+| C | 128 | 51.56 (0 flips) | -.0002 | 8/4 | p=.47 | 8447 -> 8448 |
+| Go | 428 | running | | | | |
+| JS/TS | 580 | running | | | | |
+| Lite | 300 | 92.33 (0 flips) | +.0099 | 14/1 | p=.0097 | 8559 -> 8560 |
+| Verified | 407 | 92.38 (0 flips) | +.0173 | 27/7 | p=.0002 | 8558 -> 8559 |
+
+Three significant positives and one null so far on the non-Python slices,
+both Python gates significant, FILE pinned on all, tokens within +5.
+Exact FUNCTION/LINE chained.
+
