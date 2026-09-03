@@ -1,0 +1,6 @@
+engine provenance: binary b8d09ea != HEAD 659e839 but roust-rs/ is identical between them -- accepted.
+engine version: roust 0.3.2 (b8d09ea, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_go.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3b_repos/go_base
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=32 budget=9216 instances=None
+shard 1/1: rows [0:428] of the sorted split (428 instances)

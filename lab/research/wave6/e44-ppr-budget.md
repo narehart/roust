@@ -202,10 +202,11 @@ scored with the same scorer. FILE must equal each slice's 8192 arm.
 | Rust | 239 | 65.27 (0 flips) | .2431 | .2103 | **.2397** | 51/7 | p<1e-4 | +13% |
 | Java | 128 | 51.56 (0 flips) | .4152 | .3940 | **.4182** | **16/0** | p=.0004 | +15% |
 | C | 128 | 56.25 (0 flips) | .2251 | .2102 | **.2249** | 15/2 | p=.002 | +13% |
-| C++ | 129 | -- | .2988 | .2900 | pending | | | |
+| C++ | 129 | 68.99 (0 flips) | .2988 | .2900 | **.3090** | **35/0** | p<1e-4 | +12% |
 
-Three for three so far: at 9216 the line fraction returns to shipped (Java
-slightly above it), with 0 FILE flips and 13-15% more tokens.
+Four for four: at 9216 the line fraction returns to shipped (Java and C++
+above it -- C++ 35 gains / 0 losses), with 0 FILE flips and 12-15% more
+tokens. Go and JS/TS are running.
 
 ### Exact metrics, Java and C at 9216
 
