@@ -5,3 +5,9 @@ gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/swebench_ver
 pad_lines=5 len_exp=0.85 max_additions=0 budget=8192 instances=None
 [25/407] django__django-11087                          elapsed=115s (ok) ok=25 err=0
 [50/407] django__django-11734                          elapsed=263s (ok) ok=50 err=0
+[75/407] django__django-12774                          elapsed=420s (ok) ok=75 err=0
+[100/407] django__django-13568                          elapsed=564s (ok) ok=100 err=0
+[125/407] django__django-14376                          elapsed=713s (ok) ok=125 err=0
+[150/407] django__django-15368                          elapsed=862s (ok) ok=150 err=0
+[175/407] django__django-16100                          elapsed=1022s (ok) ok=175 err=0
+[200/407] django__django-16901                          elapsed=1161s (ok) ok=200 err=0

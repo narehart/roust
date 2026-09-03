@@ -118,11 +118,15 @@ diagnosis blamed -- moves a handful of spans either way on Rust.
 |---|---|---|---|---|---|---|
 | Rust | 239 | 65.27 (0 flips) | +.0051 | 14/11 | p=.77 | 8577 -> 8576 |
 | **Go** | **428** | 70.79 (0 flips) | **+.0135** | **35/15** | **p=.0014** | 8592 -> 8592 |
+| JS/TS | 580 | 52.07 (0 flips) | +.0016 | 12/13 | p=.87 | 8749 -> 8748 |
 
-On the slice large enough to see it, the effect is real: a significant
-depth gain with the file set pinned and **zero token cost**. This is the
-first budget-neutral depth improvement in the sequence. Rust's 14/11 was
-the same sign, underpowered. JS/TS is running.
+On Go the effect is real: a significant depth gain with the file set
+pinned and **zero token cost** -- the first budget-neutral depth improvement
+in the sequence. But it is **not universal**: JS/TS at n=580 is a clean null
+(12/13, p=.87), and Rust's 14/11 was underpowered. So the floor is a
+Go-specific win on the evidence so far, not a general lever. Why Go and not
+JS/TS is unexplained; the honest statement is one significant slice out of
+three, and it must pass the Python gate before it can be a default.
 
 Exact metrics on Go:
 
