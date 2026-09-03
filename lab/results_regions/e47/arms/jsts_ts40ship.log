@@ -23,3 +23,11 @@ shard 1/1: rows [0:580] of the sorted split (580 instances)
 [425/580] sveltejs__svelte-13445                        elapsed=1900s (ok) ok=424 err=1
 [450/580] sveltejs__svelte-13774                        elapsed=1971s (ok) ok=449 err=1
 [475/580] sveltejs__svelte-14440                        elapsed=2042s (ok) ok=474 err=1
+[500/580] sveltejs__svelte-14993                        elapsed=2114s (ok) ok=499 err=1
+[525/580] sveltejs__svelte-9811                         elapsed=2188s (ok) ok=524 err=1
+[550/580] vuejs__core-11165                             elapsed=2254s (ok) ok=549 err=1
+[575/580] vuejs__core-9442                              elapsed=2317s (ok) ok=574 err=1
+[580/580] vuejs__core-9751                              elapsed=2329s (ok) ok=579 err=1
+
+engine version: roust 0.3.2 (0e7a0ad, clean)
+wrote 580 records (579 ok, 1 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e47/arms/jsts_ts40ship.jsonl

@@ -166,13 +166,24 @@ within +5.
 | **C++** | 129 | 17.83 -> **20.93** | 4/0 | p=.125 | 6.98 -> **8.53** | .2988 -> **.3110** |
 | **Rust** | 239 | 19.67 -> **20.92** | 3/0 | p=.25 | 7.53 -> 7.53 | .2431 -> **.2486** |
 | C | 128 | 28.12 -> 28.12 | 0/0 | -- | 13.28 -> 13.28 | .2251 -> .2249 |
-| JS/TS | 580 | pending | | | | |
+| JS/TS | 580 | 31.21 -> **31.55** | 4/2 | p=.69 | 14.14 -> 14.14 | .2616 -> **.2635** |
 | **Lite** | 300 | 54.67 -> **57.67** | **11/2** | **p=.022** | 44.00 -> **46.00** | .5273 -> **.5372** |
 | **Verified** | 407 | 47.17 -> **48.89** | **8/1** | **p=.039** | 35.14 -> **37.84** | .4764 -> **.4937** |
 
-Seven populations scored, 1,759 instances: **FUNCTION 50 gained / 6 lost
-pooled**, LINE up on five and flat on two, fraction up on six and flat on
-one, **not a single cell below shipped**, FILE pinned on all, tokens flat.
-Go alone is +3.97 FUNCTION (20 gained / 3 lost, p<.001) -- the largest
-FUNCTION gain on any slice in the campaign, at zero cost.
+Eight populations scored, 2,339 instances: **FUNCTION 54 gained / 8 lost
+pooled**, LINE up on five and flat on three, fraction up on seven and flat
+on one (C, -.0002), **not a single cell below shipped**, FILE pinned on all
+eight, tokens within +5 everywhere. Go alone is +3.97 FUNCTION (20 gained /
+3 lost, p<.001) -- the largest FUNCTION gain on any slice in the campaign,
+at zero cost. JS/TS, the slice that resisted every other lever, is +0.34
+FUNCTION and +.0019 fraction here (4/2, a null in the right direction).
+
+## Adoption verdict: flip the default to 40 tokens after rank 16
+
+This is the cleanest adoption case the campaign has produced: it cannot
+change FILE, it costs nothing, and on the exact metrics it wins on seven
+populations and draws on the eighth. `--tail-seat-tokens 0` restores the
+pre-E47 flat 120-token seat exactly. The JS/TS ship-round row also matters
+for what it rules out: the stub does not hurt the slice with the most files
+per bundle at shipped settings; it only fails to help it at cap 32.
 
