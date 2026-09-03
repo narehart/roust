@@ -1,0 +1,3 @@
+Computing exact FUNCTION-level metric + region precision via read-only `git show` (this walks every gold + returned .py file's AST)...
+<unknown>:651: SyntaxWarning: invalid escape sequence '\S'
+<unknown>:637: SyntaxWarning: invalid escape sequence '\S'

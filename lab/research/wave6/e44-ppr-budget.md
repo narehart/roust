@@ -340,8 +340,10 @@ are E36's, equal to the published references.
 | gate | n | FILE | fraction delta | gain/loss | Wilcoxon | tokens |
 |---|---|---|---|---|---|---|
 | Lite | 300 | 92.33 -> 92.33 (0 flips) | +.0004 | 5/3 | p=.55 | 8559 -> 8556 |
-| Verified | 407 | running | | | | |
+| Verified | 407 | 92.38 -> 92.38 (0 flips) | +.0076 | 11/3 | p=.068 | 8558 -> 8556 |
 
-Lite: neutral, and barely touched -- 8 of 300 instances change at all.
-Exact FUNCTION/LINE on Lite pending; Verified running.
+Both gates: FILE pinned, fraction neutral-to-positive (Verified 11 gains /
+3 losses), and barely touched -- 8 of 300 and 14 of 407 instances change at
+all. On fraction the floor clears the dual gate. Exact FUNCTION/LINE on both
+sets pending; those are the adoption numbers.
 
