@@ -108,3 +108,18 @@ present (one header span, so FILE is unchanged) and hands the freed budget
 to pass 2, which spends it where the query terms are. The gain is largest
 exactly where the tax was largest (Java, Go).
 
+## Exact metrics at cap 32 + stub 40 (vs shipped AND vs the plain cap-32 arm)
+
+| slice | n | FILE | FUNCTION | G/L vs cap32 | McNemar | G/L vs shipped | LINE | fraction | tokens |
+|---|---|---|---|---|---|---|---|---|---|
+| **Go** | 428 | 64.95 -> **70.79** | 28.97 -> **32.71** | **34/1** | **p<.001** | **19/3** | 16.59 -> **17.99** | .4102 -> **.4138** | flat |
+| Rust | 239 | 60.25 -> **65.27** | 19.67 -> 19.25 | 4/0 | p=.125 | 2/3 | 7.53 -> 7.11 | .2431 -> .2361 | flat |
+| Java | 128 | pending | | | | | | | |
+| JS/TS | 580 | pending | | | | | | | |
+| C | 128 | pending | | | | | | | |
+| C++ | 129 | pending | | | | | | | |
+
+On Go, symbol-graph + cap 32 + stub at the SHIPPED token budget beats shipped
+on every column -- FILE +5.84, FUNCTION +3.74, LINE +1.40, fraction +.0036.
+That is the combination E46 could only buy with +12% tokens, now at +0%.
+
