@@ -346,7 +346,24 @@ Weighted over the 1,052 instances: **FILE +4.6 points** with FUNCTION +0.5,
 LINE -0.2 and fraction +.003 -- i.e. breadth bought outright, depth held --
 for **+12-15% tokens**. Every FILE delta is identity-gated (0 flips at
 8192 vs 9216 on every slice); every depth comparison against shipped is a
-measured null or a gain. JS/TS pending.
+measured null or a gain.
+
+### JS/TS at 9216 -- the exception, stated plainly
+
+| JS/TS arm (n=580) | FILE | FUNCTION | LINE | fraction | tokens |
+|---|---|---|---|---|---|
+| shipped | 46.38 | 31.21 | 14.14 | .2616 | 8532 |
+| sg32 @ 8192 | 52.07 | 28.28 | 11.55 | .2276 | 8749 |
+| sg32 @ 9216 | 52.07 | 29.48 | 12.59 | .2426 | 9757 |
+
+Paired FUNCTION: vs sg32@8192 **8 gained / 1 lost, p=.039** (the recovery is
+real); vs shipped **6 gained / 16 lost, p=.052** -- still below shipped.
+9216 is NOT JS/TS's depth-neutral budget: it recovers about 40% of the
+largest depth tax in the set (FUNCTION -2.93, LINE -2.59 at cap 32). So on
+JS/TS the +5.69 FILE at 9216 comes with FUNCTION -1.73 and LINE -1.55
+against shipped, and that must be said rather than folded into the
+five-language average. The dose-response predicts ~10.5-11k for neutrality;
+10752 is running.
 
 ## E45c — Python dual gate for the floor (adoption gate, shipped settings)
 
