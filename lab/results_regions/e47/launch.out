@@ -1,0 +1,5 @@
+ARM_DONE rust_ts60 rc=0 11:42:01
+rust sg32 -> tail seat 60 n=239 FILE 65.27->65.27 (flips=0) | frac d=+0.02246 gain/loss=39/16 wilcoxon p=0.0001 | tok 8577->8578
+ARM_DONE rust_ts40 rc=0 11:42:07
+rust sg32 -> tail seat 40 n=239 FILE 65.27->65.27 (flips=0) | frac d=+0.02584 gain/loss=46/17 wilcoxon p=0.0000 | tok 8577->8578
+E47_SMOKE_DONE

@@ -1,0 +1,15 @@
+engine provenance: binary 0e7a0ad != HEAD df0ee34 but roust-rs/ is identical between them -- accepted.
+engine version: roust 0.3.2 (0e7a0ad, clean)
+gold parquet: /Users/nicholasarehart/programming-projects/bgrep/lab/mswe_cpp.parquet
+repos dir: /Users/nicholasarehart/programming-projects/bgrep/lab/ws3a_repos/cpp_v2
+pad_lines=5 len_exp=0.85 bm25_only=False ts_blocks=False cfamily_ext=False no_structural_blocks=False impl_prior_v2=False trace_formats_v2=False symbols_v2=False displacement_guard=False max_additions=32 budget=8192 instances=None
+shard 1/1: rows [0:129] of the sorted split (129 instances)
+[25/129] fmtlib__fmt-2610                              elapsed=223s (ok) ok=25 err=0
+[50/129] fmtlib__fmt-4310                              elapsed=424s (ok) ok=50 err=0
+[75/129] nlohmann__json-2352                           elapsed=603s (ok) ok=75 err=0
+[100/129] nlohmann__json-4537                           elapsed=810s (ok) ok=100 err=0
+[125/129] simdjson__simdjson-644                        elapsed=1019s (ok) ok=125 err=0
+[129/129] yhirose__cpp-httplib-1765                     elapsed=1058s (ok) ok=129 err=0
+
+engine version: roust 0.3.2 (0e7a0ad, clean)
+wrote 129 records (129 ok, 0 errors) to /Users/nicholasarehart/programming-projects/bgrep/lab/results_regions/e47/arms/cpp_ts40.jsonl
