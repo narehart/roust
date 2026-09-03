@@ -69,11 +69,42 @@ The stub returns ~80% of what the +13% budget bought (fraction .2361 vs
 | Rust | 239 | 65.27 (0 flips) | +.0258 | 46/17 | p<1e-4 | 8577 -> 8578 |
 | **Java** | 128 | 51.56 (0 flips) | **+.0343** | **22/1** | **p=.0001** | 9049 -> 9055 |
 | C | 128 | 56.25 (0 flips) | +.0064 | 15/8 | p=.20 | 8602 -> 8605 |
-| Go | 428 | running | | | | |
-| JS/TS | 580 | running | | | | |
-| C++ | 129 | running | | | | |
+| **Go** | 428 | 70.79 (0 flips) | **+.0397** | **91/28** | **p<1e-4** | 8592 -> 8595 |
+| **JS/TS** | 580 | 52.07 (0 flips) | **+.0145** | **67/32** | **p=.0002** | 8749 -> 8749 |
+| **C++** | 129 | 68.99 (0 flips) | **+.0172** | **29/8** | **p=.0001** | 8602 -> 8607 |
 
-Java -- the slice with the largest depth tax at cap 32 (FUNCTION -4.69) --
-gets the largest refund: 22 gains to 1 loss on fraction, tokens flat. C is
-directionally positive and underpowered. Exact FUNCTION/LINE chained.
+Six for six on direction, five of six significant (C is 15/8, p=.20), FILE
+pinned on all six by construction, tokens within +6 everywhere. Java -- the
+slice with the largest depth tax at cap 32 -- gets the largest refund.
+Exact FUNCTION/LINE chained.
+
+## Python dual gate at SHIPPED settings (cap 16, budget 8192, no symbol graph)
+
+At the shipped cap the bundle still carries ~30 files, so the stub fires on
+files ranked 16+ even with no breadth change. This is what a default would
+ship. Baselines are E36's, equal to the published references.
+
+| gate | n | FILE | FUNCTION | LINE | fraction | frac G/L | Wilcoxon | tokens |
+|---|---|---|---|---|---|---|---|---|
+| Lite | 300 | 92.33 (0 flips) | 54.67 -> **57.67** | 44.00 -> **46.00** | .5273 -> **.5372** | 14/1 | **p=.0097** | 8559 -> 8560 |
+| Verified | 407 | 92.38 (0 flips) | 47.17 -> **48.89** | 35.14 -> **37.84** | .4764 -> **.4937** | 27/7 | **p=.0002** | 8558 -> 8559 |
+
+Paired FUNCTION: Lite **11 gained / 2 lost, McNemar p=.022**; Verified
+**8 gained / 1 lost, p=.039**. Both gates significantly positive on FUNCTION
+and on fraction, LINE up 2.0 and 2.7 points, FILE pinned, tokens flat.
+
+For scale: the E12 pad-lines/len-exp adoption (PR #40) moved Lite FUNCTION
+41 -> 53.3 and was the largest depth gain on record; nothing since has moved
+Lite FUNCTION by more than one point. This moves it **+3.0 on Lite and +1.7
+on held-out Verified, at zero cost, with a mechanism that cannot touch FILE.**
+
+## Why it works, stated plainly
+
+Every returned file was being given a 120-token seat regardless of rank.
+Roughly half the returned files are additions below rank 16, and at shipped
+settings those seats consume ~1,700 tokens -- a fifth of the budget --
+mostly on files that never held gold lines. The stub keeps each such file
+present (one header span, so FILE is unchanged) and hands the freed budget
+to pass 2, which spends it where the query terms are. The gain is largest
+exactly where the tax was largest (Java, Go).
 

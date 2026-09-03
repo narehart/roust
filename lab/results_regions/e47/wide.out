@@ -2,3 +2,10 @@ ARM_DONE java_ts40 rc=0 11:59:42
 java sg32 -> tail seat 40 n=128 FILE 51.56->51.56 (flips=0) | frac d=+0.03425 gain/loss=22/1 wilcoxon p=0.0001 | tok 9049->9055
 ARM_DONE c_ts40 rc=0 12:00:15
 c sg32 -> tail seat 40 n=128 FILE 56.25->56.25 (flips=0) | frac d=+0.00643 gain/loss=15/8 wilcoxon p=0.2002 | tok 8602->8605
+ARM_DONE cpp_ts40 rc=0 12:07:09
+cpp sg32 -> tail seat 40 n=129 FILE 68.99->68.99 (flips=0) | frac d=+0.01719 gain/loss=29/8 wilcoxon p=0.0001 | tok 8602->8607
+ARM_DONE go_ts40 rc=0 12:13:03
+go sg32 -> tail seat 40 n=428 FILE 70.79->70.79 (flips=0) | frac d=+0.03965 gain/loss=91/28 wilcoxon p=0.0000 | tok 8592->8595
+ARM_DONE jsts_ts40 rc=0 12:33:27
+jsts sg32 -> tail seat 40 n=580 FILE 52.07->52.07 (flips=0) | frac d=+0.01451 gain/loss=67/32 wilcoxon p=0.0002 | tok 8749->8749
+E47_WIDE_DONE T=40
