@@ -637,6 +637,10 @@ fn main() {
     let (corpus, edges, history, cache_hit) =
         cache::load_or_build(&repo_path, with_history, with_docs, !args.no_cache, args.reindex);
     let index_ms = t0.elapsed().as_secs_f64() * 1000.0;
+    // E50: persistent structural-block cache, lazily filled, flushed at exit.
+    if !args.no_cache {
+        roust::core::block_cache_open(&repo_path);
+    }
 
     // E20 LexBoost graph (flag-gated; defaults build nothing): neighbor
     // lists + hub set from the chosen substrate. The import graph is free
@@ -748,6 +752,7 @@ fn main() {
         args.max_siblings,
         block_mode,
     );
+    roust::core::block_cache_save();
     let query_ms = t1.elapsed().as_secs_f64() * 1000.0;
 
     if args.explain {
