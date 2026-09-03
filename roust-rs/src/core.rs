@@ -105,9 +105,39 @@ static BLOCK_CACHE: std::sync::Mutex<Option<BlockCache>> = std::sync::Mutex::new
 struct BlockCache {
     path: std::path::PathBuf,
     map: HashMap<String, Vec<(usize, usize)>>,
+    // Per-file block tokenization: `{rel}|{hash}` -> vocab + per-span
+    // (cl100k token count, vocab indices). Both are pure functions of the
+    // file text and the span, so they are as cacheable as the spans
+    // themselves; the vocab dedups tokens across a file's blocks.
+    segs: HashMap<String, FileSegs>,
+    // `structural_def_entries` per `{rel}|{hash}` (anchor seating).
+    defs: HashMap<String, Vec<(usize, String)>>,
     dirty: bool,
     hits: usize,
     misses: usize,
+}
+
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+struct FileSegs {
+    vocab: Vec<String>,
+    // "a-b" -> (cl100k token count if computed, sorted-unique token ids)
+    segs: HashMap<String, (Option<usize>, Vec<u32>)>,
+    #[serde(skip)]
+    vidx: HashMap<String, u32>,
+}
+
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+struct BlockCacheFile {
+    blocks: HashMap<String, Vec<(usize, usize)>>,
+    segs: HashMap<String, FileSegs>,
+    defs: HashMap<String, Vec<(usize, String)>>,
+}
+
+#[derive(serde::Serialize)]
+struct BlockCacheOut<'a> {
+    blocks: &'a HashMap<String, Vec<(usize, usize)>>,
+    segs: &'a HashMap<String, FileSegs>,
+    defs: &'a HashMap<String, Vec<(usize, String)>>,
 }
 
 pub fn fnv1a64(s: &str) -> u64 {
@@ -121,11 +151,12 @@ pub fn fnv1a64(s: &str) -> u64 {
 
 pub fn block_cache_open(repo_path: &std::path::Path) {
     let path = repo_path.join(".roust").join("blocks.json");
-    let map: HashMap<String, Vec<(usize, usize)>> = std::fs::read(&path)
+    let f: BlockCacheFile = std::fs::read(&path)
         .ok()
         .and_then(|b| serde_json::from_slice(&b).ok())
         .unwrap_or_default();
-    *BLOCK_CACHE.lock().unwrap() = Some(BlockCache { path, map, dirty: false, hits: 0, misses: 0 });
+    *BLOCK_CACHE.lock().unwrap() =
+        Some(BlockCache { path, map: f.blocks, segs: f.segs, defs: f.defs, dirty: false, hits: 0, misses: 0 });
 }
 
 /// (hits, misses) for this process, or None if the cache was never opened.
@@ -143,7 +174,8 @@ pub fn block_cache_save() {
             let _ = std::fs::create_dir_all(dir);
         }
         let tmp = c.path.with_extension("json.tmp");
-        if let Ok(bytes) = serde_json::to_vec(&c.map) {
+        let out = BlockCacheOut { blocks: &c.map, segs: &c.segs, defs: &c.defs };
+        if let Ok(bytes) = serde_json::to_vec(&out) {
             if std::fs::write(&tmp, bytes).is_ok() {
                 let _ = std::fs::rename(&tmp, &c.path);
             }
@@ -168,6 +200,107 @@ fn cached_blocks(rel: &str, text: &str, tag: &str, compute: impl FnOnce() -> Vec
     if let Some(c) = guard.as_mut() {
         c.misses += 1;
         c.map.insert(key, v.clone());
+        c.dirty = true;
+    }
+    v
+}
+
+fn file_key(rel: &str, fhash: u64) -> String {
+    format!("{rel}|{fhash:016x}")
+}
+
+/// Sorted-unique `tokenize(seg)` for the span `a..=b` of the file whose
+/// full text hashes to `fhash`. Persisted through the block cache; falls
+/// through to `compute` when the cache is closed.
+fn cached_seg_tokens(rel: &str, fhash: u64, a: usize, b: usize, compute: impl FnOnce() -> Vec<String>) -> Vec<String> {
+    let fk = file_key(rel, fhash);
+    let sk = format!("{a}-{b}");
+    {
+        let mut guard = BLOCK_CACHE.lock().unwrap();
+        if let Some(c) = guard.as_mut() {
+            if let Some(fs) = c.segs.get(&fk) {
+                if let Some((_, ids)) = fs.segs.get(&sk) {
+                    c.hits += 1;
+                    return ids.iter().map(|&i| fs.vocab[i as usize].clone()).collect();
+                }
+            }
+        } else {
+            return compute();
+        }
+    }
+    let mut toks = compute();
+    toks.sort();
+    toks.dedup();
+    let mut guard = BLOCK_CACHE.lock().unwrap();
+    if let Some(c) = guard.as_mut() {
+        c.misses += 1;
+        let fs = c.segs.entry(fk).or_default();
+        if fs.vidx.len() != fs.vocab.len() {
+            fs.vidx = fs.vocab.iter().enumerate().map(|(i, t)| (t.clone(), i as u32)).collect();
+        }
+        let ids: Vec<u32> = toks
+            .iter()
+            .map(|t| {
+                if let Some(&i) = fs.vidx.get(t) {
+                    i
+                } else {
+                    let i = fs.vocab.len() as u32;
+                    fs.vocab.push(t.clone());
+                    fs.vidx.insert(t.clone(), i);
+                    i
+                }
+            })
+            .collect();
+        fs.segs.entry(sk).or_insert((None, Vec::new())).1 = ids;
+        c.dirty = true;
+    }
+    toks
+}
+
+/// cl100k token count of the span, memoized next to its tokens.
+fn cached_seg_tok(rel: &str, fhash: u64, a: usize, b: usize, compute: impl FnOnce() -> usize) -> usize {
+    let fk = file_key(rel, fhash);
+    let sk = format!("{a}-{b}");
+    {
+        let mut guard = BLOCK_CACHE.lock().unwrap();
+        if let Some(c) = guard.as_mut() {
+            if let Some(Some(t)) = c.segs.get(&fk).and_then(|fs| fs.segs.get(&sk)).map(|e| e.0) {
+                c.hits += 1;
+                return t;
+            }
+        } else {
+            return compute();
+        }
+    }
+    let t = compute();
+    let mut guard = BLOCK_CACHE.lock().unwrap();
+    if let Some(c) = guard.as_mut() {
+        c.misses += 1;
+        c.segs.entry(fk).or_default().segs.entry(sk).or_insert((None, Vec::new())).0 = Some(t);
+        c.dirty = true;
+    }
+    t
+}
+
+fn cached_defs(rel: &str, text: &str) -> Vec<(usize, String)> {
+    if BLOCK_CACHE.lock().unwrap().is_none() {
+        return structural_def_entries(rel, text);
+    }
+    let key = format!("{}|defs", file_key(rel, fnv1a64(text)));
+    {
+        let mut guard = BLOCK_CACHE.lock().unwrap();
+        if let Some(c) = guard.as_mut() {
+            if let Some(v) = c.defs.get(&key) {
+                c.hits += 1;
+                return v.clone();
+            }
+        }
+    }
+    let v = structural_def_entries(rel, text);
+    let mut guard = BLOCK_CACHE.lock().unwrap();
+    if let Some(c) = guard.as_mut() {
+        c.misses += 1;
+        c.defs.insert(key, v.clone());
         c.dirty = true;
     }
     v
@@ -5531,6 +5664,7 @@ pub fn pack_regions(
     for rel in files {
         let text = &corpus.text[rel];
         let lines = py_splitlines(text);
+        let fhash = fnv1a64(text);
         let hits = hit_lines(text, &tset);
         // E23: with --ts-blocks, the JS/TS family gets tree-sitter structural
         // blocks instead of fixed windows -- the flag-OFF path is
@@ -5574,12 +5708,12 @@ pub fn pack_regions(
                 Vec::new()
             };
             let seg = seg_lines.join("\n");
-            let seg_tokens: HashSet<String> = tokenize(&seg).into_iter().collect();
-            let seg_terms: HashSet<String> = tset.intersection(&seg_tokens).cloned().collect();
+            let seg_tokens = cached_seg_tokens(rel, fhash, a, b, || tokenize(&seg));
+            let seg_terms: HashSet<String> = seg_tokens.into_iter().filter(|t| tset.contains(t)).collect();
             let n_hits = (a..=b).filter(|l| hitset.contains(l)).count();
             if seg_terms.is_empty() && n_hits == 0 && a > 1 {
                 if sibling_flags_on {
-                    let tok = count_tokens(&seg);
+                    let tok = cached_seg_tok(rel, fhash, a, b, || count_tokens(&seg));
                     if tok > 0 {
                         // gain is exactly what the formula below yields for
                         // empty terms + zero hits: 0.0 -- so if seated by
@@ -5595,7 +5729,7 @@ pub fn pack_regions(
                 }
                 continue;
             }
-            let tok = count_tokens(&seg);
+            let tok = cached_seg_tok(rel, fhash, a, b, || count_tokens(&seg));
             if tok == 0 {
                 continue;
             }
@@ -5636,7 +5770,7 @@ pub fn pack_regions(
                 // first occurrence wins (entries arrive line-ascending),
                 // mirroring `py_def_line_numbers`' or_insert semantics.
                 let mut m: HashMap<String, usize> = HashMap::new();
-                for (line, name) in structural_def_entries(rel, &corpus.text[rel]) {
+                for (line, name) in cached_defs(rel, &corpus.text[rel]) {
                     m.entry(name).or_insert(line);
                 }
                 m
