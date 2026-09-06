@@ -48,6 +48,12 @@ const MD_PAGES = [
     name: "research",
     note: "# the campaign log, adoptions and nulls",
   },
+  {
+    src: "docs/EVALUATION.md",
+    out: "evaluation.html",
+    name: "evaluation",
+    note: "# the complete technical record behind every number",
+  },
 ];
 
 

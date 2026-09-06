@@ -3,10 +3,12 @@
 <!-- site:sub Every published roust number, what it measures, and the committed artifact it came from. -->
 
 Every number roust publishes is produced by a committed artifact in this
-repository. This page is the index: what each benchmark measures, what roust
-scores, and where the raw records live. Nothing here is self-reported by the
-engine — all of it comes from harnesses in `parity/` scored by
-`lab/agentless_metric_v4.py` and its per-corpus variants.
+repository. This page is the short version: what each benchmark measures, what
+roust scores, and where the raw records live. Nothing here is self-reported by
+the engine; all of it comes from harnesses in `parity/` scored by
+`lab/agentless_metric_v4.py` and its per-corpus variants. Comparisons with
+other systems, every caveat, and the history of each row are on the
+[Evaluation record](EVALUATION.md).
 
 ## Metric <!-- note: what FILE, FUNCTION and LINE actually mean -->
 
@@ -45,8 +47,8 @@ here. And the archex FUNCTION numbers exclude two timed-out instances from
 their denominator, where roust counts its own errors as wrong; scoring archex
 by roust's convention would give 38.0 rather than 38.3.
 
-Artifacts: `lab/results_regions/ws2c/agentless_metric_ws2c_lite300_cfamily.json`,
-`lab/results_regions/ws2c/agentless_metric_ws2c_ver407_cfamily.json`.
+Artifacts: `lab/results_regions/e44/metrics/lite_ts40.json`,
+`lab/results_regions/e44/metrics/ver_ts40.json`.
 
 ## Complete split <!-- note: all 2,294 instances, fine-grained -->
 
@@ -118,10 +120,26 @@ tool; the RAG arm additionally keeps grep.
 
 Index build is a few hundred milliseconds to a few seconds depending on repo
 size, cached under `<repo>/.roust/`. Warm queries run in tens to hundreds of
-milliseconds; structural packing on large JS/TS repositories is the slow case
-at roughly 2 seconds.
+milliseconds.
 
-Artifact: `lab/latency/latency_v1.json`.
+```text title="warm query p50, ms — previous engine vs 0.4.0 (same bundles)"
+requests (122 files)         1006  ->   61
+flask (77)                   1057  ->   65
+django (2,214)               2212  ->  126
+clap-rs/clap (98, Rust)      1187  ->   69
+nlohmann/json (192, C++)     2026  ->   85
+cli/cli (711, Go)            1696  ->  495
+```
+
+0.4.0 removed two per-query costs that produced no output change: the padding
+guard rebuilt every padded span after every shave, and every block of every
+returned file was re-tokenized on every call. Both are now memoized or cached
+under `.roust/`, and the bundles were proven byte-identical on 128/128
+full-slice instances before the change shipped. cli/cli improves least because
+its time goes to candidate generation over a large corpus, not to packing.
+
+Artifacts: `lab/latency/latency_v2.json` (current), `lab/latency/latency_v2_pre_e49.json`
+(previous engine), `lab/latency/latency_v1.json` (the 0.2.0 baseline).
 
 ## Reproducing <!-- note: run any of these yourself -->
 

@@ -1,213 +1,145 @@
 # roust
 
-**Recall-first code retrieval for coding agents.**
+**Give your coding agent the right code in one call.**
 
-Point an agent at grep and it has to iterate on search terms, reading through
-a lot of matches to find what it needs. Point it at roust and it gets a
-single, ranked, token-budgeted bundle of the relevant code back in one call,
-with no embeddings, no LLM calls, no API keys, and no training. roust is a
-ranking-and-packing pipeline over plain lexical, structural, and
-version-control signals — it reads like a very disciplined `grep` session,
-compressed into one process call.
+roust is a command-line code search tool built for AI coding agents. Hand it a
+question, an issue, or an error message, and it hands back one ranked,
+token-budgeted bundle of the code most likely to matter. No embeddings, no
+model calls, no API keys, nothing leaves your machine. A warm query takes
+well under a second.
 
-**Eight languages**, packed as real functions and classes rather than blind
-line windows: Python, JavaScript, TypeScript, Java, Go, Rust, C, and C++.
-Each one's structural support was gated on its own benchmark slice before
-shipping — the per-language numbers, including where roust is weak, are in
-[Multi-language localization](#multi-language-localization-agentless-metric-all-levels).
-Any other language still indexes and ranks; it just packs windows instead of
-syntactic units.
+[Install](#install) · [Quick start](#quick-start) · [Use it with your agent](#use-it-with-your-agent) · [Results](#results) · [Docs site](https://narehart.github.io/roust/)
 
-Validated on 407 held-out SWE-bench Verified instances (92.1% all-gold-files,
-never tuned on), on the archex head-to-head benchmark (40/40 tasks at recall
-1.00), and per-language on Multi-SWE-bench. Python is the strongest slice by
-a wide margin, and the scoreboard says so.
+## Why roust
+
+- **One call replaces the grep loop.** An agent using grep has to guess search
+  terms, read through matches, and try again. roust returns the relevant code
+  in one shot. In our agent-loop test, the same agent solved 93% of tasks with
+  roust and 27% with grep.
+- **Fast and local.** The first call indexes the repo (hundreds of
+  milliseconds to a few seconds). Every call after that is a cache hit, and a
+  warm query runs in roughly 60 to 500 ms on repos up to a few thousand files.
+- **Eight languages, packed as functions and classes.** Python, JavaScript,
+  TypeScript, Java, Go, Rust, C, and C++ are returned as real syntactic units
+  rather than blind line windows. Any other language still indexes and ranks;
+  it just packs windows instead.
+- **Every number is measured.** Each claim in these docs comes from a
+  committed artifact you can re-run. The honest parts are published too:
+  Python is the strongest language by a wide margin, and trained retrievers
+  beat roust on accuracy. roust is the best result you can get for free.
 
 ## Install
 
-roust is a single Rust binary (~15 MB release build; ~9.3 MB of that is the
-exactly-pinned tree-sitter grammars for the eight languages whose structural
-packing they power — grammar bumps are gated dependency changes).
-Every install path below builds the same `roust-rs` engine — there is no
-separate Python implementation.
+roust is a single binary (about 15 MB, most of it the bundled language
+grammars). Pick one:
 
-**Published** on npm and crates.io. Install it one of three ways:
-
-```bash
-# npm — downloads the prebuilt binary for your platform (no Node runtime cost;
-# the launcher just execs it). The package is `roust-cli`; the command it
-# installs is `roust`. Works with npx too.
+```bash title="shell — install via npm"
+# Prebuilt binary for your platform; the package is roust-cli, the command is roust
 npm install -g roust-cli
 npx roust-cli "connection pooling" ~/code/httpx
 ```
 
-```bash
-# crates.io — builds from source
+```bash title="shell — install via cargo"
+# Builds from source
 cargo install roust
 ```
 
-```bash
-# GitHub Releases — raw per-platform binaries with .sha256 checksums
-# https://github.com/narehart/roust/releases
-```
+Or download a binary from [GitHub Releases](https://github.com/narehart/roust/releases)
+(darwin-x64, darwin-arm64, linux-x64, linux-arm64, win32-x64, each with a
+`.sha256` checksum), or build a checkout with `cargo install --path roust-rs`.
 
-Or from a checkout:
+Two small notes:
 
-```bash
-git clone https://github.com/narehart/roust && cd roust
-cargo install --path roust-rs
-```
+- `git` on your `PATH` enables the commit-history signal. roust works without
+  it.
+- The index lives under `<repo>/.roust/`. Add that directory to your
+  `.gitignore`. It refreshes itself whenever indexed files change.
 
-Prebuilt binaries cover darwin-x64, darwin-arm64, linux-x64, linux-arm64, and
-win32-x64. Any other platform builds from source via `cargo install roust`.
+## Quick start
 
-`git` should be on `PATH` if you want the commit-history signal (roust
-degrades gracefully without it).
-
-Developing against `roust-rs/`: `uv run roust` does not rebuild automatically
-when `roust-rs/src` changes -- after any Rust edit, run `uv sync
---reinstall-package roust` before relying on `uv run roust` again (`roust
---version` embeds a git SHA + dirty flag so a stale build is identifiable;
-see `lab/tokenbench/README.md`'s engine-provenance guard for the automated
-version of this check).
-
-The first `roust` call against a repo builds an index — a few hundred
-milliseconds to a few seconds depending on repo size. The index is cached
-under `<repo>/.roust/` (add that directory to your `.gitignore`) and
-refreshes automatically whenever indexed files change, so every call after
-the first is a cache hit.
-
-## Usage
-
-```
-roust QUERY [PATH]
-```
-
-`QUERY` can be a natural-language question or raw issue/error text; `PATH`
-defaults to `.`. Default output on stdout is a token-budgeted, packed bundle
-of the most relevant code regions; a one-line stats summary always goes to
-stderr, so stdout stays clean for piping.
-
-A real session, run against `encode/httpx`:
-
-```bash
+```bash title="shell — a real session against encode/httpx"
 $ roust "connection pooling" ~/code/httpx
 [... ~8.4k tokens of packed file regions on stdout ...]
 roust: 25 files, 8366 tokens (indexed 57 files, index 9ms, query 160ms, cache hit)
 ```
 
-Other flags:
+`roust QUERY [PATH]`. The query can be a plain question or raw issue text;
+`PATH` defaults to the current directory. The bundle goes to stdout and a
+one-line summary goes to stderr, so stdout is safe to pipe.
 
-```bash
-# Ranked file paths only, one per line -- for fast localization
+The three flags you will actually use:
+
+```bash title="shell — the everyday flags"
+# Just the ranked file paths, one per line
 roust "connection pooling" ~/code/httpx --files-only
 
-# Machine-readable output: files, packed regions, bundle text, timing stats
+# Machine-readable: files, regions, bundle text, timing, confidence
 roust "connection pooling" ~/code/httpx --json
 
-# Cap the file count (0 = no cap, the default)
+# Cap the number of files (default: no cap)
 roust "connection pooling" ~/code/httpx --k 5
-
-# Change the token budget for the packed bundle (default: 8192).
-# The budget is a target, not a hard cap: the packer seats a minimum core of
-# regions first, so small budgets can overshoot (measured 1.04-1.22x at 2048-8192
-# on requests/flask). Check stats.bundle_tokens in --json for the actual size.
-roust "connection pooling" ~/code/httpx --budget 4096
-
-# Force a fresh index build even if a cache entry exists
-roust "connection pooling" ~/code/httpx --reindex
-
-# Skip the on-disk cache entirely (neither reads nor writes .roust/)
-roust "connection pooling" ~/code/httpx --no-cache
-
-# Disable individual signal channels (all on by default)
-roust "connection pooling" ~/code/httpx --no-history     # git commit-message field + co-change frontier
-roust "connection pooling" ~/code/httpx --no-docs        # *.rst/*.txt/*.md docs-bridge
-roust "connection pooling" ~/code/httpx --no-anchors     # definition-symbol anchor channel
-roust "connection pooling" ~/code/httpx --no-testbridge  # test-file lexical bridge
-
-# Region-packing knobs (the shipped defaults, adopted from the #4 campaign):
-# pad every packed span by N context lines (guarded padding, default 5)
-roust "connection pooling" ~/code/httpx --pad-lines 5
-# length-normalization exponent in region selection, gain/tokens^len_exp
-# (default 0.85; `--pad-lines 0 --len-exp 1.0` reproduces the pre-adoption packing)
-roust "connection pooling" ~/code/httpx --len-exp 0.85
-
-# Dump the full diagnostic record (the engine's Explain struct) as JSON to stderr
-roust "connection pooling" ~/code/httpx --explain
 ```
 
-Exit codes: `0` = results found (this includes low-confidence matches, see
-below -- roust still returns its best guess), `1` = no query term matched
-anything in the indexed corpus vocabulary at all, `2` = usage error.
+Exit codes: `0` results found (including low-confidence ones), `1` no query
+term matched anything in the repo, `2` usage error.
 
-### Low-confidence matches
+### Reading the output
 
-roust always returns a budget-filled bundle for any query that matches at
-least one term somewhere in the repo -- it doesn't refuse to answer just
-because the match is weak. To make that weak-match case visible instead of
-silent, `--json` output's `stats` includes:
+The default bundle is sized for a model's context window, not for a person.
+It is deliberately broad: it covers as many plausible edit sites as fit in
+the budget, because an agent reads selectively and recall is what wins tasks.
+If you are reading it yourself, shrink it instead of scrolling past it:
 
-- `top_score`: the strongest candidate file's raw (pre-normalization) BM25F
-  score for this query -- comparable across queries and repos, unlike the
-  0-1 normalized scores used for ranking.
-- `matched_query_terms` / `total_query_terms`: how many of the query's terms
-  exist anywhere in the indexed corpus vocabulary (body text, comments,
-  docs pages, commit messages, or path components).
-- `low_confidence: true`, present only when the calibrated criterion trips
-  (`top_score` below a fixed threshold, or fewer than 45% of query terms
-  found in the corpus vocabulary) -- also appended as `[low-confidence
-  match]` to the stderr summary line.
-
-The thresholds were calibrated empirically against all 300 SWE-bench Lite
-(query, repo) pairs -- 0 false trips on that real-query population is the
-hard constraint -- checked against ~30 gibberish/off-topic queries across 3
-repos. Because real BM25F scores scale with query length and repo size,
-this signal is calibrated for realistic-size repositories; a tiny
-few-file toy repo can legitimately score below the threshold even on a
-genuinely on-topic query.
-
-### Output size: agents vs humans
-
-The default `--budget 8192` is sized for LLM context windows, not for a human
-scrolling a terminal. A coding agent reads the bundle selectively, and
-roust's recall-first packing is measured against that use case: 93.3%
-agent-loop solve rate. A human reading the same bundle top-to-bottom will
-find it broad by design -- region precision is intentionally traded for
-recall, so the bundle covers as many candidate edit sites as fit in the
-budget rather than just the single best match.
-
-For hand use, shrink the bundle instead of reading past it:
-
-```bash
-# Quarter-size bundle, same latency, best-ranked content first
-roust "connection pooling" ~/code/httpx --budget 2048
-
-# Cap the file count directly
-roust "connection pooling" ~/code/httpx --k 8
-
-# Scannable list instead of packed code
-roust "connection pooling" ~/code/httpx --files-only
+```bash title="shell — smaller output for humans"
+roust "connection pooling" ~/code/httpx --budget 2048   # quarter-size bundle
+roust "connection pooling" ~/code/httpx --k 8           # fewer files
+roust "connection pooling" ~/code/httpx --files-only    # a list, not code
 ```
 
-One honest caveat: shrinking the budget trades away recall roughly linearly
-(measured -- see issue #4's tail-cut experiment log), so leave the default
-alone for agent use.
-
-## Using with coding agents
-
-This is the point of the tool: an agent that reaches for `roust` before
-`grep` gets the files it needs in one shot, without needing to iterate on
-search terms across a much larger result set. Don't lower `--budget` in
-agent configs -- the breadth is the product, since the agent reads
-selectively rather than top-to-bottom; a smaller budget just trades away
+Leave the default budget alone in agent configs. Shrinking it trades away
 measured recall for no benefit to the agent.
+
+### Weak matches
+
+roust always answers when at least one query term exists in the repo, even
+when the match is weak. With `--json`, the `stats` block tells you how much to
+trust it: `top_score` (the raw score of the best file, comparable across
+queries), `matched_query_terms` out of `total_query_terms`, and
+`low_confidence: true` when a calibrated threshold trips. The stderr summary
+also appends `[low-confidence match]`. The threshold was calibrated to trip on
+zero of the 300 real SWE-bench Lite queries, so a tiny toy repo can trip it
+even on a good query.
+
+### More flags
+
+`roust --help` lists everything. The groups worth knowing about:
+
+| Group | Flags | What they do |
+|---|---|---|
+| Budget | `--budget N` (default 8192) | Token target for the bundle. A target, not a hard cap: small budgets can overshoot by 4 to 22% because a minimum core of regions is always seated. |
+| Cache | `--reindex`, `--no-cache` | Force a rebuild, or neither read nor write `.roust/`. |
+| Signals | `--no-history`, `--no-docs`, `--no-anchors`, `--no-testbridge`, `--no-trace-boost` | Switch off one evidence channel (git history, docs pages, definition anchors, test files, stack-trace frames). All on by default. |
+| Packing | `--pad-lines` (5), `--len-exp` (0.85), `--pack-floor` (0.15), `--tail-seat-tokens` (40) | The shipped region-packing defaults, each adopted after a measured gate. |
+| Diagnostics | `--explain` | Dump the engine's full explanation record as JSON to stderr. |
+
+Flags not listed here are opt-in experiments that are measured but not
+adopted; the [Research](docs/RESEARCH.md) page explains how a flag becomes a
+default.
+
+## Use it with your agent
+
+The whole point: an agent that runs `roust` before `grep` gets the files it
+needs in one shot. Two rules apply to every agent below. Pass the raw
+question or issue text as the query, including error messages, stack traces,
+file paths, and symbol names, because roust uses those as high-precision
+anchors. And don't summarize the text first: on paraphrases that drop key
+terms, measured recall fell from 1.00 to 0.833.
 
 ### Claude Code
 
 Add to your project's `CLAUDE.md`:
 
-```markdown
+```markdown title="CLAUDE.md"
 ## Code search
 
 Before using grep/find/glob to explore this repo, run roust first:
@@ -224,10 +156,9 @@ high-precision anchors. Only fall back to grep for a literal string match
 roust's bundle doesn't cover.
 ```
 
-And allowlist it in `.claude/settings.json` so it runs without a permission
-prompt:
+And allowlist it in `.claude/settings.json` so it runs without a prompt:
 
-```json
+```json title=".claude/settings.json"
 {
   "permissions": {
     "allow": ["Bash(roust *)"]
@@ -239,7 +170,7 @@ prompt:
 
 Add to `.cursorrules`:
 
-```
+```text title=".cursorrules"
 Before grepping this repo, run `roust "<question or issue text>" --files-only`
 (or without --files-only for a packed code bundle) in the terminal to find
 relevant files. Pass the raw question/issue text as the query, including
@@ -248,24 +179,22 @@ error strings and backtick-quoted symbol names -- don't paraphrase it first.
 
 ### Aider
 
-Invoke it from chat with `/run`:
+Invoke it from chat with `/run`, and add a line to `CONVENTIONS.md`:
 
-```
+```text title="aider"
 /run roust "TypeError in connection pool cleanup" --files-only
 ```
 
-And add a line to `CONVENTIONS.md`:
-
-```
+```text title="CONVENTIONS.md"
 Search this repo with `roust "<raw question or error text>"` before grep --
 it returns a token-budgeted bundle of the relevant code directly.
 ```
 
-### OpenAI Codex CLI / generic agents
+### OpenAI Codex CLI and other agents
 
 Add to `AGENTS.md`:
 
-```markdown
+```markdown title="AGENTS.md"
 ## Code search
 
 Run `roust "<question or issue text>" --files-only` to localize relevant
@@ -277,305 +206,113 @@ cleaned-up paraphrase.
 
 ### MCP
 
-No MCP server yet (it's on the roadmap) -- roust is shell-first by design
-today, since every agent already has a shell and `roust` is a single
-subprocess call with structured `--json` output when you need it.
+No MCP server yet; it is on the roadmap. roust is shell-first by design:
+every agent already has a shell, and `roust` is one subprocess call with
+`--json` when you need structure.
 
-> **Query tips for agents**
-> - Pass the raw issue/question text verbatim as the query.
-> - Include error messages, stack traces, and symbol names -- don't strip
->   them out.
-> - Don't summarize the question into clean prose first: measured on
->   adversarial paraphrases that drop key terms, mean task recall falls
->   from 1.00 to 0.833, and only 14 of 19 tasks still retrieve every gold
->   file -- summarization removes the anchors roust relies on. See "Known
->   limits" in `lab/README.md`.
+One measured warning: giving an agent grep *alongside* roust made it worse in
+our test (93% to 57% solved). Replace grep, don't supplement it.
 
 ## How it works
 
-- **BM25F** over identifier subtokens (camelCase/snake_case split, Porter-lite
-  stemming), with path tokens as a separate weighted field and an
-  implementation-file prior (tests/docs/examples down-weighted).
-- **1-hop structural expansion** over the import/same-package graph, with RM3
-  pseudo-relevance feedback carrying evidence from lexical hits to their
-  quiet neighbors.
-- **Commit-message channel**: git history text folded in as a monotone
-  addition-only signal (never reorders the lexical head).
-- **Definition-symbol anchors**: rarity-gated (symbol defined in ≤3 impl
-  files), tiered promotion so only strong anchors can enter the top ranks.
-- **Test/docs bridges**: tests and docs are treated as developer-written
-  natural-language-to-code mappings, appended tail-only.
-- **Greedy weighted-coverage region packing** under a token budget, so the
-  final bundle is code regions, not whole files, chosen to maximize coverage
-  per token.
+roust is a ranking-and-packing pipeline over signals that already exist in
+your repository. In plain terms:
 
-Every component above was added to fix a concrete, measured miss, and every
-number in this README is reproduced in the pipeline's research log,
-including negative results and a pre-registered held-out validation run:
-see [`lab/README.md`](https://github.com/narehart/roust/blob/main/lab/README.md).
+1. **Find the words.** A BM25F text index over identifier pieces (camelCase
+   and snake_case split, light stemming), with file paths as a separate field
+   and tests, docs, and examples down-weighted.
+2. **Follow the structure.** Files that import, or are imported by, the
+   lexical hits get a share of their evidence, so quiet neighbors surface.
+3. **Listen to history and tests.** Commit messages and test files are
+   treated as developer-written descriptions of the code they touch, added
+   as tail-only evidence that never reorders the strongest matches.
+4. **Trust names and traces.** A symbol defined in only a few files, or a
+   file named in a stack trace, is a strong anchor and gets promoted.
+5. **Pack, don't dump.** Instead of whole files, roust returns the functions
+   and classes that cover the most evidence per token, until the budget is
+   spent.
 
-## Scoreboard
+Every stage was added to fix a specific, measured miss. The
+[Research](docs/RESEARCH.md) page describes the loop that decides what ships.
 
-Given the same task and the same agent (tokenbench v2, live Sonnet 4.5; the grep and roust arms get their method as the agent's only *search* tool, the embedding-RAG arm gets rag_search **plus grep**, and every arm also has a read_file tool), roust solves **93.3%** of tasks, grep **26.7%**, embedding-RAG **80.0%** (9-trial mean) — n=15, a partial run (see below). roust is **not** the most accurate retriever available: trained retrievers (see *Localization accuracy* below) score higher on published localization benchmarks. What roust offers is the best result you can get for free — no model, no embeddings, no API key, no training.
+## Results
 
-### Agent-loop outcomes (our protocol)
+All numbers are the shipped defaults, scored with the Agentless localization
+metric on real bug reports. FILE means every file the fix touched was
+returned; FUNCTION means every function the fix touched was returned in full;
+LINE means every changed line was included.
 
-| System | Solves | Median turns | Tokens / attempt | $ / attempt | $ / successful run |
-|---|---|---|---|---|---|
-| **roust** | 93.3% | 9 | 308,184 | $0.95 | $0.93 |
-| grep | 26.7% | 30 | 239,600 | $0.76 | $0.53 |
-| embedding-RAG | 80.0% (9-trial mean ± 4.4pp) | 20.5 | 695,833 | $2.14 | $1.80 |
-| roust + grep (both) | 57.1% | 27.5 | 595,234 | $1.83 | $1.60 |
-| grep + stopping prompt | 20.0% | — | 52,576 | $0.17 | $0.18 |
-| roust + stopping prompt | 66.7% | — | 241,027 | $0.74 | $0.63 |
+| Language (benchmark, instances) | FILE | FUNCTION | LINE |
+|---|---|---|---|
+| Python (SWE-bench Lite, 300) | 92.3 | 57.7 | 46.0 |
+| Python (SWE-bench Verified, 407, held out) | 92.4 | 48.9 | 37.8 |
+| Go (Multi-SWE-bench, 428) | 65.0 | 32.9 | 18.5 |
+| C++ (Multi-SWE-bench, 129) | 65.9 | 20.9 | 8.5 |
+| Rust (Multi-SWE-bench, 239) | 60.3 | 20.9 | 7.5 |
+| C (Multi-SWE-bench, 128) | 51.6 | 28.1 | 13.3 |
+| Java (Multi-SWE-bench, 128) | 49.2 | 39.8 | 14.8 |
+| JavaScript/TypeScript (Multi-SWE-bench, 580) | 46.4 | 31.6 | 14.1 |
 
-- roust costs more per attempt than grep (308k vs 240k tokens) and wins on solve rate anyway. grep is cheap because it gives up: 73.3% of its runs hit the turn cap and produce nothing.
-- `$ / successful run` remains a lower bound on cost-to-answer for a single attempt. The full repeat-run campaign (#16, `results_repeats.jsonl`) measured the rest: for roust and grep, failures are **stable across trials** (p≈0 — the retry term is meaningless; roust's one miss failed 10/10), while embedding-RAG's failures are genuinely stochastic. Its per-instance E[cost to first success] — (1−p̂)/p̂ × mean failed-attempt cost + mean successful-attempt cost, p̂ over the 10 trials (trial 0 + 9 repeats) — aggregates over its solvable set (all 15 instances, per-instance p̂ 0.10–1.00) to a **median of $2.42** per instance; the **mean is $4.90**, dominated by django-16400 (p̂ = 0.10, E ≈ $31). An earlier revision stated "$2.50" here without naming the aggregation; the stated-convention numbers above replace it.
-- Giving the agent grep *alongside* roust makes it worse (93.3% → 57.1%): replace grep, don't supplement it ([#5](https://github.com/narehart/roust/issues/5)).
-- embedding-RAG's **Solves** cell is a 9-trial mean, `lab/tokenbench/results_repeats.jsonl`; its other columns (median turns, tokens, $) are the trial-0 measurement, `lab/tokenbench/results.jsonl`.
-- The two `+ stopping prompt` rows are the forced-stopping steelman arms (`grep_forced`/`roust_forced`, hard stopping directive + 12-turn cap): `lab/tokenbench/results_forced.jsonl`.
-- Outcome volatility (measured across 9 identical trial repeats, `lab/tokenbench/results_repeats.jsonl`): embedding-RAG bounces 73.3–86.7% across 9 identical runs (mean 80.0% ± 4.4pp); roust reproduced 93.3% exactly with 0 outcome flips across all repeats, and its single failure (django-16400) failed 10/10 trials — a capability gap, not variance (p < 0.30 at 95%, rule of three). grep's failures were stable across both its trials.
+How to read it:
 
-### Localization accuracy (published protocol)
+- **Python leads, and the gap is real.** Part of it is corpus shape (the
+  JS/TS slice has gold files in file types nobody indexes, and Go is mostly
+  one repository), and part of it is the engine. Compare within a row over
+  time rather than down the column.
+- **Against other systems**, roust exceeds Agentless GPT-4o at function and
+  line level while using no model, and trails trained retrievers such as
+  SweRank at file level. In an agent loop it solved 93% of tasks versus 27%
+  for grep and 80% for an embedding search (n=15, a partial run).
+- **Speed**: warm queries run in 61 to 495 ms on the seven repos we time,
+  identical output to the previous release at 8 to 23 times the speed.
 
-| System | File-level | Metric | Free? | Source |
-|---|---|---|---|---|
-| SweRankEmbed-Large + LLM rerank | 96.0 | Acc@10 | no (trained + LLM) | arXiv:2505.07849 |
-| SweRankEmbed-Large | 94.2 | Acc@10 | no (trained) | arXiv:2505.07849 |
-| LocAgent | 94.16 | file acc | no (LLM) | arXiv:2503.09089 |
-| **roust** | 83.3 (File@10) · 92.3 (all-gold retrieved, ~35 files returned) | File@10 / Agentless-metric FILE | yes | `lab/README.md` ablation + trace-boost remeasure (`lab/research/wave5/e20-e11b-results.md`) / `lab/results_regions/agentless_metric_e20_traceboost.json` |
-| SweRankEmbed-Small | 90.9 | Acc@10 | no (trained) | arXiv:2505.07849 |
-| OrcaLoca | 83.33 | file-match | no (LLM) | arXiv:2502.00350 |
-| Agentless GPT-4o | 69.7 | Agentless-metric FILE | no (LLM) | arXiv:2407.01489 |
-| BM25 | 61.7 | Acc@10 | yes | arXiv:2505.07849 |
-| CoSIL | 60.7 | Top-1 | no (LLM) | arXiv:2503.22424 |
-| archex (BM25 default) | 56.0 | Agentless-metric FILE | yes (local index; embeddings optional) | `lab/results_regions/agentless_metric_archex_bm25.json` |
-| archex (vector/hybrid) | 57.3 | Agentless-metric FILE | yes (local index + FastEmbed/ONNX) | `lab/results_regions/agentless_metric_archex_vector.json` |
-| **roust** (Multi-SWE JS/TS, 580 inst.) | 46.4 | Agentless-metric FILE | yes | `lab/results_regions/agentless_metric_mswe_e23_tsblocks.json` |
-
-— = not measured by us (see gaps below). archex has two rows: its default retrieval mode (BM25+graph, no embeddings) and its optional vector/hybrid mode (FastEmbed/ONNX + graph) — both are now measured, see [#1](https://github.com/narehart/roust/issues/1).
-
-The File-level column mixes several different metrics (Acc@10 / Top-1 / file-match / Agentless-metric FILE) and is **not** comparable straight down the column — each row names its own. The two metrics in roust's cell differ in both directions: Acc@10 counts an instance correct if *any* gold file appears in the top 10, while the Agentless-metric FILE score counts it correct only if *all* gold files appear anywhere in the returned set (~35 files for roust, range 22–38, measured from `lab/results_regions/full300_v11.jsonl`) — stricter on completeness, looser on depth, so neither subsumes the other. **File@10 83.3** (all gold files within the top 10 — the FROZEN v7 ablation row of `lab/README.md` measured 82.7 = 248/300, and the adopted trace-frame boost adds +2 gains / 0 losses over the 46 trace-bearing instances, remeasured in `lab/research/wave5/e20-e11b-results.md`; all other instances are byte-identical) is the depth-aligned number to rank roust against the Acc@10 rows — and on that aligned metric roust sits *below* the trained retrievers, including SweRankEmbed-Small's 90.9; the comparison is conservative, since File@10 demands all gold files in the top 10 where Acc@10 needs one. The 92.3 all-gold figure is the one whose FUNCTION/LINE companions follow: roust's Agentless-metric scores on Lite are FILE 92.3% / FUNCTION 54.7% (exact) / LINE 43.3% (`lab/results_regions/agentless_metric_e20_traceboost.json`) — training-free roust now *exceeds* Agentless GPT-4o at function level (54.7 vs 52.0) and line level (43.3 vs 35.3), closing what was this table's weakest cell; Agentless (GPT-4o) for comparison is 69.7 / 52.0 / 35.3; archex (BM25 default) is 56.0 / 38.3 / 25.7 (`lab/results_regions/agentless_metric_archex_bm25.json`; 2 of 300 instances timed out — they count as wrong at FILE and LINE but are **excluded from the FUNCTION denominator** in that artifact, a baseline-favorable convention: 38.3 = 114/298, counting them wrong would give 38.0); archex (vector/hybrid) is 57.3 / 40.7 / 27.7 (`lab/results_regions/agentless_metric_archex_vector.json`, same 2 timeouts and convention, plus one git-show exclusion at FUNCTION) — a single-digit gain over BM25 that leaves the ~35-point FILE gap to roust unchanged. LINE mean-fraction-covered (a continuity metric with prior reporting, distinct from the strict all-or-nothing LINE % above) rose 0.4564 → 0.5168 → 0.5251 across the same changes. Region precision (gold lines returned / total lines returned, i.e. "how much of the packed context is actually the fix") rose from 0.4486% to 0.5522% mean (+23% relative) — roust still trades precision for recall by design, packing ~1,123 lines of surrounding context per instance under the 8192-token budget (down slightly from ~1,150 pre-adoption). These gains are the additive stack of three measured changes from the #4 campaign (autopsy-driven), now the shipped engine defaults: guarded span padding (`--pad-lines`, default 5), sub-linear length normalization (`--len-exp`, default 0.85), and the trace-frame FILE boost (E11b, PR #52: files named in a traceback in the query get a rank-decayed file-score boost, raise-site first, query text untouched; Verified held-out confirmed non-negative in every cell — FILE 92.14→92.38, LINE 35.38→35.63; `--no-trace-boost` disables) — run `roust --help` for the exact flags that reproduce the pre-adoption engine, or see [#4](https://github.com/narehart/roust/issues/4).
-
-**The Multi-SWE JS/TS row** is roust's first non-Python scoreboard entry (every other roust cell above is Python SWE-bench Lite/Verified): on the 580-instance Multi-SWE-bench JS/TS slice, FILE 46.4 (269/580) / FUNCTION 31.0 (exact) / LINE 13.3 / LINE mean-fraction .258 (`lab/results_regions/agentless_metric_mswe_e23_tsblocks.json`), measured with the now-default tree-sitter structural blocks for .js/.jsx/.ts/.tsx (E23, PR [#55](https://github.com/narehart/roust/pull/55) — step one of the language-agnostic campaign, [#56](https://github.com/narehart/roust/issues/56)). Two corrections against prior reporting: (1) the previously published MSWE FUNCTION **99.83 is retired as vacuous** — the gold-function scorer was Python-AST-only, so every JS/TS instance had `n_gold_functions: 0` and passed the subset condition vacuously; with the fixed tree-sitter scorer the true pre-adoption baseline is **21.2** (`lab/results_regions/agentless_metric_mswe_e23_baseline.json`), lifted to **31.0** by the structural blocks (+68/−11 paired, p=3.5e-11). (2) FILE 46.4 sits under a measured **~76.7 ceiling**: 135/580 instances have at least one gold file outside the indexed extension set (.json — 316 gold files, .md — 158, .svelte, .mjs, …), so no ranking change can lift FILE past ~76.7 on this corpus walk — universal indexing is workstream 1 of [#56](https://github.com/narehart/roust/issues/56).
-
-### Multi-language localization (Agentless metric, all levels)
-
-roust's per-language scoreboard across all eight benchmarked language slices — Python (SWE-bench Lite + held-out Verified) and the seven Multi-SWE-bench languages ([#56](https://github.com/narehart/roust/issues/56) campaign; JS/TS via E23/PR [#55](https://github.com/narehart/roust/pull/55), Java/Go/Rust/C/C++ via the WS2 grammar batch, PR [#60](https://github.com/narehart/roust/pull/60)). Every FUNCTION number is from the corrected language-aware scorer (the Python-AST-only scorer's vacuous non-Python FUNCTION numbers are retired — see `lab/research/langagnostic/ws2-grammar-batch.md`). All rows are the shipped engine defaults: since WS2c (`lab/research/langagnostic/ws2c-vendor-guard.md`) C-family indexing is default-ON behind a vendored-C guard, so the C and C++ rows no longer need an opt-in flag (see note below the table).
-
-| language (n) | FILE | FUNCTION (exact) | LINE | LINE mean-fraction | engine config | source |
-|---|---|---|---|---|---|---|
-| Python — Lite 300 | 92.33 | 57.67 | 46.00 | .537 | defaults | `lab/results_regions/e44/metrics/lite_ts40.json` |
-| Python — Verified 407 (held-out) | 92.38 | 48.89 | 37.84 | .494 | defaults | `lab/results_regions/e44/metrics/ver_ts40.json` |
-| JS/TS — MSWE 580 | 46.38 | 31.55 | 14.14 | .264 | defaults | `lab/results_regions/e44/metrics/jsts_ts40ship.json` |
-| Java — MSWE 128 | 49.22 | 39.84 | 14.84 | .433 | defaults | `lab/results_regions/e44/metrics/java_ts40ship.json` |
-| Go — MSWE 428 | 64.95 | 32.94 | 18.46 | .423 | defaults | `lab/results_regions/e44/metrics/go_ts40ship.json` |
-| Rust — MSWE 239 | 60.25 | 20.92 | 7.53 | .249 | defaults | `lab/results_regions/e44/metrics/rust_ts40ship.json` |
-| C — MSWE 128 | 51.56 | 28.12 | 13.28 | .225 | defaults | `lab/results_regions/e44/metrics/c_ts40ship.json` |
-| C++ — MSWE 129 | 65.89 | 20.93 | 8.53 | .311 | defaults | `lab/results_regions/e44/metrics/cpp_ts40ship.json` |
-
-Notes: (1) The two Python rows are the current post-WS2c defaults (C-family indexing ON behind the vendored-C guard). Relative to the WS2b references they move by exactly two single instances, both itemized in `lab/research/langagnostic/ws2c-vendor-guard.md`: Lite LINE 43.67→44.00 (one gain) and Verified LINE 35.38→35.14 (one loss — two gold lines on astropy-14508, from the guard excluding astropy's vendored `extern/` Python, not from C indexing; both sign tests p=1). The Verified row had already retired the stale pre-WS2b 35.63/.478 reference. (2) `.c/.h/.cc/.cpp/.cxx/.hpp/.hh` are indexed by default since WS2c; `--no-cfamily-ext` reverts to the pre-WS2c walk (C/C++ rows become FILE 0 — nothing indexable). The WS2b gate had deferred the flip after vendored libsvm displaced gold on one Lite instance; the WS2c `VENDOR_RE` guard (`cextern/`, `extern/`, `libsvm/`, `liblinear/` path components) cured exactly that instance and left the MSWE C/C++ arms payload-identical (0/257 diffs). (3) Cross-language FILE differences are dominated by corpus shape (e.g. JS/TS's ~76.7 extension ceiling above, Go's single-repo skew — cli/cli is 397 of 428 instances); compare within a row's own slice, not down the column. (4) WS3b (`lab/research/langagnostic/ws3b-trace-formats.md`, PR [#66](https://github.com/narehart/roust/pull/66)): the Java FUNCTION cell (33.59→34.38, +1/−0) comes from the now-default multi-format trace-frame boost (Java/Node/Go/Rust frame parsing; Python byte-identical, 91/91 proven); the C++ row moves to the fresh baseline under the unconditional `thirdparty` vendor guard (65.89/18.60/7.75/.297 → 65.12/17.83/6.98/.295 — all 54 changed instances are nlohmann, whose checkouts vendor Google Benchmark under `benchmarks/thirdparty/`; no thirdparty file was ever packed by either engine, the shift is BM25 index-statistics reshuffle, itemized in the WS3b doc); the C row reproduces its prior reference digit-exact under the same fix. (5) WS3c (`lab/research/langagnostic/ws3c-symbols.md`, PR [#67](https://github.com/narehart/roust/pull/67), adopted 2026-08-26 under the standing language-agnostic directive): the def/anchor channel is now structural for every grammar-covered language (tree-sitter-sourced `def_index` + anchor-forced region seating un-gated from `.py`). JS/TS, Java, and Rust rows move to the WS3c arms; the superseded post-WS3b jsts base was 46.21/30.86/13.45/.258 (itself a restatement of the pre-WS3b 46.38/31.03/13.28/.258 reference after the WS3b default flip's two documented jsts instance moves). Rust caveat, stated inline: FILE/fraction gain (+1/-0 FILE) but FUNCTION 20.50→19.67 (+0/−2 — two displacement losses where a new non-gold anchor squeezed the gold region's budget, itemized in the WS3c doc). Python rows are unchanged: all four metrics digit-identical per instance on Lite and Verified under the new default (zero FUNCTION flips; 79 instances repack non-gold content only). (6) WS3d (`lab/research/langagnostic/ws3d-displacement-guard.md`, PR [#68](https://github.com/narehart/roust/pull/68), adopted 2026-08-26 under the standing directive): the JS/TS LINE/fraction cells (13.97→14.14, .260→.262; FILE/FUNCTION invariant with zero flips) come from the now-default fixture-dir anchor displacement guard — files under `*.test/`/`*.spec/` DIRECTORY components (the jscodeshift codemod fixture convention) no longer compete for symbol anchors; `--no-displacement-guard` reverts. Every other row is proven untouched: java/rust have zero fixture-dir paths in any evaluated tree (per-instance `git ls-tree` census), and the entire Lite/Verified exposure (31 pytest instances, all carrying the single path `extra/setup-py.test/setup.py`) is byte-identical under the guard. The general anchor/trace displacement guard the WS3c note queued was investigated and closed NO-GO by fire-level mining (culprit fires are shape-identical to the adoption wins' gold fires; see the WS3d doc): the rust FUNCTION caveat and the svelte-11104/jackson-4219-class losses remain live, with the consequence-side mechanisms named for future work. (7) Re-measured 2026-08-26 on one engine commit (`abb96af`) by the E25 gate's (8) E45 (`lab/research/wave6/e44-ppr-budget.md`, adopted 2026-09-03): all eight rows are re-measured under the new default packer budget floor 0.15 (was 0.3; `--pack-floor 0.3` restores the pre-E45 engine). The floor runs after file selection, so FILE is pinned on every row by construction (0 flips on all 2,339 instances) and tokens are unchanged; it changes only how packing budget is split across the returned files. Exact FUNCTION vs the prior rows: Java 36.72→39.06 (+3/−0), C++ 17.83→19.38 (+2/−0), Rust 19.67→20.50 (+2/−0), Go 28.97→29.44 (+4/−2), Verified 47.17→47.67 (+3/−1), Lite 54.67→54.67 (+2/−2), JS/TS 31.21→30.86 (+1/−3), C 28.12→27.34 (+0/−1); LINE up on Go, C++, Lite (44.00→44.33) and Verified (35.14→36.86), otherwise unchanged except one JS/TS instance. No cell is significantly negative; Java fraction (p=.0098) and Go at cap 32 (FUNCTION p=.039) are significantly positive. Both Python baselines reproduced the previous published references to the last digit before the flip. (9) E47 (`lab/research/wave6/e47-tail-seats.md`, adopted 2026-09-03): all eight rows re-measured under the new default tiered pass-1 seat -- returned files at rank 16+ get a 40-token first seat instead of the flat 120 (`--tail-seat-tokens 0` restores). The file still carries a span, so FILE is pinned on every row by construction (0 flips, 2,339 instances) and tokens are unchanged; the freed budget goes to pass-2 depth. Exact FUNCTION vs the E45 rows: Go 29.44→32.94 (+20/−3, p<.001), Java 39.06→39.84, C++ 19.38→20.93, Rust 20.50→20.92, JS/TS 30.86→31.55, C 27.34→28.12, Lite 54.67→57.67 (+11/−2, p=.022), Verified 47.67→48.89 (+8/−1, p=.039); LINE up on Go, Java, C++, Lite (44.33→46.00) and Verified (36.86→37.84). Pooled FUNCTION +54/−8; no cell below the prior row. Largest Lite FUNCTION move since PR #40.
-default arms (`lab/research/wave6/e25-shape-blocks.md`). Three rows moved because their
-previous artifacts predated adoptions that changed their own slices — pure engine drift,
-all of it in roust's favour: Go FILE 63.79→64.95, C FUNCTION 26.56→28.12, C++ FILE
-65.12→65.89. JS/TS, Java, Rust, and both Python rows reproduced to the digit, which is
-what makes the drift attributable rather than noise. (8) E26
-(`lab/research/wave6/e26-ext-coverage.md`, adopted 2026-08-27, commit `ca15227`): `.rb`
-and `.pony` are indexed by default behind a fixture-path guard, after the gate measured
-that the pre-adoption engine retrieved **0 of 148** gold files in those extensions —
-unreachable at any rank, because the file type was never indexed at all. C moves FILE
-46.88→51.56 and LINE 10.94→13.28 (ponylang/ponyc's `.pony` sources); Java moves FUNCTION
-35.16→36.72 (elastic/logstash's Ruby core), recovering 53% of its unindexed-gold ceiling.
-`.svelte` was measured and REJECTED — 2,927 files for 5 gold, JS/TS FILE −5.17 unguarded
-and still significantly negative with the guard. The JS/TS, Go, C++, Rust and Python rows
-are unchanged by construction, not by assumption: a census across every slice's clones
-found zero `.rb`/`.pony` files in those repos. `--no-ext-v2` reverts to the pre-adoption
-walk; Python byte-identity re-proven 7/7 on cold caches.
-
-### Latency (measured, `lab/latency/latency_v1.json`)
-
-Cold index (median of 3, `.roust/` removed each time), warm index (median of
-5, cache hit), and query time (p50/p95 of 20 queries cycling 10
-problem-statement-like phrases, warm cache) — `index_ms`/`query_ms` from
-`--json` output, plus end-to-end subprocess wall time, the number that
-matches what an agent actually experiences ([#15](https://github.com/narehart/roust/issues/15)):
-
-| Repo | Files indexed | Cold index (index / wall) | Warm index (index / wall) | Query index p50 / p95 | Query wall p50 / p95 |
-|---|---|---|---|---|---|
-| roust (this repo) | 66 | 145ms / 302ms | 24ms / 181ms | 109ms / 148ms | 140ms / 180ms |
-| requests | 122 | 128ms / 244ms | 23ms / 144ms | 81ms / 111ms | 114ms / 144ms |
-| flask | 77 | 184ms / 300ms | 25ms / 142ms | 97ms / 107ms | 129ms / 142ms |
-| django | 2,131 | 1538ms / 1756ms | 195ms / 412ms | 158ms / 246ms | 363ms / 451ms |
-
-Measured on an Apple M3 Max (arm64), engine `roust 0.2.0 (418212b, clean)`.
-Roughly a third of the wall-clock time at this repo size is fixed subprocess
-startup overhead, not indexing or query work — visible as the gap between
-`index_ms`/`query_ms` and the wall-time column above. Full samples, machine
-info, and per-repo `files_indexed`/disk-size in `lab/latency/latency_v1.json`;
-methodology in `lab/latency/bench_latency.py`.
-
-### Latency after E49/E50 (measured, `lab/latency/latency_v2.json`)
-
-Same methodology, seven disposable repo copies (three of them non-Python),
-engine `roust 0.3.2 (c72dbbc, clean)` vs the pre-E49 engine `a1db4f6`
-(`lab/latency/latency_v2_pre_e49.json`), same machine, back to back. The
-E49 padding-guard memo and the E50 per-file block/token cache change no
-output (byte-identical bundles proven on 128/128 full-slice instances and
-five hand-checked repos) and only cut time:
-
-| Repo | Files | Cold index wall (pre / now) | Warm index wall (pre / now) | Query p50 `query_ms` (pre / now) | Query p95 `query_ms` (pre / now) | Query wall p50 (pre / now) |
-|---|---|---|---|---|---|---|
-| requests | 122 | 580 / 203 ms | 533 / 78 ms | 1006 / 61 ms | 1981 / 76 ms | 1033 / 90 ms |
-| flask | 77 | 1536 / 232 ms | 1473 / 89 ms | 1057 / 65 ms | 1389 / 69 ms | 1086 / 94 ms |
-| django | 2,214 | 2512 / 1663 ms | 1315 / 339 ms | 2212 / 126 ms | 6159 / 164 ms | 2439 / 342 ms |
-| clap-rs/clap (Rust) | 98 | 2258 / 470 ms | 2117 / 103 ms | 1187 / 69 ms | 2060 / 84 ms | 1215 / 96 ms |
-| nlohmann/json (C++) | 192 | 1735 / 825 ms | 1470 / 114 ms | 2026 / 85 ms | 3553 / 147 ms | 2072 / 122 ms |
-| cli/cli (Go) | 711 | 1783 / 1486 ms | 893 / 529 ms | 1696 / 495 ms | 1975 / 552 ms | 1769 / 566 ms |
-| this working tree (incl. docs/lab) | 3,902 | 7150 / 3954 ms | 4123 / 571 ms | 2432 / 194 ms | 3708 / 325 ms | 2820 / 570 ms |
-
-Query time on a warm repo is now 7-25x lower than the previous engine on
-six of seven repos (cli/cli, whose time is dominated by candidate generation
-over a 711-file corpus rather than by packing, improves 3.4x). "Cold index"
-and "warm index" rows include one query, which is why they move too. The
-E50 cache lives at `<repo>/.roust/blocks.json` (140-400 KB after a query,
-covered by the same `.gitignore` advice as the index) and is skipped
-entirely under `--no-cache`.
-
-Competitor latency: archex (BM25 default mode) query wall time on the SWE-bench
-Lite corpora, `lab/results_regions/archex300_bm25_v1.jsonl` — index mean 5.69s,
-query median 9.68s (2 of 300 queries hit the 300s timeout); archex (vector/hybrid
-mode), `lab/results_regions/archex300_vector_v1.jsonl` — index mean 0.92s, query
-median 12.98s (same 2 timeouts), worse than BM25 despite the faster index; vs
-roust's 0.1–0.4s wall time above on comparable repos ([#1](https://github.com/narehart/roust/issues/1)).
-
-*Historical note:* an earlier claim (never backed by a committed artifact)
-compared the (now-deleted) Python engine against the Rust port directly —
-"Rust 3.6–4.2× faster than Python engine (httpx 145ms vs 522ms, django 1.8s
-vs 7.6s)". The Python engine was removed in #12, so that comparison is no
-longer reproducible; it's kept here only as a historical data point, not a
-current claim.
-
-### ContextBench (human-annotated gold context, their evaluator)
-
-[ContextBench](https://github.com/EuniAI/ContextBench) (arXiv:2602.05892) scores
-retrieved context against human-annotated "necessary context" line regions.
-roust was run one-shot (`--json --budget 8192`, single call, no model) on the
-**Python subset of their curated 500-instance Verified benchmark (266 tasks, 19
-repos, 266/266 evaluated, 0 skipped)** and scored with ContextBench's own
-evaluator, unmodified ([#3](https://github.com/narehart/roust/issues/3)):
-
-| Granularity | roust recall | roust precision | Claude Sonnet 4.5 agent recall | precision |
-|---|---|---|---|---|
-| file | **0.679** | 0.060 | 0.720 | 0.665 |
-| block | 0.346 | 0.040 | 0.449 | 0.420 |
-| line | 0.274 | 0.053 | 0.374 | 0.344 |
-
-Protocols differ and the comparison is not apples-to-apples: the published
-baselines are **multi-turn LLM agents** (read, navigate, then select context)
-on the full 500-task 8-language set; roust is a **single sub-2-second call
-with no model, no API key, and no training**, on the Python 266. Read it as:
-one free one-shot call recovers ~94% of the file-level recall of the best
-agent, and its precision is ~10x lower because roust deliberately packs a
-full 8192-token recall-first bundle rather than a minimal answer — the same
-recall-over-precision trade documented in
-[#4](https://github.com/narehart/roust/issues/4). ContextBench's efficiency
-metrics (AUC-Coverage/Redundancy) are N/A for a one-step trajectory.
-Adapter + protocol: `lab/contextbench/`; aggregate:
-`lab/contextbench/results_python.json`.
-
-### What still needs work
-
-- ~~Line-level 35.7% and function-level 44.3% (a proxy, not the exact metric)~~ measured exactly (`lab/results_regions/agentless_metric_v2.json`): FUNCTION 39.7% (exact, was a 44.3% proxy) and LINE 29.3% (was 35.7%) from a fresh 300-instance run of the shipped engine; a `w_name` sweep on the exact harness ([#4](https://github.com/narehart/roust/issues/4)) then showed the symbol-name weighting itself caused the LINE drop — reverting it (w_name=0.0) restores FUNCTION 41.0% (exact) and LINE 35.7% (`lab/results_regions/agentless_metric_v3.json`). ~~FUNCTION is still the weakest cell vs Agentless GPT-4o's 52.0~~ closed ([#4](https://github.com/narehart/roust/issues/4)): the campaign's autopsy on the FUNCTION/LINE misses found the padding/length-normalization mechanism (comboA — guarded span padding + sub-linear length normalization) and it's now adopted as the shipped engine defaults (`--pad-lines 5 --len-exp 0.85`), raising FUNCTION 41.0→53.3% and LINE 35.7→42.7% (fraction 0.4564→0.5168) — roust now exceeds Agentless GPT-4o at both FUNCTION (53.3 vs 52.0) and LINE (42.7 vs 35.3) (`lab/results_regions/agentless_metric_v5.json`); the region-packing gains REPLICATED out-of-sample on the 407-instance held-out SWE-bench Verified set, never used for any tuning decision (commit 2f7d324, `lab/results_regions/agentless_metric_verified_{old,new}.json`): FUNCTION +12.9pp (34.2→47.0%), LINE +9.1pp (26.3→35.4%), fraction +0.053, FILE unchanged (`lab/results_regions/agentless_metric_verified_{old,new}.json`)
-- ~~archex has never been measured by us on any of our benches~~ both Agentless-metric arms measured ([#1](https://github.com/narehart/roust/issues/1)): archex 0.19.2 BM25 default mode is FILE 56.0 / FUNCTION 38.3 / LINE 25.7 (`lab/results_regions/agentless_metric_archex_bm25.json`); vector/hybrid mode is FILE 57.3 / FUNCTION 40.7 / LINE 27.7 (`lab/results_regions/agentless_metric_archex_vector.json`), a single-digit gain over BM25 with worse latency (12.98s vs 9.68s query median) that leaves the ~35-point FILE gap to roust unchanged — steelman complete; the tokenbench agent-loop arm is not justified at current quality
-- ~~True cost-per-success~~ measured via repeat runs ([#16](https://github.com/narehart/roust/issues/16)): roust solves 14/15 deterministically at ~$1/answer with one real capability gap (django-16400, 0/10); embedding-RAG reaches everything eventually at a median $2.42 (mean $4.90) per first success — see `results_repeats.jsonl` and the aggregation convention stated in the scoreboard notes above
-- ~~Latency has no committed benchmark artifact~~ measured ([#15](https://github.com/narehart/roust/issues/15)): cold/warm index + query p50/p95 across four repo sizes (66–2,131 files indexed), `lab/latency/latency_v1.json`
-
-### How these were measured
-
-*Agent-loop outcomes* is our agent-loop harness (live Sonnet 4.5, measured to task completion; the grep and roust arms use their method as the agent's only search tool, while the embedding-RAG arm had grep alongside rag_search, and every arm has a read_file tool) — a partial run, 58 of 120 planned pairs, stopped at an $80 spend cap, so n=15 (14 for embedding-RAG). *Localization accuracy* is published Acc@k-style numbers from each system's own paper, on its own harness — a different protocol, not comparable to the agent-loop numbers. Full artifacts and the research log (including the retracted "95% fewer tokens than grep" claim, which came from a v1 one-shot protocol and does not hold in the agent loop — [#6](https://github.com/narehart/roust/issues/6)) are in `lab/README.md`.
+The summary with charts is on [Benchmarks](docs/BENCHMARKS.md). The complete
+record, with every comparison, caveat, re-measurement, and artifact path, is
+the [Evaluation record](docs/EVALUATION.md).
 
 ## Limits
 
-- **File-level, not line-level.** roust localizes to files and packs regions
-  within them; it doesn't point at a specific line or diff hunk.
-- **@1 precision is the measured weak spot.** Top-1 file accuracy on the
-  held-out SWE-bench Verified set is .354 -- if you need "the one file",
-  read further down the ranked list, don't trust rank 1 alone.
-- **Region-level gains replicate out-of-sample** (commit 2f7d324,
-  `lab/results_regions/agentless_metric_verified_{old,new}.json`). The held-out SWE-bench
-  Verified FILE numbers (79.4 File@10 / 92.1 all-gold, `lab/README.md`'s
-  held-out validation section) are unaffected by the guarded-padding +
-  length-normalization adoption above -- file-selection code is untouched by
-  padding/length-normalization, which only reshape the region spans within
-  already-selected files, and the 300/300 file-level parity gate
-  (`parity/rust_gate_300_v5.json`) confirms file ranking is unchanged. Region-
-  level metrics (FUNCTION/LINE/fraction), previously Lite-only evidence, are
-  now measured on the held-out set too: on the same 407 held-out Verified
-  instances, never used for any tuning decision, FUNCTION rose 34.2%→47.0%
-  (+12.9pp) and LINE rose 26.3%→35.4% (+9.1pp, mean-fraction-covered
-  +0.053), FILE essentially unchanged (92.14%→91.89%, one 180s engine
-  timeout counted as wrong in the new arm). The absolute numbers are lower
-  than Lite's (FUNCTION 53.3%, LINE 42.7%) because held-out Verified is a
-  harder set (lower baseline FILE accuracy, more gold hunks per instance on
-  average) -- what needed to replicate was the *delta* from the
-  padding/length-norm change, and it did: 104% of the Lite FUNCTION delta,
-  130% of the Lite LINE delta, 88% of the Lite fraction delta
-  (`lab/results_regions/agentless_metric_verified_{old,new}.json`,
-  `parity/region_eval_verified.py`).
-- **Natural-language issues with no identifiers are the hard class.** Every
-  non-semantic retrieval method (roust included) leans on identifiers, paths,
-  and error strings as anchors; a vague prose description with none of those
-  gives the pipeline little to grab onto.
-- **Python gets the full signal set** (import graph, definition-symbol
-  index). JS/TS/TSX now additionally get tree-sitter structural region
-  packing by default (E23, PR [#55](https://github.com/narehart/roust/pull/55);
-  `--no-structural-blocks` restores the old fixed windows). Other languages (Go,
-  Rust, Java, etc.) still get a best-effort subset -- lexical/BM25F, paths,
-  and history apply, but fixed-window packing and no import-graph or
-  def-index expansion. Closing this gap across languages is the
-  language-agnostic campaign, [#56](https://github.com/narehart/roust/issues/56).
+- **It returns regions, not a diff.** roust points at the files and the
+  functions worth reading. It does not tell you which line to change.
+- **Rank 1 is not "the file".** Top-1 accuracy on held-out Python is about
+  35%. Read down the list; roust is built for recall across the set.
+- **Vague prose is the hard case.** Like every non-semantic method, roust
+  leans on identifiers, paths, and error strings. A description with none of
+  those gives it little to hold on to.
+- **Import-graph expansion is uneven.** Python, JavaScript/TypeScript, Rust,
+  and Go get it by default. Java, C, and C++ import edges exist behind
+  `--import-edges-v2`, measured but not yet a default.
+- **Breadth costs precision.** About half a percent of the returned lines are
+  the actual fix. That trade is intentional and measured; see the
+  [Evaluation record](docs/EVALUATION.md#contextbench).
 
 ## Roadmap
 
-- ~~Rust port~~ **complete and shipped as the only engine**: `roust-rs/` was
-  brought to feature-parity with the (now-deleted) Python v0.2 engine
-  (channel-aware packing, on-disk cache with incremental updates,
-  deterministic seed) — bundle-level parity gate **PASSED 300/300 exact**
-  on SWE-bench Lite (report in `parity/bundle_parity_300.json`: 300 EXACT,
-  0 region-level differences; `parity/rust_gate_300_v3.json` is the
-  file-ranking-only gate) before the Python engine was removed. Measured absolute latency (cold/warm index,
-  query p50/p95) is in the Scoreboard's Latency block above
-  (`lab/latency/latency_v1.json`, [#15](https://github.com/narehart/roust/issues/15));
-  the old cold-index Rust-vs-Python ratio is no longer reproducible and is
-  kept there only as a historical note. Build from source: `cd roust-rs &&
-  cargo build --release`.
-- **Language-agnostic roust** ([#56](https://github.com/narehart/roust/issues/56),
-  user-directed campaign): universal indexing (binary sniffing + size caps
-  instead of the extension allowlist — lifts the Multi-SWE FILE ceiling from
-  ~76.7 toward ~100), the grammar batch (Java/Go/Rust/C/C++ via the E23
-  mechanism, gated per-language on Multi-SWE slices), and a
-  Python-assumption audit (tokenizer, test-path heuristics, history mining,
-  query construction) with Multi-SWE slices as first-class gates. Step one
-  (JS/TS/TSX structural packing) shipped in PR
-  [#55](https://github.com/narehart/roust/pull/55).
-- ~~First release~~ **shipped**: v0.3.0 is on npm (`roust-cli` plus five
-  platform binary packages), crates.io (`roust`), and GitHub Releases, with
-  docs at https://narehart.github.io/roust/ — see `RELEASE.md`.
+- Import-graph parity for Java, C, and C++ as a default (the flag exists; the
+  adoption gate does not yet pass everywhere).
+- More languages. Scala is the most requested; each language needs a
+  benchmark slice before its structural support ships.
 - MCP server.
-- Incremental index updates (avoid full reindex on every change).
 - Homebrew tap.
+- Cheaper index refresh on large repositories.
 
----
+## Research
 
-Research artifacts -- benchmark JSONLs, diagnostics, and pre-registered
-held-out predictions -- live in [`lab/`](https://github.com/narehart/roust/blob/main/lab/README.md). `lab/` is a frozen
-Python research sandbox (including `lab/lanes2.py`, the oracle the parity
-gates were built against) -- it is never the source of truth for shipped
-behavior, which is `roust-rs/` end to end.
+roust is also a research project. Every mechanism starts as a flag that is
+off by default, is gated on a fixed protocol (SWE-bench Lite for tuning, the
+held-out Verified set and seven language slices as the check), and either
+becomes a default or is written up as a negative result with its artifacts.
+The negative results are kept on purpose; they are the more useful half of
+the record.
 
-License: MIT.
+- [Research](docs/RESEARCH.md): the loop, what was adopted, what failed and why.
+- [Benchmarks](docs/BENCHMARKS.md): every published number and where it came from.
+- [Evaluation record](docs/EVALUATION.md): the complete technical record.
+- [`lab/README.md`](https://github.com/narehart/roust/blob/main/lab/README.md):
+  the frozen research sandbox, per-round writeups, and raw artifacts.
+- [`CHANGELOG.md`](https://github.com/narehart/roust/blob/main/CHANGELOG.md) and [`RELEASE.md`](https://github.com/narehart/roust/blob/main/RELEASE.md): what shipped when, and how.
 
-## History
+## License and history
 
-Formerly `bgrep`; renamed to avoid collision with the binary-grep tool of
-that name.
+MIT. Formerly `bgrep`; renamed to avoid collision with the binary-grep tool
+of that name.
