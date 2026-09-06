@@ -115,6 +115,7 @@ test("buildDocs builds every page, assets, and llms.txt", (t) => {
     "getting-started.html",
     "benchmarks.html",
     "research.html",
+    "evaluation.html",
     "index.html",
     "llms.txt",
   ]) {
@@ -135,7 +136,7 @@ test("buildDocs builds every page, assets, and llms.txt", (t) => {
   assert.match(page, /continue\//);
 
   // no page ships raw markdown or a broken internal link
-  for (const file of ["getting-started.html", "benchmarks.html", "research.html", "index.html"]) {
+  for (const file of ["getting-started.html", "benchmarks.html", "research.html", "evaluation.html", "index.html"]) {
     const html = readFileSync(path.join(outDir, file), "utf8");
     assert.doesNotMatch(html, /```/, `${file} leaked a markdown fence`);
     const links = [...html.matchAll(/href="([^"#]+)(?:#[^"]*)?"/g)]

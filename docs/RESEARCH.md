@@ -6,7 +6,8 @@ roust is developed as a measurement loop rather than a feature list. Every
 mechanism starts as a flag with its default off, is gated on a fixed protocol,
 and is either adopted as a default or written up as a null. The nulls are kept
 in the repository with their artifacts — they are the more useful half of the
-record.
+record. This page is the method and the ledger; the numbers themselves are on
+[Benchmarks](BENCHMARKS.md) and, in full, on the [Evaluation record](EVALUATION.md).
 
 ## The loop <!-- note: hypothesis, gate, ledger -->
 
@@ -31,7 +32,7 @@ mechanisms that looked good on the tuning set and were negative held-out —
 query-type routing and one sibling-expansion variant. Both would have shipped
 under single-set evaluation.
 
-## What was adopted <!-- note: the six changes that survived -->
+## What was adopted <!-- note: the changes that survived -->
 
 - **Region packing economy** — guarded span padding and sub-linear length
   normalization. The largest single gain: FUNCTION 41.0 → 53.3, LINE
@@ -46,6 +47,18 @@ under single-set evaluation.
   same boost channel as CPython tracebacks.
 - **Structural symbols** — the definition index and anchor seating source from
   the same tree-sitter walks, for every grammar-covered language.
+- **Extension coverage** — `.rb` and `.pony` sources indexed by default behind
+  a fixture guard, after the gate found the engine had retrieved 0 of 148 gold
+  files in those types. `.svelte` was measured in the same round and rejected.
+- **Packer budget floor 0.15** (was 0.3) — lets the lexical score steer pass-2
+  depth more steeply. FILE pinned on all 2,339 instances, zero token cost,
+  FUNCTION +17/−9 pooled across eight gates.
+- **Tiered pass-1 seats** — files ranked 16+ get a 40-token first seat instead
+  of 120 and the freed budget goes to depth. FILE pinned, FUNCTION +54/−8
+  pooled with no cell below the prior release.
+- **Two speedups with byte-identical output** — a memoized padding guard and a
+  per-file block/token cache. 8-23x faster warm queries than 0.3.2, proven
+  identical on 128/128 full-slice instances.
 
 ## What failed <!-- note: nine mechanisms and one shared cause -->
 
@@ -59,6 +72,11 @@ sibling-sweep expansion       FUNCTION 53.3 -> 27.7 (depth charged too early)
 universal indexing            FILE 46.4 -> 31.2 (boilerplate displaces code)
 newcomer reserve budget       buys template admissions at region cost
 issue-mention gating          1 of 499 gold files named in its issue
+co-change seats               seat gold precision 0.08-3.65%; a centrality proxy
+per-source seating            0 gold rescued of 143 at fixed admission count
+PPR as packing budget         falsified twice (additive and replacement forms)
+breadth cap as a default      FILE +1.7 on Lite but FUNCTION 57.7 -> 54.3 (p=.013)
+changelog/docs indexing       an artifact of the corpus; fails held-out Verified
 ```
 
 Three of these share one cause, which is the most useful thing the campaign
