@@ -1,0 +1,74 @@
+{
+  "slice": "rust",
+  "n": 2,
+  "full_gate": false,
+  "baseline_errors": [],
+  "arms": {
+    "semantic-regions": {
+      "file": {
+        "baseline_pct": 50.0,
+        "treatment_pct": 50.0,
+        "gained": 0,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_file_function_line": 1.0
+      },
+      "function": {
+        "baseline_pct": 0.0,
+        "treatment_pct": 50.0,
+        "gained": 1,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_file_function_line": 1.0
+      },
+      "line": {
+        "baseline_pct": 0.0,
+        "treatment_pct": 50.0,
+        "gained": 1,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_file_function_line": 1.0
+      },
+      "fraction": {
+        "baseline_mean": 0.5041666666666667,
+        "treatment_mean": 0.5416666666666666,
+        "mean_delta": 0.03749999999999998,
+        "paired_bootstrap_95_ci": [
+          -0.125,
+          0.19999999999999996
+        ],
+        "gained": 1,
+        "lost": 1
+      },
+      "tokens": {
+        "baseline_mean": 8467.0,
+        "treatment_mean": 8189.0,
+        "mean_delta": -278.0,
+        "paired_bootstrap_95_ci": [
+          -305.0,
+          -251.0
+        ],
+        "gained": 0,
+        "lost": 2,
+        "n_successful_pairs": 2
+      },
+      "errors": [],
+      "baseline_function_nonvacuous": {
+        "n": 2,
+        "correct": 0,
+        "zero_gold_function_n": 0,
+        "git_show_failures": 0
+      },
+      "treatment_function_nonvacuous": {
+        "n": 2,
+        "correct": 1,
+        "zero_gold_function_n": 0,
+        "git_show_failures": 0
+      }
+    }
+  },
+  "flag_off_payload_identical": 2
+}

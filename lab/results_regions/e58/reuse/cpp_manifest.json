@@ -1,0 +1,58 @@
+{
+  "slice": "cpp",
+  "n": 20,
+  "full_gate": false,
+  "shards": 1,
+  "shard": 0,
+  "input_n": 20,
+  "gold": "lab/mswe_cpp.parquet",
+  "gold_sha256": "a56a941e6d1c65902e60234f5fcc1b76ac280780d3b03160f29b12975be2dfbd",
+  "ids": [
+    "catchorg__Catch2-1422",
+    "catchorg__Catch2-1448",
+    "catchorg__Catch2-1608",
+    "catchorg__Catch2-1609",
+    "catchorg__Catch2-1614",
+    "catchorg__Catch2-1616",
+    "catchorg__Catch2-2128",
+    "catchorg__Catch2-2187",
+    "catchorg__Catch2-2288",
+    "catchorg__Catch2-2394",
+    "catchorg__Catch2-2723",
+    "catchorg__Catch2-2849",
+    "fmtlib__fmt-1171",
+    "fmtlib__fmt-1361",
+    "fmtlib__fmt-1390",
+    "fmtlib__fmt-1407",
+    "fmtlib__fmt-1663",
+    "fmtlib__fmt-1837",
+    "fmtlib__fmt-2070",
+    "fmtlib__fmt-2158"
+  ],
+  "binaries": {
+    "baseline": {
+      "path": "/private/tmp/bgrep-e55-bin/baseline",
+      "sha256": "98419c832f01d5e3455dcdd3d5adb293f975ae3b7b673c0291488d7b06301fb1",
+      "version": "roust 0.4.0 (645170a, clean)"
+    },
+    "experiment": {
+      "path": "/private/tmp/bgrep-e55-bin/baseline",
+      "sha256": "98419c832f01d5e3455dcdd3d5adb293f975ae3b7b673c0291488d7b06301fb1",
+      "version": "roust 0.4.0 (645170a, clean)"
+    }
+  },
+  "arms": {
+    "baseline": []
+  },
+  "repos": "/private/tmp/bgrep-e51-cpp-80c68_y9",
+  "discovery_endpoints": 2,
+  "isolate_block_cache": false,
+  "budget": 8192,
+  "pad_lines": 5,
+  "len_exp": 0.85,
+  "timeout": 180,
+  "elapsed_seconds": 67.77974416699726,
+  "outputs_sha256": {
+    "baseline": "d91b80c86e6a02ef6134fc582e7b429bcb981758af6996b76a5467dd2c4109bf"
+  }
+}

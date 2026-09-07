@@ -1,0 +1,28 @@
+{
+  "kind": "source workload diagnostic; no model inference",
+  "slice": "rust",
+  "n": 20,
+  "totals": {
+    "windows": {
+      "n_chunks": 20179,
+      "new_unique": 11359,
+      "new_payload_tokens": 4216039,
+      "padded_tokens_batch8": 4309222,
+      "attention_cells_batch8": 1676938314
+    },
+    "ast": {
+      "n_chunks": 56362,
+      "new_unique": 15703,
+      "new_payload_tokens": 2299330,
+      "padded_tokens_batch8": 2609180,
+      "attention_cells_batch8": 729635568
+    }
+  },
+  "ast_over_windows": {
+    "n_chunks": 2.7931017394320827,
+    "new_unique": 1.3824280306364998,
+    "new_payload_tokens": 0.5453768335634467,
+    "padded_tokens_batch8": 0.6054874870684314,
+    "attention_cells_batch8": 0.4350998256218505
+  }
+}
