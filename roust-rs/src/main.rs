@@ -382,6 +382,18 @@ struct Args {
     #[arg(long, conflicts_with_all = ["no_structural_blocks", "shape_blocks", "shape_union_blocks"])]
     hit_window_blocks: bool,
 
+    /// E54 experiment: choose feedback terms near query hits in source files.
+    #[arg(long)]
+    local_feedback: bool,
+
+    /// E53 experiment: credit pass-1 coverage only for emitted query terms.
+    #[arg(long)]
+    emitted_coverage: bool,
+
+    /// Emit packing decisions as ROUST_PACK_TRACE JSON records on stderr.
+    #[arg(long)]
+    pack_trace: bool,
+
     /// E52 experiment: charge overlapping packed spans only for newly added text.
     /// Active with span padding; unpadded output retains its original accounting.
     #[arg(long)]
@@ -524,6 +536,9 @@ struct Args {
 fn main() {
     let args = Args::parse();
     roust::core::set_unique_span_budget(args.unique_span_budget);
+    roust::core::set_emitted_coverage(args.emitted_coverage);
+    roust::core::set_pack_trace(args.pack_trace);
+    roust::core::set_local_feedback(args.local_feedback);
 
     // WS2: set BEFORE any corpus/cache work -- both the corpus walk and the
     // cache manifest scan read this process-global exactly once per file.

@@ -1,0 +1,10 @@
+{
+  "n": 4,
+  "all_identical": true,
+  "sha256": {
+    "/private/tmp/bgrep-e51-smoke/rust_baseline.metrics.json": "c91230afa1e0da647dac0f1b49c6680e4cb26abe6dcb977c67fd9c3a13d0b0de",
+    "/private/tmp/bgrep-e51-smoke/rust_shape-union.metrics.json": "29fc7438955e7d7e386c9fb0309a86616884878070d376ac49aed038e03130e1",
+    "/private/tmp/bgrep-e51-smoke/rust_wide-hit-windows.metrics.json": "be5a9ba2ac8d14a7182963c63dffd9e1c94a44752e5473c513143077670b0e0c",
+    "/private/tmp/bgrep-e51-smoke/rust_hit-windows.metrics.json": "975ad7ecc5ae44106b5408786ad189b8c7a957388bd71ac250f4e0500806855b"
+  }
+}

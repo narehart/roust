@@ -1,0 +1,5 @@
+{
+  "started_at": "2026-09-07T03:52:43.492627+00:00",
+  "workload": "All task retrieval, scoring, tests, and builds completed before this run. No other task compute jobs scheduled during it.",
+  "comparison": "ff0c995 versus fddb0a0, all retrieval experiments disabled"
+}

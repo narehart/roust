@@ -1,0 +1,22 @@
+{
+  "paused_worker_roots": [
+    86480,
+    86481,
+    86482,
+    86483
+  ],
+  "paused_processes": [
+    78845,
+    78883,
+    79096,
+    79150,
+    79153,
+    86480,
+    86481,
+    86482,
+    86483
+  ],
+  "comparison": "main ff0c995 versus all engine fixes fddb0a0; retrieval flags off",
+  "other_task_builds_and_scorers_completed": true,
+  "subsequent_overlap": "A targeted cache test ran during this window; retain as exploratory, not the final quiet timing run."
+}

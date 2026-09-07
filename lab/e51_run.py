@@ -27,6 +27,8 @@ SLICES = {
     "lite": ("swebench_lite.parquet", "swebench_repos_e20b", 300),
     "ver": ("swebench_verified_heldout.parquet", "ws3a_repos/repos_ver_v2", 407),
 }
+ISOLATE_BLOCK_CACHE = False
+DISCOVERY_ENDPOINTS = 2
 ARMS = {
     "baseline": [],
     "flag-off": [],
@@ -49,7 +51,11 @@ def main():
     ap.add_argument("--arms", nargs="+", choices=ARMS, default=list(ARMS))
     ap.add_argument("--limit", type=int, default=0, help="smoke only; not a full gate")
     ap.add_argument("--timeout", type=float, default=180)
+    ap.add_argument("--shards", type=int, default=1)
+    ap.add_argument("--shard", type=int, default=0)
     args = ap.parse_args()
+    if args.shards < 1 or not 0 <= args.shard < args.shards:
+        ap.error("invalid shard assignment")
     if len(set(args.arms)) != len(args.arms):
         ap.error("duplicate arms")
     args.out.mkdir(parents=True, exist_ok=True)
@@ -61,6 +67,9 @@ def main():
     rows = evaluator.load_verified_rows(gold, args.limit)
     if not args.limit:
         assert len(rows) == expected
+    input_n = len(rows)
+    rows = [r for i, r in enumerate(rows) if i % args.shards == args.shard]
+    assert rows, "empty shard"
     assert len({r["instance_id"] for r in rows}) == len(rows)
     binaries = {"baseline": args.baseline.resolve(), "experiment": args.experiment.resolve()}
     versions = {}
@@ -69,11 +78,12 @@ def main():
         assert "clean" in version and "dirty" not in version, version
         versions[tag] = {"path": str(binary), "sha256": sha256(binary), "version": version}
     private = Path(tempfile.mkdtemp(prefix=f"bgrep-e51-{args.slice}-", dir="/private/tmp"))
-    manifest = {"slice": args.slice, "n": len(rows), "full_gate": not args.limit,
+    manifest = {"slice": args.slice, "n": len(rows), "full_gate": not args.limit and args.shards == 1,
+                "shards": args.shards, "shard": args.shard, "input_n": input_n,
                 "gold": str(gold.relative_to(ROOT)), "gold_sha256": sha256(gold),
                 "ids": [r["instance_id"] for r in rows], "binaries": versions,
                 "arms": {arm: ARMS[arm] for arm in args.arms}, "repos": str(private),
-                "budget": 8192, "pad_lines": 5, "len_exp": 0.85, "timeout": args.timeout}
+                "discovery_endpoints": DISCOVERY_ENDPOINTS, "isolate_block_cache": ISOLATE_BLOCK_CACHE, "budget": 8192, "pad_lines": 5, "len_exp": 0.85, "timeout": args.timeout}
     manifest_path = args.out / f"{args.slice}_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     evaluator.SWEBENCH_REPOS = private
@@ -113,7 +123,17 @@ def main():
             evaluator.ROUST_BIN = binaries["baseline" if arm == "baseline" else "experiment"]
             evaluator.EXTRA_ENGINE_FLAGS = ARMS[arm]
             last_payload.clear()
+            live_cache = destination / ".roust/blocks.json"
+            saved_cache = private / ".block-caches" / rel / (arm + ".json")
+            if ISOLATE_BLOCK_CACHE:
+                assert not live_cache.exists(), "unexpected shared block cache"
+                if saved_cache.exists():
+                    live_cache.parent.mkdir(parents=True, exist_ok=True)
+                    saved_cache.rename(live_cache)
             rec = evaluator.eval_verified_instance(row, args.timeout, 5, 0.85)
+            if ISOLATE_BLOCK_CACHE and live_cache.exists():
+                saved_cache.parent.mkdir(parents=True, exist_ok=True)
+                live_cache.rename(saved_cache)
             rec.update(last_payload)
             rec["e51_arm"] = arm
             rec["e51_flags"] = ARMS[arm]

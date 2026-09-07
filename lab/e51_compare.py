@@ -23,7 +23,7 @@ def metrics(path, ids):
     return {r["instance_id"]: r for r in rows}, d
 
 
-def paired_bool(before, after, n_arms=3):
+def paired_bool(before, after, n_arms=3, discovery_endpoints=2):
     gained = sum(not b and a for b, a in zip(before, after))
     lost = sum(b and not a for b, a in zip(before, after))
     p = float(binomtest(gained, gained + lost).pvalue) if gained + lost else 1.0
@@ -31,7 +31,7 @@ def paired_bool(before, after, n_arms=3):
             "treatment_pct": 100 * sum(after) / len(after),
             "gained": gained, "lost": lost, "mcnemar_p": p,
             "p_bonferroni_candidate_arms": min(1.0, n_arms * p),
-            "p_bonferroni_discovery_function_line": min(1.0, 4 * n_arms * p)}
+            ("p_bonferroni_discovery_function_line" if discovery_endpoints == 2 else "p_bonferroni_discovery_file_function_line"): min(1.0, 2 * discovery_endpoints * n_arms * p)}
 
 
 def continuous(before, after):
@@ -77,8 +77,8 @@ def main():
                 return [not recs[i].get("error") and recs[i].get("all_gold_files_retrieved", False) for i in ids]
             return [not recs[i].get("error") and recs[i].get("hunk_line_recall") == 1 for i in ids]
         n_arms = len(set(m["arms"]) - {"baseline", "flag-off"})
-        pairs = {key: paired_bool(values(base, bf, key), values(after, af, key), n_arms) for key in ("file", "function", "line")}
-        if "--max-additions" not in m["arms"][arm]:
+        pairs = {key: paired_bool(values(base, bf, key), values(after, af, key), n_arms, m.get("discovery_endpoints", 2)) for key in ("file", "function", "line")}
+        if not {"--max-additions", "--local-feedback"}.intersection(m["arms"][arm]):
             assert pairs["file"]["gained"] == pairs["file"]["lost"] == 0, "packing changed FILE"
         pairs["fraction"] = continuous([base[i].get("hunk_line_recall") or 0 for i in ids],
                                        [after[i].get("hunk_line_recall") or 0 for i in ids])

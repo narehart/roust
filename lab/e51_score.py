@@ -6,6 +6,8 @@ tree_sitter_{javascript,typescript,java,go,rust,c,cpp} grammar packages.
 """
 import argparse
 from contextlib import redirect_stderr, redirect_stdout
+from collections import OrderedDict
+import hashlib
 from functools import lru_cache
 import importlib.metadata
 import json
@@ -29,13 +31,32 @@ def main():
     provenance = {"python": sys.version, "packages": {p: importlib.metadata.version(p) for p in packages},
                   "scorer_sha256": sha256(ROOT / "lab/agentless_metric_full.py"),
                   "scoring_helpers_sha256": sha256(ROOT / "lab/agentless_metric_verified.py"),
-                  "gold_parser_sha256": sha256(ROOT / "parity/region_eval.py")}
+                  "gold_parser_sha256": sha256(ROOT / "parity/region_eval.py"),
+                  "driver_sha256": sha256(Path(__file__)),
+                  "span_cache": "4096 entries keyed by path, SHA256(source), and grammar gates"}
     args.manifest.with_name(manifest["slice"] + "_scoring.json").write_text(json.dumps(provenance, indent=2) + "\n")
     # Pure reads of immutable commit objects and pure parses. Reusing them
     # across arms avoids repeated git processes and grammar walks; no scoring
     # decisions are changed. Bounded caches keep large headers under control.
     scorer.amv.git_show = lru_cache(maxsize=256)(scorer.amv.git_show)
-    scorer.amv.function_spans_for_path = lru_cache(maxsize=512)(scorer.amv.function_spans_for_path)
+    original_spans = scorer.amv.function_spans_for_path
+    span_cache = OrderedDict()
+
+    def cached_spans(path, source):
+        # Retain small hashes/spans rather than megabyte source strings as
+        # LRU keys. This also keeps more immutable parses across whole arms.
+        key = (path, hashlib.sha256(source.encode("utf8")).digest(),
+               scorer.amv.TS_FUNCTIONS, scorer.amv.LANG_FUNCTIONS)
+        if key in span_cache:
+            span_cache.move_to_end(key)
+            return span_cache[key]
+        value = original_spans(path, source)
+        span_cache[key] = value
+        if len(span_cache) > 4096:
+            span_cache.popitem(last=False)
+        return value
+
+    scorer.amv.function_spans_for_path = cached_spans
     for arm in manifest["arms"]:
         if arm == "flag-off":
             continue  # verified payload-identical separately

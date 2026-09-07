@@ -77,6 +77,24 @@ pub fn set_unique_span_budget(on: bool) {
     UNIQUE_SPAN_BUDGET.store(on, std::sync::atomic::Ordering::Relaxed);
 }
 
+static LOCAL_FEEDBACK: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+pub fn set_local_feedback(on: bool) {
+    LOCAL_FEEDBACK.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+static EMITTED_COVERAGE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static PACK_TRACE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_emitted_coverage(on: bool) {
+    EMITTED_COVERAGE.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn set_pack_trace(on: bool) {
+    PACK_TRACE.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+fn pack_trace(value: serde_json::Value) {
+    eprintln!("ROUST_PACK_TRACE {value}");
+}
+
 fn union_spans(mut spans: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
     spans.sort_unstable();
     let mut merged: Vec<(usize, usize)> = Vec::new();
@@ -160,13 +178,24 @@ struct BlockCache {
 struct FileSegs {
     vocab: Vec<String>,
     // "a-b" -> (cl100k token count if computed, sorted-unique token ids)
-    segs: HashMap<String, (Option<usize>, Vec<u32>)>,
+    segs: HashMap<String, SegEntry>,
     #[serde(skip)]
     vidx: HashMap<String, u32>,
 }
 
+// Counts and lexical tokens can be requested independently. In the old tuple
+// format a count-only insertion looked like a computed empty lexical vector.
+// Named fields also invalidate that ambiguous legacy on-disk representation.
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+struct SegEntry {
+    tok: Option<usize>,
+    ids: Option<Vec<u32>>,
+}
+
 #[derive(Default, serde::Serialize, serde::Deserialize)]
 struct BlockCacheFile {
+    #[serde(default)]
+    version: u32,
     blocks: HashMap<String, Vec<(usize, usize)>>,
     segs: HashMap<String, FileSegs>,
     defs: HashMap<String, Vec<(usize, String)>>,
@@ -174,6 +203,7 @@ struct BlockCacheFile {
 
 #[derive(serde::Serialize)]
 struct BlockCacheOut<'a> {
+    version: u32,
     blocks: &'a HashMap<String, Vec<(usize, usize)>>,
     segs: &'a HashMap<String, FileSegs>,
     defs: &'a HashMap<String, Vec<(usize, String)>>,
@@ -192,7 +222,8 @@ pub fn block_cache_open(repo_path: &std::path::Path) {
     let path = repo_path.join(".roust").join("blocks.json");
     let f: BlockCacheFile = std::fs::read(&path)
         .ok()
-        .and_then(|b| serde_json::from_slice(&b).ok())
+        .and_then(|b| serde_json::from_slice::<BlockCacheFile>(&b).ok())
+        .filter(|f| f.version == 2)
         .unwrap_or_default();
     *BLOCK_CACHE.lock().unwrap() =
         Some(BlockCache { path, map: f.blocks, segs: f.segs, defs: f.defs, dirty: false, hits: 0, misses: 0 });
@@ -212,14 +243,24 @@ pub fn block_cache_save() {
         if let Some(dir) = c.path.parent() {
             let _ = std::fs::create_dir_all(dir);
         }
-        let tmp = c.path.with_extension("json.tmp");
-        let out = BlockCacheOut { blocks: &c.map, segs: &c.segs, defs: &c.defs };
+        // A shared .tmp name lets concurrent writers rename each other's
+        // partially written file. Each writer owns a create-new temporary.
+        static NEXT_WRITE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+        let serial = NEXT_WRITE.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let tmp = c.path.with_extension(format!("json.{}.{serial}.tmp", std::process::id()));
+        let out = BlockCacheOut { version: 2, blocks: &c.map, segs: &c.segs, defs: &c.defs };
         if let Ok(bytes) = serde_json::to_vec(&out) {
-            if std::fs::write(&tmp, bytes).is_ok() {
-                let _ = std::fs::rename(&tmp, &c.path);
+            use std::io::Write;
+            if let Ok(mut file) = std::fs::OpenOptions::new().write(true).create_new(true).open(&tmp) {
+                let written = file.write_all(&bytes).is_ok();
+                drop(file);
+                if written && std::fs::rename(&tmp, &c.path).is_ok() {
+                    c.dirty = false;
+                } else {
+                    let _ = std::fs::remove_file(&tmp);
+                }
             }
         }
-        c.dirty = false;
     }
 }
 
@@ -258,9 +299,12 @@ fn cached_seg_tokens(rel: &str, fhash: u64, a: usize, b: usize, compute: impl Fn
         let mut guard = BLOCK_CACHE.lock().unwrap();
         if let Some(c) = guard.as_mut() {
             if let Some(fs) = c.segs.get(&fk) {
-                if let Some((_, ids)) = fs.segs.get(&sk) {
-                    c.hits += 1;
-                    return ids.iter().map(|&i| fs.vocab[i as usize].clone()).collect();
+                if let Some(ids) = fs.segs.get(&sk).and_then(|entry| entry.ids.as_ref()) {
+                    let tokens: Option<Vec<_>> = ids.iter().map(|&i| fs.vocab.get(i as usize).cloned()).collect();
+                    if let Some(tokens) = tokens {
+                        c.hits += 1;
+                        return tokens;
+                    }
                 }
             }
         } else {
@@ -290,7 +334,7 @@ fn cached_seg_tokens(rel: &str, fhash: u64, a: usize, b: usize, compute: impl Fn
                 }
             })
             .collect();
-        fs.segs.entry(sk).or_insert((None, Vec::new())).1 = ids;
+        fs.segs.entry(sk).or_default().ids = Some(ids);
         c.dirty = true;
     }
     toks
@@ -303,7 +347,7 @@ fn cached_seg_tok(rel: &str, fhash: u64, a: usize, b: usize, compute: impl FnOnc
     {
         let mut guard = BLOCK_CACHE.lock().unwrap();
         if let Some(c) = guard.as_mut() {
-            if let Some(Some(t)) = c.segs.get(&fk).and_then(|fs| fs.segs.get(&sk)).map(|e| e.0) {
+            if let Some(Some(t)) = c.segs.get(&fk).and_then(|fs| fs.segs.get(&sk)).map(|e| e.tok) {
                 c.hits += 1;
                 return t;
             }
@@ -315,7 +359,7 @@ fn cached_seg_tok(rel: &str, fhash: u64, a: usize, b: usize, compute: impl FnOnc
     let mut guard = BLOCK_CACHE.lock().unwrap();
     if let Some(c) = guard.as_mut() {
         c.misses += 1;
-        c.segs.entry(fk).or_default().segs.entry(sk).or_insert((None, Vec::new())).0 = Some(t);
+        c.segs.entry(fk).or_default().segs.entry(sk).or_default().tok = Some(t);
         c.dirty = true;
     }
     t
@@ -3806,6 +3850,21 @@ impl<'a> Default for SelectParams<'a> {
 /// deviation, a documented tie-break for an underlying Python
 /// nondeterminism) is noted at the `edges.get(s)` call below. See
 /// PARITY_NOTES.md item 7.
+// E54: retain the same feedback vocabulary/scoring machinery, but count
+// occurrences only in merged +/-3-line contexts around query hits. A path-
+// only match with no text hit falls back to the original full-file counts.
+fn local_feedback_tf(text: &str, terms: &HashSet<String>) -> Option<IndexMap<String, u32>> {
+    let hits = hit_lines(text, terms);
+    if hits.is_empty() { return None; }
+    let spans = window_blocks(text, &hits, 3);
+    let lines = py_splitlines(text);
+    let mut tokens = Vec::new();
+    for (a, b) in spans {
+        tokens.extend(tokenize(&lines[a - 1..b].join("\n")));
+    }
+    Some(counter_from_tokens(&tokens))
+}
+
 pub fn select_files(
     corpus: &Corpus,
     terms: &[String],
@@ -4041,8 +4100,10 @@ pub fn select_files(
     let qset: HashSet<String> = terms.iter().cloned().collect();
     let mut fb_terms: HashSet<String> = HashSet::new();
     let impl_sources: Vec<&String> = sources.iter().filter(|f| impl_prior(f) == 1.0).take(3).collect();
+    let local_feedback = LOCAL_FEEDBACK.load(std::sync::atomic::Ordering::Relaxed);
     for s in impl_sources {
-        let tf_map = corpus.tf.get(s);
+        let local_tf = if local_feedback { local_feedback_tf(&corpus.text[s], &qset) } else { None };
+        let tf_map = local_tf.as_ref().or_else(|| corpus.tf.get(s));
         if let Some(tf_map) = tf_map {
             let mut weighted: Vec<(String, f64)> = tf_map
                 .iter()
@@ -4412,6 +4473,22 @@ pub fn select_files(
 // `_PY_BLOCK_RE.match(ln)` per-line loop.
 static PY_BLOCK_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^([ \t]*)(async def |def |class |@)").unwrap());
 
+// For each header, the first following header at the same or shallower
+// depth ends its span. A reverse monotone stack avoids rescanning nested
+// descendants for every ancestor (quadratic on deeply nested source).
+fn header_ends(headers: &[(usize, usize)], n: usize) -> Vec<usize> {
+    let mut ends = vec![n; headers.len()];
+    let mut stack: Vec<(usize, usize)> = Vec::new();
+    for (idx, &(line, depth)) in headers.iter().enumerate().rev() {
+        while stack.last().is_some_and(|&(_, d)| d > depth) {
+            stack.pop();
+        }
+        if let Some(&(next_line, _)) = stack.last() { ends[idx] = next_line; }
+        stack.push((line, depth));
+    }
+    ends
+}
+
 /// Signature-plus-body block spans (1-indexed, inclusive), split at EVERY
 /// def/class/decorator header regardless of indentation -- not just
 /// column-0, as a prior version did. Column-0-only splitting made an entire
@@ -4448,7 +4525,8 @@ fn python_blocks(text: &str) -> Vec<(usize, usize)> {
         spans.push((1, headers[0].0)); // leading preamble (imports, module docstring)
     }
 
-    for (idx, &(i, indent)) in headers.iter().enumerate() {
+    let ends = header_ends(&headers, n);
+    for (idx, &(i, _indent)) in headers.iter().enumerate() {
         if lines[i].trim_start().starts_with('@') {
             continue; // standalone decorator: folded into the following def/class's span below
         }
@@ -4458,13 +4536,7 @@ fn python_blocks(text: &str) -> Vec<(usize, usize)> {
             start = k as usize;
             k -= 1;
         }
-        let mut end = n;
-        for &(j, ind2) in &headers[idx + 1..] {
-            if ind2 <= indent {
-                end = j;
-                break;
-            }
-        }
+        let end = ends[idx];
         spans.push((start + 1, end));
     }
     spans.into_iter().filter(|&(a, b)| b >= a).collect()
@@ -4880,14 +4952,9 @@ fn sitter_blocks(
     if headers[0].0 > 0 {
         spans.push((1, headers[0].0)); // leading preamble (imports)
     }
-    for (idx, &(i, d)) in headers.iter().enumerate() {
-        let mut end = n;
-        for &(j, d2) in &headers[idx + 1..] {
-            if d2 <= d {
-                end = j;
-                break;
-            }
-        }
+    let ends = header_ends(&headers, n);
+    for (idx, &(i, _d)) in headers.iter().enumerate() {
+        let end = ends[idx];
         spans.push((i + 1, end));
     }
     spans.into_iter().filter(|&(a, b)| b >= a).collect()
@@ -5705,6 +5772,8 @@ pub fn pack_regions(
     max_siblings: usize,
     blocks: BlockMode,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
+    let emitted_coverage = EMITTED_COVERAGE.load(std::sync::atomic::Ordering::Relaxed);
+    let trace = PACK_TRACE.load(std::sync::atomic::Ordering::Relaxed);
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
         .iter()
@@ -5752,7 +5821,7 @@ pub fn pack_regions(
         // block cache; the query-dependent window fallback never does.
         let spans = if rel.ends_with(".py") {
             cached_blocks(rel, text, "py", || python_blocks(text))
-        } else if let Some(shape) = shape_blocks_cached(text, rel).filter(|_| blocks == BlockMode::Shape) {
+        } else if let Some(shape) = (blocks == BlockMode::Shape).then(|| shape_blocks_cached(text, rel)).flatten() {
             // E25: same walker, headers chosen by shape instead of by a
             // per-language node-kind list.
             shape
@@ -5949,7 +6018,7 @@ pub fn pack_regions(
         let mut best_span = candidates[best_idx].span;
         let mut best_text = candidates[best_idx].text.clone();
         let mut best_tok = candidates[best_idx].tok;
-        let best_terms = candidates[best_idx].terms.clone();
+        let mut best_terms = candidates[best_idx].terms.clone();
         let mut per_file_cap = *caps.get(rel).unwrap_or(&floor_tok);
         if forced_idx.is_some() {
             per_file_cap = per_file_cap.max((best_tok as i64).min(anchor_cap));
@@ -5982,6 +6051,33 @@ pub fn pack_regions(
             best_span = (a, a + keep - 1);
             best_text = seg;
             best_tok = tok;
+        }
+
+        if emitted_coverage || trace {
+            // Padding reconstructs text from the selected source-line span,
+            // including any line whose characters the unpadded path trimmed.
+            // Credit that same unpadded source span, not the original block.
+            let emitted_text = if pad_lines > 0 {
+                let lines = py_splitlines(&corpus.text[rel]);
+                let start = best_span.0.saturating_sub(1).min(lines.len());
+                let end = best_span.1.min(lines.len()).max(start);
+                lines[start..end].join("\n")
+            } else {
+                best_text.clone()
+            };
+            let emitted_terms: HashSet<String> = tokenize(&emitted_text).into_iter()
+                .filter(|t| tset.contains(t)).collect();
+            if trace {
+                let mut omitted: Vec<_> = best_terms.difference(&emitted_terms).cloned().collect();
+                let mut retained: Vec<_> = emitted_terms.iter().cloned().collect();
+                omitted.sort(); retained.sort();
+                pack_trace(serde_json::json!({"stage": "pass1", "file": rel,
+                    "candidate_span": candidates[best_idx].span, "emitted_span": best_span,
+                    "candidate_tokens": candidates[best_idx].tok, "charged_tokens": best_tok,
+                    "omitted_query_terms": omitted, "retained_query_terms": retained,
+                    "emitted_coverage": emitted_coverage}));
+            }
+            if emitted_coverage { best_terms = emitted_terms; }
         }
 
         let best_name_score = candidates[best_idx].name_score;
@@ -6291,6 +6387,11 @@ pub fn pack_regions(
         } else {
             candidates[i].tok as i64
         };
+        if trace {
+            pack_trace(serde_json::json!({"stage": "pass2", "file": candidates[i].file,
+                "span": candidates[i].span, "charged_tokens": tok, "spent_before": spent,
+                "fits": spent + tok <= budget_tokens}));
+        }
         if spent + tok > budget_tokens {
             if candidates[i].tok > 200 {
                 continue;
@@ -6577,6 +6678,35 @@ pub fn pack_regions(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn local_feedback_excludes_remote_noise_and_counts_overlap_once() {
+        let text = format!("remote_noise\n{}needle local_signal\nneedle local_signal\n{}remote_noise\n",
+            "padding\n".repeat(10), "padding\n".repeat(10));
+        let terms = super::tokenize("needle").into_iter().collect();
+        let tf = super::local_feedback_tf(&text, &terms).unwrap();
+        assert!(!tf.contains_key(&super::stem("remote_noise")));
+        assert_eq!(tf.get(&super::stem("local_signal")), Some(&2));
+        let absent = super::tokenize("absentquery").into_iter().collect();
+        assert!(super::local_feedback_tf(&text, &absent).is_none());
+        let short = super::local_feedback_tf("needle", &terms).unwrap();
+        assert_eq!(short.get(&super::stem("needle")), Some(&1));
+    }
+    #[test]
+    fn header_ends_matches_reference_for_all_small_depth_sequences() {
+        for len in 0..=7u32 {
+            for mut pattern in 0..3usize.pow(len) {
+                let headers: Vec<_> = (0..len as usize).map(|i| {
+                    let depth = pattern % 3; pattern /= 3; (2 * i + 1, depth)
+                }).collect();
+                let expected: Vec<_> = headers.iter().enumerate().map(|(i, &(_, depth))|
+                    headers[i+1..].iter().find(|&&(_, d)| d <= depth).map_or(20, |&(line, _)| line)
+                ).collect();
+                assert_eq!(super::header_ends(&headers, 20), expected);
+            }
+        }
+        let nested: Vec<_> = (0..100_000).map(|i| (i, i)).collect();
+        assert!(super::header_ends(&nested, 100_000).iter().all(|&e| e == 100_000));
+    }
     use super::*;
 
     /// 20+ fixtures generated from the Python reference:
