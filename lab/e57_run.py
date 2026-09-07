@@ -78,7 +78,8 @@ def evaluate(row, *args):
     return result
 
 
-if __name__ == "__main__":
+def main():
+    global args, producer, embedding_cache
     ap = argparse.ArgumentParser(add_help=False)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--slice", required=True)
@@ -99,3 +100,7 @@ if __name__ == "__main__":
     rig.evaluator.run_roust = run
     rig.evaluator.eval_verified_instance = evaluate
     rig.main()
+
+
+if __name__ == "__main__":
+    main()

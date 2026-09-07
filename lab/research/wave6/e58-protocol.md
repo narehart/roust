@@ -22,3 +22,21 @@ content key when the function and path are unchanged.
 A later actual retrieval experiment must freeze its model backend and
 packing policy separately. Do not mix vectors from different inference
 backends or interpret reduced embedding work as proven retrieval quality.
+
+## Retrieval stage, frozen after workload mining
+
+Test the AST-unit representation with the same E57 navigation/region-packing
+policy (no added padding or new gold-informed selection). Use the original
+Qwen checkpoint in float16 through `mlx-lm`'s Qwen3 transformer layers, causal
+attention with left-padding masked, last-token pooling in float32, and batches
+of 32. Use a separate embedding cache/namespace. Package and driver versions
+are recorded. A 64-document fixture from the original smoke corpus compares
+native vectors to the saved PyTorch vectors; this is a numerical check, not
+proof of identical downstream rankings.
+
+Run a two-instance smoke, then full Rust and C++. This treatment changes both
+source-unit construction and inference backend, and does not isolate their
+individual effects on recall. Original exact scoring and token/error rules
+remain in force. E56's two treatments, E57's treatment, and this treatment are
+one four-candidate discovery family for final selection; do not report the
+per-run comparison script's smaller correction as family-wide support.
