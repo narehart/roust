@@ -1,0 +1,39 @@
+{
+  "full_gate": false,
+  "reason": "Interrupted serial run; complete unchanged experiment rerun in four shards",
+  "arms": {
+    "baseline": {
+      "n": 128,
+      "all_identical_to_aggregate": true,
+      "errors": 1
+    },
+    "flag-off": {
+      "n": 128,
+      "all_identical_to_aggregate": true,
+      "errors": 1
+    },
+    "local-feedback": {
+      "n": 128,
+      "all_identical_to_aggregate": true,
+      "errors": 1
+    }
+  },
+  "files": {
+    "jsts_local-feedback.jsonl": {
+      "raw_sha256": "c15425d0c09226902c22fc1b0086acde11895798b8f0feb8f28fb1bd30fc4830",
+      "gzip_sha256": "e8ca1993f7342bf7e4531651349712160c0b3f84e559d13cef9254f6f433edee"
+    },
+    "jsts_flag-off.jsonl": {
+      "raw_sha256": "41bbc4849ae9547e26b0f4b339e0fb595fdd92d7a109b5e9e1521c34b98edc6a",
+      "gzip_sha256": "2c6a8a8b1c5f778b5129812571c907506bac3da015d8ba4d78d05702fa54f39a"
+    },
+    "jsts_baseline.jsonl": {
+      "raw_sha256": "e55c2f39c4053a387ed8a2bceab38043448d65996f8392865150eea4fc7de4a0",
+      "gzip_sha256": "c5f762a0add1b4fba2620ef7fd657faabc66980d9b8bed1324ccd692ecdb7869"
+    },
+    "jsts_manifest.json": {
+      "raw_sha256": "04de3faafe6c75eab48c16f6a28b65e5ea2fc61f0d54f3f4835aa3faac023953",
+      "gzip_sha256": "c17cf3cc414c733b310a9cd13800052fbde8e32be8baa03309e1791e515e9048"
+    }
+  }
+}
