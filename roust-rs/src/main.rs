@@ -386,6 +386,14 @@ struct Args {
     #[arg(long)]
     local_feedback: bool,
 
+    /// Experimental: attach adjacent leading comments to their structural declaration.
+    #[arg(long, conflicts_with = "no_structural_blocks")]
+    leading_comments: bool,
+
+    /// Experimental: share identical source bodies with explicit file/range locations.
+    #[arg(long)]
+    shared_source: bool,
+
     /// E53 experiment: credit pass-1 coverage only for emitted query terms.
     #[arg(long)]
     emitted_coverage: bool,
@@ -539,6 +547,8 @@ fn main() {
     roust::core::set_emitted_coverage(args.emitted_coverage);
     roust::core::set_pack_trace(args.pack_trace);
     roust::core::set_local_feedback(args.local_feedback);
+    roust::core::set_leading_comments(args.leading_comments);
+    roust::core::set_shared_source(args.shared_source);
 
     // WS2: set BEFORE any corpus/cache work -- both the corpus walk and the
     // cache manifest scan read this process-global exactly once per file.

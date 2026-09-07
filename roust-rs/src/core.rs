@@ -73,6 +73,19 @@ pub fn pack_floor() -> f64 {
 // E52: account only newly added text when overlapping spans will be merged
 // by the padded-output path. Default OFF; selection scores stay unchanged.
 static UNIQUE_SPAN_BUDGET: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static LEADING_COMMENTS: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static SHARED_SOURCE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_shared_source(on: bool) {
+    SHARED_SOURCE.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+pub fn set_leading_comments(on: bool) {
+    LEADING_COMMENTS.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+fn leading_comments_enabled() -> bool {
+    LEADING_COMMENTS.load(std::sync::atomic::Ordering::Relaxed)
+}
 pub fn set_unique_span_budget(on: bool) {
     UNIQUE_SPAN_BUDGET.store(on, std::sync::atomic::Ordering::Relaxed);
 }
@@ -265,7 +278,8 @@ pub fn block_cache_save() {
 }
 
 fn cached_blocks(rel: &str, text: &str, tag: &str, compute: impl FnOnce() -> Vec<(usize, usize)>) -> Vec<(usize, usize)> {
-    let key = format!("{rel}|{:016x}|{tag}", fnv1a64(text));
+    let suffix = if leading_comments_enabled() && tag != "py" { ":leading-comments-v1" } else { "" };
+    let key = format!("{rel}|{:016x}|{tag}{suffix}", fnv1a64(text));
     {
         let mut guard = BLOCK_CACHE.lock().unwrap();
         if let Some(c) = guard.as_mut() {
@@ -4879,6 +4893,50 @@ fn sitter_blocks(
     language: tree_sitter::Language,
     header_start: &dyn Fn(&tree_sitter::Node) -> Option<usize>,
 ) -> Vec<(usize, usize)> {
+    sitter_blocks_with_comments(text, language, header_start, leading_comments_enabled())
+}
+
+fn leading_comment_start(
+    text: &str,
+    mut node: tree_sitter::Node,
+    mut start: usize,
+    starts: &[usize],
+    line_of_byte: &dyn Fn(usize) -> usize,
+) -> usize {
+    let header_line = line_of_byte(start);
+    // Find the declaration owning hoisted wrappers, including an `export`
+    // keyword earlier on the same line. Ancestors on earlier lines own a
+    // different declaration and must not donate their documentation.
+    while let Some(parent) = node.parent() {
+        if line_of_byte(parent.start_byte()) != header_line { break; }
+        node = parent;
+    }
+    let mut previous = node.prev_sibling();
+    // Rust attributes may be siblings already included in `header_start`.
+    while previous.is_some_and(|p| p.start_byte() >= start) {
+        previous = previous.unwrap().prev_sibling();
+    }
+    while let Some(comment) = previous {
+        if !matches!(comment.kind(), "comment" | "line_comment" | "block_comment") { break; }
+        let comment_line = line_of_byte(comment.start_byte());
+        let end_line = line_of_byte(comment.end_byte().saturating_sub(1));
+        if comment.end_byte() > start
+            || line_of_byte(start) > end_line + 1
+            || !text[comment.end_byte()..start].trim().is_empty()
+            || !text[starts[comment_line]..comment.start_byte()].trim().is_empty()
+        { break; }
+        start = comment.start_byte();
+        previous = comment.prev_sibling();
+    }
+    start
+}
+
+fn sitter_blocks_with_comments(
+    text: &str,
+    language: tree_sitter::Language,
+    header_start: &dyn Fn(&tree_sitter::Node) -> Option<usize>,
+    attach_comments: bool,
+) -> Vec<(usize, usize)> {
     let lines = py_splitlines(text);
     let n = lines.len();
     let mut parser = tree_sitter::Parser::new();
@@ -4913,6 +4971,9 @@ fn sitter_blocks(
         let node = cursor.node();
         let emitted = match header_start(&node) {
             Some(start_byte) => {
+                let start_byte = if attach_comments {
+                    leading_comment_start(text, node, start_byte, &starts, &line_of_byte)
+                } else { start_byte };
                 headers.push((line_of_byte(start_byte), depth));
                 true
             }
@@ -5444,6 +5505,122 @@ struct Candidate {
     tok_pow: f64,
 }
 
+struct SharedSourceGroup<'a> {
+    body: &'a str,
+    locations: Vec<(&'a str, (usize, usize))>,
+    tokens: usize,
+}
+
+fn subtract_spans(spans: &[(usize, usize)], cuts: &[(usize, usize)]) -> Vec<(usize, usize)> {
+    let cuts = union_spans(cuts.to_vec());
+    let mut result = Vec::new();
+    for (a, b) in union_spans(spans.to_vec()) {
+        let mut start = a;
+        for &(x, y) in &cuts {
+            if y < start { continue; }
+            if x > b { break; }
+            if x > start { result.push((start, x - 1)); }
+            start = start.max(y.saturating_add(1));
+            if start > b { break; }
+        }
+        if start <= b { result.push((start, b)); }
+    }
+    result
+}
+
+fn render_shared_source(
+    lines: &HashMap<&str, Vec<&str>>,
+    files: &[String],
+    regions: &IndexMap<String, Vec<(usize, usize)>>,
+    groups: &[&SharedSourceGroup],
+) -> String {
+    let mut cuts: HashMap<&str, Vec<(usize, usize)>> = HashMap::new();
+    for group in groups {
+        for &(path, span) in &group.locations { cuts.entry(path).or_default().push(span); }
+    }
+    let mut parts = Vec::new();
+    for path in files {
+        let Some(spans) = regions.get(path) else { continue; };
+        let residual = subtract_spans(spans, cuts.get(path.as_str()).map(Vec::as_slice).unwrap_or(&[]));
+        if residual.is_empty() { continue; }
+        let source = &lines[path.as_str()];
+        let body = residual.iter().map(|&(a, b)| source[a - 1..b].join("\n")).collect::<Vec<_>>().join("\n...\n");
+        parts.push(format!("### {path}\n{body}"));
+    }
+    for group in groups {
+        let locations = group.locations.iter().map(|(p, (a, b))| format!("{p}:{a}-{b}")).collect::<Vec<_>>().join("; ");
+        parts.push(format!("### Identical source at {locations}\n{}", group.body));
+    }
+    parts.join("\n\n")
+}
+
+fn share_source(
+    text: &HashMap<String, String>,
+    files: &[String],
+    candidates: &[Candidate],
+    mut regions: IndexMap<String, Vec<(usize, usize)>>,
+    mut bundle: String,
+    count_tokens: &dyn Fn(&str) -> usize,
+) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
+    let limit = count_tokens(&bundle);
+    let baseline: IndexMap<_, _> = regions.iter().map(|(f, s)| (f.clone(), union_spans(s.clone()))).collect();
+    // Borrow exact body strings: HashMap checks full equality after hashing.
+    let mut by_body: HashMap<&str, SharedSourceGroup> = HashMap::new();
+    for c in candidates {
+        if c.tok < 64 || c.tok > limit || !regions.contains_key(&c.file) { continue; }
+        let group = by_body.entry(&c.text).or_insert_with(|| SharedSourceGroup {
+            body: &c.text, locations: Vec::new(), tokens: c.tok,
+        });
+        group.locations.push((&c.file, c.span));
+    }
+    let mut groups: Vec<_> = by_body.into_values().filter_map(|mut g| {
+        g.locations.sort();
+        g.locations.dedup();
+        let different_files = g.locations.iter().map(|&(f, _)| f).collect::<HashSet<_>>().len() > 1;
+        let emitted_leader = g.locations.iter().any(|&(f, (a, b))| {
+            baseline[f].iter().any(|&(x, y)| x <= a && b <= y)
+        });
+        (different_files && emitted_leader).then_some(g)
+    }).collect();
+    if groups.is_empty() { return (regions, bundle); }
+    groups.sort_by(|a, b| b.tokens.cmp(&a.tokens).then(a.body.cmp(b.body)));
+    let lines: HashMap<&str, _> = files.iter().map(|f| (f.as_str(), py_splitlines(&text[f]))).collect();
+    let mut accepted = Vec::new();
+    let mut cost = limit;
+    for group in &groups {
+        let mut trial = regions.clone();
+        let mut adds_content = false;
+        for &(path, span) in &group.locations {
+            let spans = trial.get_mut(path).unwrap();
+            let before = union_spans(spans.clone());
+            adds_content |= !before.iter().any(|&(a, b)| a <= span.0 && span.1 <= b);
+            spans.push(span);
+            *spans = union_spans(std::mem::take(spans));
+        }
+        accepted.push(group);
+        let rendered = render_shared_source(&lines, files, &trial, &accepted);
+        let tokens = count_tokens(&rendered);
+        if tokens <= limit && (adds_content || tokens < cost) {
+            regions = trial;
+            bundle = rendered;
+            cost = tokens;
+        } else {
+            accepted.pop();
+        }
+    }
+    debug_assert!(cost <= limit);
+    (regions, bundle)
+}
+
+fn maybe_share_source(
+    corpus: &Corpus, files: &[String], candidates: &[Candidate],
+    regions: IndexMap<String, Vec<(usize, usize)>>, bundle: String,
+    count_tokens: &dyn Fn(&str) -> usize,
+) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
+    if !SHARED_SOURCE.load(std::sync::atomic::Ordering::Relaxed) { return (regions, bundle); }
+    share_source(&corpus.text, files, candidates, regions, bundle, count_tokens)
+}
+
 // ---------------------------------------------------------------- region-level symbol-name anchoring
 //
 // Dogfood bug (query "how is the token budget enforced when packing regions
@@ -5931,7 +6108,14 @@ pub fn pack_regions(
             }
             for sym in syms {
                 if let Some(&ln) = def_lines.get(sym) {
-                    if let Some(&idx) = cand_by_start.get(&ln) {
+                    let idx = cand_by_start.get(&ln).copied().or_else(|| {
+                        if !leading_comments_enabled() || rel.ends_with(".py") { return None; }
+                        candidates.iter().enumerate()
+                            .filter(|(_, c)| &c.file == rel && c.span.0 <= ln && ln <= c.span.1)
+                            .min_by_key(|(_, c)| c.span.1 - c.span.0)
+                            .map(|(i, _)| i)
+                    });
+                    if let Some(idx) = idx {
                         forced.insert(rel.clone(), idx);
                         break;
                     }
@@ -6430,7 +6614,7 @@ pub fn pack_regions(
             let body = segs.iter().map(|c| c.text.as_str()).collect::<Vec<_>>().join("\n...\n");
             parts.push(format!("### {rel}\n{body}"));
         }
-        return (spans_out, parts.join("\n\n"));
+        return maybe_share_source(corpus, files, &candidates, spans_out, parts.join("\n\n"), count_tokens);
     }
 
     // ---------------------------------------------------------------- E12: span padding
@@ -6673,11 +6857,80 @@ pub fn pack_regions(
         let body = specs.iter().map(|p| p.text.as_str()).collect::<Vec<_>>().join("\n...\n");
         parts.push(format!("### {rel}\n{body}"));
     }
-    (spans_out, parts.join("\n\n"))
+    maybe_share_source(corpus, files, &candidates, spans_out, parts.join("\n\n"), count_tokens)
 }
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn shared_source_preserves_locations_and_expands_only_exact_copies() {
+        use super::*;
+        let body = (0..40).map(|n| format!("  process_value_{n}();")).collect::<Vec<_>>().join("\n");
+        let files = vec!["a.cpp".to_string(), "b.hpp".to_string()];
+        let text: HashMap<_, _> = files.iter().map(|f| (f.clone(), body.clone())).collect();
+        let candidates: Vec<_> = files.iter().map(|f| Candidate {
+            file: f.clone(), span: (1, 40), tok: body.len(), terms: HashSet::new(),
+            gain: 1.0, text: body.clone(), name_score: 0.0, tok_pow: 1.0,
+        }).collect();
+        let regions: IndexMap<_, _> = [(files[0].clone(), vec![(1, 40)]), (files[1].clone(), vec![(1, 20)])].into();
+        let lines = files.iter().map(|f| (f.as_str(), py_splitlines(&text[f]))).collect();
+        let original = render_shared_source(&lines, &files, &regions, &[]);
+        let (expanded, bundle) = share_source(&text, &files, &candidates, regions.clone(), original.clone(), &str::len);
+        assert_eq!(expanded["a.cpp"], vec![(1, 40)]);
+        assert_eq!(expanded["b.hpp"], vec![(1, 40)]);
+        assert!(bundle.contains("a.cpp:1-40; b.hpp:1-40"));
+        assert_eq!(bundle.matches("process_value_0()").count(), 1);
+        assert!(bundle.len() <= original.len());
+
+        // Location metadata must fit too: reject even an otherwise useful group
+        // when the complete rendering exceeds the original cost.
+        let expensive_locations = |s: &str| s.len() + if s.contains("Identical source") { 100_000 } else { 0 };
+        assert_eq!(share_source(&text, &files, &candidates, regions.clone(), original.clone(), &expensive_locations), (regions.clone(), original.clone()));
+
+        let partial: IndexMap<_, _> = files.iter().map(|f| (f.clone(), vec![(1, 20)])).collect();
+        let partial_bundle = render_shared_source(&lines, &files, &partial, &[]);
+        assert_eq!(share_source(&text, &files, &candidates, partial.clone(), partial_bundle.clone(), &str::len), (partial, partial_bundle));
+        let mut different = candidates;
+        different[1].text.push(' ');
+        assert_eq!(share_source(&text, &files, &different, regions.clone(), original.clone(), &str::len), (regions, original));
+    }
+
+    #[test]
+    fn shared_source_subtraction_retains_every_unaliased_line() {
+        assert_eq!(super::subtract_spans(&[(1, 20), (25, 30)], &[(3, 5), (4, 8), (15, 26)]), vec![(1, 2), (9, 14), (27, 30)]);
+        assert_eq!(super::subtract_spans(&[(1, 20)], &[]), vec![(1, 20)]);
+    }
+
+    #[test]
+    fn leading_comments_move_to_their_rust_declaration_and_attributes() {
+        let source = "fn one() {}\n/// quasar\n/// decoding\n#[inline]\nfn two() {}\n";
+        let old = super::sitter_blocks_with_comments(source, tree_sitter_rust::LANGUAGE.into(), &super::rust_header_start, false);
+        let attached = super::sitter_blocks_with_comments(source, tree_sitter_rust::LANGUAGE.into(), &super::rust_header_start, true);
+        assert_eq!(old, vec![(1, 3), (4, 5)]); // docs currently belong to one
+        assert_eq!(attached, vec![(1, 1), (2, 5)]);
+        for source in ["fn one() {} // trailing\nfn two() {}\n", "fn one() {}\n/// separated\n\nfn two() {}\n"] {
+            assert_eq!(
+                super::sitter_blocks_with_comments(source, tree_sitter_rust::LANGUAGE.into(), &super::rust_header_start, false),
+                super::sitter_blocks_with_comments(source, tree_sitter_rust::LANGUAGE.into(), &super::rust_header_start, true));
+        }
+    }
+
+    #[test]
+    fn leading_comments_cover_go_java_cpp_and_export_wrappers() {
+        let go = super::sitter_blocks_with_comments("package p\n// Decode quasar\nfunc run() {}\n",
+            tree_sitter_go::LANGUAGE.into(), &super::go_header_start, true);
+        assert_eq!(go, vec![(1, 1), (2, 3)]);
+        let java = super::sitter_blocks_with_comments("class Demo {\n/** Decode quasar */\n@Deprecated\nvoid run() {}\n}\n",
+            tree_sitter_java::LANGUAGE.into(), &super::java_header_start, true);
+        assert!(java.contains(&(2, 5)), "{java:?}");
+        let cpp = super::sitter_blocks_with_comments("/** Decode quasar */\ntemplate<class T>\nT run(T x) { return x; }\n",
+            tree_sitter_cpp::LANGUAGE.into(), &super::cpp_header_start, true);
+        assert_eq!(cpp, vec![(1, 3)]);
+        let js = super::sitter_blocks_with_comments("/** Decode quasar */\nexport function run() {}\n",
+            tree_sitter_javascript::LANGUAGE.into(), &super::ts_header_start, true);
+        assert_eq!(js, vec![(1, 2)]);
+    }
+
     #[test]
     fn local_feedback_excludes_remote_noise_and_counts_overlap_once() {
         let text = format!("remote_noise\n{}needle local_signal\nneedle local_signal\n{}remote_noise\n",

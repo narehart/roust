@@ -1,0 +1,114 @@
+{
+  "convention": "errors-count-as-wrong-at-all-levels/v1: FILE, FUNCTION, and LINE share the same denominator (n = all loaded records); engine errors and git_show failures count as WRONG and are reported separately (*_counted_wrong / n_engine_errors keys).",
+  "source": {
+    "predictions": [
+      "lab/results_regions/e56/smoke/rust_baseline.jsonl"
+    ],
+    "gold": "lab/ws3a_rust.parquet",
+    "n_instances": 2,
+    "n_region_eval_errors": 0,
+    "engine_shas_seen": [
+      "645170a"
+    ],
+    "engine_dirty_seen": [
+      false
+    ],
+    "bm25_only": false,
+    "pipeline": "shipped roust-rs engine, --budget 8192, confidence-scheduled packing (parity/region_eval_full.py Part A, no-LLM), FULL SWE-bench test split (paper eval wave)"
+  },
+  "all_instances": {
+    "n": 2,
+    "file": {
+      "pct_correct": 50.0,
+      "n": 2,
+      "n_correct": 1,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 0.0,
+      "n": 2,
+      "n_judged": 2,
+      "n_correct": 0,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "BurntSushi__ripgrep-1294",
+          "n_gold_functions": 4,
+          "n_predicted_functions": 52,
+          "correct": false
+        },
+        {
+          "instance_id": "BurntSushi__ripgrep-1367",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 72,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 0.0,
+      "n": 2,
+      "n_correct_all_or_nothing": 0,
+      "mean_fraction_covered": 0.5041666666666667,
+      "median_fraction_covered": 0.5041666666666667,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.010172097553258284,
+      "median_precision": 0.010172097553258284,
+      "n": 2,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1007.0,
+      "median_total_region_lines_per_instance": 1007.0
+    }
+  },
+  "file_correct_subset": {
+    "n": 1,
+    "file": {
+      "pct_correct": 100.0,
+      "n": 1,
+      "n_correct": 1,
+      "n_engine_errors": 0
+    },
+    "function": {
+      "pct_correct": 0.0,
+      "n": 1,
+      "n_judged": 1,
+      "n_correct": 0,
+      "n_engine_errors_counted_wrong": 0,
+      "n_git_show_failures_counted_wrong": 0,
+      "detail": [
+        {
+          "instance_id": "BurntSushi__ripgrep-1367",
+          "n_gold_functions": 2,
+          "n_predicted_functions": 72,
+          "correct": false
+        }
+      ]
+    },
+    "line": {
+      "pct_correct_all_or_nothing": 0.0,
+      "n": 1,
+      "n_correct_all_or_nothing": 0,
+      "mean_fraction_covered": 0.8,
+      "median_fraction_covered": 0.8,
+      "n_engine_errors": 0
+    },
+    "region_precision": {
+      "mean_precision": 0.015108593012275733,
+      "median_precision": 0.015108593012275733,
+      "n": 1,
+      "n_excluded": 0,
+      "mean_total_region_lines_per_instance": 1059.0,
+      "median_total_region_lines_per_instance": 1059.0
+    },
+    "note": "restricted to instances where FILE-level was already correct -- isolates region/line/function quality from file recall"
+  },
+  "agentless_gpt4o_published": {
+    "file": 69.7,
+    "function": 52.0,
+    "line": 35.3
+  },
+  "agentless_note": "AGENTLESS_GPT4O numbers are Agentless's published SWE-bench LITE localization rates (arXiv:2407.01489 Table 1) -- context only; no published Agentless full-split localization numbers exist to compare against directly."
+}

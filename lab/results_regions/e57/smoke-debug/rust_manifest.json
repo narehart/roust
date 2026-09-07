@@ -1,0 +1,39 @@
+{
+  "slice": "rust",
+  "n": 1,
+  "full_gate": false,
+  "shards": 1,
+  "shard": 0,
+  "input_n": 1,
+  "gold": "lab/ws3a_rust.parquet",
+  "gold_sha256": "e29fed67b8f0fdffb909f14722c332435e792412e43b24f7c9c8872056845ca0",
+  "ids": [
+    "BurntSushi__ripgrep-1294"
+  ],
+  "binaries": {
+    "baseline": {
+      "path": "/private/tmp/bgrep-e55-bin/baseline",
+      "sha256": "98419c832f01d5e3455dcdd3d5adb293f975ae3b7b673c0291488d7b06301fb1",
+      "version": "roust 0.4.0 (645170a, clean)"
+    },
+    "experiment": {
+      "path": "/private/tmp/bgrep-e55-bin/baseline",
+      "sha256": "98419c832f01d5e3455dcdd3d5adb293f975ae3b7b673c0291488d7b06301fb1",
+      "version": "roust 0.4.0 (645170a, clean)"
+    }
+  },
+  "arms": {
+    "baseline": [],
+    "flag-off": [],
+    "semantic-regions": [
+      "--semantic-regions"
+    ]
+  },
+  "repos": "/private/tmp/bgrep-e51-rust-7cnt00x8",
+  "discovery_endpoints": 3,
+  "isolate_block_cache": true,
+  "budget": 8192,
+  "pad_lines": 5,
+  "len_exp": 0.85,
+  "timeout": 180
+}

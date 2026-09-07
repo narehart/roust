@@ -1,0 +1,8 @@
+{
+  "complete": false,
+  "exit_code": 139,
+  "source_commit": "e5e0354",
+  "cause": "native crash while using tree-sitter Point.row attributes",
+  "faulthandler_pack_line": 123,
+  "scored": false
+}

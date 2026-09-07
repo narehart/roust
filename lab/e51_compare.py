@@ -78,7 +78,7 @@ def main():
             return [not recs[i].get("error") and recs[i].get("hunk_line_recall") == 1 for i in ids]
         n_arms = len(set(m["arms"]) - {"baseline", "flag-off"})
         pairs = {key: paired_bool(values(base, bf, key), values(after, af, key), n_arms, m.get("discovery_endpoints", 2)) for key in ("file", "function", "line")}
-        if not {"--max-additions", "--local-feedback"}.intersection(m["arms"][arm]):
+        if not {"--max-additions", "--local-feedback", "dense10", "hybrid26", "--semantic-regions"}.intersection(m["arms"][arm]):
             assert pairs["file"]["gained"] == pairs["file"]["lost"] == 0, "packing changed FILE"
         pairs["fraction"] = continuous([base[i].get("hunk_line_recall") or 0 for i in ids],
                                        [after[i].get("hunk_line_recall") or 0 for i in ids])

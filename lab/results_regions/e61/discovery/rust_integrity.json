@@ -1,0 +1,17 @@
+{
+  "slice": "rust",
+  "n": 239,
+  "manifest_sha256": "9eba307498dd7f0ba362092e1ba785473d84b346fa37fff7e0ba07597aec1c87",
+  "flag_off_identical": true,
+  "all_original_regions_contained": true,
+  "all_original_files_retained": true,
+  "no_instance_token_increase": true,
+  "total_tokens_saved": 362,
+  "changed_instances": [
+    "BurntSushi__ripgrep-954",
+    "tokio-rs__tokio-6409",
+    "tokio-rs__tracing-1619"
+  ],
+  "expanded_instances": [],
+  "limitation": "region/cost audit; alias source identity is separately tested in the engine"
+}

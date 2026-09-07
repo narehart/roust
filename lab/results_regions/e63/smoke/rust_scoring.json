@@ -1,0 +1,21 @@
+{
+  "python": "3.13.5 (main, Jun 12 2025, 12:22:43) [Clang 20.1.4 ]",
+  "packages": {
+    "pandas": "3.0.5",
+    "pyarrow": "25.0.1",
+    "scipy": "1.18.1",
+    "tree_sitter": "0.26.0",
+    "tree_sitter_javascript": "0.25.0",
+    "tree_sitter_typescript": "0.23.2",
+    "tree_sitter_java": "0.23.5",
+    "tree_sitter_go": "0.25.0",
+    "tree_sitter_rust": "0.24.2",
+    "tree_sitter_c": "0.24.2",
+    "tree_sitter_cpp": "0.23.4"
+  },
+  "scorer_sha256": "d177e50edcb0bb32d04d2402d3c087f73fdc53143e196c257ed5bd2a9a5df463",
+  "scoring_helpers_sha256": "e17253f1cd1cd409b4a32d745e4999d02d3573b1e778ca62268e31bcb1a27360",
+  "gold_parser_sha256": "c0bc25e41e7d0f33f5fb58b00bb45b99a0e97397b5c1cfb453ca76fe6efafb56",
+  "driver_sha256": "84169d8162b0c444fd2d5fa6b746ab9d4fcaca05757ac2c5a3d4d0a64147dd3f",
+  "span_cache": "4096 entries keyed by path, SHA256(source), and grammar gates"
+}

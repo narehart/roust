@@ -1,0 +1,424 @@
+{
+  "kind": "oracle diagnostic, not deployable retrieval",
+  "n": 239,
+  "slice": "rust",
+  "control_payloads_identical": 239,
+  "arms": {
+    "baseline": {
+      "file": {
+        "pct_correct": 60.25,
+        "n": 239,
+        "n_correct": 144,
+        "n_engine_errors": 0
+      },
+      "function": {
+        "pct_correct": 20.92,
+        "n": 239,
+        "n_judged": 239,
+        "n_correct": 50,
+        "n_engine_errors_counted_wrong": 0,
+        "n_git_show_failures_counted_wrong": 0
+      },
+      "line_pct": 7.531380753138075,
+      "fraction_errors_zero": 0.24864460841783134,
+      "mean_tokens_successes": 8464.050209205021,
+      "errors": []
+    },
+    "oracle-files": {
+      "file": {
+        "pct_correct": 72.38,
+        "n": 239,
+        "n_correct": 173,
+        "n_engine_errors": 0
+      },
+      "function": {
+        "pct_correct": 52.72,
+        "n": 239,
+        "n_judged": 239,
+        "n_correct": 126,
+        "n_engine_errors_counted_wrong": 0,
+        "n_git_show_failures_counted_wrong": 0
+      },
+      "line_pct": 31.380753138075313,
+      "fraction_errors_zero": 0.5809495582620635,
+      "mean_tokens_successes": 7133.251046025104,
+      "errors": []
+    }
+  },
+  "absent_gold": {
+    "instances": 66,
+    "by_instance": {
+      "BurntSushi__ripgrep-1294": [
+        "complete/_rg"
+      ],
+      "BurntSushi__ripgrep-2488": [
+        "CHANGELOG.md"
+      ],
+      "BurntSushi__ripgrep-2576": [
+        "CHANGELOG.md"
+      ],
+      "BurntSushi__ripgrep-2610": [
+        ".github/workflows/ci.yml",
+        ".gitignore",
+        "Cargo.lock",
+        "complete/_rg",
+        "crates/cli/Cargo.toml",
+        "crates/printer/Cargo.toml"
+      ],
+      "BurntSushi__ripgrep-2626": [
+        ".cargo/config.toml",
+        ".github/workflows/ci.yml",
+        ".github/workflows/release.yml",
+        "CHANGELOG.md",
+        "Cargo.lock",
+        "Cargo.toml",
+        "RELEASE-CHECKLIST.md",
+        "ci/build-deb",
+        "ci/cargo-out-dir",
+        "complete/_rg"
+      ],
+      "BurntSushi__ripgrep-723": [
+        "complete/_rg",
+        "doc/rg.1",
+        "doc/rg.1.md"
+      ],
+      "clap-rs__clap-2543": [
+        "clap.schema.json"
+      ],
+      "clap-rs__clap-2642": [
+        "README.md",
+        "clap_derive/README.md",
+        "site/content/_index.md"
+      ],
+      "clap-rs__clap-2677": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-2867": [
+        "README.md",
+        "clap_derive/README.md",
+        "site/content/_index.md"
+      ],
+      "clap-rs__clap-3179": [
+        "examples/demo.md",
+        "examples/derive_ref/custom_bool.md",
+        "examples/escaped_positional.md",
+        "examples/escaped_positional_derive.md",
+        "examples/git.md",
+        "examples/git_derive.md",
+        "examples/tutorial_builder/README.md",
+        "examples/tutorial_derive/README.md"
+      ],
+      "clap-rs__clap-3212": [
+        "examples/tutorial_builder/README.md",
+        "examples/tutorial_derive/README.md"
+      ],
+      "clap-rs__clap-3402": [
+        "examples/keyvalue-derive.md",
+        "examples/tutorial_builder/README.md",
+        "examples/tutorial_derive/README.md"
+      ],
+      "clap-rs__clap-3455": [
+        "examples/tutorial_builder/README.md"
+      ],
+      "clap-rs__clap-3684": [
+        "Cargo.toml",
+        "Makefile",
+        "README.md"
+      ],
+      "clap-rs__clap-3732": [
+        ".clippy.toml",
+        ".github/workflows/ci.yml",
+        ".github/workflows/rust-next.yml",
+        "Cargo.toml",
+        "Makefile",
+        "README.md"
+      ],
+      "clap-rs__clap-3968": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-3972": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-3975": [
+        "CHANGELOG.md",
+        "examples/cargo-example-derive.md",
+        "examples/cargo-example.md",
+        "examples/demo.md",
+        "examples/derive_ref/custom-bool.md",
+        "examples/escaped-positional-derive.md",
+        "examples/escaped-positional.md",
+        "examples/git-derive.md",
+        "examples/git.md",
+        "examples/multicall-busybox.md",
+        "examples/pacman.md",
+        "examples/tutorial_builder/01_quick.md",
+        "examples/tutorial_builder/02_apps.md",
+        "examples/tutorial_builder/02_crate.md",
+        "examples/tutorial_builder/03_01_flag_bool.md",
+        "examples/tutorial_builder/03_01_flag_count.md",
+        "examples/tutorial_builder/03_02_option.md",
+        "examples/tutorial_builder/04_03_relations.md",
+        "examples/tutorial_builder/04_04_custom.md",
+        "examples/tutorial_derive/01_quick.md",
+        "examples/tutorial_derive/02_apps.md",
+        "examples/tutorial_derive/02_crate.md",
+        "examples/tutorial_derive/03_01_flag_bool.md",
+        "examples/tutorial_derive/03_01_flag_count.md",
+        "examples/tutorial_derive/03_02_option.md",
+        "examples/tutorial_derive/04_03_relations.md",
+        "examples/tutorial_derive/04_04_custom.md",
+        "examples/typed-derive.md"
+      ],
+      "clap-rs__clap-3989": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-3990": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-4032": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-4056": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-4072": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-4080": [
+        "Cargo.toml"
+      ],
+      "clap-rs__clap-4081": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-4103": [
+        "Cargo.lock",
+        "Cargo.toml",
+        "Makefile"
+      ],
+      "clap-rs__clap-4151": [
+        "CHANGELOG.md",
+        "examples/pacman.md",
+        "examples/tutorial_builder/04_03_relations.md",
+        "examples/tutorial_derive/04_03_relations.md"
+      ],
+      "clap-rs__clap-4159": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-4248": [
+        "CHANGELOG.md"
+      ],
+      "clap-rs__clap-4408": [
+        "examples/tutorial_builder/04_01_enum.md",
+        "examples/tutorial_derive/04_01_enum.md"
+      ],
+      "clap-rs__clap-4601": [
+        "examples/cargo-example-derive.md",
+        "examples/cargo-example.md",
+        "examples/demo.md",
+        "examples/escaped-positional-derive.md",
+        "examples/escaped-positional.md",
+        "examples/find.md",
+        "examples/git-derive.md",
+        "examples/git.md",
+        "examples/multicall-busybox.md",
+        "examples/pacman.md",
+        "examples/tutorial_builder/01_quick.md",
+        "examples/tutorial_builder/02_app_settings.md",
+        "examples/tutorial_builder/02_apps.md",
+        "examples/tutorial_builder/02_crate.md",
+        "examples/tutorial_builder/03_01_flag_bool.md",
+        "examples/tutorial_builder/03_01_flag_count.md",
+        "examples/tutorial_builder/03_02_option.md",
+        "examples/tutorial_builder/03_02_option_mult.md",
+        "examples/tutorial_builder/03_03_positional.md",
+        "examples/tutorial_builder/03_03_positional_mult.md",
+        "examples/tutorial_builder/03_04_subcommands.md",
+        "examples/tutorial_builder/03_05_default_values.md",
+        "examples/tutorial_builder/04_01_enum.md",
+        "examples/tutorial_builder/04_01_possible.md",
+        "examples/tutorial_builder/04_02_parse.md",
+        "examples/tutorial_builder/04_02_validate.md",
+        "examples/tutorial_builder/04_03_relations.md",
+        "examples/tutorial_builder/04_04_custom.md",
+        "examples/tutorial_derive/01_quick.md",
+        "examples/tutorial_derive/02_app_settings.md",
+        "examples/tutorial_derive/02_apps.md",
+        "examples/tutorial_derive/02_crate.md",
+        "examples/tutorial_derive/03_01_flag_bool.md",
+        "examples/tutorial_derive/03_01_flag_count.md",
+        "examples/tutorial_derive/03_02_option.md",
+        "examples/tutorial_derive/03_02_option_mult.md",
+        "examples/tutorial_derive/03_03_positional.md",
+        "examples/tutorial_derive/03_03_positional_mult.md",
+        "examples/tutorial_derive/03_04_subcommands.md",
+        "examples/tutorial_derive/03_05_default_values.md",
+        "examples/tutorial_derive/04_01_enum.md",
+        "examples/tutorial_derive/04_02_parse.md",
+        "examples/tutorial_derive/04_02_validate.md",
+        "examples/tutorial_derive/04_03_relations.md",
+        "examples/tutorial_derive/04_04_custom.md",
+        "examples/typed-derive.md"
+      ],
+      "clap-rs__clap-4635": [
+        "Cargo.toml",
+        "Makefile"
+      ],
+      "clap-rs__clap-5206": [
+        "examples/git-derive.md",
+        "examples/git.md"
+      ],
+      "clap-rs__clap-5227": [
+        "examples/git-derive.md",
+        "examples/git.md"
+      ],
+      "nushell__nushell-11948": [
+        "Cargo.lock",
+        "crates/nu-json/Cargo.toml"
+      ],
+      "nushell__nushell-12118": [
+        "Cargo.lock",
+        "Cargo.toml"
+      ],
+      "sharkdp__bat-1197": [
+        "Cargo.lock",
+        "Cargo.toml"
+      ],
+      "sharkdp__bat-1276": [
+        "CHANGELOG.md",
+        "assets/manual/bat.1.in"
+      ],
+      "sharkdp__bat-1402": [
+        "CHANGELOG.md",
+        "Cargo.lock",
+        "Cargo.toml"
+      ],
+      "sharkdp__bat-1518": [
+        "Cargo.lock",
+        "Cargo.toml"
+      ],
+      "sharkdp__bat-2544": [
+        "CHANGELOG.md"
+      ],
+      "sharkdp__bat-2665": [
+        "CHANGELOG.md",
+        "doc/long-help.txt",
+        "doc/short-help.txt"
+      ],
+      "sharkdp__bat-2896": [
+        ".gitignore",
+        "CHANGELOG.md",
+        "Cargo.lock",
+        "Cargo.toml",
+        "README.md",
+        "assets/completions/_bat.ps1.in",
+        "assets/completions/bat.bash.in",
+        "assets/completions/bat.fish.in",
+        "assets/completions/bat.zsh.in",
+        "assets/manual/bat.1.in",
+        "doc/long-help.txt",
+        "doc/short-help.txt"
+      ],
+      "sharkdp__bat-3108": [
+        "CHANGELOG.md"
+      ],
+      "sharkdp__bat-3189": [
+        "CHANGELOG.md"
+      ],
+      "sharkdp__fd-1079": [
+        "CHANGELOG.md"
+      ],
+      "sharkdp__fd-1121": [
+        "CHANGELOG.md"
+      ],
+      "sharkdp__fd-555": [
+        "CHANGELOG.md",
+        "doc/fd.1"
+      ],
+      "sharkdp__fd-569": [
+        "CHANGELOG.md",
+        "doc/fd.1"
+      ],
+      "sharkdp__fd-590": [
+        "CHANGELOG.md"
+      ],
+      "sharkdp__fd-658": [
+        "CHANGELOG.md",
+        "contrib/completion/_fd",
+        "doc/fd.1"
+      ],
+      "sharkdp__fd-813": [
+        "CHANGELOG.md",
+        "doc/fd.1"
+      ],
+      "sharkdp__fd-866": [
+        "CHANGELOG.md",
+        "contrib/completion/_fd",
+        "doc/fd.1"
+      ],
+      "sharkdp__fd-986": [
+        "CHANGELOG.md",
+        "doc/fd.1"
+      ],
+      "tokio-rs__bytes-721": [
+        "CHANGELOG.md",
+        "Cargo.toml"
+      ],
+      "tokio-rs__tokio-5520": [
+        "tokio/Cargo.toml"
+      ],
+      "tokio-rs__tokio-5566": [
+        "tokio/Cargo.toml"
+      ],
+      "tokio-rs__tokio-7124": [
+        ".cirrus.yml",
+        ".github/workflows/ci.yml",
+        "Cargo.toml",
+        "benches/Cargo.toml",
+        "examples/Cargo.toml",
+        "tokio-macros/Cargo.toml",
+        "tokio-stream/Cargo.toml",
+        "tokio-util/Cargo.toml",
+        "tokio/Cargo.toml"
+      ],
+      "tokio-rs__tracing-1015": [
+        "README.md",
+        "examples/README.md",
+        "tracing-core/README.md"
+      ],
+      "tokio-rs__tracing-1017": [
+        "tracing-core/Cargo.toml",
+        "tracing-core/src/lazy_static/LICENSE",
+        "tracing/Cargo.toml"
+      ],
+      "tokio-rs__tracing-1228": [
+        "tracing-attributes/Cargo.toml"
+      ],
+      "tokio-rs__tracing-1291": [
+        "tracing-attributes/Cargo.toml"
+      ],
+      "tokio-rs__tracing-1523": [
+        "tracing-subscriber/CHANGELOG.md"
+      ],
+      "tokio-rs__tracing-1853": [
+        ".github/workflows/check_msrv.yml",
+        "examples/Cargo.toml",
+        "tracing-opentelemetry/Cargo.toml",
+        "tracing-opentelemetry/README.md"
+      ],
+      "tokio-rs__tracing-1983": [
+        "tracing-subscriber/Cargo.toml"
+      ]
+    },
+    "suffix_occurrences": {
+      "": 15,
+      ".md": 145,
+      ".yml": 8,
+      ".lock": 9,
+      ".toml": 33,
+      ".1": 7,
+      ".json": 1,
+      ".in": 6,
+      ".txt": 4
+    }
+  }
+}

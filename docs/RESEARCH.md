@@ -134,3 +134,22 @@ Python Verified run was used to rescue these failures. Full results, timing
 conditions, trace autopsies, and reproduction instructions are in
 `lab/research/wave6/e53-engine-audit.md`, `e54-local-feedback.md`, and
 `lab/results_regions/e53/README.md`.
+
+E55 supplies gold file names as an explicit diagnostic intervention. Even
+with that help, exact FUNCTION/LINE recall remains below the Python reference.
+The current corpus excludes at least one gold path in 66/239 Rust and 38/129
+C++ tasks, imposing raw FILE ceilings of 72.38% and 70.54% for that corpus.
+These findings motivate separate work on file relevance, ancillary text
+coverage, and within-file packing; oracle gains are not retrieval gains.
+See `lab/research/wave6/e55-oracle-diagnosis.md` and the frozen artifacts in
+`lab/results_regions/e55/`.
+
+E56–E58 investigate pinned local semantic retrieval and AST-unit caching.
+E59 diagnoses exact duplicate function bodies; E61 tests shared source with
+explicit locations and a per-instance non-increasing token cost. E60 fixes
+leading-comment ownership experimentally, but full Rust/C++ results have
+opposing FUNCTION/LINE effects and fail the non-regression gate. These modes
+remain experimental. Protocols and artifacts distinguish completed smoke,
+workload diagnostics, and full discovery measurements. Final selection uses
+the complete seven-candidate family correction in `lab/e61_family.py`, followed
+by the established replication and held-out gates for any qualifying change.

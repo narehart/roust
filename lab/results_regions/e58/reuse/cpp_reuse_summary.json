@@ -1,0 +1,28 @@
+{
+  "kind": "source workload diagnostic; no model inference",
+  "slice": "cpp",
+  "n": 20,
+  "totals": {
+    "windows": {
+      "n_chunks": 35831,
+      "new_unique": 16380,
+      "new_payload_tokens": 5997541,
+      "padded_tokens_batch8": 6217242,
+      "attention_cells_batch8": 2429186302
+    },
+    "ast": {
+      "n_chunks": 115273,
+      "new_unique": 28618,
+      "new_payload_tokens": 3754464,
+      "padded_tokens_batch8": 4490066,
+      "attention_cells_batch8": 1309847384
+    }
+  },
+  "ast_over_windows": {
+    "n_chunks": 3.217130417794647,
+    "new_unique": 1.7471306471306471,
+    "new_payload_tokens": 0.6260005558944908,
+    "padded_tokens_batch8": 0.7221957903520564,
+    "attention_cells_batch8": 0.539212403314466
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "packages": {
+    "mlx": "0.32.2",
+    "mlx-lm": "0.31.3",
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2"
+  },
+  "source_sha256": {
+    "e58_run.py": "83d5b8b1eb957f99bf0df1bfd110c2c665467ba23371b16582ff4c0e13f6990f",
+    "e58_native.py": "e3597e24be1d025bd160e9c2a7c67860e594182037a5fd6523a4d24839f70979",
+    "e58_units.py": "2b13c787978457147d7ebc9bffed5aa5997e6e7e7194d75f3ed0f147163c69a4"
+  }
+}
