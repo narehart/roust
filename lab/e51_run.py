@@ -51,7 +51,11 @@ def main():
     ap.add_argument("--arms", nargs="+", choices=ARMS, default=list(ARMS))
     ap.add_argument("--limit", type=int, default=0, help="smoke only; not a full gate")
     ap.add_argument("--timeout", type=float, default=180)
+    ap.add_argument("--shards", type=int, default=1)
+    ap.add_argument("--shard", type=int, default=0)
     args = ap.parse_args()
+    if args.shards < 1 or not 0 <= args.shard < args.shards:
+        ap.error("invalid shard assignment")
     if len(set(args.arms)) != len(args.arms):
         ap.error("duplicate arms")
     args.out.mkdir(parents=True, exist_ok=True)
@@ -63,6 +67,9 @@ def main():
     rows = evaluator.load_verified_rows(gold, args.limit)
     if not args.limit:
         assert len(rows) == expected
+    input_n = len(rows)
+    rows = [r for i, r in enumerate(rows) if i % args.shards == args.shard]
+    assert rows, "empty shard"
     assert len({r["instance_id"] for r in rows}) == len(rows)
     binaries = {"baseline": args.baseline.resolve(), "experiment": args.experiment.resolve()}
     versions = {}
@@ -71,7 +78,8 @@ def main():
         assert "clean" in version and "dirty" not in version, version
         versions[tag] = {"path": str(binary), "sha256": sha256(binary), "version": version}
     private = Path(tempfile.mkdtemp(prefix=f"bgrep-e51-{args.slice}-", dir="/private/tmp"))
-    manifest = {"slice": args.slice, "n": len(rows), "full_gate": not args.limit,
+    manifest = {"slice": args.slice, "n": len(rows), "full_gate": not args.limit and args.shards == 1,
+                "shards": args.shards, "shard": args.shard, "input_n": input_n,
                 "gold": str(gold.relative_to(ROOT)), "gold_sha256": sha256(gold),
                 "ids": [r["instance_id"] for r in rows], "binaries": versions,
                 "arms": {arm: ARMS[arm] for arm in args.arms}, "repos": str(private),

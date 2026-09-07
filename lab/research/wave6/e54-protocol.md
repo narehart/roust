@@ -35,3 +35,15 @@ metric remains nonnegative there (and costs <=2%) does it reach the existing
 corrected statistical support, relevant tests, and passing CI. Otherwise
 record the failure/tradeoff and retain the flag solely for reproducibility.
 No local diagnostic or discovery slice is claimed to be an untouched holdout.
+
+## Execution amendment: deterministic sharding
+
+The serial JS/TS run was interrupted for throughput, without changing the
+hypothesis or inspecting scores to tune parameters. Retain that partial run
+locally. Rerun the exact full slice in four index-modulo shards, each with its
+own private clones and per-arm caches. Merge only completed shards with
+identical flags, binaries, gold hash, and complete nonoverlapping ID sets;
+restore original dataset order. Score via read-only base-commit Git objects.
+Verify completed serial-prefix payloads against the aggregate as an additional
+execution-identity check. Timing from concurrent evaluation is not a performance
+benchmark. The decision criteria above are unchanged.
