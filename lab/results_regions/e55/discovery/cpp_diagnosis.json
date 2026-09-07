@@ -1,0 +1,279 @@
+{
+  "kind": "oracle diagnostic, not deployable retrieval",
+  "n": 129,
+  "slice": "cpp",
+  "control_payloads_identical": 129,
+  "arms": {
+    "baseline": {
+      "file": {
+        "pct_correct": 65.89,
+        "n": 129,
+        "n_correct": 85,
+        "n_engine_errors": 0
+      },
+      "function": {
+        "pct_correct": 20.93,
+        "n": 129,
+        "n_judged": 129,
+        "n_correct": 27,
+        "n_engine_errors_counted_wrong": 0,
+        "n_git_show_failures_counted_wrong": 0
+      },
+      "line_pct": 8.527131782945736,
+      "fraction_errors_zero": 0.3109765399342499,
+      "mean_tokens_successes": 8514.953488372093,
+      "errors": []
+    },
+    "oracle-files": {
+      "file": {
+        "pct_correct": 70.54,
+        "n": 129,
+        "n_correct": 91,
+        "n_engine_errors": 0
+      },
+      "function": {
+        "pct_correct": 44.96,
+        "n": 129,
+        "n_judged": 129,
+        "n_correct": 58,
+        "n_engine_errors_counted_wrong": 0,
+        "n_git_show_failures_counted_wrong": 0
+      },
+      "line_pct": 30.232558139534884,
+      "fraction_errors_zero": 0.5177083160978017,
+      "mean_tokens_successes": 7359.899224806201,
+      "errors": []
+    }
+  },
+  "absent_gold": {
+    "instances": 38,
+    "by_instance": {
+      "catchorg__Catch2-1422": [
+        "projects/SelfTest/Baselines/compact.sw.approved.txt",
+        "projects/SelfTest/Baselines/console.std.approved.txt",
+        "projects/SelfTest/Baselines/console.sw.approved.txt",
+        "projects/SelfTest/Baselines/junit.sw.approved.txt",
+        "projects/SelfTest/Baselines/xml.sw.approved.txt"
+      ],
+      "catchorg__Catch2-1448": [
+        "docs/logging.md",
+        "projects/SelfTest/Baselines/compact.sw.approved.txt",
+        "projects/SelfTest/Baselines/console.std.approved.txt",
+        "projects/SelfTest/Baselines/console.sw.approved.txt",
+        "projects/SelfTest/Baselines/junit.sw.approved.txt",
+        "projects/SelfTest/Baselines/xml.sw.approved.txt"
+      ],
+      "catchorg__Catch2-1608": [
+        "projects/SelfTest/Baselines/compact.sw.approved.txt",
+        "projects/SelfTest/Baselines/console.std.approved.txt",
+        "projects/SelfTest/Baselines/console.sw.approved.txt",
+        "projects/SelfTest/Baselines/junit.sw.approved.txt",
+        "projects/SelfTest/Baselines/xml.sw.approved.txt"
+      ],
+      "catchorg__Catch2-1609": [
+        "projects/SelfTest/Baselines/compact.sw.approved.txt",
+        "projects/SelfTest/Baselines/console.std.approved.txt",
+        "projects/SelfTest/Baselines/console.sw.approved.txt",
+        "projects/SelfTest/Baselines/junit.sw.approved.txt",
+        "projects/SelfTest/Baselines/xml.sw.approved.txt"
+      ],
+      "catchorg__Catch2-1614": [
+        "docs/tostring.md",
+        "projects/SelfTest/Baselines/compact.sw.approved.txt",
+        "projects/SelfTest/Baselines/console.std.approved.txt",
+        "projects/SelfTest/Baselines/console.sw.approved.txt",
+        "projects/SelfTest/Baselines/junit.sw.approved.txt",
+        "projects/SelfTest/Baselines/xml.sw.approved.txt"
+      ],
+      "catchorg__Catch2-1616": [
+        "docs/command-line.md",
+        "docs/configuration.md",
+        "projects/CMakeLists.txt",
+        "projects/ExtraTests/CMakeLists.txt",
+        "projects/SelfTest/Baselines/compact.sw.approved.txt",
+        "projects/SelfTest/Baselines/console.std.approved.txt",
+        "projects/SelfTest/Baselines/console.sw.approved.txt",
+        "projects/SelfTest/Baselines/junit.sw.approved.txt",
+        "projects/SelfTest/Baselines/xml.sw.approved.txt"
+      ],
+      "catchorg__Catch2-2187": [
+        "docs/deprecations.md",
+        "docs/other-macros.md"
+      ],
+      "catchorg__Catch2-2394": [
+        "src/CMakeLists.txt"
+      ],
+      "nlohmann__json-1323": [
+        "README.md"
+      ],
+      "nlohmann__json-2212": [
+        "README.md"
+      ],
+      "nlohmann__json-2225": [
+        "README.md"
+      ],
+      "nlohmann__json-2258": [
+        "README.md"
+      ],
+      "nlohmann__json-2297": [
+        "doc/mkdocs/docs/features/binary_formats/ubjson.md",
+        "doc/mkdocs/docs/home/exceptions.md"
+      ],
+      "nlohmann__json-2352": [
+        "Makefile"
+      ],
+      "nlohmann__json-3415": [
+        "doc/mkdocs/docs/api/json_pointer/back.md",
+        "doc/mkdocs/docs/api/json_pointer/index.md",
+        "doc/mkdocs/docs/api/json_pointer/json_pointer.md",
+        "doc/mkdocs/docs/api/json_pointer/operator_slash.md",
+        "doc/mkdocs/docs/api/json_pointer/operator_slasheq.md",
+        "doc/mkdocs/docs/api/json_pointer/operator_string.md",
+        "doc/mkdocs/docs/api/json_pointer/push_back.md",
+        "doc/mkdocs/docs/api/json_pointer/to_string.md",
+        "doc/mkdocs/mkdocs.yml"
+      ],
+      "nlohmann__json-3446": [
+        ".github/workflows/ubuntu.yml",
+        "CMakeLists.txt",
+        "cmake/ci.cmake",
+        "docs/mkdocs/docs/api/basic_json/index.md",
+        "docs/mkdocs/docs/api/basic_json/operator_eq.md",
+        "docs/mkdocs/docs/api/basic_json/operator_ge.md",
+        "docs/mkdocs/docs/api/basic_json/operator_gt.md",
+        "docs/mkdocs/docs/api/basic_json/operator_le.md",
+        "docs/mkdocs/docs/api/basic_json/operator_lt.md",
+        "docs/mkdocs/docs/api/basic_json/operator_ne.md",
+        "docs/mkdocs/docs/api/basic_json/value_t.md",
+        "docs/mkdocs/docs/api/macros/index.md",
+        "docs/mkdocs/mkdocs.yml"
+      ],
+      "nlohmann__json-3590": [
+        "Makefile",
+        "docs/mkdocs/docs/api/macros/index.md",
+        "docs/mkdocs/docs/api/macros/json_diagnostics.md",
+        "docs/mkdocs/docs/features/arbitrary_types.md",
+        "docs/mkdocs/mkdocs.yml",
+        "tools/gdb_pretty_printer/README.md"
+      ],
+      "nlohmann__json-3601": [
+        "docs/mkdocs/docs/api/basic_json/accept.md",
+        "docs/mkdocs/docs/api/basic_json/index.md",
+        "docs/mkdocs/docs/api/basic_json/operator_gtgt.md",
+        "docs/mkdocs/docs/api/basic_json/operator_ltlt.md",
+        "docs/mkdocs/docs/api/basic_json/parse.md",
+        "docs/mkdocs/docs/api/json_pointer/index.md",
+        "docs/mkdocs/docs/api/json_pointer/operator_string.md",
+        "docs/mkdocs/docs/features/parsing/json_lines.md",
+        "docs/mkdocs/mkdocs.yml",
+        "docs/mkdocs/requirements.txt"
+      ],
+      "nlohmann__json-3605": [
+        "CMakeLists.txt",
+        "README.md",
+        "cmake/ci.cmake",
+        "docs/Makefile",
+        "docs/docset/docSet.sql",
+        "docs/mkdocs/docs/api/basic_json/index.md",
+        "docs/mkdocs/docs/api/basic_json/operator_literal_json.md",
+        "docs/mkdocs/docs/api/basic_json/operator_literal_json_pointer.md",
+        "docs/mkdocs/docs/api/json_pointer/index.md",
+        "docs/mkdocs/docs/api/macros/index.md",
+        "docs/mkdocs/docs/integration/cmake.md",
+        "docs/mkdocs/mkdocs.yml"
+      ],
+      "nlohmann__json-3663": [
+        "docs/mkdocs/docs/api/basic_json/value.md"
+      ],
+      "nlohmann__json-3664": [
+        "docs/mkdocs/docs/api/json_pointer/index.md",
+        "docs/mkdocs/mkdocs.yml"
+      ],
+      "nlohmann__json-4512": [
+        ".github/workflows/macos.yml",
+        "README.md"
+      ],
+      "nlohmann__json-4525": [
+        "docs/mkdocs/docs/api/basic_json/get_ptr.md",
+        "docs/mkdocs/docs/api/basic_json/get_ref.md"
+      ],
+      "nlohmann__json-508": [
+        "src/json.hpp.re2c"
+      ],
+      "nlohmann__json-545": [
+        "src/json.hpp.re2c"
+      ],
+      "nlohmann__json-944": [
+        "CMakeLists.txt",
+        "Makefile",
+        "third_party/amalgamate/config.json"
+      ],
+      "simdjson__simdjson-1667": [
+        "doc/basics.md"
+      ],
+      "simdjson__simdjson-1695": [
+        "doc/basics.md"
+      ],
+      "simdjson__simdjson-1712": [
+        "doc/basics.md"
+      ],
+      "simdjson__simdjson-2016": [
+        "doc/iterate_many.md"
+      ],
+      "simdjson__simdjson-2026": [
+        "doc/dom.md"
+      ],
+      "simdjson__simdjson-485": [
+        ".gitignore",
+        "Makefile",
+        "amalgamation.sh",
+        "fuzz/ossfuzz.sh",
+        "include/CMakeLists.txt",
+        "src/CMakeLists.txt"
+      ],
+      "simdjson__simdjson-524": [
+        ".drone.yml",
+        "Makefile",
+        "amalgamation.sh",
+        "doc/JsonStream.md",
+        "include/CMakeLists.txt",
+        "src/CMakeLists.txt"
+      ],
+      "simdjson__simdjson-543": [
+        ".gitignore",
+        "Makefile",
+        "README.md",
+        "amalgamation.sh",
+        "doc/JsonStream.md",
+        "include/CMakeLists.txt",
+        "src/CMakeLists.txt"
+      ],
+      "simdjson__simdjson-545": [
+        "README.md"
+      ],
+      "simdjson__simdjson-559": [
+        ".drone.yml",
+        "CMakeLists.txt",
+        "tools/cmake/FindOptions.cmake"
+      ],
+      "simdjson__simdjson-644": [
+        "doc/basics.md"
+      ],
+      "simdjson__simdjson-954": [
+        "doc/basics.md",
+        "singleheader/amalgamate.sh"
+      ]
+    },
+    "suffix_occurrences": {
+      ".txt": 44,
+      ".md": 64,
+      "": 9,
+      ".yml": 10,
+      ".cmake": 3,
+      ".sql": 1,
+      ".re2c": 2,
+      ".json": 1,
+      ".sh": 5
+    }
+  }
+}
