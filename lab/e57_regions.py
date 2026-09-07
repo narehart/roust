@@ -5,7 +5,6 @@ from functools import lru_cache
 import importlib
 from pathlib import Path
 
-import numpy as np
 import tiktoken
 from tree_sitter import Language, Parser
 
@@ -45,15 +44,18 @@ def definitions(path, source):
         stack.extend(node.named_children)
         if node.type not in kinds:
             continue
-        start = node.start_point.row + 1
+        # Point.row attribute access corrupts memory in the installed Python
+        # 3.13/tree-sitter 0.26.0 combination. Tuple access survives the same
+        # corpus repro and matches the established scorer's access pattern.
+        start = node.start_point[0] + 1
         if node.parent is not None and node.parent.type in {"template_declaration", "export_statement"}:
-            start = node.parent.start_point.row + 1
+            start = node.parent.start_point[0] + 1
         if path.endswith(".rs"):
             prev = node.prev_sibling
             while prev is not None and prev.type == "attribute_item":
-                start = prev.start_point.row + 1
+                start = prev.start_point[0] + 1
                 prev = prev.prev_sibling
-        result.append((start, node.end_point.row + 1))
+        result.append((start, node.end_point[0] + 1))
     return result
 
 

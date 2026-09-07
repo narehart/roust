@@ -5,6 +5,14 @@ from e57_regions import definitions, pack, render
 
 
 class RegionIntegrity(unittest.TestCase):
+    def test_many_large_line_numbers_and_reused_parser(self):
+        source = "\n" * 300 + "\n".join(f"fn f{i}() {{\n work();\n}}" for i in range(200))
+        for _ in range(4):
+            spans = definitions("x.rs", source)
+            self.assertEqual(len(spans), 200)
+            self.assertEqual(min(a for a, _ in spans), 301)
+            self.assertEqual(max(b for _, b in spans), 900)
+
     def test_rust_attributes_and_cpp_templates_are_included(self):
         self.assertEqual(definitions("x.rs", "#[inline]\nfn foo() {\n  work();\n}\n"), [(1, 4)])
         self.assertEqual(definitions("x.cpp", "template<class T>\nT foo(T x) {\n return x;\n}\n"), [(1, 4)])
