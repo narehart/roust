@@ -1,14 +1,20 @@
 {
   "name": "roust-repo",
   "private": true,
-  "description": "Repo tooling for roust (docs site build). The published npm package lives in npm/roust.",
+  "description": "Repo tooling for roust (docs and shared agent configuration). The published npm package lives in npm/roust-cli.",
   "type": "module",
   "scripts": {
     "docs:build": "node scripts/build-docs.mjs",
     "docs:preview": "python3 -m http.server 8931 -d _site",
-    "docs:test": "node --test scripts/build-docs.test.mjs"
+    "docs:test": "node --test scripts/build-docs.test.mjs",
+    "agents:sync": "rulesync generate",
+    "agents:preview": "rulesync generate --dry-run",
+    "agents:check": "rulesync generate --check",
+    "agents:watch": "rulesync generate --watch",
+    "agents:import:claude": "rulesync import --targets claudecode --features rules,skills,subagents,hooks,commands,mcp"
   },
   "devDependencies": {
-    "marked": "^18.0.5"
+    "marked": "^18.0.5",
+    "rulesync": "16.24.1"
   }
 }
