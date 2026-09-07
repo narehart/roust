@@ -1,0 +1,46 @@
+{
+  "slice": "rust",
+  "n": 2,
+  "full_gate": false,
+  "shards": 1,
+  "shard": 0,
+  "input_n": 2,
+  "gold": "lab/ws3a_rust.parquet",
+  "gold_sha256": "e29fed67b8f0fdffb909f14722c332435e792412e43b24f7c9c8872056845ca0",
+  "ids": [
+    "BurntSushi__ripgrep-1294",
+    "BurntSushi__ripgrep-1367"
+  ],
+  "binaries": {
+    "baseline": {
+      "path": "/private/tmp/bgrep-e55-bin/baseline",
+      "sha256": "98419c832f01d5e3455dcdd3d5adb293f975ae3b7b673c0291488d7b06301fb1",
+      "version": "roust 0.4.0 (645170a, clean)"
+    },
+    "experiment": {
+      "path": "/private/tmp/bgrep-e60-bin/leading-comments",
+      "sha256": "99aaf7c7b4d17f3345d143d7485c991d555bc635cdcefaac4070964f930bf5af",
+      "version": "roust 0.4.0 (09697e9, clean)"
+    }
+  },
+  "arms": {
+    "baseline": [],
+    "flag-off": [],
+    "leading-comments": [
+      "--leading-comments"
+    ]
+  },
+  "repos": "/private/tmp/bgrep-e51-rust-994udh0a",
+  "discovery_endpoints": 2,
+  "isolate_block_cache": true,
+  "budget": 8192,
+  "pad_lines": 5,
+  "len_exp": 0.85,
+  "timeout": 180,
+  "elapsed_seconds": 3.680667500011623,
+  "outputs_sha256": {
+    "baseline": "95eb526e027e9dc813d082114cf45f46bd0a3c24e823dc4dafafb676b2b964de",
+    "flag-off": "6e1b2e06d74182ade48aa429f422f2da7103c3599307ec332758e8cbb0170ec8",
+    "leading-comments": "c9e217a67ddb835ef5cca0cd5688df7a0a128a176b38fc7d66429eb31b2e31d0"
+  }
+}

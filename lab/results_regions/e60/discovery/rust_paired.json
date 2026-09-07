@@ -1,0 +1,74 @@
+{
+  "slice": "rust",
+  "n": 239,
+  "full_gate": true,
+  "baseline_errors": [],
+  "arms": {
+    "leading-comments": {
+      "file": {
+        "baseline_pct": 60.2510460251046,
+        "treatment_pct": 60.2510460251046,
+        "gained": 0,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_function_line": 1.0
+      },
+      "function": {
+        "baseline_pct": 20.92050209205021,
+        "treatment_pct": 21.757322175732217,
+        "gained": 6,
+        "lost": 4,
+        "mcnemar_p": 0.75390625,
+        "p_bonferroni_candidate_arms": 0.75390625,
+        "p_bonferroni_discovery_function_line": 1.0
+      },
+      "line": {
+        "baseline_pct": 7.531380753138075,
+        "treatment_pct": 7.112970711297071,
+        "gained": 1,
+        "lost": 2,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_function_line": 1.0
+      },
+      "fraction": {
+        "baseline_mean": 0.24864460841783137,
+        "treatment_mean": 0.23685360934880312,
+        "mean_delta": -0.011790999069028266,
+        "paired_bootstrap_95_ci": [
+          -0.030511183186449433,
+          0.006800488733046025
+        ],
+        "gained": 42,
+        "lost": 57
+      },
+      "tokens": {
+        "baseline_mean": 8464.050209205021,
+        "treatment_mean": 8454.849372384937,
+        "mean_delta": -9.200836820083682,
+        "paired_bootstrap_95_ci": [
+          -15.221861924686191,
+          -4.794979079497908
+        ],
+        "gained": 78,
+        "lost": 158,
+        "n_successful_pairs": 239
+      },
+      "errors": [],
+      "baseline_function_nonvacuous": {
+        "n": 228,
+        "correct": 39,
+        "zero_gold_function_n": 11,
+        "git_show_failures": 0
+      },
+      "treatment_function_nonvacuous": {
+        "n": 228,
+        "correct": 41,
+        "zero_gold_function_n": 11,
+        "git_show_failures": 0
+      }
+    }
+  },
+  "flag_off_payload_identical": 239
+}
