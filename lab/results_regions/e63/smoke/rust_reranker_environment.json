@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3-Reranker-0.6B",
+  "revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+  "source_producer": "lab/results_regions/e58/smoke/rust_ast-semantic.jsonl",
+  "source_environment_sha256": "b8e00224f1445d7d5f8770997201b58f9a101c899446df508c79803f3230efb4",
+  "source_sha256": {
+    "e63_run.py": "bbe3ae15ad2eb91b9c20762f42c351382ba882fb78d4ccdb0988f24f698477f5",
+    "e63_rerank.py": "aeefaaf87fe5b381ce99c6cea7880da6827a0953166d659e6e66493ece091173",
+    "e58_native.py": "e3597e24be1d025bd160e9c2a7c67860e594182037a5fd6523a4d24839f70979",
+    "e58_units.py": "2b13c787978457147d7ebc9bffed5aa5997e6e7e7194d75f3ed0f147163c69a4"
+  },
+  "packages": {
+    "mlx": "0.32.2",
+    "mlx-lm": "0.31.3",
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2"
+  }
+}
