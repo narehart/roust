@@ -1,0 +1,67 @@
+{
+  "columns": [
+    "instance_id",
+    "repo",
+    "base_commit",
+    "patch",
+    "problem_statement"
+  ],
+  "datasets": {
+    "rust": {
+      "original_path": "ws3a_rust.parquet",
+      "original_sha256": "e29fed67b8f0fdffb909f14722c332435e792412e43b24f7c9c8872056845ca0",
+      "snapshot": "rust.jsonl.gz",
+      "snapshot_sha256": "b3b77c68e79244204e59ecfee78d69a96fc7b52c2691ec7eede63df07475bf47",
+      "rows_sha256": "eb3c2b9efe3f9fa978a18a5fb9d301f83fa4cb5949a910cbda417fbf75bf6522",
+      "n": 239
+    },
+    "cpp": {
+      "original_path": "mswe_cpp.parquet",
+      "original_sha256": "a56a941e6d1c65902e60234f5fcc1b76ac280780d3b03160f29b12975be2dfbd",
+      "snapshot": "cpp.jsonl.gz",
+      "snapshot_sha256": "6820709fa449e79f4ebd97ee6bd590a41d7d7585ae19d4a8fc1407a7106f9533",
+      "rows_sha256": "c84864ab48590916ed9b652de4bb19aaf6ce38864f36750583a5c291b954d5f6",
+      "n": 129
+    },
+    "java": {
+      "original_path": "ws3b_java.parquet",
+      "original_sha256": "f6003e18437711d13066ffaffee72f173b1eb5fb52da96bb4be7d556898a4f89",
+      "snapshot": "java.jsonl.gz",
+      "snapshot_sha256": "b60d38055c814e707e58e449a405477d8e372c7d46370918181822b99b558a7d",
+      "rows_sha256": "9ade5a7996a4eccb39a19dda7a01348d720defe3a34dc848efe5e6639a133e05",
+      "n": 128
+    },
+    "go": {
+      "original_path": "mswe_go.parquet",
+      "original_sha256": "6fde00972eb6a6dc73ab2214171192d3d2a8727f9fa8754c1a2042dd4b864dd9",
+      "snapshot": "go.jsonl.gz",
+      "snapshot_sha256": "1b7b143d2fef80e287945cc6fda1f11e6420c4b049e1ee9a4b312ac0f962c1dd",
+      "rows_sha256": "e33db88f21b7804d43282532bfe882bd8c0627429e4e65c3e7558944fc2f9971",
+      "n": 428
+    },
+    "jsts": {
+      "original_path": "mswe_jsts.parquet",
+      "original_sha256": "3ecba7de60b63c3743ec057b8d594fa8b4b22a5dbc19d61acf004d8c44e608c6",
+      "snapshot": "jsts.jsonl.gz",
+      "snapshot_sha256": "8f609b63b2a6e38453087cae8e732316dbbd8fe6c25fa168bdf662399481e858",
+      "rows_sha256": "29467b871f3505f1e874083814975b3084166a26cc371bc12ef5888e6679dab4",
+      "n": 580
+    },
+    "c": {
+      "original_path": "mswe_c.parquet",
+      "original_sha256": "2923ae3dd45cbe9f05249fcf69fcaffd46166187c798652b1345922120127ac2",
+      "snapshot": "c.jsonl.gz",
+      "snapshot_sha256": "83b2376f569dc8e8a9cc00c2833e88972a14b60691e46709eae3be4a18fa0c05",
+      "rows_sha256": "d11554c4101bb34aab1377ee45043a5219b31942721e4e154fb1da91474b6f6b",
+      "n": 128
+    },
+    "lite": {
+      "original_path": "swebench_lite.parquet",
+      "original_sha256": "7a21f37b8bc179c7db5beeb14e88ac538ba283455c776e6b2535bbfb6e3551b4",
+      "snapshot": "lite.jsonl.gz",
+      "snapshot_sha256": "04f1d3d30e99152e127b79f6fece2fe02e02e5f1a13d8d1533f668e6d6a87fdb",
+      "rows_sha256": "620ddf84800ff23deb90f6ed9e97c0b9023afc18e86d44499a7471f01725a381",
+      "n": 300
+    }
+  }
+}

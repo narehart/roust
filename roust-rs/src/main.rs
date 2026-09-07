@@ -382,6 +382,11 @@ struct Args {
     #[arg(long, conflicts_with_all = ["no_structural_blocks", "shape_blocks", "shape_union_blocks"])]
     hit_window_blocks: bool,
 
+    /// E52 experiment: charge overlapping packed spans only for newly added text.
+    /// Active with span padding; unpadded output retains its original accounting.
+    #[arg(long)]
+    unique_span_budget: bool,
+
     /// E26 (per-language parity campaign, ADOPTED default ON): index `.rb`
     /// and `.pony` sources, which the original allowlist never covered.
     /// Accepted-but-redundant; `--no-ext-v2` reverts to the pre-adoption
@@ -518,6 +523,7 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
+    roust::core::set_unique_span_budget(args.unique_span_budget);
 
     // WS2: set BEFORE any corpus/cache work -- both the corpus walk and the
     // cache manifest scan read this process-global exactly once per file.
