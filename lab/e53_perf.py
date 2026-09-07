@@ -27,6 +27,9 @@ def main():
     provenance = {k: dict(path=str(v), sha256=sha256(v), version=subprocess.check_output([str(v), '--version'], text=True).strip()) for k,v in binaries.items()}
     assert all('clean' in p['version'] and 'dirty' not in p['version'] for p in provenance.values())
     root = Path(tempfile.mkdtemp(prefix='bgrep-e53-perf-', dir='/private/tmp'))
+    slices = ["rust", "cpp", "jsts", "c", "java", "go", "lite"]
+    input_hashes = {sl: sha256(ROOT / "lab" / SLICES[sl][0]) for sl in slices}
+    driver_hash = sha256(Path(__file__))
     rows = []
     for sl in ['rust', 'cpp', 'jsts', 'c', 'java', 'go', 'lite']:
         pq, repos, _ = SLICES[sl]
@@ -70,8 +73,10 @@ def main():
             ratios.append(med['fixed']/med['baseline'])
         summary[state]=dict(n=len(ratios), median_per_case_fixed_over_baseline=statistics.median(ratios), per_case_ratios=ratios)
     assert all(sha256(binaries[a]) == provenance[a]['sha256'] for a in binaries)
+    assert all(sha256(ROOT / 'lab' / SLICES[sl][0]) == h for sl, h in input_hashes.items())
+    assert sha256(Path(__file__)) == driver_hash
     args.out.parent.mkdir(parents=True,exist_ok=True)
-    args.out.write_text(json.dumps(dict(binaries=provenance,summary=summary, cases=rows),indent=2)+'\n')
+    args.out.write_text(json.dumps(dict(binaries=provenance,inputs_sha256=input_hashes,driver_sha256=driver_hash,summary=summary, cases=rows),indent=2)+'\n')
     print(summary)
 
 
