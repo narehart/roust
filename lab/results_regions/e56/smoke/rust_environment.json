@@ -1,0 +1,13 @@
+{
+  "model": "Qwen/Qwen3-Embedding-0.6B",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "packages": {
+    "torch": "2.14.0",
+    "transformers": "4.57.6",
+    "numpy": "2.5.3",
+    "tokenizers": "0.22.2",
+    "huggingface_hub": "0.36.2"
+  },
+  "driver_sha256": "7928e63454d3a57bf2e8bc343ccf7f453258053bbfdb0b016918c161acbc16f8",
+  "retriever_sha256": "0ccff4c6970b9233620f06171ec0f6e9cecd4c680e53d240106e0afeed07f292"
+}
