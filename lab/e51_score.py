@@ -5,13 +5,15 @@ Run in an environment with pandas, pyarrow, scipy, tree_sitter, and the
 tree_sitter_{javascript,typescript,java,go,rust,c,cpp} grammar packages.
 """
 import argparse
+from contextlib import redirect_stderr, redirect_stdout
+from functools import lru_cache
 import importlib.metadata
 import json
 from pathlib import Path
-import subprocess
 import sys
 
 from e51_run import ROOT, sha256
+import agentless_metric_full as scorer
 
 
 def main():
@@ -28,6 +30,11 @@ def main():
                   "scoring_helpers_sha256": sha256(ROOT / "lab/agentless_metric_verified.py"),
                   "gold_parser_sha256": sha256(ROOT / "parity/region_eval.py")}
     args.manifest.with_name(manifest["slice"] + "_scoring.json").write_text(json.dumps(provenance, indent=2) + "\n")
+    # Pure reads of immutable commit objects and pure parses. Reusing them
+    # across arms avoids repeated git processes and grammar walks; no scoring
+    # decisions are changed. Bounded caches keep large headers under control.
+    scorer.amv.git_show = lru_cache(maxsize=256)(scorer.amv.git_show)
+    scorer.amv.function_spans_for_path = lru_cache(maxsize=512)(scorer.amv.function_spans_for_path)
     for arm in manifest["arms"]:
         if arm == "flag-off":
             continue  # verified payload-identical separately
@@ -38,12 +45,18 @@ def main():
         out = predictions.with_suffix(".metrics.json")
         log = predictions.with_suffix(".metrics.log")
         with log.open("w") as stream:
-            subprocess.run([
-                sys.executable, str(ROOT / "lab/agentless_metric_full.py"),
+            old_argv = sys.argv
+            sys.argv = [
+                str(ROOT / "lab/agentless_metric_full.py"),
                 "--predictions", str(predictions), "--gold-parquet", str(ROOT / manifest["gold"]),
                 "--repos-dir", manifest["repos"], "--expect-n", str(manifest["n"]),
                 "--ts-functions", "--lang-functions", "--out", str(out),
-            ], stdout=stream, stderr=subprocess.STDOUT, check=True)
+            ]
+            try:
+                with redirect_stdout(stream), redirect_stderr(stream):
+                    scorer.main()
+            finally:
+                sys.argv = old_argv
         metrics = json.loads(out.read_text())["all_instances"]
         assert metrics["n"] == manifest["n"]
         print(manifest["slice"], arm, "FILE", metrics["file"]["pct_correct"],

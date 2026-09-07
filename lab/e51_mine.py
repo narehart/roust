@@ -63,6 +63,7 @@ def main():
     for name, (pq, arm) in SLICES.items():
         gold_path = ROOT / "lab" / pq
         pred_path = ROOT / "lab/results_regions/e47/arms" / (arm + ".jsonl")
+        metric_path = ROOT / "lab/results_regions/e44/metrics" / (arm + ".json")
         gold = {r["instance_id"]: r for r in pd.read_parquet(gold_path).to_dict("records")}
         preds = [json.loads(line) for line in pred_path.read_text().splitlines() if line.strip()]
         assert len({p["instance_id"] for p in preds}) == len(preds), "duplicate predictions"
@@ -100,11 +101,18 @@ def main():
             assert r["file_ok"] == bool(pred.get("all_gold_files_retrieved"))
             assert abs(r["fraction"] - (pred.get("hunk_line_recall") or 0)) < 1e-10
             rows.append(r)
+        function = json.loads(metric_path.read_text())["all_instances"]["function"]
+        nonzero = [r for r in function["detail"] if r["n_gold_functions"] > 0]
+        assert {r["instance_id"] for r in function["detail"]}.issubset(gold)
         report["slices"][name] = {
             "provenance": {"gold": str(gold_path.relative_to(ROOT)), "gold_sha256": digest(gold_path),
                            "predictions": str(pred_path.relative_to(ROOT)), "predictions_sha256": digest(pred_path),
+                           "metrics": str(metric_path.relative_to(ROOT)), "metrics_sha256": digest(metric_path),
                            "engine_shas": sorted({p["engine_sha"] for p in preds}, key=str)},
             "overall": summarize(rows),
+            "function_diagnostic": {"published_pct": function["pct_correct"],
+                                    "zero_gold_functions": len(function["detail"]) - len(nonzero),
+                                    "nonzero_n": len(nonzero), "nonzero_correct": sum(r["correct"] for r in nonzero)},
             "by_gold_files": {str(k): summarize([r for r in rows if r["gold_files"] == k]) for k in sorted({r["gold_files"] for r in rows})},
             "missing_extensions": dict(extensions.most_common()),
             "instances": rows,

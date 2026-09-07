@@ -36,6 +36,8 @@
         "gold_sha256": "7a21f37b8bc179c7db5beeb14e88ac538ba283455c776e6b2535bbfb6e3551b4",
         "predictions": "lab/results_regions/e47/arms/lite_ts40.jsonl",
         "predictions_sha256": "925295cd9352af69f8a872889fcab94e9233fd5287edae6a46c1e025edd6c6b8",
+        "metrics": "lab/results_regions/e44/metrics/lite_ts40.json",
+        "metrics_sha256": "879bae4e095ea5cb5d1e598135287108555a674f1e32b2a09fe5785c99e804c6",
         "engine_shas": [
           "0e7a0ad"
         ]
@@ -55,6 +57,12 @@
         "source_gold_lines": 3858,
         "source_missing_lines_absent_file": 281,
         "source_missing_lines_present_file": 1647
+      },
+      "function_diagnostic": {
+        "published_pct": 57.67,
+        "zero_gold_functions": 6,
+        "nonzero_n": 294,
+        "nonzero_correct": 167
       },
       "by_gold_files": {
         "1": {
@@ -5486,6 +5494,8 @@
         "gold_sha256": "3ecba7de60b63c3743ec057b8d594fa8b4b22a5dbc19d61acf004d8c44e608c6",
         "predictions": "lab/results_regions/e47/arms/jsts_ts40ship.jsonl",
         "predictions_sha256": "2a5218061c7a99f30e1bd3c237e6c8ce540054d8caf74c91b910a24be718dea5",
+        "metrics": "lab/results_regions/e44/metrics/jsts_ts40ship.json",
+        "metrics_sha256": "ad5a04c63eb0a247572f334888c7a85d3d8e9406a1bc2b8e9c09a3c0cde64b6f",
         "engine_shas": [
           "0e7a0ad",
           null
@@ -5506,6 +5516,12 @@
         "source_gold_lines": 54255,
         "source_missing_lines_absent_file": 24733,
         "source_missing_lines_present_file": 20456
+      },
+      "function_diagnostic": {
+        "published_pct": 31.55,
+        "zero_gold_functions": 62,
+        "nonzero_n": 517,
+        "nonzero_correct": 121
       },
       "by_gold_files": {
         "0": {
@@ -16548,6 +16564,8 @@
         "gold_sha256": "f6003e18437711d13066ffaffee72f173b1eb5fb52da96bb4be7d556898a4f89",
         "predictions": "lab/results_regions/e47/arms/java_ts40ship.jsonl",
         "predictions_sha256": "ea0b5af51f7ffe4b05d643098c47fc39885e14c82cac85442496429932e82703",
+        "metrics": "lab/results_regions/e44/metrics/java_ts40ship.json",
+        "metrics_sha256": "5441f1790fe11bd9e1c479732bca2a7cd1e305cce9c0bf581b1455e313a6a935",
         "engine_shas": [
           "0e7a0ad"
         ]
@@ -16567,6 +16585,12 @@
         "source_gold_lines": 5822,
         "source_missing_lines_absent_file": 1237,
         "source_missing_lines_present_file": 2227
+      },
+      "function_diagnostic": {
+        "published_pct": 39.84,
+        "zero_gold_functions": 3,
+        "nonzero_n": 125,
+        "nonzero_correct": 48
       },
       "by_gold_files": {
         "1": {
@@ -19059,6 +19083,8 @@
         "gold_sha256": "6fde00972eb6a6dc73ab2214171192d3d2a8727f9fa8754c1a2042dd4b864dd9",
         "predictions": "lab/results_regions/e47/arms/go_ts40ship.jsonl",
         "predictions_sha256": "525aeb1c27f35067717760035e0172099ac1ab506bf47836dcf31d040ade50bf",
+        "metrics": "lab/results_regions/e44/metrics/go_ts40ship.json",
+        "metrics_sha256": "978b7e1719a9a62e06824ec96b68c71f7b3881d80381a7a8b825f31f1509c436",
         "engine_shas": [
           "0e7a0ad",
           null
@@ -19079,6 +19105,12 @@
         "source_gold_lines": 34398,
         "source_missing_lines_absent_file": 10948,
         "source_missing_lines_present_file": 14311
+      },
+      "function_diagnostic": {
+        "published_pct": 32.94,
+        "zero_gold_functions": 2,
+        "nonzero_n": 425,
+        "nonzero_correct": 139
       },
       "by_gold_files": {
         "1": {
@@ -27176,6 +27208,8 @@
         "gold_sha256": "e29fed67b8f0fdffb909f14722c332435e792412e43b24f7c9c8872056845ca0",
         "predictions": "lab/results_regions/e47/arms/rust_ts40ship.jsonl",
         "predictions_sha256": "2e68de1d5f029d105c66da7039abb6fadc53c1574ec9f0b1d52f51758a600bff",
+        "metrics": "lab/results_regions/e44/metrics/rust_ts40ship.json",
+        "metrics_sha256": "def5f809f0d11a5fb738cb834145e1c76c948552f807894e4d365f222ee609a2",
         "engine_shas": [
           "0e7a0ad"
         ]
@@ -27195,6 +27229,12 @@
         "source_gold_lines": 47152,
         "source_missing_lines_absent_file": 5799,
         "source_missing_lines_present_file": 35207
+      },
+      "function_diagnostic": {
+        "published_pct": 20.92,
+        "zero_gold_functions": 11,
+        "nonzero_n": 228,
+        "nonzero_correct": 39
       },
       "by_gold_files": {
         "1": {
@@ -31905,6 +31945,8 @@
         "gold_sha256": "2923ae3dd45cbe9f05249fcf69fcaffd46166187c798652b1345922120127ac2",
         "predictions": "lab/results_regions/e47/arms/c_ts40ship.jsonl",
         "predictions_sha256": "73c4d37b2c81360255aaff068355378a296db72414e3cd05a2038445af73e22c",
+        "metrics": "lab/results_regions/e44/metrics/c_ts40ship.json",
+        "metrics_sha256": "ca5840b8dd56b88c1049ab6aec75c7985137eeaee84031e5e2ce2f5b97776eeb",
         "engine_shas": [
           "0e7a0ad",
           null
@@ -31925,6 +31967,12 @@
         "source_gold_lines": 13814,
         "source_missing_lines_absent_file": 7629,
         "source_missing_lines_present_file": 4861
+      },
+      "function_diagnostic": {
+        "published_pct": 28.12,
+        "zero_gold_functions": 14,
+        "nonzero_n": 113,
+        "nonzero_correct": 22
       },
       "by_gold_files": {
         "0": {
@@ -34562,6 +34610,8 @@
         "gold_sha256": "a56a941e6d1c65902e60234f5fcc1b76ac280780d3b03160f29b12975be2dfbd",
         "predictions": "lab/results_regions/e47/arms/cpp_ts40ship.jsonl",
         "predictions_sha256": "c2d179d79239b317483cfc1036d545fbe17031d81e32317d2e9e5a422f2a3bb4",
+        "metrics": "lab/results_regions/e44/metrics/cpp_ts40ship.json",
+        "metrics_sha256": "12550831172cbfdb21f4e5d21a45626eb230d8a468a44f0888f1c56bce3be6af",
         "engine_shas": [
           "0e7a0ad"
         ]
@@ -34581,6 +34631,12 @@
         "source_gold_lines": 32979,
         "source_missing_lines_absent_file": 2544,
         "source_missing_lines_present_file": 26980
+      },
+      "function_diagnostic": {
+        "published_pct": 20.93,
+        "zero_gold_functions": 6,
+        "nonzero_n": 123,
+        "nonzero_correct": 21
       },
       "by_gold_files": {
         "1": {

@@ -5,7 +5,9 @@
 Reproduce with `uv run --no-project --with pandas --with pyarrow python
 lab/e51_mine.py --out lab/results_regions/e51/mining.json` (join the command
 onto one line). The report hashes all gold and archived E47 prediction inputs.
-Gold parsing and error handling use the existing evaluator; Python Verified
+Gold parsing uses the existing evaluator. FILE/FUNCTION/LINE count errors
+as wrong. The diagnostic mean fraction also counts errors as zero (the
+legacy scorer excludes errors from its fractional mean); Python Verified
 is excluded from mining. Source-only metrics are diagnostics with an explicit
 extension set and a non-vacuous denominator, not a replacement scoreboard.
 
