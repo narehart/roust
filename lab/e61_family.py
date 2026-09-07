@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply the complete six-candidate discovery family correction to paired reports."""
+"""Apply the complete registered discovery family correction to paired reports."""
 import argparse
 import hashlib
 import json
@@ -7,11 +7,13 @@ from pathlib import Path
 
 FAMILY = {"e56": {"dense10", "hybrid26"}, "e57": {"semantic-regions"},
           "e58": {"ast-semantic"}, "e60": {"leading-comments"},
-          "e61": {"shared-source"}}
+          "e61": {"shared-source"}, "e63": {"cross-rerank"}}
 
 
 def summarize(root):
     rows, sources = [], {}
+    candidates = sum(map(len, FAMILY.values()))
+    tests = candidates * 2 * 3
     for experiment, arms in FAMILY.items():
         for language, expected in [("rust", 239), ("cpp", 129)]:
             path = root / experiment / "discovery" / f"{language}_paired.json"
@@ -28,12 +30,12 @@ def summarize(root):
                        "treatment_errors": result["errors"]}
                 for endpoint in ["file", "function", "line"]:
                     row[endpoint] = dict(result[endpoint])
-                    row[endpoint]["p_bonferroni_full_family"] = min(1.0, 36 * result[endpoint]["mcnemar_p"])
+                    row[endpoint]["p_bonferroni_full_family"] = min(1.0, tests * result[endpoint]["mcnemar_p"])
                 row["fraction"] = result["fraction"]
                 row["tokens"] = result["tokens"]
                 rows.append(row)
     return {"kind": "complete discovery family; not a final adoption or parity gate",
-            "candidates": 6, "slices": 2, "binary_endpoints": 3, "bonferroni_tests": 36,
+            "candidates": candidates, "slices": 2, "binary_endpoints": 3, "bonferroni_tests": tests,
             "fraction_intervals": "descriptive paired bootstrap, unadjusted",
             "paired_reports_sha256": sources, "results": rows}
 
