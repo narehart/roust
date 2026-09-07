@@ -19,6 +19,7 @@ import agentless_metric_full as scorer
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("manifest", type=Path)
+    ap.add_argument("--reuse-baseline", type=Path, help="prior control JSONL; reuse metrics only after exact input/output identity")
     args = ap.parse_args()
     manifest = json.loads(args.manifest.read_text())
     assert "outputs_sha256" in manifest, "evaluation incomplete"
@@ -44,6 +45,23 @@ def main():
         assert ids == manifest["ids"], "record order or membership changed"
         out = predictions.with_suffix(".metrics.json")
         log = predictions.with_suffix(".metrics.log")
+        if arm == "baseline" and args.reuse_baseline:
+            previous = args.reuse_baseline
+            previous_manifest = json.loads(previous.with_name(manifest["slice"] + "_manifest.json").read_text())
+            assert previous_manifest["gold_sha256"] == manifest["gold_sha256"]
+            assert sha256(previous) == previous_manifest["outputs_sha256"]["baseline"]
+            keys = ("instance_id", "repo", "base_commit", "error", "regions", "payload_sha256",
+                    "hunk_line_recall", "all_gold_files_retrieved", "tokens", "n_gold_files", "engine_sha", "engine_dirty")
+            def projection(path):
+                return [{k: r.get(k) for k in keys} for r in map(json.loads, path.read_text().splitlines())]
+            assert projection(previous) == projection(predictions), "control changed; cannot reuse scores"
+            previous_metrics = previous.with_suffix(".metrics.json")
+            reused = json.loads(previous_metrics.read_text())
+            reused["source"]["reuse_verified_against"] = str(predictions)
+            reused["source"]["original_metrics_sha256"] = sha256(previous_metrics)
+            out.write_text(json.dumps(reused, indent=2) + "\n")
+            print(manifest["slice"], "baseline metrics reused after complete control identity proof", flush=True)
+            continue
         with log.open("w") as stream:
             old_argv = sys.argv
             sys.argv = [
