@@ -77,6 +77,19 @@ pub fn set_unique_span_budget(on: bool) {
     UNIQUE_SPAN_BUDGET.store(on, std::sync::atomic::Ordering::Relaxed);
 }
 
+static EMITTED_COVERAGE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static PACK_TRACE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_emitted_coverage(on: bool) {
+    EMITTED_COVERAGE.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+pub fn set_pack_trace(on: bool) {
+    PACK_TRACE.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+fn pack_trace(value: serde_json::Value) {
+    eprintln!("ROUST_PACK_TRACE {value}");
+}
+
 fn union_spans(mut spans: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
     spans.sort_unstable();
     let mut merged: Vec<(usize, usize)> = Vec::new();
@@ -5737,6 +5750,8 @@ pub fn pack_regions(
     max_siblings: usize,
     blocks: BlockMode,
 ) -> (IndexMap<String, Vec<(usize, usize)>>, String) {
+    let emitted_coverage = EMITTED_COVERAGE.load(std::sync::atomic::Ordering::Relaxed);
+    let trace = PACK_TRACE.load(std::sync::atomic::Ordering::Relaxed);
     let tset: HashSet<String> = terms.iter().cloned().collect();
     let idf: HashMap<String, f64> = tset
         .iter()
@@ -5981,7 +5996,7 @@ pub fn pack_regions(
         let mut best_span = candidates[best_idx].span;
         let mut best_text = candidates[best_idx].text.clone();
         let mut best_tok = candidates[best_idx].tok;
-        let best_terms = candidates[best_idx].terms.clone();
+        let mut best_terms = candidates[best_idx].terms.clone();
         let mut per_file_cap = *caps.get(rel).unwrap_or(&floor_tok);
         if forced_idx.is_some() {
             per_file_cap = per_file_cap.max((best_tok as i64).min(anchor_cap));
@@ -6014,6 +6029,33 @@ pub fn pack_regions(
             best_span = (a, a + keep - 1);
             best_text = seg;
             best_tok = tok;
+        }
+
+        if emitted_coverage || trace {
+            // Padding reconstructs text from the selected source-line span,
+            // including any line whose characters the unpadded path trimmed.
+            // Credit that same unpadded source span, not the original block.
+            let emitted_text = if pad_lines > 0 {
+                let lines = py_splitlines(&corpus.text[rel]);
+                let start = best_span.0.saturating_sub(1).min(lines.len());
+                let end = best_span.1.min(lines.len()).max(start);
+                lines[start..end].join("\n")
+            } else {
+                best_text.clone()
+            };
+            let emitted_terms: HashSet<String> = tokenize(&emitted_text).into_iter()
+                .filter(|t| tset.contains(t)).collect();
+            if trace {
+                let mut omitted: Vec<_> = best_terms.difference(&emitted_terms).cloned().collect();
+                let mut retained: Vec<_> = emitted_terms.iter().cloned().collect();
+                omitted.sort(); retained.sort();
+                pack_trace(serde_json::json!({"stage": "pass1", "file": rel,
+                    "candidate_span": candidates[best_idx].span, "emitted_span": best_span,
+                    "candidate_tokens": candidates[best_idx].tok, "charged_tokens": best_tok,
+                    "omitted_query_terms": omitted, "retained_query_terms": retained,
+                    "emitted_coverage": emitted_coverage}));
+            }
+            if emitted_coverage { best_terms = emitted_terms; }
         }
 
         let best_name_score = candidates[best_idx].name_score;
@@ -6323,6 +6365,11 @@ pub fn pack_regions(
         } else {
             candidates[i].tok as i64
         };
+        if trace {
+            pack_trace(serde_json::json!({"stage": "pass2", "file": candidates[i].file,
+                "span": candidates[i].span, "charged_tokens": tok, "spent_before": spent,
+                "fits": spent + tok <= budget_tokens}));
+        }
         if spent + tok > budget_tokens {
             if candidates[i].tok > 200 {
                 continue;

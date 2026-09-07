@@ -27,6 +27,7 @@ SLICES = {
     "lite": ("swebench_lite.parquet", "swebench_repos_e20b", 300),
     "ver": ("swebench_verified_heldout.parquet", "ws3a_repos/repos_ver_v2", 407),
 }
+ISOLATE_BLOCK_CACHE = False
 ARMS = {
     "baseline": [],
     "flag-off": [],
@@ -73,7 +74,7 @@ def main():
                 "gold": str(gold.relative_to(ROOT)), "gold_sha256": sha256(gold),
                 "ids": [r["instance_id"] for r in rows], "binaries": versions,
                 "arms": {arm: ARMS[arm] for arm in args.arms}, "repos": str(private),
-                "budget": 8192, "pad_lines": 5, "len_exp": 0.85, "timeout": args.timeout}
+                "isolate_block_cache": ISOLATE_BLOCK_CACHE, "budget": 8192, "pad_lines": 5, "len_exp": 0.85, "timeout": args.timeout}
     manifest_path = args.out / f"{args.slice}_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     evaluator.SWEBENCH_REPOS = private
@@ -113,7 +114,17 @@ def main():
             evaluator.ROUST_BIN = binaries["baseline" if arm == "baseline" else "experiment"]
             evaluator.EXTRA_ENGINE_FLAGS = ARMS[arm]
             last_payload.clear()
+            live_cache = destination / ".roust/blocks.json"
+            saved_cache = private / ".block-caches" / rel / (arm + ".json")
+            if ISOLATE_BLOCK_CACHE:
+                assert not live_cache.exists(), "unexpected shared block cache"
+                if saved_cache.exists():
+                    live_cache.parent.mkdir(parents=True, exist_ok=True)
+                    saved_cache.rename(live_cache)
             rec = evaluator.eval_verified_instance(row, args.timeout, 5, 0.85)
+            if ISOLATE_BLOCK_CACHE and live_cache.exists():
+                saved_cache.parent.mkdir(parents=True, exist_ok=True)
+                live_cache.rename(saved_cache)
             rec.update(last_payload)
             rec["e51_arm"] = arm
             rec["e51_flags"] = ARMS[arm]
