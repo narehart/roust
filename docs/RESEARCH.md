@@ -77,6 +77,8 @@ per-source seating            0 gold rescued of 143 at fixed admission count
 PPR as packing budget         falsified twice (additive and replacement forms)
 breadth cap as a default      FILE +1.7 on Lite but FUNCTION 57.7 -> 54.3 (p=.013)
 changelog/docs indexing       an artifact of the corpus; fails held-out Verified
+complementary block candidates FUNCTION rises on Rust/C++; mean line coverage fails the gate
+overlap-only budget accounting frees duplicate charges but loses mean line coverage
 ```
 
 Three of these share one cause, which is the most useful thing the campaign
@@ -102,3 +104,22 @@ this corpus. The residual is dominated by patches that touch many sibling
 functions, where no single-site mechanism suffices. File ranking trails trained
 retrievers by roughly seven points on the depth-aligned metric. Both are
 documented rather than papered over.
+
+The E51/E52 non-Python follow-up separates three problems: file discovery,
+packing within retrieved files, and benchmark composition. In the archived
+baseline, 86% of Rust's missing source lines and 91% of C++'s are in files
+already retrieved. All 300 Lite cases have one old-side gold file, while the
+other language slices include large multi-file patches and non-source files.
+The investigation therefore retains the published metrics and adds explicit
+source-only, file-count, and gold-context-size diagnostics.
+
+Two rounds tested complementary block candidates and overlap-aware budget
+accounting at the shipped budget. The strongest exact-FUNCTION tradeoff was
+structural/shape union: Rust 20.92→25.94 and C++ 20.93→25.58, but C++ mean
+line fraction fell, so it did not pass the preset gate. No default changed,
+and Python Verified was not used to tune or rescue a failed candidate.
+Protocols, per-instance records, paired statistics, and compact evaluation
+input snapshots are in `lab/research/wave6/e51-complementary-packing.md`,
+`lab/research/wave6/e52-overlap-budget.md`, and `lab/results_regions/e51/` /
+`e52/`. These are bounded negative adoption results, not a proof that parity
+is impossible.
