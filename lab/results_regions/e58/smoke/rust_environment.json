@@ -1,0 +1,20 @@
+{
+  "model": "Qwen/Qwen3-Embedding-0.6B",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "producer": null,
+  "embedding_cache": "/private/tmp/roust-e58-cache/embeddings.sqlite",
+  "packages": {
+    "torch": "2.14.0",
+    "transformers": "4.57.6",
+    "numpy": "2.5.3",
+    "tokenizers": "0.22.2",
+    "tiktoken": "0.14.0",
+    "huggingface_hub": "0.36.2"
+  },
+  "source_sha256": {
+    "e57_run.py": "77128407d9df28262befdec645947ec9d76e038b90457ff270185f0615b18c73",
+    "e57_regions.py": "5bec4acdb8c2db74e7e20e920b4b50502c45b227bc28d52645b4913fdc6192cb",
+    "e57_cached.py": "11c0417ee2dd362dd0731c4dbd02de2366203600eae1b5d108d57d8adf52ac79",
+    "e56_dense.py": "0ccff4c6970b9233620f06171ec0f6e9cecd4c680e53d240106e0afeed07f292"
+  }
+}

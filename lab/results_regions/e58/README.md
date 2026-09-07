@@ -42,3 +42,13 @@ Use `e51_score.py` and `e51_compare.py` as for E57. A successful completed
 manifest, full membership checks, and family-wide correction are required
 before drawing a discovery conclusion. Smoke, workload, and full retrieval
 artifacts have different purposes and must not be pooled.
+
+## Two-instance smoke
+
+`smoke/` is complete and retains the manifest, original scorer results,
+paired comparison, and native environment. Both flag-off payloads match.
+AST semantic regions obtain FILE 50%, FUNCTION 50%, LINE 0%, and mean line
+fraction .516667, compared with baseline 50%, 0%, 0%, and .504167.
+This mixed two-instance result establishes execution, not an adoption gain.
+The complete six-candidate discovery correction is performed by
+`lab/e61_family.py` only once both full slices of every candidate finish.

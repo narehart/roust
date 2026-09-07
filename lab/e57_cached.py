@@ -15,7 +15,11 @@ from e57_regions import RegionRetriever
 class CachedRegionRetriever(RegionRetriever):
     def __init__(self, cache, producer, slice_name):
         env = json.loads(producer.with_name(slice_name + "_environment.json").read_text())
-        first = next((r for r in map(json.loads, producer.read_text().splitlines())
+        # The producer appends while this consumer starts; only complete JSONL
+        # records establish that all corresponding vectors were committed.
+        snapshot = producer.read_text()
+        published = snapshot.rsplit("\n", 1)[0] if "\n" in snapshot else ""
+        first = next((r for r in map(json.loads, published.splitlines())
                       if r.get("e56_diagnostic", {}).get("device")), None)
         if first is None:
             raise ValueError("producer has no successful embedding record")
