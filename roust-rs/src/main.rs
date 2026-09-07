@@ -374,6 +374,14 @@ struct Args {
     #[arg(long, conflicts_with = "no_structural_blocks")]
     shape_blocks: bool,
 
+    /// E51 experiment: retain structural blocks and add shape-based candidates.
+    #[arg(long, conflicts_with_all = ["no_structural_blocks", "shape_blocks", "hit_window_blocks"])]
+    shape_union_blocks: bool,
+
+    /// E51 experiment: retain structural blocks and add +/-10-line query-hit windows.
+    #[arg(long, conflicts_with_all = ["no_structural_blocks", "shape_blocks", "shape_union_blocks"])]
+    hit_window_blocks: bool,
+
     /// E26 (per-language parity campaign, ADOPTED default ON): index `.rb`
     /// and `.pony` sources, which the original allowlist never covered.
     /// Accepted-but-redundant; `--no-ext-v2` reverts to the pre-adoption
@@ -610,7 +618,11 @@ fn main() {
     // E23 structural blocks are ON by default (adopted);
     // --no-structural-blocks disables them (--ts-blocks/--no-ts-blocks are
     // hidden compat aliases).
-    let block_mode = if args.shape_blocks {
+    let block_mode = if args.shape_union_blocks {
+        roust::core::BlockMode::ShapeUnion
+    } else if args.hit_window_blocks {
+        roust::core::BlockMode::HitWindows
+    } else if args.shape_blocks {
         roust::core::BlockMode::Shape
     } else if args.no_structural_blocks {
         roust::core::BlockMode::Windows
