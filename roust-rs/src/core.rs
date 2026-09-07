@@ -160,13 +160,24 @@ struct BlockCache {
 struct FileSegs {
     vocab: Vec<String>,
     // "a-b" -> (cl100k token count if computed, sorted-unique token ids)
-    segs: HashMap<String, (Option<usize>, Vec<u32>)>,
+    segs: HashMap<String, SegEntry>,
     #[serde(skip)]
     vidx: HashMap<String, u32>,
 }
 
+// Counts and lexical tokens can be requested independently. In the old tuple
+// format a count-only insertion looked like a computed empty lexical vector.
+// Named fields also invalidate that ambiguous legacy on-disk representation.
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+struct SegEntry {
+    tok: Option<usize>,
+    ids: Option<Vec<u32>>,
+}
+
 #[derive(Default, serde::Serialize, serde::Deserialize)]
 struct BlockCacheFile {
+    #[serde(default)]
+    version: u32,
     blocks: HashMap<String, Vec<(usize, usize)>>,
     segs: HashMap<String, FileSegs>,
     defs: HashMap<String, Vec<(usize, String)>>,
@@ -174,6 +185,7 @@ struct BlockCacheFile {
 
 #[derive(serde::Serialize)]
 struct BlockCacheOut<'a> {
+    version: u32,
     blocks: &'a HashMap<String, Vec<(usize, usize)>>,
     segs: &'a HashMap<String, FileSegs>,
     defs: &'a HashMap<String, Vec<(usize, String)>>,
@@ -192,7 +204,8 @@ pub fn block_cache_open(repo_path: &std::path::Path) {
     let path = repo_path.join(".roust").join("blocks.json");
     let f: BlockCacheFile = std::fs::read(&path)
         .ok()
-        .and_then(|b| serde_json::from_slice(&b).ok())
+        .and_then(|b| serde_json::from_slice::<BlockCacheFile>(&b).ok())
+        .filter(|f| f.version == 2)
         .unwrap_or_default();
     *BLOCK_CACHE.lock().unwrap() =
         Some(BlockCache { path, map: f.blocks, segs: f.segs, defs: f.defs, dirty: false, hits: 0, misses: 0 });
@@ -212,14 +225,24 @@ pub fn block_cache_save() {
         if let Some(dir) = c.path.parent() {
             let _ = std::fs::create_dir_all(dir);
         }
-        let tmp = c.path.with_extension("json.tmp");
-        let out = BlockCacheOut { blocks: &c.map, segs: &c.segs, defs: &c.defs };
+        // A shared .tmp name lets concurrent writers rename each other's
+        // partially written file. Each writer owns a create-new temporary.
+        static NEXT_WRITE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+        let serial = NEXT_WRITE.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let tmp = c.path.with_extension(format!("json.{}.{serial}.tmp", std::process::id()));
+        let out = BlockCacheOut { version: 2, blocks: &c.map, segs: &c.segs, defs: &c.defs };
         if let Ok(bytes) = serde_json::to_vec(&out) {
-            if std::fs::write(&tmp, bytes).is_ok() {
-                let _ = std::fs::rename(&tmp, &c.path);
+            use std::io::Write;
+            if let Ok(mut file) = std::fs::OpenOptions::new().write(true).create_new(true).open(&tmp) {
+                let written = file.write_all(&bytes).is_ok();
+                drop(file);
+                if written && std::fs::rename(&tmp, &c.path).is_ok() {
+                    c.dirty = false;
+                } else {
+                    let _ = std::fs::remove_file(&tmp);
+                }
             }
         }
-        c.dirty = false;
     }
 }
 
@@ -258,9 +281,12 @@ fn cached_seg_tokens(rel: &str, fhash: u64, a: usize, b: usize, compute: impl Fn
         let mut guard = BLOCK_CACHE.lock().unwrap();
         if let Some(c) = guard.as_mut() {
             if let Some(fs) = c.segs.get(&fk) {
-                if let Some((_, ids)) = fs.segs.get(&sk) {
-                    c.hits += 1;
-                    return ids.iter().map(|&i| fs.vocab[i as usize].clone()).collect();
+                if let Some(ids) = fs.segs.get(&sk).and_then(|entry| entry.ids.as_ref()) {
+                    let tokens: Option<Vec<_>> = ids.iter().map(|&i| fs.vocab.get(i as usize).cloned()).collect();
+                    if let Some(tokens) = tokens {
+                        c.hits += 1;
+                        return tokens;
+                    }
                 }
             }
         } else {
@@ -290,7 +316,7 @@ fn cached_seg_tokens(rel: &str, fhash: u64, a: usize, b: usize, compute: impl Fn
                 }
             })
             .collect();
-        fs.segs.entry(sk).or_insert((None, Vec::new())).1 = ids;
+        fs.segs.entry(sk).or_default().ids = Some(ids);
         c.dirty = true;
     }
     toks
@@ -303,7 +329,7 @@ fn cached_seg_tok(rel: &str, fhash: u64, a: usize, b: usize, compute: impl FnOnc
     {
         let mut guard = BLOCK_CACHE.lock().unwrap();
         if let Some(c) = guard.as_mut() {
-            if let Some(Some(t)) = c.segs.get(&fk).and_then(|fs| fs.segs.get(&sk)).map(|e| e.0) {
+            if let Some(Some(t)) = c.segs.get(&fk).and_then(|fs| fs.segs.get(&sk)).map(|e| e.tok) {
                 c.hits += 1;
                 return t;
             }
@@ -315,7 +341,7 @@ fn cached_seg_tok(rel: &str, fhash: u64, a: usize, b: usize, compute: impl FnOnc
     let mut guard = BLOCK_CACHE.lock().unwrap();
     if let Some(c) = guard.as_mut() {
         c.misses += 1;
-        c.segs.entry(fk).or_default().segs.entry(sk).or_insert((None, Vec::new())).0 = Some(t);
+        c.segs.entry(fk).or_default().segs.entry(sk).or_default().tok = Some(t);
         c.dirty = true;
     }
     t
@@ -4412,6 +4438,22 @@ pub fn select_files(
 // `_PY_BLOCK_RE.match(ln)` per-line loop.
 static PY_BLOCK_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^([ \t]*)(async def |def |class |@)").unwrap());
 
+// For each header, the first following header at the same or shallower
+// depth ends its span. A reverse monotone stack avoids rescanning nested
+// descendants for every ancestor (quadratic on deeply nested source).
+fn header_ends(headers: &[(usize, usize)], n: usize) -> Vec<usize> {
+    let mut ends = vec![n; headers.len()];
+    let mut stack: Vec<(usize, usize)> = Vec::new();
+    for (idx, &(line, depth)) in headers.iter().enumerate().rev() {
+        while stack.last().is_some_and(|&(_, d)| d > depth) {
+            stack.pop();
+        }
+        if let Some(&(next_line, _)) = stack.last() { ends[idx] = next_line; }
+        stack.push((line, depth));
+    }
+    ends
+}
+
 /// Signature-plus-body block spans (1-indexed, inclusive), split at EVERY
 /// def/class/decorator header regardless of indentation -- not just
 /// column-0, as a prior version did. Column-0-only splitting made an entire
@@ -4448,7 +4490,8 @@ fn python_blocks(text: &str) -> Vec<(usize, usize)> {
         spans.push((1, headers[0].0)); // leading preamble (imports, module docstring)
     }
 
-    for (idx, &(i, indent)) in headers.iter().enumerate() {
+    let ends = header_ends(&headers, n);
+    for (idx, &(i, _indent)) in headers.iter().enumerate() {
         if lines[i].trim_start().starts_with('@') {
             continue; // standalone decorator: folded into the following def/class's span below
         }
@@ -4458,13 +4501,7 @@ fn python_blocks(text: &str) -> Vec<(usize, usize)> {
             start = k as usize;
             k -= 1;
         }
-        let mut end = n;
-        for &(j, ind2) in &headers[idx + 1..] {
-            if ind2 <= indent {
-                end = j;
-                break;
-            }
-        }
+        let end = ends[idx];
         spans.push((start + 1, end));
     }
     spans.into_iter().filter(|&(a, b)| b >= a).collect()
@@ -4880,14 +4917,9 @@ fn sitter_blocks(
     if headers[0].0 > 0 {
         spans.push((1, headers[0].0)); // leading preamble (imports)
     }
-    for (idx, &(i, d)) in headers.iter().enumerate() {
-        let mut end = n;
-        for &(j, d2) in &headers[idx + 1..] {
-            if d2 <= d {
-                end = j;
-                break;
-            }
-        }
+    let ends = header_ends(&headers, n);
+    for (idx, &(i, _d)) in headers.iter().enumerate() {
+        let end = ends[idx];
         spans.push((i + 1, end));
     }
     spans.into_iter().filter(|&(a, b)| b >= a).collect()
@@ -5752,7 +5784,7 @@ pub fn pack_regions(
         // block cache; the query-dependent window fallback never does.
         let spans = if rel.ends_with(".py") {
             cached_blocks(rel, text, "py", || python_blocks(text))
-        } else if let Some(shape) = shape_blocks_cached(text, rel).filter(|_| blocks == BlockMode::Shape) {
+        } else if let Some(shape) = (blocks == BlockMode::Shape).then(|| shape_blocks_cached(text, rel)).flatten() {
             // E25: same walker, headers chosen by shape instead of by a
             // per-language node-kind list.
             shape
@@ -6577,6 +6609,22 @@ pub fn pack_regions(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn header_ends_matches_reference_for_all_small_depth_sequences() {
+        for len in 0..=7u32 {
+            for mut pattern in 0..3usize.pow(len) {
+                let headers: Vec<_> = (0..len as usize).map(|i| {
+                    let depth = pattern % 3; pattern /= 3; (2 * i + 1, depth)
+                }).collect();
+                let expected: Vec<_> = headers.iter().enumerate().map(|(i, &(_, depth))|
+                    headers[i+1..].iter().find(|&&(_, d)| d <= depth).map_or(20, |&(line, _)| line)
+                ).collect();
+                assert_eq!(super::header_ends(&headers, 20), expected);
+            }
+        }
+        let nested: Vec<_> = (0..100_000).map(|i| (i, i)).collect();
+        assert!(super::header_ends(&nested, 100_000).iter().all(|&e| e == 100_000));
+    }
     use super::*;
 
     /// 20+ fixtures generated from the Python reference:
