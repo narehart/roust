@@ -1,0 +1,74 @@
+{
+  "slice": "cpp",
+  "n": 129,
+  "full_gate": true,
+  "baseline_errors": [],
+  "arms": {
+    "shared-source": {
+      "file": {
+        "baseline_pct": 65.89147286821705,
+        "treatment_pct": 65.89147286821705,
+        "gained": 0,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_function_line": 1.0
+      },
+      "function": {
+        "baseline_pct": 20.930232558139537,
+        "treatment_pct": 20.930232558139537,
+        "gained": 0,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_function_line": 1.0
+      },
+      "line": {
+        "baseline_pct": 8.527131782945736,
+        "treatment_pct": 9.30232558139535,
+        "gained": 1,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_function_line": 1.0
+      },
+      "fraction": {
+        "baseline_mean": 0.3109765399342499,
+        "treatment_mean": 0.32033812570432174,
+        "mean_delta": 0.009361585770071838,
+        "paired_bootstrap_95_ci": [
+          0.003036121281278253,
+          0.01813776782332722
+        ],
+        "gained": 16,
+        "lost": 0
+      },
+      "tokens": {
+        "baseline_mean": 8514.953488372093,
+        "treatment_mean": 8351.713178294574,
+        "mean_delta": -163.24031007751938,
+        "paired_bootstrap_95_ci": [
+          -224.6753875968992,
+          -112.40193798449613
+        ],
+        "gained": 0,
+        "lost": 73,
+        "n_successful_pairs": 129
+      },
+      "errors": [],
+      "baseline_function_nonvacuous": {
+        "n": 123,
+        "correct": 21,
+        "zero_gold_function_n": 6,
+        "git_show_failures": 0
+      },
+      "treatment_function_nonvacuous": {
+        "n": 123,
+        "correct": 21,
+        "zero_gold_function_n": 6,
+        "git_show_failures": 0
+      }
+    }
+  },
+  "flag_off_payload_identical": 129
+}
