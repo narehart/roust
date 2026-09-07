@@ -26,6 +26,7 @@ fn count_only_entries_recompute_lexical_tokens_and_survive_reload() {
     assert_eq!(run(&p, &[]), expected);
     let path = p.join(".roust/blocks.json");
     let mut cache: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+    let original = cache.clone();
     for fs in cache["segs"].as_object_mut().unwrap().values_mut() {
         for entry in fs["segs"].as_object_mut().unwrap().values_mut() {
             entry["ids"] = Value::Null;
@@ -33,7 +34,22 @@ fn count_only_entries_recompute_lexical_tokens_and_survive_reload() {
     }
     std::fs::write(&path, serde_json::to_vec(&cache).unwrap()).unwrap();
     assert_eq!(run(&p, &[]), expected);
+    let repaired: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+    for (file, fs) in original["segs"].as_object().unwrap() {
+        for (span, entry) in fs["segs"].as_object().unwrap() {
+            assert_eq!(repaired["segs"][file]["segs"][span]["ids"], entry["ids"],
+                "count-only entry must recompute lexical tokens: {file}:{span}");
+        }
+    }
     assert_eq!(run(&p, &[]), expected);
+    let mut malformed = repaired;
+    for fs in malformed["segs"].as_object_mut().unwrap().values_mut() {
+        for entry in fs["segs"].as_object_mut().unwrap().values_mut() {
+            entry["ids"] = json!([u32::MAX]);
+        }
+    }
+    std::fs::write(&path, serde_json::to_vec(&malformed).unwrap()).unwrap();
+    assert_eq!(run(&p, &[]), expected, "invalid vocabulary references must be recomputed");
     // E52 writes token-count-only unions: later block modes must remain
     // observationally identical to an uncached invocation of that mode.
     run(&p, &["--unique-span-budget"]);
