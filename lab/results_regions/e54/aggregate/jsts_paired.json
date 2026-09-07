@@ -1,0 +1,78 @@
+{
+  "slice": "jsts",
+  "n": 580,
+  "full_gate": true,
+  "baseline_errors": [
+    "iamkun__dayjs-857"
+  ],
+  "arms": {
+    "local-feedback": {
+      "file": {
+        "baseline_pct": 46.37931034482759,
+        "treatment_pct": 46.37931034482759,
+        "gained": 0,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_file_function_line": 1.0
+      },
+      "function": {
+        "baseline_pct": 31.551724137931036,
+        "treatment_pct": 31.379310344827587,
+        "gained": 0,
+        "lost": 1,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_file_function_line": 1.0
+      },
+      "line": {
+        "baseline_pct": 14.137931034482758,
+        "treatment_pct": 14.310344827586206,
+        "gained": 1,
+        "lost": 0,
+        "mcnemar_p": 1.0,
+        "p_bonferroni_candidate_arms": 1.0,
+        "p_bonferroni_discovery_file_function_line": 1.0
+      },
+      "fraction": {
+        "baseline_mean": 0.2630832232554911,
+        "treatment_mean": 0.26387990989810983,
+        "mean_delta": 0.0007966866426187425,
+        "paired_bootstrap_95_ci": [
+          -0.000612767940354147,
+          0.002922691879866518
+        ],
+        "gained": 2,
+        "lost": 2
+      },
+      "tokens": {
+        "baseline_mean": 8529.233160621761,
+        "treatment_mean": 8528.825561312608,
+        "mean_delta": -0.4075993091537133,
+        "paired_bootstrap_95_ci": [
+          -2.5924438687392057,
+          1.4231433506044906
+        ],
+        "gained": 75,
+        "lost": 78,
+        "n_successful_pairs": 579
+      },
+      "errors": [
+        "iamkun__dayjs-857"
+      ],
+      "baseline_function_nonvacuous": {
+        "n": 517,
+        "correct": 121,
+        "zero_gold_function_n": 62,
+        "git_show_failures": 0
+      },
+      "treatment_function_nonvacuous": {
+        "n": 517,
+        "correct": 120,
+        "zero_gold_function_n": 62,
+        "git_show_failures": 0
+      }
+    }
+  },
+  "flag_off_payload_identical": 580
+}

@@ -123,3 +123,14 @@ input snapshots are in `lab/research/wave6/e51-complementary-packing.md`,
 `lab/research/wave6/e52-overlap-budget.md`, and `lab/results_regions/e51/` /
 `e52/`. These are bounded negative adoption results, not a proof that parity
 is impossible.
+
+The following engine audit (E53/E54) found independent correctness and
+performance improvements: distinguish incomplete lexical cache entries, isolate
+concurrent cache writers, avoid discarded shape parses, find structural header
+ends in linear time, and stream line splitting. The accompanying retrieval
+experiments remain disabled: emitted-term coverage loses mean fraction on
+Rust/C++, and query-local feedback fails the C FILE-improvement gate. No
+Python Verified run was used to rescue these failures. Full results, timing
+conditions, trace autopsies, and reproduction instructions are in
+`lab/research/wave6/e53-engine-audit.md`, `e54-local-feedback.md`, and
+`lab/results_regions/e53/README.md`.

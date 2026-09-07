@@ -1,0 +1,1188 @@
+{
+  "binaries": {
+    "baseline": {
+      "path": "/private/tmp/bgrep-e53-bin/baseline",
+      "sha256": "0a909ac02d3a42dd2a2530491c217fddd83d2b933084dba089e51c130dbefa42",
+      "version": "roust 0.4.0 (ff0c995, clean)"
+    },
+    "fixed": {
+      "path": "/private/tmp/bgrep-e53-bin/local-feedback",
+      "sha256": "d230cff01727e0f211b83cb04d2a1e5450722080544a022de610e21373859145",
+      "version": "roust 0.4.0 (fddb0a0, clean)"
+    }
+  },
+  "inputs_sha256": {
+    "rust": "e29fed67b8f0fdffb909f14722c332435e792412e43b24f7c9c8872056845ca0",
+    "cpp": "a56a941e6d1c65902e60234f5fcc1b76ac280780d3b03160f29b12975be2dfbd",
+    "jsts": "3ecba7de60b63c3743ec057b8d594fa8b4b22a5dbc19d61acf004d8c44e608c6",
+    "c": "2923ae3dd45cbe9f05249fcf69fcaffd46166187c798652b1345922120127ac2",
+    "java": "f6003e18437711d13066ffaffee72f173b1eb5fb52da96bb4be7d556898a4f89",
+    "go": "6fde00972eb6a6dc73ab2214171192d3d2a8727f9fa8754c1a2042dd4b864dd9",
+    "lite": "7a21f37b8bc179c7db5beeb14e88ac538ba283455c776e6b2535bbfb6e3551b4"
+  },
+  "driver_sha256": "9fb4edab4f80adc5d4821da9bf477a88678bcc46f393b7e304f74c774f69bf3c",
+  "summary": {
+    "block-cold": {
+      "n": 14,
+      "median_per_case_fixed_over_baseline": 0.9028604827310693,
+      "per_case_ratios": [
+        0.9056559891587843,
+        0.8613304854095587,
+        0.8830672222301709,
+        0.8842353032625179,
+        0.9077908433251913,
+        0.9000649763033544,
+        0.8010906671325408,
+        0.8173467184308022,
+        0.9153447093810803,
+        0.8938070993554657,
+        0.9316200096390524,
+        0.9465322553340219,
+        0.9659616461942336,
+        0.9394895704560845
+      ]
+    },
+    "warm": {
+      "n": 14,
+      "median_per_case_fixed_over_baseline": 0.9789666782780393,
+      "per_case_ratios": [
+        0.9490513448569887,
+        0.9769381472571834,
+        0.9962319333388118,
+        1.044167750505079,
+        0.9857852471696209,
+        0.9755730098237697,
+        0.984169452250409,
+        0.9379692582663554,
+        0.9475694007444193,
+        0.978755032581108,
+        1.002650495027504,
+        0.9936416549284867,
+        0.9791783239749707,
+        0.9295328366149144
+      ]
+    }
+  },
+  "cases": [
+    {
+      "slice": "rust",
+      "instance_id": "BurntSushi__ripgrep-2626",
+      "base_commit": "7099e174acbcbd940f57e4ab4913fee4040c826e",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.7109970420133322
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.666274374932982
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.4008449580287561
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.3713882500305772
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.6501934579573572
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.7181828330503777
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.3713925000047311
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.391330249956809
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.7199272500583902
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.6504265840630978
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.3635336250299588
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.37933595897629857
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "rust",
+      "instance_id": "BurntSushi__ripgrep-2610",
+      "base_commit": "86ef6833085428c21ef1fb7f2de8e5e7f54f1f72",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.46565870800986886
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.4010860410053283
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.1591097079217434
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.15567025006748736
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.4046680419705808
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.4717295409645885
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.1555634579854086
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.15934504196047783
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.4635157079901546
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.3972397920442745
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.16277275001630187
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.15902437502518296
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "cpp",
+      "instance_id": "catchorg__Catch2-2849",
+      "base_commit": "7ce35799767de7b9c6ba836c72e479c5f70219a3",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 1.1279345420189202
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 1.0241392919560894
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.4853536250302568
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.48413849994540215
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 1.0056318750139326
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 1.1533784999046475
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.49683379102498293
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.48596966604236513
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 1.1387942499713972
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.9835094169247895
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.5021092089591548
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.4822992500849068
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "cpp",
+      "instance_id": "catchorg__Catch2-2723",
+      "base_commit": "4acc51828f7f93f3b2058a63f54d112af4034503",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 1.1462570000439882
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 1.001105499919504
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.4992630840279162
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.5244873750489205
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 1.0044331660028547
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 1.1359342499636114
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.4821380419889465
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.510628042044118
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 1.13562291697599
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 1.014417125028558
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.5023018330102786
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.536130458000116
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "jsts",
+      "instance_id": "darkreader__darkreader-7241",
+      "base_commit": "991883df4d5910851130e3dc0e21fcbce604ea7d",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.2943422079551965
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.26177041593473405
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.17414283391553909
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.1709973330143839
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.26839245902374387
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.2883598329499364
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.1650642080930993
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.16421879106201231
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.2851166659966111
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.2601514169946313
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.17071179195772856
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.16828516602981836
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "jsts",
+      "instance_id": "darkreader__darkreader-6747",
+      "base_commit": "a787eb511f45159c8869d30e5a6ba1f91cb67709",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.22816533304285258
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.20536362507846206
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.1365838749334216
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.13324754196219146
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.20422325003892183
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.22361800004728138
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.13977541704662144
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.1403495839331299
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.23004820896312594
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.20545795804355294
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.13102225004695356
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.13319291698280722
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "c",
+      "instance_id": "facebook__zstd-3942",
+      "base_commit": "372fddf4e6a6db6776b745f31c02a7c8c8dfc83f",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 1.0149140419671312
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.8245879999594763
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.3057554579572752
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.29905891604721546
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.8130381669616327
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 1.0111968340352178
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.30000241601374
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.3038693340495229
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 1.0162482080049813
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.8130235829157755
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.2931805000407621
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.29807204101234674
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "c",
+      "instance_id": "facebook__zstd-3530",
+      "base_commit": "988ce61a0c019d7fc58575954636b9ff8d147845",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.8005691670114174
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.6560601670062169
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.22962387499865144
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.22673816606402397
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.6597484999801964
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.8026705830125138
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.21999462496023625
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.24085504200775176
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.8148455419577658
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.6520548749249429
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.24464104208163917
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.22591462510172278
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "java",
+      "instance_id": "alibaba__fastjson2-2775",
+      "base_commit": "12b40c7ba3e7c30e35977195770c80beb34715c5",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.6149302918929607
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.5657401250209659
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.3724672080716118
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.35901591600850224
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.5655349999433383
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.6180623749969527
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.36245745804626495
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.3799644160317257
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.6235465420177206
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.5681249580811709
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.3792394169140607
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.3593556670239195
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "java",
+      "instance_id": "alibaba__fastjson2-2559",
+      "base_commit": "45cc6b34343bc133a03c632d6c9dd4a2d895e2e9",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 1.3952990419929847
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 1.2035290410276502
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.6465284579899162
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.6748838749481365
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 1.2121427910169587
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 1.3561570409219712
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.642887958092615
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.6753812500974163
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 1.3524675420485437
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 1.2125896670622751
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.659542458015494
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.6455304999835789
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "go",
+      "instance_id": "cli__cli-10388",
+      "base_commit": "db9dbfa4cf421f79094fe128a4d8aed20628be48",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.8818948339903727
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.8119347499450669
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.6925073340535164
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.6983824579510838
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.8136042500846088
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.8733220000285655
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.7014581250259653
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.696536291972734
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.8698833329835907
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.8238447910407558
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.7031069590011612
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.6907771660480648
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "go",
+      "instance_id": "cli__cli-10364",
+      "base_commit": "fab84beb900c1789076cd7b538bb05739d41cea6",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.8271543749142438
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.7859467499656603
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.6701423330232501
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.6573276249691844
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.7940819170325994
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.8419494999106973
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.669261208968237
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.6796329999342561
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.8389380420558155
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.796211333014071
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.6735438330797479
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.6714478339999914
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "lite",
+      "instance_id": "astropy__astropy-12907",
+      "base_commit": "d16bfe05a744909de4b27f5875fe0d4ed41ce607",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.6269611670868471
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.6051737499656156
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.32191812491510063
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.3134695829357952
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.6009776670252904
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.6133053749799728
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.3161763329990208
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.3180755829671398
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.6221547919558361
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.5955205420032144
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.32665283291134983
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.3152152500115335
+        }
+      ],
+      "payload_identical": true
+    },
+    {
+      "slice": "lite",
+      "instance_id": "astropy__astropy-14182",
+      "base_commit": "a5917978be39d13cd90b517e1de4e7a539ffaa48",
+      "observations": [
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.5998965830076486
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 0,
+          "seconds": 0.559350416995585
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.36445108405314386
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 0,
+          "seconds": 0.33460900001227856
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.5635965830879286
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 1,
+          "seconds": 0.6029777500079945
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.3387692499672994
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 1,
+          "seconds": 0.36646779207512736
+        },
+        {
+          "arm": "baseline",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.5951573749771342
+        },
+        {
+          "arm": "fixed",
+          "state": "block-cold",
+          "repeat": 2,
+          "seconds": 0.5674996660090983
+        },
+        {
+          "arm": "baseline",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.3639211250701919
+        },
+        {
+          "arm": "fixed",
+          "state": "warm",
+          "repeat": 2,
+          "seconds": 0.34071604209020734
+        }
+      ],
+      "payload_identical": true
+    }
+  ]
+}
