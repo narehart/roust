@@ -25,9 +25,9 @@ Run it in the E58 MLX environment:
 python lab/e63_probe.py --out /tmp/e63-probe.json
 ```
 
-No E63 retrieval arm has been registered or evaluated yet. A full trial must
-first freeze candidate-pool selection, ordering, packing, source-cache
-provenance, and the expanded family correction. The existing six-candidate
-family remains the currently registered discovery set. The intended next
-test reuses completed source embeddings and reranks a bounded candidate pool,
-then applies the unchanged exact token-budget scorer.
+The backend probe preceded the registered [E63 retrieval protocol](e63-protocol.md).
+That protocol freezes candidate-pool selection, ordering, packing, source-cache
+provenance, and the expanded seven-candidate correction before benchmark runs.
+It reuses completed source embeddings and reranks a bounded candidate pool,
+then applies the unchanged exact token-budget scorer. The synthetic probe
+remains implementation evidence, not a discovery result.

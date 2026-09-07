@@ -151,5 +151,5 @@ leading-comment ownership experimentally, but full Rust/C++ results have
 opposing FUNCTION/LINE effects and fail the non-regression gate. These modes
 remain experimental. Protocols and artifacts distinguish completed smoke,
 workload diagnostics, and full discovery measurements. Final selection uses
-the complete six-candidate family correction in `lab/e61_family.py`, followed
+the complete seven-candidate family correction in `lab/e61_family.py`, followed
 by the established replication and held-out gates for any qualifying change.

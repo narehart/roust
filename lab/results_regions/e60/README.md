@@ -20,7 +20,7 @@ ownership fix is mechanically valid but does not justify changing retrieval
 defaults: changing boundaries also changes lexical scoring and packing.
 
 The paired reports' local correction covers this candidate alone. Final
-selection uses all six discovery candidates through `lab/e61_family.py`.
+selection uses all seven discovery candidates through `lab/e61_family.py`.
 No remaining-language replication or Verified gate is warranted for E60.
 
 Reproduce with the E56 scoring environment:

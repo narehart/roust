@@ -24,7 +24,7 @@ There are no exact FUNCTION gains and the single exact LINE gain is not
 statistically significant. This is useful evidence for exact-content sharing,
 but it does not meet the primary discovery gate or establish language parity.
 The mode remains default-off; no Verified test or default adoption follows.
-The family-wide report includes all six candidates, not just this experiment.
+The family-wide report includes all seven candidates, not just this experiment.
 
 Reproduce in the E56 scoring environment with the frozen binaries:
 

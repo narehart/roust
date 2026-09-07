@@ -34,7 +34,7 @@ suffix list. A separate channel could retain ancillary edges without changing
 source lexical statistics. A future treatment must render relevant text,
 account for its budget, and pass the original full-context metrics; the
 top-k results here do not select a deployment threshold or expand the current
-six-candidate adoption family by themselves.
+seven-candidate adoption family by themselves.
 
 ```sh
 python lab/e62_mine.py --slice rust --out /tmp/rust_signals.json

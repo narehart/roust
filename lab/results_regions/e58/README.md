@@ -50,5 +50,5 @@ paired comparison, and native environment. Both flag-off payloads match.
 AST semantic regions obtain FILE 50%, FUNCTION 50%, LINE 0%, and mean line
 fraction .516667, compared with baseline 50%, 0%, 0%, and .504167.
 This mixed two-instance result establishes execution, not an adoption gain.
-The complete six-candidate discovery correction is performed by
+The complete seven-candidate discovery correction is performed by
 `lab/e61_family.py` only once both full slices of every candidate finish.
