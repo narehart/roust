@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""Score completed E51 arms with the existing exact language-aware scorer.
+
+Run in an environment with pandas, pyarrow, scipy, tree_sitter, and the
+tree_sitter_{javascript,typescript,java,go,rust,c,cpp} grammar packages.
+"""
+import argparse
+import importlib.metadata
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+from e51_run import ROOT, sha256
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("manifest", type=Path)
+    args = ap.parse_args()
+    manifest = json.loads(args.manifest.read_text())
+    assert "outputs_sha256" in manifest, "evaluation incomplete"
+    packages = ["pandas", "pyarrow", "scipy", "tree_sitter", "tree_sitter_javascript",
+                "tree_sitter_typescript", "tree_sitter_java", "tree_sitter_go", "tree_sitter_rust",
+                "tree_sitter_c", "tree_sitter_cpp"]
+    provenance = {"python": sys.version, "packages": {p: importlib.metadata.version(p) for p in packages},
+                  "scorer_sha256": sha256(ROOT / "lab/agentless_metric_full.py"),
+                  "scoring_helpers_sha256": sha256(ROOT / "lab/agentless_metric_verified.py"),
+                  "gold_parser_sha256": sha256(ROOT / "parity/region_eval.py")}
+    args.manifest.with_name(manifest["slice"] + "_scoring.json").write_text(json.dumps(provenance, indent=2) + "\n")
+    for arm in manifest["arms"]:
+        if arm == "flag-off":
+            continue  # verified payload-identical separately
+        predictions = args.manifest.parent / f"{manifest['slice']}_{arm}.jsonl"
+        assert sha256(predictions) == manifest["outputs_sha256"][arm]
+        ids = [json.loads(line)["instance_id"] for line in predictions.read_text().splitlines()]
+        assert ids == manifest["ids"], "record order or membership changed"
+        out = predictions.with_suffix(".metrics.json")
+        log = predictions.with_suffix(".metrics.log")
+        with log.open("w") as stream:
+            subprocess.run([
+                sys.executable, str(ROOT / "lab/agentless_metric_full.py"),
+                "--predictions", str(predictions), "--gold-parquet", str(ROOT / manifest["gold"]),
+                "--repos-dir", manifest["repos"], "--expect-n", str(manifest["n"]),
+                "--ts-functions", "--lang-functions", "--out", str(out),
+            ], stdout=stream, stderr=subprocess.STDOUT, check=True)
+        metrics = json.loads(out.read_text())["all_instances"]
+        assert metrics["n"] == manifest["n"]
+        print(manifest["slice"], arm, "FILE", metrics["file"]["pct_correct"],
+              "FUNCTION", metrics["function"]["pct_correct"],
+              "LINE", metrics["line"]["pct_correct_all_or_nothing"],
+              "fraction", metrics["line"]["mean_fraction_covered"], flush=True)
+
+
+if __name__ == "__main__":
+    main()
