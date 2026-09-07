@@ -77,6 +77,11 @@ pub fn set_unique_span_budget(on: bool) {
     UNIQUE_SPAN_BUDGET.store(on, std::sync::atomic::Ordering::Relaxed);
 }
 
+static LOCAL_FEEDBACK: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+pub fn set_local_feedback(on: bool) {
+    LOCAL_FEEDBACK.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
 static EMITTED_COVERAGE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static PACK_TRACE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
@@ -3845,6 +3850,21 @@ impl<'a> Default for SelectParams<'a> {
 /// deviation, a documented tie-break for an underlying Python
 /// nondeterminism) is noted at the `edges.get(s)` call below. See
 /// PARITY_NOTES.md item 7.
+// E54: retain the same feedback vocabulary/scoring machinery, but count
+// occurrences only in merged +/-3-line contexts around query hits. A path-
+// only match with no text hit falls back to the original full-file counts.
+fn local_feedback_tf(text: &str, terms: &HashSet<String>) -> Option<IndexMap<String, u32>> {
+    let hits = hit_lines(text, terms);
+    if hits.is_empty() { return None; }
+    let spans = window_blocks(text, &hits, 3);
+    let lines = py_splitlines(text);
+    let mut tokens = Vec::new();
+    for (a, b) in spans {
+        tokens.extend(tokenize(&lines[a - 1..b].join("\n")));
+    }
+    Some(counter_from_tokens(&tokens))
+}
+
 pub fn select_files(
     corpus: &Corpus,
     terms: &[String],
@@ -4080,8 +4100,10 @@ pub fn select_files(
     let qset: HashSet<String> = terms.iter().cloned().collect();
     let mut fb_terms: HashSet<String> = HashSet::new();
     let impl_sources: Vec<&String> = sources.iter().filter(|f| impl_prior(f) == 1.0).take(3).collect();
+    let local_feedback = LOCAL_FEEDBACK.load(std::sync::atomic::Ordering::Relaxed);
     for s in impl_sources {
-        let tf_map = corpus.tf.get(s);
+        let local_tf = if local_feedback { local_feedback_tf(&corpus.text[s], &qset) } else { None };
+        let tf_map = local_tf.as_ref().or_else(|| corpus.tf.get(s));
         if let Some(tf_map) = tf_map {
             let mut weighted: Vec<(String, f64)> = tf_map
                 .iter()
@@ -6656,6 +6678,19 @@ pub fn pack_regions(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn local_feedback_excludes_remote_noise_and_counts_overlap_once() {
+        let text = format!("remote_noise\n{}needle local_signal\nneedle local_signal\n{}remote_noise\n",
+            "padding\n".repeat(10), "padding\n".repeat(10));
+        let terms = super::tokenize("needle").into_iter().collect();
+        let tf = super::local_feedback_tf(&text, &terms).unwrap();
+        assert!(!tf.contains_key(&super::stem("remote_noise")));
+        assert_eq!(tf.get(&super::stem("local_signal")), Some(&2));
+        let absent = super::tokenize("absentquery").into_iter().collect();
+        assert!(super::local_feedback_tf(&text, &absent).is_none());
+        let short = super::local_feedback_tf("needle", &terms).unwrap();
+        assert_eq!(short.get(&super::stem("needle")), Some(&1));
+    }
     #[test]
     fn header_ends_matches_reference_for_all_small_depth_sequences() {
         for len in 0..=7u32 {

@@ -28,6 +28,7 @@ SLICES = {
     "ver": ("swebench_verified_heldout.parquet", "ws3a_repos/repos_ver_v2", 407),
 }
 ISOLATE_BLOCK_CACHE = False
+DISCOVERY_ENDPOINTS = 2
 ARMS = {
     "baseline": [],
     "flag-off": [],
@@ -74,7 +75,7 @@ def main():
                 "gold": str(gold.relative_to(ROOT)), "gold_sha256": sha256(gold),
                 "ids": [r["instance_id"] for r in rows], "binaries": versions,
                 "arms": {arm: ARMS[arm] for arm in args.arms}, "repos": str(private),
-                "isolate_block_cache": ISOLATE_BLOCK_CACHE, "budget": 8192, "pad_lines": 5, "len_exp": 0.85, "timeout": args.timeout}
+                "discovery_endpoints": DISCOVERY_ENDPOINTS, "isolate_block_cache": ISOLATE_BLOCK_CACHE, "budget": 8192, "pad_lines": 5, "len_exp": 0.85, "timeout": args.timeout}
     manifest_path = args.out / f"{args.slice}_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     evaluator.SWEBENCH_REPOS = private
