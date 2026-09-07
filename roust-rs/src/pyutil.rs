@@ -21,38 +21,23 @@
 /// `\x85` (NEL), ` ` (LS), ` ` (PS). No trailing empty element for
 /// a string ending in a line boundary; empty input yields an empty Vec.
 pub fn py_splitlines(s: &str) -> Vec<&str> {
-    let bytes_indices: Vec<(usize, char)> = s.char_indices().collect();
+    // Stream UTF-8 offsets instead of materializing a (usize, char) pair
+    // for every character. Only the returned line-slice vector allocates.
+    let mut chars = s.char_indices().peekable();
     let mut out = Vec::new();
     let mut start = 0usize;
-    let mut i = 0usize;
-    while i < bytes_indices.len() {
-        let (byte_pos, ch) = bytes_indices[i];
-        let is_boundary = matches!(
-            ch,
-            '\n' | '\r' | '\u{0b}' | '\u{0c}' | '\u{1c}' | '\u{1d}' | '\u{1e}' | '\u{85}'
-                | '\u{2028}' | '\u{2029}'
-        );
-        if is_boundary {
-            let line_end = byte_pos;
-            let mut next_i = i + 1;
-            // \r\n counts as a single boundary
-            if ch == '\r' && i + 1 < bytes_indices.len() && bytes_indices[i + 1].1 == '\n' {
-                next_i = i + 2;
+    while let Some((byte_pos, ch)) = chars.next() {
+        if matches!(ch, '\n' | '\r' | '\u{0b}' | '\u{0c}' | '\u{1c}' | '\u{1d}' | '\u{1e}'
+            | '\u{85}' | '\u{2028}' | '\u{2029}') {
+            out.push(&s[start..byte_pos]);
+            start = byte_pos + ch.len_utf8();
+            if ch == '\r' && chars.peek().is_some_and(|&(_, next)| next == '\n') {
+                let (pos, _) = chars.next().unwrap();
+                start = pos + 1;
             }
-            out.push(&s[start..line_end]);
-            start = if next_i < bytes_indices.len() {
-                bytes_indices[next_i].0
-            } else {
-                s.len()
-            };
-            i = next_i;
-            continue;
         }
-        i += 1;
     }
-    if start < s.len() {
-        out.push(&s[start..]);
-    }
+    if start < s.len() { out.push(&s[start..]); }
     out
 }
 
@@ -154,6 +139,57 @@ pub fn py_lower(s: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn reference_splitlines(s: &str) -> Vec<&str> {
+        let bytes_indices: Vec<(usize, char)> = s.char_indices().collect();
+        let mut out = Vec::new();
+        let mut start = 0usize;
+        let mut i = 0usize;
+        while i < bytes_indices.len() {
+            let (byte_pos, ch) = bytes_indices[i];
+            let is_boundary = matches!(
+                ch,
+                '\n' | '\r' | '\u{0b}' | '\u{0c}' | '\u{1c}' | '\u{1d}' | '\u{1e}' | '\u{85}'
+                    | '\u{2028}' | '\u{2029}'
+            );
+            if is_boundary {
+                let line_end = byte_pos;
+                let mut next_i = i + 1;
+                // \r\n counts as a single boundary
+                if ch == '\r' && i + 1 < bytes_indices.len() && bytes_indices[i + 1].1 == '\n' {
+                    next_i = i + 2;
+                }
+                out.push(&s[start..line_end]);
+                start = if next_i < bytes_indices.len() {
+                    bytes_indices[next_i].0
+                } else {
+                    s.len()
+                };
+                i = next_i;
+                continue;
+            }
+            i += 1;
+        }
+        if start < s.len() {
+            out.push(&s[start..]);
+        }
+        out
+    }
+    #[test]
+    fn splitlines_streaming_matches_reference_on_unicode_and_boundaries() {
+        let alphabet = ['a', 'é', '漢', '\0', '\r', '\n', '\u{0b}', '\u{0c}', '\u{1c}',
+            '\u{1d}', '\u{1e}', '\u{85}', '\u{2028}', '\u{2029}'];
+        for len in 0..=4u32 {
+            for mut pattern in 0..alphabet.len().pow(len) {
+                let input: String = (0..len).map(|_| {
+                    let c = alphabet[pattern % alphabet.len()]; pattern /= alphabet.len(); c
+                }).collect();
+                assert_eq!(py_splitlines(&input), reference_splitlines(&input), "{input:?}");
+            }
+        }
+        let large = "é漢x\r\ny\u{2028}z".repeat(100_000);
+        assert_eq!(py_splitlines(&large), reference_splitlines(&large));
+    }
 
     #[test]
     fn splitlines_basic() {
