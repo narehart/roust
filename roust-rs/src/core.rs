@@ -70,6 +70,45 @@ pub fn pack_floor() -> f64 {
     f64::from_bits(PACK_FLOOR_BITS.load(std::sync::atomic::Ordering::Relaxed))
 }
 
+// E52: account only newly added text when overlapping spans will be merged
+// by the padded-output path. Default OFF; selection scores stay unchanged.
+static UNIQUE_SPAN_BUDGET: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+pub fn set_unique_span_budget(on: bool) {
+    UNIQUE_SPAN_BUDGET.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+
+fn union_spans(mut spans: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
+    spans.sort_unstable();
+    let mut merged: Vec<(usize, usize)> = Vec::new();
+    for (a, b) in spans {
+        if a == 0 || b < a { continue; }
+        if let Some(last) = merged.last_mut() {
+            if a <= last.1.saturating_add(1) {
+                last.1 = last.1.max(b);
+                continue;
+            }
+        }
+        merged.push((a, b));
+    }
+    merged
+}
+
+fn union_token_delta(
+    existing: &[(usize, usize)],
+    addition: (usize, usize),
+    token_cost: impl Fn(usize, usize) -> usize,
+) -> Option<usize> {
+    let before = union_spans(existing.to_vec());
+    let mut after = before.clone();
+    after.push(addition);
+    let after = union_spans(after);
+    if before == after { return None; } // no new text, no duplicate gain
+    let old: usize = before.iter().map(|&(a, b)| token_cost(a, b)).sum();
+    let new: usize = after.iter().map(|&(a, b)| token_cost(a, b)).sum();
+    // Joining spans can reduce a BPE count slightly at the boundary.
+    Some(new.saturating_sub(old))
+}
+
 // E47: TIERED pass-1 seats. Every returned file needs >= 1 span to count as
 // retrieved, and pass 1 gives each one a flat `floor_tok = 120` allowance --
 // at cap 32 (42 files) that is ~5,000 of 8,192 tokens committed before any
@@ -4621,6 +4660,45 @@ pub enum BlockMode {
     #[default]
     Structural,
     Shape,
+    /// E51: retain structural candidates and add shape-based alternatives.
+    ShapeUnion,
+    /// E51: retain structural candidates and add bounded query-hit windows.
+    HitWindows,
+}
+
+fn complementary_spans(
+    text: &str,
+    rel: &str,
+    hits: &[usize],
+    mode: BlockMode,
+    mut spans: Vec<(usize, usize)>,
+) -> Vec<(usize, usize)> {
+    // Python retains its native scanner. Unsupported languages retain the
+    // existing window fallback. No extra parsing or reordering flag-off.
+    if rel.ends_with(".py") || !(is_ts_family(rel) || sitter_family(rel).is_some()) {
+        return spans;
+    }
+    match mode {
+        BlockMode::ShapeUnion => {
+            if let Some(shape) = shape_blocks_cached(text, rel) {
+                spans.extend(shape);
+            }
+        }
+        BlockMode::HitWindows => {
+            let n = py_splitlines(text).len();
+            // Independent windows are alternatives, not a merged union:
+            // merging dense matches would recreate an oversized block.
+            for &line in hits {
+                if line > 0 && line <= n {
+                    spans.push((line.saturating_sub(10).max(1), line.saturating_add(10).min(n)));
+                }
+            }
+        }
+        _ => return spans,
+    }
+    spans.sort_unstable();
+    spans.dedup();
+    spans
 }
 
 fn shape_spans_lines(node: &tree_sitter::Node) -> bool {
@@ -5688,6 +5766,7 @@ pub fn pack_regions(
         } else {
             window_blocks(text, &hits, 30)
         };
+        let spans = complementary_spans(text, rel, &hits, blocks, spans);
         let hitset: HashSet<usize> = hits.into_iter().collect();
         let def_lines: Vec<(usize, String)> =
             if w_name != 0.0 { file_def_lines(text, def_re_for(rel)) } else { Vec::new() };
@@ -6192,7 +6271,26 @@ pub fn pack_regions(
             scored.into_iter().map(|(i, _)| i).collect()
         };
         let i = remaining.remove(0);
-        let tok = candidates[i].tok as i64;
+        let tok = if pad_lines > 0 && UNIQUE_SPAN_BUDGET.load(std::sync::atomic::Ordering::Relaxed) {
+            let c = &candidates[i];
+            let existing: Vec<_> = chosen_map.get(&c.file).into_iter().flatten()
+                .map(|&idx| all_segments[idx].span).collect();
+            let text = &corpus.text[&c.file];
+            let lines = py_splitlines(text);
+            let hash = fnv1a64(text);
+            match union_token_delta(&existing, c.span, |a, b| {
+                cached_seg_tok(&c.file, hash, a, b, || {
+                    let start = a.saturating_sub(1).min(lines.len());
+                    let end = b.min(lines.len());
+                    count_tokens(&lines[start..end.max(start)].join("\n"))
+                })
+            }) {
+                Some(cost) => cost as i64,
+                None => continue,
+            }
+        } else {
+            candidates[i].tok as i64
+        };
         if spent + tok > budget_tokens {
             if candidates[i].tok > 200 {
                 continue;
@@ -9176,6 +9274,52 @@ def omega_worker(pp):
         let src = "package p\n\ntype A = int\ntype B = int\n\nfunc Alpha() {\n\treturn\n}\n";
         let spans = shape_blocks(src, "a.go").unwrap();
         assert!(spans.len() <= 2, "one-liners became headers: {spans:?}");
+    }
+
+    #[test]
+    fn complementary_hit_windows_are_bounded_and_keep_structural_spans() {
+        let text = (1..=100).map(|n| format!("line {n}")).collect::<Vec<_>>().join("\n");
+        let base = vec![(1, 100), (20, 80)];
+        let got = complementary_spans(&text, "a.rs", &[1, 50, 50, 100, 0, 101], BlockMode::HitWindows, base.clone());
+        for span in base { assert!(got.contains(&span)); }
+        assert!(got.contains(&(1, 11)));
+        assert!(got.contains(&(40, 60)));
+        assert!(got.contains(&(90, 100)));
+        assert_eq!(got.len(), 5);
+    }
+
+    #[test]
+    fn complementary_spans_leave_default_python_and_fallback_order_unchanged() {
+        let base = vec![(5, 9), (1, 3), (5, 9)];
+        for (rel, mode) in [("a.rs", BlockMode::Structural), ("a.py", BlockMode::HitWindows),
+                            ("a.py", BlockMode::ShapeUnion), ("a.pony", BlockMode::HitWindows)] {
+            assert_eq!(complementary_spans("a\nb\nc", rel, &[2], mode, base.clone()), base);
+        }
+    }
+
+    #[test]
+    fn complementary_shape_union_preserves_both_representations() {
+        let text = "const handler = function(value) {\n  return value;\n};\n";
+        let base = vec![(2, 2)];
+        let shape = shape_blocks(text, "a.js").unwrap();
+        let got = complementary_spans(text, "a.js", &[], BlockMode::ShapeUnion, base.clone());
+        for span in base.into_iter().chain(shape) { assert!(got.contains(&span)); }
+    }
+
+    #[test]
+    fn union_budget_charges_overlap_once_and_skips_contained_spans() {
+        let cost = |a: usize, b: usize| b - a + 1;
+        assert_eq!(union_token_delta(&[(1, 10)], (5, 15), cost), Some(5));
+        assert_eq!(union_token_delta(&[(1, 10)], (3, 8), cost), None);
+        assert_eq!(union_token_delta(&[(1, 10), (20, 30)], (8, 22), cost), Some(9));
+        assert_eq!(union_token_delta(&[(1, 10)], (20, 25), cost), Some(6));
+        assert_eq!(union_token_delta(&[], (20, 25), cost), Some(6));
+    }
+
+    #[test]
+    fn union_budget_handles_boundary_token_merges_without_underflow() {
+        assert_eq!(union_token_delta(&[(1, 1), (3, 3)], (2, 2), |_, _| 1), Some(0));
+        assert_eq!(union_spans(vec![(8, 10), (1, 4), (4, 7), (0, 2)]), vec![(1, 10)]);
     }
 
 }
