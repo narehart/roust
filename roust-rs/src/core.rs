@@ -73,6 +73,14 @@ pub fn pack_floor() -> f64 {
 // E52: account only newly added text when overlapping spans will be merged
 // by the padded-output path. Default OFF; selection scores stay unchanged.
 static UNIQUE_SPAN_BUDGET: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+static LEADING_COMMENTS: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_leading_comments(on: bool) {
+    LEADING_COMMENTS.store(on, std::sync::atomic::Ordering::Relaxed);
+}
+fn leading_comments_enabled() -> bool {
+    LEADING_COMMENTS.load(std::sync::atomic::Ordering::Relaxed)
+}
 pub fn set_unique_span_budget(on: bool) {
     UNIQUE_SPAN_BUDGET.store(on, std::sync::atomic::Ordering::Relaxed);
 }
@@ -265,7 +273,8 @@ pub fn block_cache_save() {
 }
 
 fn cached_blocks(rel: &str, text: &str, tag: &str, compute: impl FnOnce() -> Vec<(usize, usize)>) -> Vec<(usize, usize)> {
-    let key = format!("{rel}|{:016x}|{tag}", fnv1a64(text));
+    let suffix = if leading_comments_enabled() && tag != "py" { ":leading-comments-v1" } else { "" };
+    let key = format!("{rel}|{:016x}|{tag}{suffix}", fnv1a64(text));
     {
         let mut guard = BLOCK_CACHE.lock().unwrap();
         if let Some(c) = guard.as_mut() {
@@ -4879,6 +4888,50 @@ fn sitter_blocks(
     language: tree_sitter::Language,
     header_start: &dyn Fn(&tree_sitter::Node) -> Option<usize>,
 ) -> Vec<(usize, usize)> {
+    sitter_blocks_with_comments(text, language, header_start, leading_comments_enabled())
+}
+
+fn leading_comment_start(
+    text: &str,
+    mut node: tree_sitter::Node,
+    mut start: usize,
+    starts: &[usize],
+    line_of_byte: &dyn Fn(usize) -> usize,
+) -> usize {
+    let header_line = line_of_byte(start);
+    // Find the declaration owning hoisted wrappers, including an `export`
+    // keyword earlier on the same line. Ancestors on earlier lines own a
+    // different declaration and must not donate their documentation.
+    while let Some(parent) = node.parent() {
+        if line_of_byte(parent.start_byte()) != header_line { break; }
+        node = parent;
+    }
+    let mut previous = node.prev_sibling();
+    // Rust attributes may be siblings already included in `header_start`.
+    while previous.is_some_and(|p| p.start_byte() >= start) {
+        previous = previous.unwrap().prev_sibling();
+    }
+    while let Some(comment) = previous {
+        if !matches!(comment.kind(), "comment" | "line_comment" | "block_comment") { break; }
+        let comment_line = line_of_byte(comment.start_byte());
+        let end_line = line_of_byte(comment.end_byte().saturating_sub(1));
+        if comment.end_byte() > start
+            || line_of_byte(start) > end_line + 1
+            || !text[comment.end_byte()..start].trim().is_empty()
+            || !text[starts[comment_line]..comment.start_byte()].trim().is_empty()
+        { break; }
+        start = comment.start_byte();
+        previous = comment.prev_sibling();
+    }
+    start
+}
+
+fn sitter_blocks_with_comments(
+    text: &str,
+    language: tree_sitter::Language,
+    header_start: &dyn Fn(&tree_sitter::Node) -> Option<usize>,
+    attach_comments: bool,
+) -> Vec<(usize, usize)> {
     let lines = py_splitlines(text);
     let n = lines.len();
     let mut parser = tree_sitter::Parser::new();
@@ -4913,6 +4966,9 @@ fn sitter_blocks(
         let node = cursor.node();
         let emitted = match header_start(&node) {
             Some(start_byte) => {
+                let start_byte = if attach_comments {
+                    leading_comment_start(text, node, start_byte, &starts, &line_of_byte)
+                } else { start_byte };
                 headers.push((line_of_byte(start_byte), depth));
                 true
             }
@@ -5931,7 +5987,14 @@ pub fn pack_regions(
             }
             for sym in syms {
                 if let Some(&ln) = def_lines.get(sym) {
-                    if let Some(&idx) = cand_by_start.get(&ln) {
+                    let idx = cand_by_start.get(&ln).copied().or_else(|| {
+                        if !leading_comments_enabled() || rel.ends_with(".py") { return None; }
+                        candidates.iter().enumerate()
+                            .filter(|(_, c)| &c.file == rel && c.span.0 <= ln && ln <= c.span.1)
+                            .min_by_key(|(_, c)| c.span.1 - c.span.0)
+                            .map(|(i, _)| i)
+                    });
+                    if let Some(idx) = idx {
                         forced.insert(rel.clone(), idx);
                         break;
                     }
@@ -6678,6 +6741,36 @@ pub fn pack_regions(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn leading_comments_move_to_their_rust_declaration_and_attributes() {
+        let source = "fn one() {}\n/// quasar\n/// decoding\n#[inline]\nfn two() {}\n";
+        let old = super::sitter_blocks_with_comments(source, tree_sitter_rust::LANGUAGE.into(), &super::rust_header_start, false);
+        let attached = super::sitter_blocks_with_comments(source, tree_sitter_rust::LANGUAGE.into(), &super::rust_header_start, true);
+        assert_eq!(old, vec![(1, 3), (4, 5)]); // docs currently belong to one
+        assert_eq!(attached, vec![(1, 1), (2, 5)]);
+        for source in ["fn one() {} // trailing\nfn two() {}\n", "fn one() {}\n/// separated\n\nfn two() {}\n"] {
+            assert_eq!(
+                super::sitter_blocks_with_comments(source, tree_sitter_rust::LANGUAGE.into(), &super::rust_header_start, false),
+                super::sitter_blocks_with_comments(source, tree_sitter_rust::LANGUAGE.into(), &super::rust_header_start, true));
+        }
+    }
+
+    #[test]
+    fn leading_comments_cover_go_java_cpp_and_export_wrappers() {
+        let go = super::sitter_blocks_with_comments("package p\n// Decode quasar\nfunc run() {}\n",
+            tree_sitter_go::LANGUAGE.into(), &super::go_header_start, true);
+        assert_eq!(go, vec![(1, 1), (2, 3)]);
+        let java = super::sitter_blocks_with_comments("class Demo {\n/** Decode quasar */\n@Deprecated\nvoid run() {}\n}\n",
+            tree_sitter_java::LANGUAGE.into(), &super::java_header_start, true);
+        assert!(java.contains(&(2, 5)), "{java:?}");
+        let cpp = super::sitter_blocks_with_comments("/** Decode quasar */\ntemplate<class T>\nT run(T x) { return x; }\n",
+            tree_sitter_cpp::LANGUAGE.into(), &super::cpp_header_start, true);
+        assert_eq!(cpp, vec![(1, 3)]);
+        let js = super::sitter_blocks_with_comments("/** Decode quasar */\nexport function run() {}\n",
+            tree_sitter_javascript::LANGUAGE.into(), &super::ts_header_start, true);
+        assert_eq!(js, vec![(1, 2)]);
+    }
+
     #[test]
     fn local_feedback_excludes_remote_noise_and_counts_overlap_once() {
         let text = format!("remote_noise\n{}needle local_signal\nneedle local_signal\n{}remote_noise\n",
