@@ -1,0 +1,23 @@
+{
+  "kind": "synthetic backend probe, not recall evidence",
+  "model": "Qwen/Qwen3-Reranker-0.6B",
+  "revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+  "native": [
+    2.6015625,
+    -8.2109375
+  ],
+  "torch_reference": [
+    2.59375,
+    -8.23046875
+  ],
+  "max_abs_logit_difference_error": 0.01953125,
+  "rank_identical": true,
+  "cache_exact": true,
+  "long_query_preserves_document": true,
+  "namespace": "[\"Qwen/Qwen3-Reranker-0.6B\", \"e61197ed45024b0ed8a2d74b80b4d909f1255473\", \"mlx-fp16-f32-logit-difference\", \"<|im_start|>system\\nJudge whether the Document meets the requirements based on the Query and the Instruct provided. Note that the answer can only be \\\"yes\\\" or \\\"no\\\".<|im_end|>\\n<|im_start|>user\\n\", \"<|im_end|>\\n<|im_start|>assistant\\n<think>\\n\\n</think>\\n\\n\", \"Given a software issue, retrieve source code relevant to fixing the issue.\", \"query768-document1024-total2048-batch8-v1\", \"0.32.2\", \"0.31.3\", \"4.57.6\", \"0.22.2\"]",
+  "torch_version": "2.14.0",
+  "source_sha256": {
+    "e63_rerank.py": "aeefaaf87fe5b381ce99c6cea7880da6827a0953166d659e6e66493ece091173",
+    "e63_probe.py": "8786e9ff072bfe5d1b435ea226c06c1c98e3073c772c1a5bd9292dd7c2e7e272"
+  }
+}
