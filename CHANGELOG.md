@@ -5,6 +5,29 @@ All notable changes to `roust` are documented here. Format loosely follows
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-11-26 - Cache hardening; npm trusted publishing
+
+Maintenance release. No retrieval defaults change.
+
+### Fixed
+
+- **Block cache correctness and concurrency** (#92). Count-only cache entries
+  are no longer mistaken for computed empty lexical coverage, cache presence
+  and versioning are checked explicitly, and concurrent writers no longer share
+  a temporary filename.
+
+### Performance (output identical on all 168 measured invocations)
+
+- Default queries skip unused shape-block parsing, compute nested header ends
+  in linear time, and stream line splitting instead of allocating a
+  per-character array (#92). Median latency on a quiet 14-task sample: -9.7%
+  with a cold block cache, -2.1% warm.
+
+### Release infrastructure
+
+- npm packages are now published with npm trusted publishing (GitHub OIDC)
+  instead of a stored, expiring token (#94).
+
 ## [0.4.0] - 2026-09-04 - Deeper regions at zero token cost, 8-23x faster queries
 
 Engine release. Every change below was measured on eight populations
