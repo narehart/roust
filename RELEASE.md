@@ -78,22 +78,31 @@ Two things the first attempt taught, both now fixed in the workflow:
 
 ## One-time setup — DONE
 
-Both registry credentials are configured as repository secrets (verify with
-`gh secret list --repo narehart/roust`):
+crates.io uses a repository secret (verify with `gh secret list --repo
+narehart/roust`). npm uses [trusted publishing](https://docs.npmjs.com/trusted-publishers):
+GitHub Actions exchanges an OIDC token at publish time, so there is no npm
+secret to store or rotate.
 
 | Secret | Registry | Token | Expires |
 |---|---|---|---|
 | `CARGO_REGISTRY_TOKEN` | crates.io | `roust-release-ci`, scopes `publish-new` + `publish-update` | 2027-08-26 |
-| `NPM_TOKEN` | npm | `roust-ci`, granular, read+write all packages, 2FA-bypass | 2026-11-24 |
 
 Both names are unclaimed until the first publish: `roust` is free on npm and
 on crates.io, and the platform package names (`roust-darwin-arm64` etc.) are
 free too. The first real tag push claims all of them.
 
-Rotation: regenerate at the registry, then `gh secret set <NAME> --repo
-narehart/roust`. The npm token is capped at 90 days by npm policy, so it will
-need rotating before the next release cycle if that is more than three months
-out.
+npm trusted publishers are configured on npmjs.com for each of the six
+packages (`roust-cli`, `roust-darwin-arm64`, `roust-darwin-x64`,
+`roust-linux-x64`, `roust-linux-arm64`, `roust-win32-x64`): Settings →
+Trusted publishing → GitHub Actions, organization `narehart`, repository
+`roust`, workflow `release.yml`, no environment. Each package's
+`repository.url` must match `github.com/narehart/roust` exactly. A package
+added later must be published once by hand before a trusted publisher can be
+attached to it. The former `NPM_TOKEN` (90-day cap) was retired in favor of
+this.
+
+crates.io rotation: regenerate the token at the registry, then
+`gh secret set CARGO_REGISTRY_TOKEN --repo narehart/roust`.
 
 ## Per-release steps
 
