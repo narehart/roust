@@ -48,6 +48,10 @@ jobs:
   build-binaries:
     name: Build ${{ matrix.name }}
     needs: plan
+    # OIDC token for npm trusted publishing of the platform packages.
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -120,8 +124,14 @@ jobs:
         if: needs.plan.outputs.dry_run != 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
+
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; no token is stored.
+      - name: Upgrade npm for trusted publishing
+        if: needs.plan.outputs.dry_run != 'true'
+        shell: bash
+        run: npm install -g npm@^11.5.1 && npm --version
 
       - name: Publish platform package to npm
         if: needs.plan.outputs.dry_run != 'true'
@@ -140,8 +150,6 @@ jobs:
           else
             npm publish "$PKG_DIR" --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Dry-run platform package (build only)
         if: needs.plan.outputs.dry_run == 'true'
@@ -156,12 +164,20 @@ jobs:
     needs: [plan, build-binaries]
     if: needs.plan.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
+    # OIDC token for npm trusted publishing; no NPM_TOKEN secret is used.
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
+
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; no token is stored.
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@^11.5.1 && npm --version
 
       - name: Pin platform packages as optionalDependencies
         run: node npm/sync-optional-deps.mjs
@@ -181,8 +197,6 @@ jobs:
           else
             npm publish --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-crates-io:
     name: Publish to crates.io
